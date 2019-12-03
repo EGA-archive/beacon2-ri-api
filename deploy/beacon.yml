@@ -1,0 +1,67 @@
+version: '3.2'
+
+# Use the default driver (here bridge)
+networks:
+  priv:
+  pub:
+
+# Use the default driver for volume creation
+# volumes:
+#   db:
+
+services:
+
+  db:
+    environment:
+      # For psql 
+      - PGDATA=/beacon-db
+      - POSTGRES_USER=beacon
+      - POSTGRES_PASSWORD=secretpassword
+      - POSTGRES_DB=beacon
+    hostname: beacon-db
+    container_name: beacon-db
+    image: postgres:9.6-alpine
+    volumes:
+      #- db:/beacon-db
+      - ./db:/docker-entrypoint-initdb.d
+    networks:
+      - priv
+
+  beacon:
+    # depends_on:
+    #   - db
+    build: ../src
+    image: egarchive/beacon-api:2.0
+    hostname: beacon
+    container_name: beacon
+    environment:
+      - DATABASE_URL=beacon-db
+      - DATABASE_PORT=5432
+      - DATABASE_USER=beacon
+      - DATABASE_PASSWORD=secretpassword
+      - DATABASE_NAME=beacon
+      # - DATABASE_SCHEMA=v20
+    volumes:
+      - ./beacon/beacon.conf:/beacon/beacon_api/conf/config.ini
+      - ./beacon/access_levels.yml:/beacon/beacon_api/utils/access_levels.yml
+    ports:
+      - "5050:5050"
+    networks:
+      - priv
+      - pub
+
+  ui:
+    depends_on:
+      - beacon
+    build: ../ui
+    image: egarchive/beacon-ui:2.0
+    hostname: beacon-ui
+    container_name: beacon-ui
+    environment:
+      - BEACON_UI_CONF=/beacon/conf.ini
+    volumes:
+      - ./beacon/ui.conf:/beacon/conf.ini
+    ports:
+      - "8000:8000"
+    networks:
+      - pub
