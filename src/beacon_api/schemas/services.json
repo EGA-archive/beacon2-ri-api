@@ -1,0 +1,28 @@
+{
+  "definitions": {},
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+  ],
+  "properties": {
+    "serviceType": {
+      "type": "string",
+      "enum": ["GA4GHBeacon", "GA4GHAggregator", "GA4GHRegistry"
+      ]
+    },
+    "model": {
+      "type": "string",
+      "enum": ["Beacon-v1", "GA4GH-ServiceInfo-v0.1"
+      ]
+    },
+    "listFormat": {
+      "type": "string",
+      "enum": ["full", "short"
+      ]
+    },
+    "apiVersion": {
+      "type": "string",
+      "pattern": "^v[0-9].?[0-9]?.?[0-9]?$"
+    }
+  }
+}

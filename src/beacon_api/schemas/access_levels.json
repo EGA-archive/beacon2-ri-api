@@ -1,0 +1,31 @@
+{
+  "definitions": {},
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+  ],
+  "properties": {
+    "includeFieldDetails": {
+      "type": "string",
+      "enum": ["true", "false"
+      ],
+      "default": "false"
+    },
+    "displayDatasetDifferences": {
+      "type": "string",
+      "enum": ["true", "false"
+      ],
+      "default": "false"
+    },
+    "datasetIds": {
+      "type": "string"
+    },
+    "fields": {
+      "type": "string"
+    },
+    "levels": {
+      "type": "string",
+      "enum": ["public", "registered", "controlled", "not_supported"]
+      }
+  }
+}
