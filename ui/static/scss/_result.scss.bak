@@ -1,0 +1,90 @@
+body#response > main {
+
+    display:flex;
+    flex-flow:row wrap;
+    align-items:flex-start;
+
+    justify-content:center;
+	
+	@import 'datasetAlleleResponses';
+	
+	&.per-variant {
+		margin: 0 auto;
+		padding: 0;
+		.variant-object { 
+			width: 100%;
+			height: auto;
+			margin-bottom: 2em;
+
+			&:last-child {
+				margin: 0;
+			}
+
+			background-color: #C4C4C4;
+			border: 1px solid #EFF3F6;
+			border-radius: 5px;
+		
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr;
+			grid-template-rows: 35px auto;
+			grid-template-areas: ". variant links"
+								 " response response response";
+			align-items: center;
+			.header {
+				grid-area: variant;
+				color: white;
+				justify-self: center;
+				p {
+					margin: 0;
+				}
+			}
+			.links {
+				grid-area: links;
+				display: flex;
+				flex-direction: row;
+				justify-content: right;
+				margin-right: 1em;
+
+				a {
+					align-self: center;
+					margin: auto 0.5em;
+					padding: 0;
+					text-decoration: none;
+					display: flex;
+					align-items: center;
+					img {
+						width: 16px;
+						height: 16px;
+						border-radius: 50%;
+					}
+				}
+				
+			}
+			.dataset-responses {
+				grid-area: response;
+				background-color: white;
+
+				display:flex;
+				flex-flow:row wrap;
+				align-items:flex-start;
+				justify-content: center;
+				overflow: scroll;
+
+				@import 'datasetAlleleResponses';
+
+				
+			}
+		}
+	}
+	
+}
+
+
+// .handover a:hover ~ .handover-note p { display:inline-block; }
+// .handover a:hover ~ .handover-note::after { display:block; }
+
+.handover-note:hover {
+	p { display:block; }
+	&::after { display:block; }
+}
+

@@ -1,0 +1,160 @@
+body {
+
+	width: 1140px;
+	margin: 0 auto;
+	min-height: 100vh;
+	box-sizing: border-box;
+
+	font-family: "Open Sans", "Helvetica Neue", Arial, sans-serif;
+	font-size: $font-size-lg;
+	color: #636363;
+	line-height: 1.4;
+	
+	main#access-levels {
+		width: 1140px; 
+
+
+		#access-levels-legend {
+			margin-right: 50px;
+			padding: 0.5em;
+			display: flex;
+			justify-content: flex-end;
+			.label { margin:0 1ex; }
+		}
+
+
+		> nav {
+			display:flex;
+			margin-top:1em;
+			justify-content: flex-end;
+			input { margin:0 1ex;}
+		}
+
+
+		.section-title {
+			background-color: #EFF3F6;
+			width: 100%;
+			height: 50px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-top: 2em;
+
+			h1 {
+				margin-left: 1em;
+				font-size: 18px;
+
+				small {
+					font-size: 14px;
+					font-weight: lighter;
+					margin-left: 0.5em;
+				}
+			}
+
+			div.include-check {
+				font-size: 12px;
+				font-weight: lighter;
+				margin-right: 1em;
+			}
+		}
+
+		.section-content {
+			width: 1040px;
+			margin: 0 auto;
+			
+			ul.collapsed {
+				list-style-type: none;
+				display: flex;
+				flex-flow: row wrap;
+				
+				margin: 2em 0;
+				padding: 0;
+				/* justify-content:space-between; */
+			
+				.label {
+					margin: 1ex;
+					display: inline-block;
+					font-size: 1em;
+					/* color:black; */
+				}
+			}
+
+			ul.expanded {
+				margin: 0;
+				padding: 0;
+
+				> li {
+					border-top: 1px solid #ccc; padding-top:1em; margin-bottom:1em;
+			
+					display: flex;
+					flex-flow: row nowrap;
+					justify-content: flex-start;
+
+					&:nth-child(1) { border-top: none; margin-top: 2em }
+			
+					> span {
+						margin-right: 1em;
+						min-width: 15em;
+						display: inline-block;
+						text-align: right;
+						// font-variant: small-caps;
+					}
+			
+					ul {
+						list-style-type: none;
+						margin: 0; padding: 0;
+				
+						display: flex;
+						flex-flow: row wrap;
+				
+						justify-content: flex-start;
+				
+						.label {
+							margin:0 1ex 0.5ex 0;
+							display:inline-block;
+							font-size:1em;
+							/* color:black; */
+						}
+					}
+				}
+
+			}
+
+			ul.datasets {
+				column-count: 4;
+				list-style-type: none;
+				margin: 2em auto; 
+				padding: 0;
+				
+				li {
+					text-align: center; 
+			
+					.label {
+						margin-left: 1ex;
+					}
+				}
+			}
+
+			.message {
+				margin: 1em;
+				p { 
+					width: 70%;
+					padding: 0.2em;
+					margin: 2em auto;
+					border-radius: 5px;
+					border: 1px solid grey;
+					background-color: #636363;
+					color: white;
+					text-align: center;
+					font-weight: lighter;
+					
+				}
+
+		
+			}
+	
+	
+		}
+	}
+}
+

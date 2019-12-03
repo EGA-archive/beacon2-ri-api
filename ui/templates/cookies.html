@@ -1,0 +1,17 @@
+{% if not request.COOKIES.beacon %}
+{% load static %}
+<div id="beacon-cookies">
+  <div>
+    <h6>Cookies &amp; Privacy</h6>
+    <p>By use of this Beacon Service, I agree to forego any
+      attempt to re-identify individuals represented in Beacon
+      Service Replies, except where expressly authorized by law
+      or by a written prior permission from the respective
+      DAC.
+    </p>
+    <p>We use cookies to enhance your experience on this website.</p>
+    <a href="{% url 'privacy' %}">More information</a>
+  </div>
+  <button>Accept</button>
+</div>
+{% endif %}

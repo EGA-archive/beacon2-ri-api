@@ -1,0 +1,60 @@
+@keyframes fadeAway {
+    0%    { width: 100%; }
+    100%  { width: 0%; }
+}
+
+ul#messages {
+
+    position:fixed; bottom:1em; right: 1em;
+    z-index: 1000;
+    width: 300px;
+    list-style-type: none;
+
+    display:flex;
+    flex-direction: column-reverse;
+
+    li {
+	text-align:center;
+	background: white; color: black;
+	border-radius:1ex;
+	border:1px solid black;
+	margin: 1ex 0;
+	padding: 1ex;
+
+	position:relative;
+	box-sizing: border-box;
+
+	&.hidden { display: none; }
+
+	&::after {
+	    content: '-'; text-indent:-30000px;
+	    position: absolute; bottom:1px; right:1px; height:2px; width:calc(100% - 2px);
+
+	    background:black;
+	    border-radius:1ex;
+
+	    animation-name: fadeAway;
+	    animation-timing-function: linear;
+	    animation-iteration-count: 1;
+	    animation-duration: 5s;
+	}
+
+	/* Stop and restart */
+	&:hover::after { animation: none; }
+
+	&.message-info {
+	    background: #5cb85c; border-color:#5cb85c;
+	    &::after { background: darken(#5cb85c, 10%); }
+	}
+	&.message-error {
+	    background: #d9534f; border-color:#d9534f;
+	    &::after { background: darken(#d9534f, 10%); }
+	}
+	&.message-warning {
+	    background: #f0ad4e; border-color:#f0ad4e;
+	    &::after { background: darken(#f0ad4e, 10%); }
+	}
+
+    }
+
+}

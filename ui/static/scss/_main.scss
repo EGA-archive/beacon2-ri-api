@@ -1,0 +1,102 @@
+
+main {
+
+	flex: 1; /* push footer down */
+	width: 1040px;
+	margin: 0 auto;
+
+    span.label {
+		display: inline;
+		padding: .2em .6em;
+		font-size: 75%;
+		line-height: 1;
+
+		text-align: center;
+		white-space: nowrap;
+		vertical-align: baseline;
+		border-radius: 5px;
+
+		/* Fallback */
+		background-color: grey; 
+		color: white; 
+		border: none;
+		
+		&.label-public     { background-color: $label-public;}
+		&.label-registered { background-color: $label-registered;}
+		&.label-controlled { background-color: $label-controlled;}
+		&.label-not_supported { background-color: $label-not_supported;}
+
+	/*
+		&.label-public.label-not_authorized { @include left2rightGradient($label-public, $label-not_authorized); }
+		&.label-public.label-authorized { @include left2rightGradient($label-public, $label-authorized); }
+		
+		&.label-registered.label-not_authorized { @include left2rightGradient($label-registered, $label-not_authorized); }
+		&.label-registered.label-authorized { @include left2rightGradient($label-registered, $label-authorized); }
+		
+		&.label-controlled.label-not_authorized { @include left2rightGradient($label-controlled, $label-not_authorized); }
+		&.label-controlled.label-authorized { @include left2rightGradient($label-controlled , $label-authorized); }
+		
+		&.label-not_supported.label-not_authorized { @include left2rightGradient($label-not_supported, $label-not_authorized); }
+		&.label-not_supported.label-authorized { @include left2rightGradient($label-not_supported, $label-authorized); }
+	*/	
+		
+    }
+    
+    p { margin: 0 0 1em 0; }
+}
+
+#info {
+
+    main {
+
+		padding: 0 1em;
+
+		section {
+			display:flex;
+			flex-flow: row no-wrap;
+			align-items: flex-start;
+			padding:1em;
+
+			border-top:1px solid #ccc;
+
+			max-width:100%;
+
+			> p { margin: 0; 
+				padding: 0;
+				/* overflow: hidden; text-overflow: ellipsis; white-space: nowrap; */
+				flex: 1;
+				font-size: 12px;
+				margin-top: 0.15em;
+			}
+			> a {
+				display:inline-block; 
+				margin:0; 
+				padding:0; 
+				text-decoration:none;
+				.label { font-size: 12px; }
+			}
+
+
+			> span {
+				margin: 0.15em 1em 0;
+				display: flex;
+				font-size: 75%;
+				border-radius: 50%;
+				cursor: help;
+				width: 18px;
+				height: 18px;
+				justify-content: center;
+				align-items: center;
+				
+
+				/* Fallback */
+				background-color: grey; color: white;
+			
+				&.label-authorized { background-color: $label-authorized;}
+				&.label-not_authorized { background-color: $label-not_authorized;}
+			}
+		}
+    }
+}
+
+

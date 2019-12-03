@@ -1,0 +1,105 @@
+{% load beacon %}
+<form id="query"
+      action="{{ request.get_full_path }}"
+      method="post"
+      accept-charset="UTF-8"
+      autocomplete="off"
+      enctype="multipart/form-data"
+      data-cache-key="form"
+      novalidate="">
+
+      {% csrf_token %}
+      
+  <div class="form-container">
+
+      {% if results.error or form.errors %}
+        <section id="query-errors">
+        {% if results.error %}
+          <div class="error-{{ error.errorCode }}">
+          {{ results.error.message }}
+          </div>
+        {% endif %}
+
+        {% for field in form %}
+          {% for error in field.errors %}
+            <div class="error-wrapper">
+              <i class="fas fa-exclamation-circle"></i>
+              <div>
+                {{ error|safe }}
+              </div>
+            </div>
+            <!-- <div class="error-wrapper">
+
+              <h3>{{ field.name }}</h3>
+              <div>
+                {{ error|safe }}
+              </div>
+            </div> -->
+          {% endfor %}
+        {% endfor %}
+
+        </section>
+      {% endif %}
+
+      <fieldset id="query-search">
+        {{ form.assemblyId }}
+        <section>
+          {{ form.query }}
+          {{ form.query.label_tag }}
+        </section>
+        {{ form.includeDatasetResponses }}
+        <button>
+          <i class="fas fa-search"></i>
+          <p>Search</p> 
+        </button>
+      </fieldset>
+
+      <!-- <section>
+          {{ form.includeDatasetResponses.label_tag }} {{ form.includeDatasetResponses }} 
+      </section> -->
+
+
+      <fieldset id="query-datasets">
+        <div id="datasets-header">
+            <div><p>Datasets</p></div>
+            <div><p><span onclick="select('all')">All</span>  <span onclick="select('none')">None</span></p></div>
+        </div>
+        <hr class="title-line">
+        <section>
+          {% for d in BEACON.datasets %}
+            {% if d.info.authorized == 'true' %}
+              <label>
+                <input type="checkbox" name="datasetIds" value="{{ d.id }}" {% if d.id in selected_datasets %}checked{% endif %}/>
+                {{ d.id }}{% if d.variantCount %} ({{ d.variantCount }} variant{{ d.variantCount|pluralize }}){% endif %}
+              </label>
+            {% else %}
+              <label class="dataset-not-authorized">
+                <input type="checkbox" disabled name="datasetIds" value="{{ d.id }}" />
+                {{ d.id }}
+              </label>
+            {% endif %}
+          {% endfor %}
+        </section>
+        </fieldset>
+
+      <fieldset id="query-filters">
+        <div id="filters-header">
+          <p>Filters <i class="filter-add fas fa-plus-circle"></i></p>
+        </div>
+        <hr class="title-line">
+        {% for f in filters %}
+          <section>
+            <span>{{ f|convert2label }}</span>
+            <input type="text" value="{{ f }}" {% if not f %}placeholder="HP:0011007>=49 or PATO:0000383 or EFO:0009656" {% endif %}name="filters" data-lpignore="true" />
+            <i class="filter-remove fas fa-minus-circle"></i>
+          </section>
+          {% empty %}
+          <section>
+            <input type="text" value="" placeholder="HP:0011007>=49 or PATO:0000383 or EFO:0009656" name="filters" data-lpignore="true" />
+            <i class="filter-remove fas fa-minus-circle"></i>
+          </section>
+        {% endfor %}
+      </fieldset>
+
+  </div>
+</form>

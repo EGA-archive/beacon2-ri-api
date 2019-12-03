@@ -1,0 +1,36 @@
+{% load static %}
+{% include 'cookies.html'  %}
+
+<footer>
+  <strong>&copy; Copyright {% now "Y" %}. EGA Consortium</strong>
+
+
+  {% if beacon_response %}
+  <section>
+    <input id="beacon-request-trigger" type="checkbox" />
+    <label for="beacon-request-trigger">API request</label>
+    <a id="beacon-request" href="{{ query_url }}" target="_blank">{{ query_url|safe }} <i class="fas fa-external-link-alt"></i></a>
+  </section>
+
+  <section>
+    <input id="beacon-response-trigger" type="checkbox" />
+    <label for="beacon-response-trigger">API response</label>
+    <pre id="beacon-response">{{ beacon_response|pprint|safe }}</pre>
+  </section>
+  {% endif %}
+
+</footer>
+
+{% if messages %}
+<ul id="messages">
+    {% for m in messages %}
+    <li{% if m.tags %} class="message-{{ m.tags|lower }}"{% endif %}>{{ m }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="{% static 'js/jquery.min.js' %}">\x3C/script>')</script>
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js" crossorigin="anonymous"></script>
+<script src="{% static 'js/beacon.js' %}"></script>
+{% if messages %}<script src="{% static 'js/message.js' %}"></script>{% endif %}
