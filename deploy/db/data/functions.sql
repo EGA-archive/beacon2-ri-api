@@ -191,5 +191,3 @@ BEGIN
 	-- #8=_end, #9=_start_min, #10=_start_max, #11=_end_min, #12=_end_max
 END
 $BODY$;
-ALTER FUNCTION public.query_data_summary_response(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text, text)
-    OWNER TO microaccounts_dev;
