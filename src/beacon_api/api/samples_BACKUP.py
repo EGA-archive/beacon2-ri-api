@@ -200,8 +200,8 @@ async def join_data2sample(db_pool, samples_dict, valid_datasets, processed_requ
         async with db_pool.acquire(timeout=180) as connection:
             try:
                 if start != 'null': 
-                    query = f"""SELECT * FROM v20.beacon_data_table d 
-                                JOIN v20.beacon_dataset_sample_table c 
+                    query = f"""SELECT * FROM public.beacon_data_table d 
+                                JOIN public.beacon_dataset_sample_table c 
                                 ON d.dataset_id = c.dataset_id 
                                 WHERE d.dataset_id IN ({valid_datasets}) 
                                 AND sample_id = {key}

@@ -124,7 +124,7 @@ async def create_variantsFound(db_pool, processed_request, records_list, valid_d
         async with db_pool.acquire(timeout=180) as connection:
             try:
                 query  = f"""SELECT * FROM (SELECT concat_ws(':', chromosome, variant_id, reference, alternate, start, 'end', type) AS unique_id, *
-                                FROM v20.beacon_data_table) AS tmp_tamble
+                                FROM public.beacon_data_table) AS tmp_tamble
                                 WHERE dataset_id IN ({dataset_ids}) 
                                 AND unique_id = '{variant_identifier}';"""
 
@@ -213,8 +213,8 @@ async def variant_filter(db_pool, processed_request, valid_datasets, sample):
 
     async with db_pool.acquire(timeout=180) as connection:
         try:
-            query = f"""SELECT * FROM v20.beacon_data_table d 
-                        JOIN v20.beacon_dataset_sample_table c 
+            query = f"""SELECT * FROM public.beacon_data_table d 
+                        JOIN public.beacon_dataset_sample_table c 
                         ON d.dataset_id = c.dataset_id 
                         WHERE d.dataset_id IN ({valid_datasets}) 
                         AND sample_id = {sample}
@@ -271,8 +271,8 @@ async def join_data2sample(db_pool, samples_dict, valid_datasets, processed_requ
                 try:
                     query  = f"""SELECT DISTINCT(concat_ws(':', chromosome, variant_id, reference, alternate, start, 'end', type)) AS unique_id, 
 		                        chromosome, variant_id, reference, alternate, start, d.end, type
-                                FROM v20.beacon_data_table d 
-                                JOIN v20.beacon_dataset_sample_table c 
+                                FROM public.beacon_data_table d 
+                                JOIN public.beacon_dataset_sample_table c 
                                 ON d.dataset_id = c.dataset_id WHERE d.dataset_id IN ({valid_datasets}) 
                                 AND sample_id = {key};"""
 
