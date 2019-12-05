@@ -16,9 +16,11 @@ pushd $(dirname ${BASH_SOURCE[0]})
 
 # Schemas and Functions
 docker_process_sql < data/schemas.sql
-docker_process_sql < data/functions.sql
+docker_process_sql < data/query_data_summary_response.sql
+docker_process_sql < data/query_data_response.sql
 
 docker_process_sql -c "GRANT EXECUTE ON FUNCTION public.query_data_summary_response(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text, text) TO ${POSTGRES_USER};"
+docker_process_sql -c "GRANT EXECUTE ON FUNCTION public.query_data_response(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text, text) TO ${POSTGRES_USER};"
 
 # Datasets
 docker_process_sql < data/init.sql
