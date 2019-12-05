@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/cupertino/jquery-ui.css" />
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet"> <!-- font-family: 'Open Sans', sans-serif; -->
-	 <link href="https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap" rel="stylesheet"> <!-- font-family: 'Roboto Mono', monospace; -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap" rel="stylesheet"> <!-- font-family: 'Roboto Mono', monospace; -->
         
     <link rel="icon" href="//ega-archive.org/favicon.ico">
 
@@ -109,36 +109,8 @@
 	{% include 'footer.html' %}
 	
 	<script src="{% static 'js/history.js' %}"></script>
-	    
-    <script>
-			function openVariant(evt, variantName) {
-				var i, x, tablinks;
-				x = document.getElementsByClassName("variant");
-				for (i = 0; i < x.length; i++) {
-					x[i].style.display = "none";
-				}
-				tablinks = document.getElementsByClassName("tablink");
-				for (i = 0; i < x.length; i++) {
-					tablinks[i].className = tablinks[i].className.replace(" selected", ""); 
-				}
-				document.getElementById(variantName).style.display = "block";
-				evt.currentTarget.className += " selected";
-			}
-
-			function select(target) {
-				checkboxes = document.getElementsByName('datasetIds');
-				if (target == 'all') {
-					for(var i = 0; i < checkboxes.length; i++) {
-						checkboxes[i].checked = true;
-					}
-				}
-				else if (target == 'none') {
-					for(var i = 0; i < checkboxes.length; i++) {
-						checkboxes[i].checked = false;
-					}
-				}
-			}
-		</script>
+	<script src="{% static 'js/variants_panel.js' %}"></script>
+	<script src="{% static 'js/query_datasets.js' %}"></script>
 
   </body>
 </html>
