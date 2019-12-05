@@ -51,8 +51,8 @@ services:
       - pub
 
   ui:
-    depends_on:
-      - beacon
+    # depends_on:
+    #   - beacon
     build: ../ui
     image: egarchive/beacon-ui:2.0
     hostname: beacon-ui
@@ -61,6 +61,7 @@ services:
       - BEACON_UI_CONF=/beacon/conf.ini
     volumes:
       - ./beacon/ui.conf:/beacon/conf.ini
+      - ./beacon/beacon_project_small.png:/beacon/static/logo.png
     ports:
       - "8000:8000"
     networks:
