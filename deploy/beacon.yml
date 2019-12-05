@@ -5,15 +5,10 @@ networks:
   priv:
   pub:
 
-# Use the default driver for volume creation
-# volumes:
-#   db:
-
 services:
 
   db:
     environment:
-      # For psql 
       - PGDATA=/beacon-db
       - POSTGRES_USER=beacon
       - POSTGRES_PASSWORD=secretpassword
@@ -22,14 +17,11 @@ services:
     container_name: beacon-db
     image: postgres:9.6-alpine
     volumes:
-      #- db:/beacon-db
       - ./db:/docker-entrypoint-initdb.d
     networks:
       - priv
 
   beacon:
-    # depends_on:
-    #   - db
     build: ../src
     image: egarchive/beacon-api:2.0
     hostname: beacon
@@ -51,8 +43,6 @@ services:
       - pub
 
   ui:
-    depends_on:
-      - beacon
     build: ../ui
     image: egarchive/beacon-ui:2.0
     hostname: beacon-ui
@@ -61,6 +51,7 @@ services:
       - BEACON_UI_CONF=/beacon/conf.ini
     volumes:
       - ./beacon/ui.conf:/beacon/conf.ini
+      - ./beacon/beacon_project_small.png:/beacon/static/logo.png
     ports:
       - "8000:8000"
     networks:
