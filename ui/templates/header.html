@@ -1,6 +1,5 @@
 <header>
-  <!-- <a href="{{ BEACON.organization.welcomeUrl }}"><img src="{{ BEACON.organization.logoUrl }}" alt="{{ BEACON.organization.name }}" /></a> -->
-  <a href="https://beacon-project.io"><img src="../static/img/beacon_project_small.png" alt="Beacon project" class="logo"/></a>
+  <a href="{{ BEACON.organization.welcomeUrl }}"><img src="{{ BEACON.organization.logoUrl }}" alt="{{ BEACON.organization.name }}" /></a>
   
   <h1><a href="{% url 'query' %}">{{ BEACON.name|default:'Beacon' }}</a></h1>
   <h2>{{ BEACON.description|safe }}</h2>
