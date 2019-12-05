@@ -177,3 +177,131 @@ FROM beacon_dataset_consent_code_table dc
 INNER JOIN consent_code_table code ON code.id=dc.consent_code_id
 INNER JOIN consent_code_category_table cat ON cat.id=code.category_id
 ORDER BY dc.dataset_id, cat.id, code.id;
+
+
+---------------------------
+------- V2.0 TABLES -------
+---------------------------
+
+-- Tables related to the services endpoint
+-- Create tables
+CREATE TABLE organization_table (
+  id SERIAL NOT NULL PRIMARY KEY,
+  stable_id text NOT NULL,
+  name text,
+  description text,
+  address text,
+  welcome_url text,
+  contact_url text,
+  logo_url text,
+  info text
+);
+
+CREATE TABLE service_table (
+  id SERIAL NOT NULL PRIMARY KEY,
+  stable_id text NOT NULL,
+  name text NOT NULL,
+  service_type text NOT NULL,
+  api_version text NOT NULL,
+  service_url text NOT NULL,
+  entry_point boolean NOT NULL,
+  organization_id INT REFERENCES organization_table (id) NOT NULL,
+  description text,
+  version text,
+  open boolean NOT NULL,
+  welcome_url text,
+  alternative_url  text,
+  create_date_time timestamp(6) without time zone,
+  update_date_time timestamp(6) without time zone
+);
+
+
+-- Insert mock data
+INSERT INTO organization_table (stable_id, name, description, address, welcome_url, contact_url, logo_url, info) VALUES ('org.example', 'Org-Example', 'This is an example', '123 Street', 'welcome.com', 'contact@me', 'logo.com', 'extra_info');
+INSERT INTO organization_table (stable_id, name, description, address, welcome_url, contact_url, logo_url, info) VALUES ('org.example2', 'Org-Example2', 'This is an example2', '321 Street', 'welcome2.com', 'contact2@me', 'logo2.com', 'extra_info2');
+
+
+INSERT INTO service_table (stable_id, name, service_type, api_version, service_url, entry_point, organization_id, description, version, open, welcome_url, alternative_url, create_date_time, update_date_time) VALUES ('BA1', 'BA1', 'GA4GHBeaconAggregator', 'v1', 'BA1.com', true, '1', 'BA1 description', 'v2', true, 'BA1-welcome.com', 'BA1-alternative.com', '2019-09-26', '2019-09-26');
+INSERT INTO service_table (stable_id, name, service_type, api_version, service_url, entry_point, organization_id, description, version, open, welcome_url, alternative_url, create_date_time, update_date_time) VALUES ('BA2', 'BA2', 'GA4GHBeaconAggregator', 'v1', 'BA2.com', true, '2', 'BA2 description', 'v2', true, 'BA2-welcome.com', 'BA2-alternative.com', '2019-09-26', '2019-09-26');
+INSERT INTO service_table (stable_id, name, service_type, api_version, service_url, entry_point, organization_id, description, version, open, welcome_url, alternative_url, create_date_time, update_date_time) VALUES ('R1', 'R1', 'GA4GHRegistry', 'v1', 'R1.com', false, '1', 'R1 description', 'v2', true, 'R1-welcome.com', 'R1-alternative.com', '2019-09-26', '2019-09-26');
+
+-- Create view
+CREATE VIEW service AS
+SELECT 
+  s.id,
+  s.stable_id as service_stable_id,
+  s.name as service_name,
+  s.service_type,
+  s.api_version,
+  s.service_url,
+  s.entry_point,
+  s.description as service_description,
+  s.version,
+  s.open,
+  s.welcome_url as service_welcome_url,
+  s.alternative_url,
+  s.create_date_time,
+  s.update_date_time,
+  o.id as organization_id,
+  o.stable_id as organization_stable_id,
+  o.name as organization_name,
+  o.description as organization_description,
+  o.address,
+  o.welcome_url as organization_welcome_url,
+  o.contact_url,
+  o.logo_url,
+  o.info
+  FROM service_table s
+  JOIN organization_table o ON s.organization_id=o.id;
+
+-- Add columns to beacon_sample_table
+ALTER TABLE beacon_sample_table
+ADD COLUMN sex text,
+ADD COLUMN tissue text,
+ADD COLUMN description text, 
+ADD CONSTRAINT sex_constraint CHECK (LOWER(sex) = ANY(ARRAY['female'::text,'male'::text,'other'::text,'unknown'::text]));
+
+-- Insert mock data into beacon_sample_table
+UPDATE beacon_sample_table SET sex='female' WHERE id IN (1,2,3);
+UPDATE beacon_sample_table SET sex='male' WHERE id IN (4,5,6);
+
+UPDATE beacon_sample_table SET tissue='kidney' WHERE id in (1,2);
+UPDATE beacon_sample_table SET tissue='lung' WHERE id in (3,4);
+UPDATE beacon_sample_table SET tissue='liver' WHERE id in (5,6);
+
+UPDATE beacon_sample_table SET description='Lorem ipsum dolor sit, amet consectetur adipiscing elit, hendrerit et.' WHERE id IN (1,2,3,4,5,6);
+
+
+-- Tables related to the samples endpoint
+-- Create patient table
+CREATE TABLE patient_table (
+  id SERIAL NOT NULL PRIMARY KEY,
+  stable_id text,
+  sex text,
+  age_of_onset int,
+  disease text,
+  CONSTRAINT sex_constraint CHECK (LOWER(sex) = ANY(ARRAY['female'::text,'male'::text,'other'::text,'unknown'::text]))
+);
+
+-- Add patient column to beacon_sample_table
+ALTER TABLE public.beacon_sample_table
+ADD COLUMN patient_id  INT REFERENCES patient_table (id);
+
+-- Insert mock data into patient_table
+INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient1', 'female', '61', 'Lung cancer');
+INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient2', 'male', '70', 'Kidney cancer');
+INSERT INTO public.patient_table (stable_id, sex, age_of_onset) VALUES ('patient3', 'female', '45');
+INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient4', 'male', '82', 'Hepatitis');
+                                                  	
+
+-- Tables related to the access_levels endpoint
+-- Create table
+CREATE TABLE public.dataset_access_level_table (
+    dataset_id integer REFERENCES public.beacon_dataset_table(id),
+    parent_field text,
+    field text,
+    access_level text NOT NULL CHECK (access_level = ANY (ARRAY['NOT_SUPPORTED'::text, 'PUBLIC'::text, 'REGISTERED'::text, 'CONTROLLED'::text])),
+    CONSTRAINT dataset_access_level_table_pkey PRIMARY KEY (dataset_id, parent_field, field)
+);
+
+
