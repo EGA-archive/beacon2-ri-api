@@ -61,10 +61,9 @@
 
       <fieldset id="query-datasets">
         <div id="datasets-header">
-            <div><p>Datasets</p></div>
-            <div><p><span onclick="select('all')">All</span>  <span onclick="select('none')">None</span></p></div>
+            <p>Datasets</p>
+            <p><span>All</span>  <span>None</span></p>
         </div>
-        <hr class="title-line">
         <section>
           {% for d in BEACON.datasets %}
             {% if d.info.authorized == 'true' %}
@@ -86,7 +85,7 @@
         <div id="filters-header">
           <p>Filters <i class="filter-add fas fa-plus-circle"></i></p>
         </div>
-        <hr class="title-line">
+
         {% for f in filters %}
           <section>
             <span>{{ f|convert2label }}</span>
