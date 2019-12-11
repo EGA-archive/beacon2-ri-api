@@ -175,7 +175,7 @@ async def get_valid_datasets(db_pool, dataset_filters):
     async with db_pool.acquire(timeout=180) as connection:
         id_list = []
         try: 
-            if dataset_filters:
+            if dataset_filters and dataset_filters != 'null':
                 query  = f"""SELECT id
                             FROM beacon_dataset_table
                             WHERE {dataset_filters};"""

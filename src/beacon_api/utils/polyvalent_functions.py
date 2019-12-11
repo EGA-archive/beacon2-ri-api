@@ -91,7 +91,6 @@ def parse_filters_request(filters_request_list):
     list_filters = []
     for unprocessed_filter in filters_request_list:
         filter_elements = unprocessed_filter.split(":")
-        print("filter_elements: ", filter_elements)
         ontology = filter_elements[0]
         operator_switch = False
         for operator in [">=", "<=", "=",  ">", "<"]:  # TO DO: raise an error if "=<" or "=>" are given
@@ -121,9 +120,11 @@ async def prepare_filter_parameter(db_pool, filters_request):
     """
 
     # First we want to parse the filters request
-    list_filters = parse_filters_request(ast.literal_eval(filters_request))
-    # list_filters = parse_filters_request(filters_request)
-    
+    if isinstance(filters_request, list):
+        list_filters = parse_filters_request(filters_request)
+    else:
+        list_filters = parse_filters_request(ast.literal_eval(filters_request))
+        
     combinations_list = "','".join([":".join([filter_elements[0],filter_elements[1]]) for filter_elements in list_filters])
     combinations_list =  "'" + combinations_list + "'"
 
