@@ -443,8 +443,15 @@ async def sample_request_handler(db_pool, processed_request, request):
 
         variantsFound_object = await create_variantsFound(db_pool, processed_request, samples_dict[sample]["variants"], valid_datasets, include_dataset)
 
-        results.append({"sample": sample_object, "individual": patient_object, "variantsFound": variantsFound_object})
+        # Depending on the endpoint, the order changes
+        endpoint = request.path
+        LOG.debug(f"Sorting results for the {endpoint} endpoint.")
+        if endpoint == '/individuals':
+            results.append({"individual": patient_object, "sample": sample_object, "variantsFound": variantsFound_object})
+        else:
+            results.append({"sample": sample_object, "individual": patient_object, "variantsFound": variantsFound_object})
 
+            
     # In the response only a subset of variants will be shown, except when includeAllVariants is set to true
     # if that's not the case, we are going to create an object to facilitate the link for getting all of them
     all_variants_url = { "info": "For optimization reasons, only a subset of variants are shown for each sample. If you would like to get all of them, visit the link below.",
