@@ -9,7 +9,7 @@ import ast
 import logging
 
 from .exceptions import BeaconBadRequest, BeaconServerError, BeaconForbidden, BeaconUnauthorised
-from .. import __apiVersion__
+from .. import __apiVersion__, __id__
 from ..conf.config import DB_SCHEMA
 
 from ..utils.polyvalent_functions import create_prepstmt_variables, filter_exists, datasetHandover
@@ -281,7 +281,7 @@ async def snp_request_handler(db_pool, processed_request, request):
   	                    "VariantAnnotation": ["beacon-variant-annotation-v1.0"],
                         "VariantMetadata": ["beacon-variant-metadata-v1.0"]
                     },
-                    "value":   { 'beaconId': '.'.join(reversed(request.host.split('.'))),
+                    "value":   { 'beaconId': __id__,
                         'apiVersion': __apiVersion__,
                         'exists': any([x['exists'] for x in datasets]),
                         # Error is not required and should not be shown unless exists is null
