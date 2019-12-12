@@ -107,5 +107,8 @@ docker_process_sql -c "INSERT INTO beacon_data_sample_table (data_id, sample_id)
 docker_process_sql -c "TRUNCATE TABLE tmp_sample_table"
 docker_process_sql -c "TRUNCATE TABLE tmp_data_sample_table"
 
+# Do some updates now that everything is loaded
+docker_process_sql < data/updates.sql
+
 popd 
 echo "Initial data loaded"

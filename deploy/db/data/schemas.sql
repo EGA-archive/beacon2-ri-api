@@ -261,15 +261,6 @@ ADD COLUMN tissue text,
 ADD COLUMN description text, 
 ADD CONSTRAINT sex_constraint CHECK (LOWER(sex) = ANY(ARRAY['female'::text,'male'::text,'other'::text,'unknown'::text]));
 
--- Insert mock data into beacon_sample_table
-UPDATE beacon_sample_table SET sex='female' WHERE id IN (1,2,3);
-UPDATE beacon_sample_table SET sex='male' WHERE id IN (4,5,6);
-
-UPDATE beacon_sample_table SET tissue='kidney' WHERE id in (1,2);
-UPDATE beacon_sample_table SET tissue='lung' WHERE id in (3,4);
-UPDATE beacon_sample_table SET tissue='liver' WHERE id in (5,6);
-
-UPDATE beacon_sample_table SET description='Lorem ipsum dolor sit, amet consectetur adipiscing elit, hendrerit et.' WHERE id IN (1,2,3,4,5,6);
 
 
 -- Tables related to the samples endpoint
@@ -292,7 +283,8 @@ INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES 
 INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient2', 'male', '70', 'Kidney cancer');
 INSERT INTO public.patient_table (stable_id, sex, age_of_onset) VALUES ('patient3', 'female', '45');
 INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient4', 'male', '82', 'Hepatitis');
-                                                  	
+INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient5', 'male', '65', 'Lung cancer');
+
 
 -- Tables related to the access_levels endpoint
 -- Create table
@@ -305,3 +297,33 @@ CREATE TABLE public.dataset_access_level_table (
 );
 
 
+-- Tables related to the filtering terms
+-- Create table
+CREATE TABLE public.ontology_term_table (
+    id SERIAL NOT NULL PRIMARY KEY,
+    ontology text NOT NULL,
+    term text NOT NULL,
+    target_table text NOT NULL,
+    column_name text NOT NULL,
+    column_value text,
+    additional_comments text,
+    label text
+);
+
+-- Insert mock data
+INSERT INTO public.ontology_term_table (id, ontology, term, target_table, column_name, column_value, additional_comments, label) VALUES 
+  (1,E'sex',E'1',E'public.beacon_sample_table',E'sex',E'female',NULL,NULL),
+  (2,E'sex',E'2',E'public.beacon_sample_table',E'sex',E'male',NULL,NULL),
+  (3,E'tissue',E'1',E'public.beacon_sample_table',E'tissue',E'liver',NULL,NULL),
+  (4,E'tissue',E'2',E'public.beacon_sample_table',E'tissue',E'lung',NULL,NULL),
+  (5,E'tissue',E'3',E'public.beacon_sample_table',E'tissue',E'kidney',NULL,NULL),
+  (6,E'disease',E'1',E'public.patient_table',E'disease',E'lung cancer',NULL,NULL),
+  (7,E'disease',E'2',E'public.patient_table',E'disease',E'kidney cancer',NULL,NULL),
+  (8,E'disease',E'3',E'public.patient_table',E'disease',E'hepatitis',NULL,NULL);
+
+-- Create views
+CREATE VIEW public.ontology_term_column_correspondance AS
+SELECT id, ontology, term, target_table, column_name, column_value, additional_comments FROM public.ontology_term_table;
+
+CREATE VIEW public.ontology_term AS
+SELECT id, ontology, term, label FROM public.ontology_term_table;
