@@ -237,7 +237,7 @@ async def access_levels_terms_handler(db_pool, processed_request, request):
     access_level_fields, special_datasets = await get_access_levels(request, processed_request, db_pool)
 
     beacon_answer = {        
-        'id': '.'.join(reversed(request.host.split('.'))),
+        'id': __id__,
         'name': __beacon_name__,
         'apiVersion': __apiVersion__,
         'fields': access_level_fields,

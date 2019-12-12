@@ -22,7 +22,7 @@ organization = {
 
 def Beacon_v1(host):
     Beacon_v1 = {
-        'id': '.'.join(reversed(host.split('.'))),
+        'id': __id__,
         'name': __beacon_name__,
         'serviceType': __service__,
         'apiVersion': __apiVersion__,
@@ -41,7 +41,7 @@ def Beacon_v1(host):
 
 def GA4GH_ServiceInfo_v01(host):
     GA4GH_ServiceInfo_v01 = {
-        'id': '.'.join(reversed(host.split('.'))),
+        'id': __id__,
         'name': __beacon_name__,
         'type': __service_type__,
         'description': __description__,

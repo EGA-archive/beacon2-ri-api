@@ -41,7 +41,6 @@ async def filtering_terms_handler(host, db_pool):
     beacon_filtering_terms = await fetch_filtering_terms(db_pool)
 
     beacon_answer = {        
-        #'id': '.'.join(reversed(host.split('.'))),
         'id': __id__,
         'name': __beacon_name__,
         'apiVersion': __apiVersion__,

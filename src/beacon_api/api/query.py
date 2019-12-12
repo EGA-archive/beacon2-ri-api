@@ -9,7 +9,7 @@ import ast
 import logging
 
 from .exceptions import BeaconBadRequest, BeaconServerError, BeaconForbidden, BeaconUnauthorised
-from .. import __apiVersion__
+from .. import __apiVersion__, __id__
 from ..conf.config import DB_SCHEMA
 
 from ..utils.polyvalent_functions import create_prepstmt_variables, filter_exists
@@ -221,7 +221,7 @@ async def query_request_handler(db_pool, processed_request, request):
     LOG.info('Query done.')
 
     # We create the final dictionary with all the info we want to return
-    beacon_response = { 'beaconId': '.'.join(reversed(request.host.split('.'))),
+    beacon_response = { 'beaconId': __id__,
                         'apiVersion': __apiVersion__,
                         'exists': any([x['exists'] for x in datasets]),
                         # Error is not required and should not be shown unless exists is null
