@@ -1,4 +1,5 @@
-"""Filtering terms Endpoint.
+"""
+Filtering terms Endpoint.
 
 Querying the filtering terms endpoint reveals information about existing ontology filters in this beacon.
 These are stored in the DB inside the table named 'ontology_terms'.

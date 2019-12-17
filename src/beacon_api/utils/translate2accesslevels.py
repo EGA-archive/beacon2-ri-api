@@ -1,6 +1,6 @@
 """
 This file contains the dictionaries that link the objects of the responses of the main endpoints to
-the name they have in the access levels file, so they can be comapred in the filtering step.
+the name they have in the access levels file, so they can be compared in the filtering step.
 """
 
 info2access = {

@@ -1,4 +1,5 @@
-"""Functions used by different endopoints. 
+"""
+Functions used by different endopoints. 
  - To do basic operations
  - To parse the filters request
  - To manage access resolution
@@ -130,7 +131,7 @@ async def prepare_filter_parameter(db_pool, filters_request):
 
     # Then we connect to the DB and retrieve the parameters that will be passed to the main query
     async with db_pool.acquire(timeout=180) as connection:
-        response = []
+
         try: 
             query  = f"""SELECT target_table, column_name, column_value 
                         FROM ontology_term_column_correspondance
@@ -139,24 +140,6 @@ async def prepare_filter_parameter(db_pool, filters_request):
             LOG.debug(f"QUERY filters info: {query}")
             statement = await connection.prepare(query)
             db_response = await statement.fetch()
-            # column_name_dict = {}
-            # for record in list(db_response):
-            #     if record['column_name'] not in column_name_dict.keys():
-            #     # prepare the dict
-            #         column_name_dict[record['column_name']] = []
-            #         column_name_dict[record['column_name']].append(record['column_value'])
-            #     else:
-            #         # fill it
-            #         column_name_dict[record['column_name']].append(record['column_value'])
-
-            # # After we have retrieved the values in a dict with the column_name as keys, we need to create the final string
-            # strings_list = []
-            # final_string = ""
-            # for column_name, values in column_name_dict.items():
-            #     string_values = ", ".join("'" + str(value) + "'" for value in values)
-            #     string = f'({column_name})::jsonb ?& array[{string_values}]'
-            #     strings_list.append(string)
-
 
             filter_dict = {}
             for record in list(db_response):
@@ -277,13 +260,13 @@ def filter_response(response, access_levels_dict, accessible_datasets, user_leve
     """
     Recursive function that parses the response of the beacon to filter out those fields that are
     not accessible for the user (based on the access level).
-    :param response: beacon response
-    :param access_levels_dict: access levels dictionary created out of the yml file in /utils
-    :param accessible_datasets: list of datasets accessible by the user (taking into account its privileges)
-    :param user_levels: list of levels that the user has, i.e ['PUBLIC', 'REGISTERED']
-    :param field2access: dictionary that maps the child_field name to its corresponding parent_field name in the access levels dict (i.e 'datasets' inside the parent 'beacon' maps to its parent name 'beaconDataset')
-    :param parent_key: used inside de recursion to store the parent key of the dict we are in
-    :return:
+
+    :response: beacon response
+    :access_levels_dict: access levels dictionary created out of the yml file in /utils
+    :accessible_datasets: list of datasets accessible by the user (taking into account its privileges)
+    :user_levels: list of levels that the user has, i.e ['PUBLIC', 'REGISTERED']
+    :field2access: dictionary that maps the child_field name to its corresponding parent_field name in the access levels dict (i.e 'datasets' inside the parent 'beacon' maps to its parent name 'beaconDataset')
+    :parent_key: used inside de recursion to store the parent key of the dict we are in
     """
     final_dict = {}
     if isinstance(response, dict):
