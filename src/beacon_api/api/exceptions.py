@@ -1,4 +1,5 @@
-"""Custom API exception reponses.
+"""
+Custom API exception reponses.
 
 API specification requires custom messages upon error.
 """

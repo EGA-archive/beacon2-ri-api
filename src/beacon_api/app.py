@@ -1,6 +1,7 @@
-"""Beacon API Web Server.
+"""
+Beacon API Web Server.
 
-Server was designed with async/await mindset and with at aim at performance (TBD).
+Server was designed with async/await mindset and with at aim at performance.
 """
 
 from aiohttp import web
@@ -149,6 +150,11 @@ async def beacon_get(request):
 @routes.get('/query')
 @validate("query")
 async def beacon_get_query(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given QUERY.
+
+    It uses the '/query' path and expects some parameters.
+    """
     db_pool = request.app['pool']
     method, processed_request = await parse_request_object(request)
     LOG.info(f"This is the {method} processed request: {processed_request}")
@@ -175,6 +181,11 @@ async def beacon_post_query(request):
 @routes.get('/genomic_snp')
 @validate("genomic_snp")
 async def beacon_get_snp(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given SNP QUERY.
+
+    It uses the '/genomic_snp' path and expects some parameters.
+    """
     db_pool = request.app['pool']
     method, processed_request = await parse_request_object(request)
     LOG.info(f"This is the {method} processed request: {processed_request}")
@@ -201,6 +212,11 @@ async def beacon_post_snp(request):
 @routes.get('/genomic_region')
 @validate("genomic_region")
 async def beacon_get_region(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given REGION QUERY.
+
+    It uses the '/genomic_region' path and expects some parameters.
+    """
     db_pool = request.app['pool']
     method, processed_request = await parse_request_object(request)
     LOG.info(f"This is the {method} processed request: {processed_request}")
@@ -224,9 +240,17 @@ async def beacon_post_region(request):
 #                                         gVariant ENDPOINT OPERATIONS
 # ----------------------------------------------------------------------------------------------------------------------
 
-@routes.get('/gVariant')
+@routes.get('/g_variant')
 @validate("gVariant")
 async def beacon_get_region(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given QUERY.
+
+    It uses the '/g_variant' path and expects some parameters.
+
+    Serves as an alias of /genomic_snp and /genomic_region, accepts diverse parameters
+    and depending the combination uses one handler or the other. 
+    """
     db_pool = request.app['pool']
     method, processed_request = await parse_request_object(request)
     LOG.info(f"This is the {method} processed request: {processed_request}")
@@ -259,6 +283,11 @@ async def beacon_post_region(request):
 @routes.get('/samples')
 @validate("samples")
 async def beacon_get_samples(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given SAMPLES QUERY.
+
+    It uses the '/samples' path and expects some parameters.
+    """
     db_pool = request.app['pool']
     method, processed_request = await parse_request_object(request)
     LOG.info(f"This is the {method} processed request: {processed_request}")
@@ -288,6 +317,11 @@ async def beacon_post_samples(request):
 @routes.get('/individuals')
 @validate("samples")
 async def beacon_get_samples(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given INDIVIDUALS QUERY.
+
+    It uses the '/individuals' path and expects some parameters.
+    """
     db_pool = request.app['pool']
     method, processed_request = await parse_request_object(request)
     LOG.info(f"This is the {method} processed request: {processed_request}")
@@ -314,14 +348,6 @@ async def beacon_post_samples(request):
 #                                         SETUP FUNCTIONS
 # ----------------------------------------------------------------------------------------------------------------------
 
-# async def initialize(app):
-#     """Spin up DB a connection pool with the HTTP server."""
-#     # TO DO check if table and Database exist
-#     # and maybe exit gracefully or at least wait for a bit
-#     LOG.debug('Create PostgreSQL connection pool.')
-#     app['pool'] = await init_db_pool()
-#     set_cors(app)
-
 
 async def initialize(app):
     """Spin up DB a connection pool with the HTTP server."""
@@ -335,6 +361,16 @@ async def initialize(app):
         statement = await connection.prepare(query)
         db_response =  await statement.fetch()
     set_cors(app)
+
+
+# Same function as above but without the DB testing step
+# async def initialize(app):
+#     """Spin up DB a connection pool with the HTTP server."""
+#     # TO DO check if table and Database exist
+#     # and maybe exit gracefully or at least wait for a bit
+#     LOG.debug('Create PostgreSQL connection pool.')
+#     app['pool'] = await init_db_pool()
+#     set_cors(app)
 
 
 async def destroy(app):

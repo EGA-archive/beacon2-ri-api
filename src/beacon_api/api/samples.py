@@ -1,3 +1,13 @@
+"""
+Samples/Individuals Endpoint.
+
+* ``/samples`` 
+* ``/individuals`` 
+
+Query samples/individuals with specific parameters and/or containing a certain variant. 
+
+.. note:: See ``schemas/samples.json`` for checking the parameters accepted in this endpoint.
+"""
 import ast
 import logging
 import requests

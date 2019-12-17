@@ -1,4 +1,5 @@
-"""Access levels Endpoint.
+"""
+Access levels Endpoint.
 The access levels endpoint reveals information about the access levels
 of the different fields on the beacon can query.
 

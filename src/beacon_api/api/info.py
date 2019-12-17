@@ -1,4 +1,5 @@
-"""Info Endpoint.
+"""
+Info Endpoint.
 
 Querying the info endpoint reveals information about this beacon and its existing datasets 
 and their associated metadata.
@@ -27,7 +28,7 @@ LOG = logging.getLogger(__name__)
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-#                                                INFO ENDPOINT
+#                                         FORMATTING
 # ----------------------------------------------------------------------------------------------------------------------
 
 def transform_metadata(record):
@@ -52,9 +53,15 @@ def transform_metadata(record):
     return response
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         MAIN QUERY TO THE DATABASE
+# ----------------------------------------------------------------------------------------------------------------------
 
 async def fetch_dataset_metadata(db_pool, datasets=None, access_type=None):
-    """Execute query for returning dataset metadata.
+    """
+    Execute query for returning dataset metadata.
+
+    Returns a list of datasets metadata dictionaries. 
     """
     # Take one connection from the database pool
     async with db_pool.acquire(timeout=180) as connection:
@@ -83,18 +90,25 @@ async def fetch_dataset_metadata(db_pool, datasets=None, access_type=None):
                 raise BeaconServerError(f'Query metadata DB error: {e}')
 
 
-
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         HANDLER FUNCTION
+# ----------------------------------------------------------------------------------------------------------------------
 
 async def info_handler(request, processed_request, pool, info_endpoint=False, service_info=False):
-    """Construct the `Beacon` app information dict.
+    """
+    Construct the `Beacon` app information dict.
     Handle in which model the info is output depending on the endpoint and the parameters passed. 
-    :return beacon_info: A dict that contains the information about the ``Beacon``.
+
+    :info_rendpoint: boolean to decide which response model to use.
+    :service_info: boolean to decide which response model to use.
+
+    Returns the beacon response dictionary. 
     """
 
     beacon_dataset = await fetch_dataset_metadata(pool)
 
     # If one sets up a beacon it is recommended to adjust these sample requests
-    # for instance by adding a list of other samples in beacon_api/conf/sample_queries.json
+    # TO DO: put the dictionary in a file in conf/ so it is separated from the code
     sample_allele_request = [ {
     "alternateBases" : "A",
     "referenceBases" : "G",
@@ -163,23 +177,6 @@ async def info_handler(request, processed_request, pool, info_endpoint=False, se
     beacon_info.update({'datasets': beacon_dataset,
                         'sampleAlleleRequests': sample_allele_request})
 
-    # beacon_info = {
-    #     #'id': '.'.join(reversed(host.split('.'))),
-    #     'id': __id__,
-    #     'name': __beacon_name__,
-    #     'apiVersion': __apiVersion__,
-    #     'organization': organization,
-    #     'description': __description__,
-    #     'version': __version__,
-    #     'welcomeUrl': __welcomeUrl__,
-    #     'alternativeUrl': __alternativeUrl__,
-    #     'createDateTime': __createDateTime__,
-    #     'updateDateTime': __updateDateTime__,
-    #     'datasets': beacon_dataset,
-    #     'sampleAlleleRequests': sample_allele_request,
-    #     'info': {"achievement": ''},
-    # }
-
     # Before returning the response we need to filter it depending on the access levels
     beacon_response = {"beacon": beacon_info}
     accessible_datasets = []  # NOTE we use the an empty list because in this endpoint we don't filter by dataset
@@ -188,4 +185,4 @@ async def info_handler(request, processed_request, pool, info_endpoint=False, se
 
     return filtered_response["beacon"]
 
-    return beacon_info
+    # return beacon_info

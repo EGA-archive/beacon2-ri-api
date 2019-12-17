@@ -1,3 +1,7 @@
+"""
+Functions and dictionaries used to shape diverse objects according to the spec. 
+"""
+
 import ast 
 
 from .. import __id__, __beacon_name__, __apiVersion__, __org_id__, __org_name__, __org_description__, __org_adress__, __org_welcomeUrl__, __org_contactUrl__, __org_logoUrl__, __org_info__

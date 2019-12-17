@@ -1,8 +1,10 @@
 """
-Genomic SNP endpoint
+Genomic REGION endpoint.
 
 This endpoint is specific for querying all variants that appear in a certain region, hence the 
 parameters accepted by the request differ from the ones in the basic query endpoint.
+
+.. note:: See ``schemas/genomic_region.json`` for checking the parameters accepted in this endpoint.
 """
 
 import ast
@@ -91,7 +93,13 @@ def transform_misses(record):
 # ----------------------------------------------------------------------------------------------------------------------
 
 async def fetch_resulting_datasets(db_pool, query_parameters, misses=False, accessible_missing=None):
-    """Find datasets based on filter parameters.
+    """
+    Contact the DB to fetch the information about the datasets. 
+
+    :misses: set to True for retrieving data about datasets without the queried variant
+    :accessible_missing: list of accessible datasets without the variant.
+
+    Returns list of datasets dictionaries. 
     """
     async with db_pool.acquire(timeout=180) as connection:
         datasets = []
@@ -123,20 +131,22 @@ async def fetch_resulting_datasets(db_pool, query_parameters, misses=False, acce
 
 
 async def get_datasets(db_pool, query_parameters, include_dataset, processed_request):
-    """Find datasets based on filter parameters.
+    """
+    Find datasets based on query parameters.
     """
     all_datasets = []
     dataset_ids = query_parameters[-2]
 
     # Fetch the records of all the hit datasets
     all_datasets = await fetch_resulting_datasets(db_pool, query_parameters)
-    print("all_datasets", all_datasets)
+
     # Then parse the records to be able to separate them by variants, note that we add the hit records already transformed to form the datasetAlleleResponses
     variants_dict = {}
     for record in all_datasets:
-        #important_parameters = map(str, [record.get("chromosome"), record.get("variant_id"), record.get("reference"), record.get("alternate"), record.get("start"), record.get("end"), record.get("variant_type")])
-        #variant_identifier = "|".join(important_parameters)
         variant_identifier = record.get("variant_composite_id")
+        # If the DB doens't have a unique variant identifier, we construct one
+        # important_parameters = map(str, [record.get("chromosome"), record.get("variant_id"), record.get("reference"), record.get("alternate"), record.get("start"), record.get("end"), record.get("variant_type")])
+        # variant_identifier = "|".join(important_parameters)
 
         if variant_identifier not in variants_dict.keys():
             variants_dict[variant_identifier] = {}
@@ -189,7 +199,10 @@ async def get_datasets(db_pool, query_parameters, include_dataset, processed_req
 
 async def region_request_handler(db_pool, processed_request, request):
     """
-    Execute query with SQL funciton.
+    Construct the Query response. 
+
+    Process and prepare the parameters, fetch dataset access information, execute
+    main queries and prepare the response object. 
     """
     # First we parse the query to prepare it to be used in the SQL function
     # We create a list of the parameters that the SQL function needs
@@ -240,14 +253,14 @@ async def region_request_handler(db_pool, processed_request, request):
     # there were given, those are the only ones that are checked)
     public_datasets, registered_datasets, controlled_datasets = await fetch_datasets_access(db_pool, query_parameters[-2])
 
-    ##### TEST
+    ##### TEST CODE TO USE WHEN AAI is integrated
     # access_type, accessible_datasets = access_resolution(request, request['token'], request.host, public_datasets,
     #                                                      registered_datasets, controlled_datasets)
     # LOG.info(f"The user has this types of acces: {access_type}")
     # query_parameters[-2] = ",".join([str(id) for id in accessible_datasets])
     ##### END TEST
 
-    # NOTICE that rigth now we will just focus on the PUBLIC ones to easen the process, so we get all their 
+    # NOTE that rigth now we will just focus on the PUBLIC ones to easen the process, so we get all their 
     # ids and add them to the query
     query_parameters[-2] = ",".join([str(id) for id in public_datasets])
 
@@ -266,7 +279,9 @@ async def region_request_handler(db_pool, processed_request, request):
 
     LOG.info(f"Query FINAL param: {query_parameters}")
     LOG.info('Connecting to the DB to make the query.')
+
     variantsFound = await get_datasets(db_pool, query_parameters, include_dataset, processed_request)
+
     LOG.info('Query done.')
 
     # Create the query object to show it in the response
@@ -289,10 +304,6 @@ async def region_request_handler(db_pool, processed_request, request):
                     "value": { 'beaconId': __id__,
                         'apiVersion': __apiVersion__,
                         'exists': any([dataset['exists'] for variant in variantsFound for dataset in variant["datasetAlleleResponses"]]),
-                        # Error is not required and should not be shown unless exists is null
-                        # If error key is set to null it will still not validate as it has a required key errorCode
-                        # Setting this will make schema validation fail
-                        # "error": None,
                         'request': { "meta": { "request": {
                                                             "Variant": ["beacon-variant-v0.1"]  + variant,
                                                             "VariantAnnotation": ["beacon-variant-annotation-v1.0"] + variantAnnotation,
