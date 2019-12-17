@@ -9,7 +9,7 @@ and their associated metadata.
 * ``/info?model=GA4GH-ServiceInfo-v0.1`` GA4GH
 * ``/service-info`` GA4GH
 
-.. note:: See ``beacon_api`` root folder ``__init__.py`` for changing values used here.
+.. note:: See ``beacon_api`` root folder ``__init__.py``  and  ``/utils/models.py`` for changing values used here.
 """
 
 import logging
@@ -18,7 +18,7 @@ from .. import __id__, __beacon_name__, __apiVersion__, __org_id__, __org_name__
 from .. import __description__, __version__, __welcomeUrl__, __alternativeUrl__, __createDateTime__, __updateDateTime__
 from .exceptions import BeaconBadRequest, BeaconServerError, BeaconBasicBadRequest
 
-from ..utils.models import GA4GH_ServiceInfo_v01, Beacon_v1, organization
+from ..utils.models import GA4GH_ServiceInfo_v01, Beacon_v1, organization, sample_allele_request
 
 from ..utils.polyvalent_functions import filter_response
 from .access_levels import ACCESS_LEVELS_DICT
@@ -105,53 +105,8 @@ async def info_handler(request, processed_request, pool, info_endpoint=False, se
     Returns the beacon response dictionary. 
     """
 
+    # Fetch the info about the datasets
     beacon_dataset = await fetch_dataset_metadata(pool)
-
-    # If one sets up a beacon it is recommended to adjust these sample requests
-    # TO DO: put the dictionary in a file in conf/ so it is separated from the code
-    sample_allele_request = [ {
-    "alternateBases" : "A",
-    "referenceBases" : "G",
-    "referenceName" : "Y",
-    "start" : 2655179,
-    "startMin" : None,
-    "startMax" : None,
-    "end" : None,
-    "endMin" : None,
-    "endMax" : None,
-    "variantType" : None,
-    "assemblyId" : "GRCh37",
-    "datasetIds" : None,
-    "includeDatasetResponses" : None
-  }, {
-    "alternateBases" : None,
-    "referenceBases" : "T",
-    "referenceName" : "21",
-    "start" : None,
-    "startMin" : 45039444,
-    "startMax" : 45039445,
-    "end" : None,
-    "endMin" : 45084561,
-    "endMax" : 45084562,
-    "variantType" : None,
-    "assemblyId" : "GRCh37",
-    "datasetIds" : [ "1000genomes" ],
-    "includeDatasetResponses" : None
-  }, {
-    "alternateBases" : None,
-    "referenceBases" : "G",
-    "referenceName" : "21",
-    "start" : 15399042,
-    "startMin" : None,
-    "startMax" : None,
-    "end" : 15419114,
-    "endMin" : None,
-    "endMax" : None,
-    "variantType" : None,
-    "assemblyId" : "GRCh37",
-    "datasetIds" : [ "1000genomes" ],
-    "includeDatasetResponses" : None
-  } ]
 
     # Decide whether the Beacon_v1 or the GA4GH spec is used (while validating the model parameter)
     # if info, then check the parameter model, if it is passed fine then use GA4GH model, if not, use the default model, which is Beacon-v1
@@ -175,7 +130,8 @@ async def info_handler(request, processed_request, pool, info_endpoint=False, se
         beacon_info = Beacon_v1(request.host)
 
     beacon_info.update({'datasets': beacon_dataset,
-                        'sampleAlleleRequests': sample_allele_request})
+                        # If one sets up a beacon it is recommended to adjust these sample requests
+                        'sampleAlleleRequests': sample_allele_request}) 
 
     # Before returning the response we need to filter it depending on the access levels
     beacon_response = {"beacon": beacon_info}

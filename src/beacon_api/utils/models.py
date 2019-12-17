@@ -24,6 +24,51 @@ organization = {
     'info': __org_info__,
 }
 
+sample_allele_request = [ {
+    "alternateBases" : "A",
+    "referenceBases" : "G",
+    "referenceName" : "Y",
+    "start" : 2655179,
+    "startMin" : None,
+    "startMax" : None,
+    "end" : None,
+    "endMin" : None,
+    "endMax" : None,
+    "variantType" : None,
+    "assemblyId" : "GRCh37",
+    "datasetIds" : None,
+    "includeDatasetResponses" : None
+  }, {
+    "alternateBases" : None,
+    "referenceBases" : "T",
+    "referenceName" : "21",
+    "start" : None,
+    "startMin" : 45039444,
+    "startMax" : 45039445,
+    "end" : None,
+    "endMin" : 45084561,
+    "endMax" : 45084562,
+    "variantType" : None,
+    "assemblyId" : "GRCh37",
+    "datasetIds" : [ "1000genomes" ],
+    "includeDatasetResponses" : None
+  }, {
+    "alternateBases" : None,
+    "referenceBases" : "G",
+    "referenceName" : "21",
+    "start" : 15399042,
+    "startMin" : None,
+    "startMax" : None,
+    "end" : 15419114,
+    "endMin" : None,
+    "endMax" : None,
+    "variantType" : None,
+    "assemblyId" : "GRCh37",
+    "datasetIds" : [ "1000genomes" ],
+    "includeDatasetResponses" : None
+  } ]
+
+
 def Beacon_v1(host):
     Beacon_v1 = {
         'id': __id__,
