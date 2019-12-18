@@ -59,91 +59,6 @@ async def beacon_get(request):
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-#                                         FILTERING TERMS ENDPOINT OPERATIONS
-# ----------------------------------------------------------------------------------------------------------------------
-
-@routes.get('/filtering_terms')  # For Beacon API Specification
-async def beacon_filtering_terms(request):
-    """
-    Use the HTTP protocol 'GET' to return a Json object of all the possible FILTERING TERMS in this beacon.
-
-    It uses the '/filtering_terms' path and only serves an information giver.
-    """
-    LOG.info('GET request to the filtering_terms endpoint.')
-    db_pool = request.app['pool']
-    response = await filtering_terms_handler(request.host, db_pool)
-    return web.json_response(response)
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-#                                         ACCESS LEVELS ENDPOINT OPERATIONS
-# ----------------------------------------------------------------------------------------------------------------------
-
-@routes.get('/access_levels')
-@validate_access_levels
-async def beacon_access_levels(request):
-    """
-    Use the HTTP protocol 'GET' to return a Json object of the ACCESS LEVELS.
-
-    It uses the '/access_levels' path and only serves an information giver.
-    """
-    LOG.info('GET request to the access_levels endpoint.')
-    db_pool = request.app['pool']
-    method, processed_request = await parse_basic_request_object(request)
-    LOG.info(f"This is the {method} processed request: {processed_request}")
-    response = await access_levels_terms_handler(db_pool, processed_request, request)
-    return web.json_response(response)
-
-@routes.post('/access_levels')
-@validate_access_levels
-async def beacon_post_access_levels(request):
-    """Find access levels using POST endpoint."""
-    LOG.info('POST request to the access_levels endpoint.')
-    db_pool = request.app['pool']
-    method, processed_request = await parse_basic_request_object(request)
-    LOG.info(f"This is the {method} processed request: {processed_request}")
-    response = await access_levels_terms_handler(db_pool, processed_request, request)
-    return web.json_response(response)
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-#                                         SERVICES ENDPOINT OPERATIONS
-# ----------------------------------------------------------------------------------------------------------------------
-
-@routes.get('/services')
-@validate_services
-async def beacon_get(request):
-    """
-    Use the HTTP protocol 'GET' to return a Json object of all the necessary info of the SERVICES.
-
-    It uses the '/services' path and only serves an information giver.
-    """
-    LOG.info('GET request to the services endpoint.')
-    db_pool = request.app['pool']
-    method, processed_request = await parse_basic_request_object(request)
-    LOG.info(f"This is the {method} processed request: {processed_request}")
-    response = await services_handler(db_pool, processed_request, request)
-
-    return web.json_response(response, content_type='application/json', dumps=json.dumps)
-
-@routes.post('/services')
-@validate_services
-async def beacon_get(request):
-    """
-    Use the HTTP protocol 'GET' to return a Json object of all the necessary info of the SERVICES.
-
-    It uses the '/services' path and only serves an information giver.
-    """
-    LOG.info('POST request to the services endpoint.')
-    db_pool = request.app['pool']
-    method, processed_request = await parse_basic_request_object(request)
-    LOG.info(f"This is the {method} processed request: {processed_request}")
-    response = await services_handler(db_pool, processed_request, request)
-
-    return web.json_response(response, content_type='application/json', dumps=json.dumps)
-
-
-# ----------------------------------------------------------------------------------------------------------------------
 #                                         QUERY ENDPOINT OPERATIONS
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -342,6 +257,90 @@ async def beacon_post_samples(request):
     return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)    
     
 
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         FILTERING TERMS ENDPOINT OPERATIONS
+# ----------------------------------------------------------------------------------------------------------------------
+
+@routes.get('/filtering_terms')  # For Beacon API Specification
+async def beacon_filtering_terms(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of all the possible FILTERING TERMS in this beacon.
+
+    It uses the '/filtering_terms' path and only serves an information giver.
+    """
+    LOG.info('GET request to the filtering_terms endpoint.')
+    db_pool = request.app['pool']
+    response = await filtering_terms_handler(request.host, db_pool)
+    return web.json_response(response)
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         ACCESS LEVELS ENDPOINT OPERATIONS
+# ----------------------------------------------------------------------------------------------------------------------
+
+@routes.get('/access_levels')
+@validate_access_levels
+async def beacon_access_levels(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of the ACCESS LEVELS.
+
+    It uses the '/access_levels' path and only serves an information giver.
+    """
+    LOG.info('GET request to the access_levels endpoint.')
+    db_pool = request.app['pool']
+    method, processed_request = await parse_basic_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+    response = await access_levels_terms_handler(db_pool, processed_request, request)
+    return web.json_response(response)
+
+@routes.post('/access_levels')
+@validate_access_levels
+async def beacon_post_access_levels(request):
+    """Find access levels using POST endpoint."""
+    LOG.info('POST request to the access_levels endpoint.')
+    db_pool = request.app['pool']
+    method, processed_request = await parse_basic_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+    response = await access_levels_terms_handler(db_pool, processed_request, request)
+    return web.json_response(response)
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         SERVICES ENDPOINT OPERATIONS
+# ----------------------------------------------------------------------------------------------------------------------
+
+@routes.get('/services')
+@validate_services
+async def beacon_get(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of all the necessary info of the SERVICES.
+
+    It uses the '/services' path and only serves an information giver.
+    """
+    LOG.info('GET request to the services endpoint.')
+    db_pool = request.app['pool']
+    method, processed_request = await parse_basic_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+    response = await services_handler(db_pool, processed_request, request)
+
+    return web.json_response(response, content_type='application/json', dumps=json.dumps)
+
+@routes.post('/services')
+@validate_services
+async def beacon_get(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of all the necessary info of the SERVICES.
+
+    It uses the '/services' path and only serves an information giver.
+    """
+    LOG.info('POST request to the services endpoint.')
+    db_pool = request.app['pool']
+    method, processed_request = await parse_basic_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+    response = await services_handler(db_pool, processed_request, request)
+
+    return web.json_response(response, content_type='application/json', dumps=json.dumps)
+
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -361,6 +360,7 @@ async def initialize(app):
         statement = await connection.prepare(query)
         db_response =  await statement.fetch()
     set_cors(app)
+    LOG.info("Initialization done.")
 
 
 # Same function as above but without the DB testing step
@@ -393,15 +393,6 @@ def set_cors(server):
         cors.add(route)
 
 
-async def init():
-    """Initialise server."""
-    # beacon = web.Application(middlewares=[token_auth()])
-    beacon = web.Application()
-    beacon.router.add_routes(routes)
-    beacon.on_startup.append(initialize)
-    beacon.on_cleanup.append(destroy)
-    return beacon
-
 
 @load_logger
 def main():
@@ -409,11 +400,17 @@ def main():
 
     At start also initialize a PostgreSQL connection pool.
     """
+
+    beacon = web.Application()
+    beacon.router.add_routes(routes)
+    beacon.on_startup.append(initialize)
+    beacon.on_cleanup.append(destroy)
+
     # TO DO make it HTTPS and request certificate
     # sslcontext.load_cert_chain(ssl_certfile, ssl_keyfile)
     # sslcontext = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     # sslcontext.check_hostname = False
-    web.run_app(init(), host=os.environ.get('HOST', '0.0.0.0'),
+    web.run_app(beacon, host=os.environ.get('HOST', '0.0.0.0'),
                 port=os.environ.get('PORT', '5050'),
                 shutdown_timeout=0, ssl_context=None)
 
