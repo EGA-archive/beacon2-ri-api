@@ -1,9 +1,9 @@
 {% if beacon_response.value.variantsFound %}
-    <div class="variantsPanel">
+    <div id="variantsPanel">
         <div class="sidebar-wrapper">
             <div class="sidebar">
                 {% for variant_object in beacon_response.value.variantsFound %}
-                    <div class="variantButton tablink {% if forloop.counter == 1 %} selected {% endif %}" onclick="openVariant(event, '{{ variant_object.variant.default.value.variantDetails.chromosome}}:{{variant_object.variant.default.value.variantDetails.start}}-{{ variant_object.variant.default.value.variantDetails.start}}-{{variant_object.variant.default.value.variantDetails.referenceBases}}>{{ variant_object.variant.default.value.variantDetails.alternateBases}}')">
+                    <div class="variantButton tablink{% if forloop.counter == 1 %} selected{% endif %}" >
                         <p>{{ variant_object.variant.default.value.variantDetails.chromosome}} : {{ variant_object.variant.default.value.variantDetails.start}} {{ variant_object.variant.default.value.variantDetails.referenceBases}} > {{ variant_object.variant.default.value.variantDetails.alternateBases}}</p>
                     </div>
                 {% endfor %}
@@ -19,9 +19,8 @@
 
         <div class="content-wrapper">
             {% for variant_object in beacon_response.value.variantsFound %}
-                <div id='{{ variant_object.variant.default.value.variantDetails.chromosome}}:{{variant_object.variant.default.value.variantDetails.start}}-{{ variant_object.variant.default.value.variantDetails.start}}-{{variant_object.variant.default.value.variantDetails.referenceBases}}>{{ variant_object.variant.default.value.variantDetails.alternateBases}}' class="content variant">
+                <div class="content variant{% if forloop.counter == 1 %} selected{% endif %}">
                     
-                    <div class="grid-container">
                         <div class="header">
                             <p>{{ variant_object.variant.default.value.variantDetails.chromosome}} : {{ variant_object.variant.default.value.variantDetails.start}} {{ variant_object.variant.default.value.variantDetails.referenceBases}} > {{ variant_object.variant.default.value.variantDetails.alternateBases}} <small> {% if variant_object.variant.default.value.info.rsID and variant_object.variant.default.value.info.rsID != '.' %} ( {{ variant_object.variant.default.value.info.rsID }} ) {% endif %}</small></p>
 
@@ -139,7 +138,7 @@
                             {% endfor %}
                         </div>
 
-                    </div>
+
                 </div>
             {% endfor %}
         </div>

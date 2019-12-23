@@ -1,13 +1,26 @@
-function openVariant(evt, variantName) {
-    var i, x, tablinks;
-    x = document.getElementsByClassName("variant");
-    for (i = 0; i < x.length; i++) {
-        x[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("tablink");
-    for (i = 0; i < x.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" selected", ""); 
-    }
-    document.getElementById(variantName).style.display = "block";
-    evt.currentTarget.className += " selected";
-}
+(function(){ // scoping
+
+    variantsPanel = $("#variantsPanel");
+    variantButtons = $(".variantButton", variantsPanel); 
+    variantSections = $(".content.variant", variantsPanel);
+    // console.log(variantButtons);
+    // console.log(variantSections);
+
+
+    variantsPanel.on('click', '.variantButton', function(){
+
+            var me = $(this);
+
+            variantButtons.removeClass('selected');
+            me.addClass('selected');
+
+            variantSections.removeClass('selected');
+            var idx = variantButtons.index(me);
+            // console.log(idx)
+            variantSections.eq(idx).addClass('selected');
+
+    });
+
+
+})(); // end scoping
+

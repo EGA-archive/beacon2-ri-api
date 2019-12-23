@@ -85,8 +85,8 @@
 				
 					<p>{{ dataset.description|default:'-' }}</p>
 				</section>
-
-			<!-- <section>
+{% comment %}
+			<section>
 				<a href="//ega-archive.org/datasets/{{ dataset.id }}">
 					<span class="label label-{{ dataset.info.accessType|lower }}">
 					{{ dataset.id }}
@@ -100,7 +100,9 @@
 				{% endif %}
 				
 				<p>{{ dataset.description|default:'-' }}</p>
-			</section> -->
+			</section>
+{% endcomment %}
+
 			{% endfor %}
 		</main>
 
@@ -108,7 +110,10 @@
 
 	{% include 'footer.html' %}
 	
+{% comment %}
 	<script src="{% static 'js/history.js' %}"></script>
+{% endcomment %}
+
 	<script src="{% static 'js/variants_panel.js' %}"></script>
 
   </body>
