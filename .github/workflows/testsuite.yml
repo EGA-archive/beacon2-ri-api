@@ -30,7 +30,7 @@ jobs:
     - name: (re)Build docker images
       run: |
         pushd deploy
-        docker-compose build beacon ui
+        docker-compose build beacon
         popd
     - name: Install required tools
       run: |
