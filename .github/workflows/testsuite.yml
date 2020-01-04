@@ -45,7 +45,7 @@ jobs:
       run: |
         pushd deploy
         docker-compose up -d db
-        sleep 6
+        sleep 20
         docker-compose up -d beacon
         docker-compose ps
         popd
