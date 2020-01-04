@@ -4,48 +4,48 @@ load helpers
 
 @test "Info Basic" {
 
-    query='/'
+    query="${BEACON_URL}/"
     response="info.json"
-    pattern=.
 
-    run compare ${query} ${response} ${pattern}
-
+    run diff -y \
+	<(curl "${query}" 2>/dev/null | jq -S 'del(.updateDateTime)') \
+	<(get_response $response 'del(.updateDateTime)')
     [[ "$status" = 0 ]]
 
 }
 
 @test "Info Basic 2" {
 
-    query='/info'
+    query="${BEACON_URL}/info"
     response="info.json"
-    pattern=.
 
-    run compare ${query} ${response} ${pattern}
-
+    run diff -y \
+	<(curl "${query}" 2>/dev/null | jq -S 'del(.updateDateTime)') \
+	<(get_response $response 'del(.updateDateTime)')
     [[ "$status" = 0 ]]
 
 }
 
 @test "Service info " {
 
-    query='/service-info'
+    query="${BEACON_URL}/service-info"
     response="info-service.json"
-    pattern=.
 
-    run compare ${query} ${response} ${pattern}
-
+    run diff -y \
+	<(curl "${query}" 2>/dev/null | jq -S 'del(.updateDateTime)') \
+	<(get_response $response 'del(.updateDateTime)')
     [[ "$status" = 0 ]]
 
 }
 
 @test "Services" {
 
-    query='/services'
+    query="${BEACON_URL}/services"
     response="services.json"
-    pattern=.
 
-    run compare ${query} ${response} ${pattern}
-
+    run diff -y \
+	<(curl "${query}" 2>/dev/null | jq -S '.') \
+	<(get_response $response)
     [[ "$status" = 0 ]]
 
 }

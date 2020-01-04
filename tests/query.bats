@@ -4,14 +4,12 @@ load helpers
 
 @test "Query [GRCh37] Y: 2655179 G > A (ALL)" {
 
-    query=$'/query?referenceName=Y&start=2655179&assemblyId=GRCh37&referenceBases=G&alternateBases=A&includeDatasetResponses=ALL'
-    response=$'query.json'
-    pattern=$'.'
+    query="${BEACON_URL}/query?referenceName=Y&start=2655179&assemblyId=GRCh37&referenceBases=G&alternateBases=A&includeDatasetResponses=ALL"
+    response="query.json"
 
-    compare ${query} ${response} ${pattern} > toto.txt
-
-    run echo done
-    
+    run diff -y \
+	<(curl "${query}" 2>/dev/null | jq -S '.') \
+	<(get_response $response)
     [[ "$status" = 0 ]]
 
 }
