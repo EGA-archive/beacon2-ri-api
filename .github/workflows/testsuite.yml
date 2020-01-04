@@ -16,11 +16,10 @@ jobs:
       matrix:
         # os: [ubuntu-latest, macOS-latest]
         os: [ubuntu-latest]
-        # bats: ['integration', 'security', 'robustness']
 
     runs-on: ${{ matrix.os }}
 
-    name: ${{ matrix.bats }} tests
+    name: Beacon (v2.x) API tests
 
     steps:
     - uses: actions/checkout@master
