@@ -1,0 +1,55 @@
+name: "Testsuite"
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - 'tests'
+      - 'tests/*'
+
+jobs:
+  testsuite:
+    strategy:
+      max-parallel: 4
+      matrix:
+        # os: [ubuntu-latest, macOS-latest]
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    name: Beacon (v2.x) API tests
+
+    steps:
+    - uses: actions/checkout@master
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@master
+      with:
+        python-version: 3.6
+    - name: (re)Build docker images
+      run: |
+        pushd deploy
+        docker-compose build beacon
+        popd
+    - name: Install required tools
+      run: |
+        git clone https://github.com/bats-core/bats-core.git
+        pushd bats-core
+        git checkout v1.1.0
+        sudo ./install.sh /usr/local
+        popd
+        rm -rf bats-core
+        sudo apt-get install curl jq
+    - name: Bootstrap a Beacon
+      run: |
+        pushd deploy
+        docker-compose up -d db
+        sleep 20
+        docker-compose up -d beacon
+        docker-compose ps
+        popd
+    - name: Running testsuite
+      run: bats tests
+
+

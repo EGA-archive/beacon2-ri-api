@@ -1,7 +1,11 @@
 """
-Query endpoint
+Query Endpoint.
+
+* ``/query`` 
 
 Basic query endpoint in the beacon.
+
+.. note:: See ``schemas/query.json`` for checking the parameters accepted in this endpoint.
 """
 
 
@@ -9,7 +13,7 @@ import ast
 import logging
 
 from .exceptions import BeaconBadRequest, BeaconServerError, BeaconForbidden, BeaconUnauthorised
-from .. import __apiVersion__
+from .. import __apiVersion__, __id__
 from ..conf.config import DB_SCHEMA
 
 from ..utils.polyvalent_functions import create_prepstmt_variables, filter_exists
@@ -60,6 +64,7 @@ async def transform_record(db_pool, record):
 
 def transform_misses(record):
     """Format the missed datasets record we got from the database to adhere to the response schema."""
+    
     response = {}
     response["datasetId"] = dict(record).get("stableId")  
     response["internalId"] = dict(record).get("datasetId")
@@ -81,7 +86,13 @@ def transform_misses(record):
 # ----------------------------------------------------------------------------------------------------------------------
 
 async def fetch_resulting_datasets(db_pool, query_parameters, misses=False, accessible_missing=None):
-    """Find datasets based on filter parameters.
+    """
+    Contact the DB to fetch the information about the datasets. 
+
+    :misses: set to True for retrieving data about datasets without the queried variant
+    :accessible_missing: list of accessible datasets without the variant.
+
+    Returns list of datasets dictionaries. 
     """
     async with db_pool.acquire(timeout=180) as connection:
         datasets = []
@@ -113,16 +124,20 @@ async def fetch_resulting_datasets(db_pool, query_parameters, misses=False, acce
     
 
 async def get_datasets(db_pool, query_parameters, include_dataset):
-    """Find datasets based on filter parameters.
+    """
+    Find datasets based on query parameters.
     """
     hit_datasets = []
     miss_datasets = []
     response = []
     dataset_ids = query_parameters[-2]
 
+    # Fetch datasets where the variant is found
     hit_datasets = await fetch_resulting_datasets(db_pool, query_parameters)
     LOG.debug(f"hit_datasets: {hit_datasets}")
 
+    # If the response has to include the datasets where the variant is not found, 
+    # we want to fetch info about them and shape them to be shown
     if include_dataset in ['ALL', 'MISS']:
         list_all = list(map(int, dataset_ids.split(",")))
         LOG.debug(f"list_all: {list_all}")
@@ -141,10 +156,13 @@ async def get_datasets(db_pool, query_parameters, include_dataset):
 
 async def query_request_handler(db_pool, processed_request, request):
     """
-    Execute query with SQL funciton.
+    Construct the Query response. 
+
+    Process and prepare the parameters, fetch dataset access information, execute
+    main queries and prepare the response object. 
     """
     # First we parse the query to prepare it to be used in the SQL function
-    # We create a list of the parameters that the SQL function needs
+    # We create the list of the parameters that the SQL function needs
     correct_parameters =  [
 	"variantType",
 	"start",
@@ -182,6 +200,7 @@ async def query_request_handler(db_pool, processed_request, request):
 
     # At this point we have a list with the needed parameters called query_parameters, the only thing 
     # laking is to update the datasetsIds (it can be "null" or processed_request.get("datasetIds"))
+    # then we have to take into account the access permissions
 
     LOG.debug(f"Correct param: {correct_parameters}")
     LOG.debug(f"Query param: {query_parameters}")
@@ -192,14 +211,14 @@ async def query_request_handler(db_pool, processed_request, request):
     # there were given, those are the only ones that are checked)
     public_datasets, registered_datasets, controlled_datasets = await fetch_datasets_access(db_pool, query_parameters[-2])
 
-    ##### TEST
+    ##### TEST CODE TO USE WHEN AAI is integrated
     # access_type, accessible_datasets = access_resolution(request, request['token'], request.host, public_datasets,
     #                                                      registered_datasets, controlled_datasets)
     # LOG.info(f"The user has this types of acces: {access_type}")
     # query_parameters[-2] = ",".join([str(id) for id in accessible_datasets])
     ##### END TEST
 
-    # NOTICE that rigth now we will just focus on the PUBLIC ones to easen the process, so we get all their 
+    # NOTE that rigth now we will just focus on the PUBLIC ones to easen the process, so we get all their 
     # ids and add them to the query
     query_parameters[-2] = ",".join([str(id) for id in public_datasets])
 
@@ -217,17 +236,15 @@ async def query_request_handler(db_pool, processed_request, request):
 
     LOG.info(f"Query FINAL param: {query_parameters}")
     LOG.info('Connecting to the DB to make the query.')
+
     datasets = await get_datasets(db_pool, query_parameters, include_dataset)
+
     LOG.info('Query done.')
 
     # We create the final dictionary with all the info we want to return
-    beacon_response = { 'beaconId': '.'.join(reversed(request.host.split('.'))),
+    beacon_response = { 'beaconId': __id__,
                         'apiVersion': __apiVersion__,
                         'exists': any([x['exists'] for x in datasets]),
-                        # Error is not required and should not be shown unless exists is null
-                        # If error key is set to null it will still not validate as it has a required key errorCode
-                        # Setting this will make schema validation fail
-                        # "error": None,
                         'info': None,
                         'alleleRequest': processed_request,
                         'datasetAlleleResponses': filter_exists(include_dataset, datasets)}

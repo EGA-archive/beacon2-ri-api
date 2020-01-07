@@ -1,4 +1,5 @@
-"""Filtering terms Endpoint.
+"""
+Filtering terms Endpoint.
 
 Querying the filtering terms endpoint reveals information about existing ontology filters in this beacon.
 These are stored in the DB inside the table named 'ontology_terms'.
@@ -41,7 +42,6 @@ async def filtering_terms_handler(host, db_pool):
     beacon_filtering_terms = await fetch_filtering_terms(db_pool)
 
     beacon_answer = {        
-        #'id': '.'.join(reversed(host.split('.'))),
         'id': __id__,
         'name': __beacon_name__,
         'apiVersion': __apiVersion__,

@@ -101,14 +101,14 @@
     // Datasets
     // ----------------------------------------------
     var datasets = $( "#query-datasets" );
-    var datasetsSelectors = datasets.find( "input:not([disabled])" ); // enough
-    datasets.find("> p").delegate( "span", "click", function() {
+	var datasetsSelectors = datasets.find( "input:not([disabled])" ); // enough
+    $("#datasets-header").delegate( "span", "click", function() {
 	var content = $( this ).text();
 	if( content == 'All' ){
-	    datasetsSelectors.attr('checked','checked');
+		datasetsSelectors.prop('checked', true);
 	}
 	if( content == 'None' ){
-	    datasetsSelectors.removeAttr('checked');
+	    datasetsSelectors.prop('checked', false);
 	}
     });
 

@@ -22,7 +22,7 @@ body {
       width: 1040px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 200px auto auto;
+      grid-template-columns: 150px auto auto;
       grid-template-rows: auto;
       grid-template-areas: "icon title    nav"
                   			   "icon subtitle nav";
@@ -31,11 +31,11 @@ body {
       
       > a {
           grid-area: icon;
-          justify-self: center;
+          justify-self: left;
 
           img {
               max-width: 160px;
-              max-height: 90px;
+              max-height: 70px;
               display: block;
           }
       }

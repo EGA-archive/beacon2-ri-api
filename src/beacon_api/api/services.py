@@ -1,4 +1,5 @@
-"""Sercive Endpoint.
+"""
+Sercive Endpoint.
 
 The service endpoint reveals information about this beacon useful for the Beacon Network.
 
@@ -160,7 +161,7 @@ async def fetch_filtered_services(db_pool, processed_request):
 async def services_handler(db_pool, processed_request, request):
     """Construct the `Beacon` app services dict.
 
-    :return beacon_services: A dict that contain the services about this ``Beacon``.
+    :return beacon_services: A dict that contains the services about this ``Beacon``.
     """
 
     # Return an error for the parameters that are not implemented
@@ -173,41 +174,3 @@ async def services_handler(db_pool, processed_request, request):
 
     return services
 
-
-
-# FIRST IMPLEMENTATION: works only if just the self-beacon service is shown
-# async def services_handler(db_pool, processed_request, request):
-#     """Construct the `Beacon` app services dict.
-
-#     :return beacon_services: A dict that contain the services about this ``Beacon``.
-#     """
-#     # Handle the query options and show what is asked for
-#     serviceType = processed_request.get('serviceType')
-#     model = processed_request.get('model')
-#     listFormat = processed_request.get('listFormat')
-#     version = processed_request.get('apiVersion')
-
-#     # Return an error for the parameters that are not implemented
-#     if serviceType:
-#         raise BeaconServicesBadRequest(processed_request, request.host, "The 'serviceType' parameter is not supported yet.")
-#     if version:
-#         raise BeaconServicesBadRequest(processed_request, request.host, "The 'apiVersion' parameter is not supported yet.")  
-
-
-#     # First, we decide which model we will show, the default is Beacon-v1
-#     if model == "GA4GH-ServiceInfo-v0.1":
-#         serviceInfo = GA4GH_ServiceInfo_v01(request.host)
-#     elif model == "Beacon-v1":
-#         serviceInfo = Beacon_v1(request.host)
-#     else: 
-#         serviceInfo = Beacon_v1(request.host)
-
-#     # Then, we leave it full length or we shorten it, the default is full
-#     if listFormat == "short": 
-#         if model == "GA4GH-ServiceInfo-v0.1":
-#             raise BeaconServicesBadRequest(processed_request, request.host, f"The combination of 'model': {model} and 'format': {listFormat} is not supported")
-#         else:
-#             required = ["id", "name", "serviceUrl", "serviceType", "open"]
-#             serviceInfo = {k: v for k, v in serviceInfo.items() if k in required}
-
-#     return serviceInfo 

@@ -1,3 +1,7 @@
+"""
+Functions and dictionaries used to shape diverse objects according to the spec. 
+"""
+
 import ast 
 
 from .. import __id__, __beacon_name__, __apiVersion__, __org_id__, __org_name__, __org_description__, __org_adress__, __org_welcomeUrl__, __org_contactUrl__, __org_logoUrl__, __org_info__
@@ -20,9 +24,54 @@ organization = {
     'info': __org_info__,
 }
 
+sample_allele_request = [ {
+    "alternateBases" : "A",
+    "referenceBases" : "G",
+    "referenceName" : "Y",
+    "start" : 2655179,
+    "startMin" : None,
+    "startMax" : None,
+    "end" : None,
+    "endMin" : None,
+    "endMax" : None,
+    "variantType" : None,
+    "assemblyId" : "GRCh37",
+    "datasetIds" : None,
+    "includeDatasetResponses" : None
+  }, {
+    "alternateBases" : None,
+    "referenceBases" : "T",
+    "referenceName" : "21",
+    "start" : None,
+    "startMin" : 45039444,
+    "startMax" : 45039445,
+    "end" : None,
+    "endMin" : 45084561,
+    "endMax" : 45084562,
+    "variantType" : None,
+    "assemblyId" : "GRCh37",
+    "datasetIds" : [ "1000genomes" ],
+    "includeDatasetResponses" : None
+  }, {
+    "alternateBases" : None,
+    "referenceBases" : "G",
+    "referenceName" : "21",
+    "start" : 15399042,
+    "startMin" : None,
+    "startMax" : None,
+    "end" : 15419114,
+    "endMin" : None,
+    "endMax" : None,
+    "variantType" : None,
+    "assemblyId" : "GRCh37",
+    "datasetIds" : [ "1000genomes" ],
+    "includeDatasetResponses" : None
+  } ]
+
+
 def Beacon_v1(host):
     Beacon_v1 = {
-        'id': '.'.join(reversed(host.split('.'))),
+        'id': __id__,
         'name': __beacon_name__,
         'serviceType': __service__,
         'apiVersion': __apiVersion__,
@@ -41,7 +90,7 @@ def Beacon_v1(host):
 
 def GA4GH_ServiceInfo_v01(host):
     GA4GH_ServiceInfo_v01 = {
-        'id': '.'.join(reversed(host.split('.'))),
+        'id': __id__,
         'name': __beacon_name__,
         'type': __service_type__,
         'description': __description__,

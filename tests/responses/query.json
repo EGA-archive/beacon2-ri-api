@@ -1,0 +1,29 @@
+{
+    "beaconId": "demo-beacon",
+    "apiVersion": "2.0.0",
+    "exists": true,
+    "info": null,
+    "alleleRequest": {
+        "referenceName": "Y",
+        "start": 2655179,
+        "assemblyId": "GRCh37",
+        "referenceBases": "G",
+        "alternateBases": "A",
+        "includeDatasetResponses": "ALL"
+    },
+    "datasetAlleleResponses": [
+        {
+            "datasetId": "1000genomes",
+            "internalId": 1,
+            "exists": true,
+            "variantCount": 22,
+            "callCount": 1233,
+            "sampleCount": 1233,
+            "frequency": 0.0178,
+            "numVariants": 1,
+            "info": {
+                "access_type": "PUBLIC"
+            }
+        }
+    ]
+}

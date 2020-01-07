@@ -16,9 +16,11 @@ pushd $(dirname ${BASH_SOURCE[0]})
 
 # Schemas and Functions
 docker_process_sql < data/schemas.sql
-docker_process_sql < data/functions.sql
+docker_process_sql < data/query_data_summary_response.sql
+docker_process_sql < data/query_data_response.sql
 
-docker_process_sql -c "GRANT EXECUTE ON FUNCTION public.query_data_summary_response(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text) TO ${POSTGRES_USER};"
+docker_process_sql -c "GRANT EXECUTE ON FUNCTION public.query_data_summary_response(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text, text) TO ${POSTGRES_USER};"
+docker_process_sql -c "GRANT EXECUTE ON FUNCTION public.query_data_response(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text, text) TO ${POSTGRES_USER};"
 
 # Datasets
 docker_process_sql < data/init.sql
@@ -104,6 +106,9 @@ docker_process_sql -c "INSERT INTO beacon_data_sample_table (data_id, sample_id)
 
 docker_process_sql -c "TRUNCATE TABLE tmp_sample_table"
 docker_process_sql -c "TRUNCATE TABLE tmp_data_sample_table"
+
+# Do some updates now that everything is loaded
+docker_process_sql < data/updates.sql
 
 popd 
 echo "Initial data loaded"

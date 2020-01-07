@@ -32,7 +32,7 @@ services:
       - DATABASE_USER=beacon
       - DATABASE_PASSWORD=secretpassword
       - DATABASE_NAME=beacon
-      # - DATABASE_SCHEMA=v20
+      - DATABASE_SCHEMA=public
     volumes:
       - ./beacon/beacon.conf:/beacon/beacon_api/conf/config.ini
       - ./beacon/access_levels.yml:/beacon/beacon_api/utils/access_levels.yml
@@ -51,6 +51,8 @@ services:
       - BEACON_UI_CONF=/beacon/conf.ini
     volumes:
       - ./beacon/ui.conf:/beacon/conf.ini
+      - ../ui/static:/beacon/static
+      - ../ui/templates:/beacon/templates
       - ./beacon/beacon_project_small.png:/beacon/static/logo.png
     ports:
       - "8000:8000"

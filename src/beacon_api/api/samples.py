@@ -1,10 +1,20 @@
+"""
+Samples/Individuals Endpoint.
+
+* ``/samples`` 
+* ``/individuals`` 
+
+Query samples/individuals with specific parameters and/or containing a certain variant. 
+
+.. note:: See ``schemas/samples.json`` for checking the parameters accepted in this endpoint.
+"""
 import ast
 import logging
 import requests
 import random
 
 from .exceptions import BeaconBadRequest, BeaconServerError, BeaconForbidden, BeaconUnauthorised
-from .. import __apiVersion__
+from .. import __apiVersion__, __id__
 from ..conf.config import DB_SCHEMA
 
 from ..utils.polyvalent_functions import create_prepstmt_variables, filter_exists, datasetHandover
@@ -124,7 +134,7 @@ async def create_variantsFound(db_pool, processed_request, records_list, valid_d
         async with db_pool.acquire(timeout=180) as connection:
             try:
                 query  = f"""SELECT * FROM (SELECT concat_ws(':', chromosome, variant_id, reference, alternate, start, 'end', type) AS unique_id, *
-                                FROM v20.beacon_data_table) AS tmp_tamble
+                                FROM public.beacon_data_table) AS tmp_tamble
                                 WHERE dataset_id IN ({dataset_ids}) 
                                 AND unique_id = '{variant_identifier}';"""
 
@@ -175,7 +185,7 @@ async def get_valid_datasets(db_pool, dataset_filters):
     async with db_pool.acquire(timeout=180) as connection:
         id_list = []
         try: 
-            if dataset_filters:
+            if dataset_filters and dataset_filters != 'null':
                 query  = f"""SELECT id
                             FROM beacon_dataset_table
                             WHERE {dataset_filters};"""
@@ -213,8 +223,8 @@ async def variant_filter(db_pool, processed_request, valid_datasets, sample):
 
     async with db_pool.acquire(timeout=180) as connection:
         try:
-            query = f"""SELECT * FROM v20.beacon_data_table d 
-                        JOIN v20.beacon_dataset_sample_table c 
+            query = f"""SELECT * FROM public.beacon_data_table d 
+                        JOIN public.beacon_dataset_sample_table c 
                         ON d.dataset_id = c.dataset_id 
                         WHERE d.dataset_id IN ({valid_datasets}) 
                         AND sample_id = {sample}
@@ -271,8 +281,8 @@ async def join_data2sample(db_pool, samples_dict, valid_datasets, processed_requ
                 try:
                     query  = f"""SELECT DISTINCT(concat_ws(':', chromosome, variant_id, reference, alternate, start, 'end', type)) AS unique_id, 
 		                        chromosome, variant_id, reference, alternate, start, d.end, type
-                                FROM v20.beacon_data_table d 
-                                JOIN v20.beacon_dataset_sample_table c 
+                                FROM public.beacon_data_table d 
+                                JOIN public.beacon_dataset_sample_table c 
                                 ON d.dataset_id = c.dataset_id WHERE d.dataset_id IN ({valid_datasets}) 
                                 AND sample_id = {key};"""
 
@@ -353,6 +363,7 @@ async def get_samples(db_pool, filters_dict):
                 "stableId": record.get("patient_stable_id"),
                 "ageOfOnset": record.get("age_of_onset"),
                 "disease": record.get("disease"),
+                "sex": record.get("sex")
             }
         }
         samples_dict[record["sample_id"]] = one_sample_dict
@@ -442,8 +453,15 @@ async def sample_request_handler(db_pool, processed_request, request):
 
         variantsFound_object = await create_variantsFound(db_pool, processed_request, samples_dict[sample]["variants"], valid_datasets, include_dataset)
 
-        results.append({"sample": sample_object, "individual": patient_object, "variantsFound": variantsFound_object})
+        # Depending on the endpoint, the order changes
+        endpoint = request.path
+        LOG.debug(f"Sorting results for the {endpoint} endpoint.")
+        if endpoint == '/individuals':
+            results.append({"individual": patient_object, "sample": sample_object, "variantsFound": variantsFound_object})
+        else:
+            results.append({"sample": sample_object, "individual": patient_object, "variantsFound": variantsFound_object})
 
+            
     # In the response only a subset of variants will be shown, except when includeAllVariants is set to true
     # if that's not the case, we are going to create an object to facilitate the link for getting all of them
     all_variants_url = { "info": "For optimization reasons, only a subset of variants are shown for each sample. If you would like to get all of them, visit the link below.",
@@ -465,7 +483,7 @@ async def sample_request_handler(db_pool, processed_request, request):
   	                    "VariantAnnotation": ["beacon-variant-annotation-v1.0"],
                         "VariantMetadata": ["beacon-variant-metadata-v1.0"]
                     },
-                    "value": { 'beaconId': '.'.join(reversed(request.host.split('.'))),
+                    "value": { 'beaconId': __id__,
                         'apiVersion': __apiVersion__,
                         'exists': any([dataset['exists'] for result in results for variant in result["variantsFound"] for dataset in variant["datasetAlleleResponses"]]),
                         'request': { "meta": { "request": { 

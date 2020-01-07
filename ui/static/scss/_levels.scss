@@ -120,14 +120,18 @@ body {
 
 			}
 
-			ul.datasets {
-				column-count: 4;
-				list-style-type: none;
+			div.datasets {
 				margin: 2em auto; 
-				padding: 0;
+				display: flex;
+				flex-flow: row wrap;
+				justify-content: center;
 				
-				li {
+				
+				p {
+					display: inline-block;
 					text-align: center; 
+					padding: 1em;
+					margin: 0 0 0 1em;
 			
 					.label {
 						margin-left: 1ex;

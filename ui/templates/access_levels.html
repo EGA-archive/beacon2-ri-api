@@ -70,11 +70,16 @@
             
             <div class="section-content">
                 {% if datasets %}
-                    <ul class="datasets">
+                    <div class="datasets">
+                    {% for d,v in datasets.items %}
+                        <p>{{ d }}: <span class="label label-{{ v|lower|space2underscore }}">{{ v|upper }}</span></p>
+                    {% endfor %}
+                    </div>  
+                    <!-- <ul class="datasets">
                     {% for d,v in datasets.items %}
                         <li>{{ d }}: <span class="label label-{{ v|lower|space2underscore }}">{{ v|upper }}</span></li>
                     {% endfor %}
-                    </ul>  
+                    </ul>   -->
                 {% else %}
                     <div class="message">
                         <p>There are no datasets with fields differing from the access levels stated above.</p>

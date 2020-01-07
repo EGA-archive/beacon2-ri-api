@@ -1,6 +1,7 @@
-"""Beacon API Web Server.
+"""
+Beacon API Web Server.
 
-Server was designed with async/await mindset and with at aim at performance (TBD).
+Server was designed with async/await mindset and with at aim at performance.
 """
 
 from aiohttp import web
@@ -56,6 +57,205 @@ async def beacon_get(request):
         response = await info_handler(request, processed_request, db_pool)
     return web.json_response(response)
 
+
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         QUERY ENDPOINT OPERATIONS
+# ----------------------------------------------------------------------------------------------------------------------
+
+@routes.get('/query')
+@validate("query")
+async def beacon_get_query(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given QUERY.
+
+    It uses the '/query' path and expects some parameters.
+    """
+    db_pool = request.app['pool']
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+    query_response = await query_request_handler(db_pool, processed_request, request)
+    return web.json_response(query_response, content_type='application/json', dumps=json.dumps)
+
+
+
+@routes.post('/query')
+@validate("query")
+async def beacon_post_query(request):
+    """Find datasets using POST endpoint."""
+    db_pool = request.app['pool']
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+    query_response = await query_request_handler(db_pool, processed_request, request)
+    return web.json_response(query_response, content_type='application/json', dumps=json.dumps)
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         GENOMIC_SNP ENDPOINT OPERATIONS
+# ----------------------------------------------------------------------------------------------------------------------
+
+@routes.get('/genomic_snp')
+@validate("genomic_snp")
+async def beacon_get_snp(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given SNP QUERY.
+
+    It uses the '/genomic_snp' path and expects some parameters.
+    """
+    db_pool = request.app['pool']
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+    query_response = await snp_request_handler(db_pool, processed_request, request)
+    return web.json_response(query_response, content_type='application/json', dumps=json.dumps)
+
+
+
+@routes.post('/genomic_snp')
+@validate("genomic_snp")
+async def beacon_post_snp(request):
+    """Find datasets using POST endpoint."""
+    db_pool = request.app['pool']
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+    query_response = await snp_request_handler(db_pool, processed_request, request)
+    return web.json_response(query_response, content_type='application/json', dumps=json.dumps)
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         GENOMIC_REGION ENDPOINT OPERATIONS
+# ----------------------------------------------------------------------------------------------------------------------
+
+@routes.get('/genomic_region')
+@validate("genomic_region")
+async def beacon_get_region(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given REGION QUERY.
+
+    It uses the '/genomic_region' path and expects some parameters.
+    """
+    db_pool = request.app['pool']
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+    query_response = await region_request_handler(db_pool, processed_request, request)
+    return web.json_response(query_response, content_type='application/json', dumps=json.dumps)
+
+
+
+@routes.post('/genomic_region')
+@validate("genomic_region")
+async def beacon_post_region(request):
+    """Find datasets using POST endpoint."""
+    db_pool = request.app['pool']
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+    query_response = await region_request_handler(db_pool, processed_request, request)
+    return web.json_response(query_response, content_type='application/json', dumps=json.dumps)
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         gVariant ENDPOINT OPERATIONS
+# ----------------------------------------------------------------------------------------------------------------------
+
+@routes.get('/g_variant')
+@validate("gVariant")
+async def beacon_get_region(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given QUERY.
+
+    It uses the '/g_variant' path and expects some parameters.
+
+    Serves as an alias of /genomic_snp and /genomic_region, accepts diverse parameters
+    and depending the combination uses one handler or the other. 
+    """
+    db_pool = request.app['pool']
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+    if not processed_request.get("end"):
+        response = await snp_request_handler(db_pool, processed_request, request)
+    else: 
+        response = await region_request_handler(db_pool, processed_request, request)
+    return web.json_response(response, content_type='application/json', dumps=json.dumps)
+
+
+
+@routes.post('/gVariant')
+@validate("gVariant")
+async def beacon_post_region(request):
+    """Find datasets using POST endpoint."""
+    db_pool = request.app['pool']
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+    if not processed_request.get("end"):
+        response = await snp_request_handler(db_pool, processed_request, request)
+    else: 
+        response = await region_request_handler(db_pool, processed_request, request)
+    return web.json_response(response, content_type='application/json', dumps=json.dumps)
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         SAMPLES ENDPOINT OPERATIONS
+# ----------------------------------------------------------------------------------------------------------------------
+
+@routes.get('/samples')
+@validate("samples")
+async def beacon_get_samples(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given SAMPLES QUERY.
+
+    It uses the '/samples' path and expects some parameters.
+    """
+    db_pool = request.app['pool']
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+
+    sample_response = await sample_request_handler(db_pool, processed_request, request)
+    return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)
+
+
+
+@routes.post('/samples')
+@validate("samples")
+async def beacon_post_samples(request):
+    """Find samples using POST endpoint."""
+    db_pool = request.app['pool']
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+
+    sample_response = await sample_request_handler(db_pool, processed_request, request)
+    return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)    
+    
+
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         INDIVIDUAL ENDPOINT OPERATIONS
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Note that we use the samples operations since both endpoints are almost the same
+@routes.get('/individuals')
+@validate("samples")
+async def beacon_get_samples(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given INDIVIDUALS QUERY.
+
+    It uses the '/individuals' path and expects some parameters.
+    """
+    db_pool = request.app['pool']
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+
+    sample_response = await sample_request_handler(db_pool, processed_request, request)
+    return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)
+
+
+
+@routes.post('/individuals')
+@validate("samples")
+async def beacon_post_samples(request):
+    db_pool = request.app['pool']
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+
+    sample_response = await sample_request_handler(db_pool, processed_request, request)
+    return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)    
+    
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         FILTERING TERMS ENDPOINT OPERATIONS
@@ -142,159 +342,10 @@ async def beacon_get(request):
     return web.json_response(response, content_type='application/json', dumps=json.dumps)
 
 
-# ----------------------------------------------------------------------------------------------------------------------
-#                                         QUERY ENDPOINT OPERATIONS
-# ----------------------------------------------------------------------------------------------------------------------
-
-@routes.get('/query')
-@validate("query")
-async def beacon_get_query(request):
-    db_pool = request.app['pool']
-    method, processed_request = await parse_request_object(request)
-    LOG.info(f"This is the {method} processed request: {processed_request}")
-    query_response = await query_request_handler(db_pool, processed_request, request)
-    return web.json_response(query_response, content_type='application/json', dumps=json.dumps)
-
-
-
-@routes.post('/query')
-@validate("query")
-async def beacon_post_query(request):
-    """Find datasets using POST endpoint."""
-    db_pool = request.app['pool']
-    method, processed_request = await parse_request_object(request)
-    LOG.info(f"This is the {method} processed request: {processed_request}")
-    query_response = await query_request_handler(db_pool, processed_request, request)
-    return web.json_response(query_response, content_type='application/json', dumps=json.dumps)
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-#                                         GENOMIC_SNP ENDPOINT OPERATIONS
-# ----------------------------------------------------------------------------------------------------------------------
-
-@routes.get('/genomic_snp')
-@validate("genomic_snp")
-async def beacon_get_snp(request):
-    db_pool = request.app['pool']
-    method, processed_request = await parse_request_object(request)
-    LOG.info(f"This is the {method} processed request: {processed_request}")
-    query_response = await snp_request_handler(db_pool, processed_request, request)
-    return web.json_response(query_response, content_type='application/json', dumps=json.dumps)
-
-
-
-@routes.post('/genomic_snp')
-@validate("genomic_snp")
-async def beacon_post_snp(request):
-    """Find datasets using POST endpoint."""
-    db_pool = request.app['pool']
-    method, processed_request = await parse_request_object(request)
-    LOG.info(f"This is the {method} processed request: {processed_request}")
-    query_response = await snp_request_handler(db_pool, processed_request, request)
-    return web.json_response(query_response, content_type='application/json', dumps=json.dumps)
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-#                                         GENOMIC_REGION ENDPOINT OPERATIONS
-# ----------------------------------------------------------------------------------------------------------------------
-
-@routes.get('/genomic_region')
-@validate("genomic_region")
-async def beacon_get_region(request):
-    db_pool = request.app['pool']
-    method, processed_request = await parse_request_object(request)
-    LOG.info(f"This is the {method} processed request: {processed_request}")
-    query_response = await region_request_handler(db_pool, processed_request, request)
-    return web.json_response(query_response, content_type='application/json', dumps=json.dumps)
-
-
-
-@routes.post('/genomic_region')
-@validate("genomic_region")
-async def beacon_post_region(request):
-    """Find datasets using POST endpoint."""
-    db_pool = request.app['pool']
-    method, processed_request = await parse_request_object(request)
-    LOG.info(f"This is the {method} processed request: {processed_request}")
-    query_response = await region_request_handler(db_pool, processed_request, request)
-    return web.json_response(query_response, content_type='application/json', dumps=json.dumps)
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-#                                         gVariant ENDPOINT OPERATIONS
-# ----------------------------------------------------------------------------------------------------------------------
-
-@routes.get('/gVariant')
-@validate("gVariant")
-async def beacon_get_region(request):
-    db_pool = request.app['pool']
-    method, processed_request = await parse_request_object(request)
-    LOG.info(f"This is the {method} processed request: {processed_request}")
-    if not processed_request.get("end"):
-        response = await snp_request_handler(db_pool, processed_request, request)
-    else: 
-        response = await region_request_handler(db_pool, processed_request, request)
-    return web.json_response(response, content_type='application/json', dumps=json.dumps)
-
-
-
-@routes.post('/gVariant')
-@validate("gVariant")
-async def beacon_post_region(request):
-    """Find datasets using POST endpoint."""
-    db_pool = request.app['pool']
-    method, processed_request = await parse_request_object(request)
-    LOG.info(f"This is the {method} processed request: {processed_request}")
-    if not processed_request.get("end"):
-        response = await snp_request_handler(db_pool, processed_request, request)
-    else: 
-        response = await region_request_handler(db_pool, processed_request, request)
-    return web.json_response(response, content_type='application/json', dumps=json.dumps)
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-#                                         SAMPLES ENDPOINT OPERATIONS
-# ----------------------------------------------------------------------------------------------------------------------
-
-@routes.get('/samples')
-@validate("samples")
-async def beacon_get_samples(request):
-    db_pool = request.app['pool']
-    method, processed_request = await parse_request_object(request)
-    LOG.info(f"This is the {method} processed request: {processed_request}")
-
-    sample_response = await sample_request_handler(db_pool, processed_request, request)
-    return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)
-
-
-
-@routes.post('/samples')
-@validate("samples")
-async def beacon_post_samples(request):
-    """Find samples using POST endpoint."""
-    db_pool = request.app['pool']
-    method, processed_request = await parse_request_object(request)
-    LOG.info(f"This is the {method} processed request: {processed_request}")
-
-    sample_response = await sample_request_handler(db_pool, processed_request, request)
-    return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)    
-    
-
-
-
-
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         SETUP FUNCTIONS
 # ----------------------------------------------------------------------------------------------------------------------
-
-# async def initialize(app):
-#     """Spin up DB a connection pool with the HTTP server."""
-#     # TO DO check if table and Database exist
-#     # and maybe exit gracefully or at least wait for a bit
-#     LOG.debug('Create PostgreSQL connection pool.')
-#     app['pool'] = await init_db_pool()
-#     set_cors(app)
 
 
 async def initialize(app):
@@ -309,6 +360,17 @@ async def initialize(app):
         statement = await connection.prepare(query)
         db_response =  await statement.fetch()
     set_cors(app)
+    LOG.info("Initialization done.")
+
+
+# Same function as above but without the DB testing step
+# async def initialize(app):
+#     """Spin up DB a connection pool with the HTTP server."""
+#     # TO DO check if table and Database exist
+#     # and maybe exit gracefully or at least wait for a bit
+#     LOG.debug('Create PostgreSQL connection pool.')
+#     app['pool'] = await init_db_pool()
+#     set_cors(app)
 
 
 async def destroy(app):
@@ -331,15 +393,6 @@ def set_cors(server):
         cors.add(route)
 
 
-async def init():
-    """Initialise server."""
-    # beacon = web.Application(middlewares=[token_auth()])
-    beacon = web.Application()
-    beacon.router.add_routes(routes)
-    beacon.on_startup.append(initialize)
-    beacon.on_cleanup.append(destroy)
-    return beacon
-
 
 @load_logger
 def main():
@@ -347,11 +400,17 @@ def main():
 
     At start also initialize a PostgreSQL connection pool.
     """
+
+    beacon = web.Application()
+    beacon.router.add_routes(routes)
+    beacon.on_startup.append(initialize)
+    beacon.on_cleanup.append(destroy)
+
     # TO DO make it HTTPS and request certificate
     # sslcontext.load_cert_chain(ssl_certfile, ssl_keyfile)
     # sslcontext = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     # sslcontext.check_hostname = False
-    web.run_app(init(), host=os.environ.get('HOST', '0.0.0.0'),
+    web.run_app(beacon, host=os.environ.get('HOST', '0.0.0.0'),
                 port=os.environ.get('PORT', '5050'),
                 shutdown_timeout=0, ssl_context=None)
 
