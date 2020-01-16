@@ -36,6 +36,10 @@
 			<main class="per-variant">
 			{% include 'result_pervariant.html' %}
 			</main>
+		{% elif request.path == '/samples'%}
+			<main class="per-variant">
+			{% include 'result_samples.html' %}
+			</main>
 		{% else %}
 			<main class="datasetAlleleResponses">
 			{% include 'result.html' %}
