@@ -34,6 +34,7 @@ services:
       - DATABASE_NAME=beacon
       - DATABASE_SCHEMA=public
     volumes:
+      # - ../src/beacon_api:/beacon/beacon_api  # we do that to be able to modify the code and update the container "live"
       - ./beacon/beacon.conf:/beacon/beacon_api/conf/config.ini
       - ./beacon/access_levels.yml:/beacon/beacon_api/utils/access_levels.yml
     ports:
@@ -41,6 +42,7 @@ services:
     networks:
       - priv
       - pub
+    # entrypoint: ['/bin/sleep','100000000']  # we don't run the beacon just after starting, we'll do it manually 
 
   ui:
     build: ../ui
