@@ -94,6 +94,51 @@ def create_query(processed_request):
 #                                         MAIN FUNCTIONS
 # ----------------------------------------------------------------------------------------------------------------------
 
+async def fetch_target_variant(db_pool, processed_request, valid_datasets):
+    """
+    Fetches the target variant, i.e. a variant that is passed in the request, to get the unique_id
+    it has in the beacon_data_table, which will be useful for arranging it in the response.
+    """
+
+    valid_datasets = ",".join([str(i) for i in valid_datasets])
+
+    # Gathering the variant related parameters passed in the request
+    chromosome = '' if not processed_request.get("referenceName") else processed_request.get("referenceName") 
+    reference = '' if not processed_request.get("referenceBases") else processed_request.get("referenceBases") 
+    alternate = '' if not processed_request.get("alternateBases") else processed_request.get("alternateBases")
+    start = 'null' if not processed_request.get("start") else processed_request.get("start")
+    end = 'null' if not processed_request.get("end") else processed_request.get("end")
+
+    async with db_pool.acquire(timeout=180) as connection:
+        try:
+            # Notice the query is built expecting at least chromosome, reference and start, bu not the other parameters
+            # this has to be discussed and be in syntony with the validation in utils.validate.further_validation_sample()
+            query = f"""SELECT concat_ws(':', chromosome, variant_id, reference, alternate, start, 'end', type) AS unique_id FROM public.beacon_data_table 
+                        WHERE dataset_id IN ({valid_datasets}) 
+                        AND chromosome = '{chromosome}' 
+                        AND reference = '{reference}' 
+                        AND (CASE
+                            WHEN nullif('{alternate}', '') IS NOT NULL THEN alternate = '{alternate}' ELSE true
+                            END)
+                        AND  start = {start} 
+                        AND (CASE
+                            WHEN {end} IS NOT NULL THEN 'end' = {end} ELSE true
+                            END);
+                        """
+                    
+            LOG.debug(f"QUERY target variant(s): {query}")
+            statement = await connection.prepare(query)
+            db_response = await statement.fetch()
+
+        except Exception as e:
+            raise BeaconServerError(f'Query target variant(s) DB error: {e}')
+
+        target_ids = [dict(record)['unique_id'] for record in db_response]
+
+        return target_ids
+
+
+
 
 async def create_variantsFound(db_pool, processed_request, records_list, valid_datasets, include_dataset):
     """
@@ -103,21 +148,40 @@ async def create_variantsFound(db_pool, processed_request, records_list, valid_d
 
     Depending on the includeAllVariants parameter, this is done by only a subset of all
     the variants (5) or all of them.
-   """
+    """
     dataset_ids = ",".join([str(i) for i in valid_datasets])
 
+    # In the case that the query filters by variant, we want to show the specific variant(s) at the beggining of the list in the response
+    # For doing this, first we want to fetch the variant_identifier(s), which will come in handy for achieving this goal
+    target_variant_switch = False
+    if processed_request.get('referenceName'):  # easy way to check if the query contains variant info
+        target_ids = await fetch_target_variant(db_pool, processed_request, valid_datasets)
+        target_variant_switch = True
+
+
     # Fetch the records 
-    variant_records = records_list
-    # Decide to fetch all variants or just a random subset
+    all_variant_records = records_list
+
+    # Decide to fetch all variants or just a subset (random if not target variants)
     include_all_variants = "false" if not processed_request.get("includeAllVariants") else processed_request.get("includeAllVariants")
     reduced_response = True if include_all_variants == "false" else False
     if reduced_response:
-        variant_records = random.sample(variant_records, 5)
+        if not target_variant_switch:
+            variant_records = random.sample(all_variant_records, 5)
+        else:
+            variant_records = [record for record in all_variant_records if record["unique_id"] in target_ids]
+            if len(variant_records) < 5:
+                variant_records += random.sample(all_variant_records, 5 - len(variant_records))
+
 
     # Then iterate through the variant records and create the datasetAlleleResponses object
     variants_dict = {}
     for record in variant_records:
         variant_identifier = record["unique_id"]
+
+        LOG.debug(f"variant_identifier: {variant_identifier}")
+        LOG.debug(f"record: {record}")
+        
         variants_dict[variant_identifier] = {}
         variants_dict[variant_identifier]["variantDetails"] = {
             "variantId": record.get("variant_id"),
@@ -172,7 +236,11 @@ async def create_variantsFound(db_pool, processed_request, records_list, valid_d
             "info": {}
         }
 
-        response.append(final_variantsFound_element)
+        # If 'variant' -which is the unique_id of the variant- is in target_ids, do not append, but insert at the beggining
+        if variant in target_ids:
+            response.insert(0, final_variantsFound_element)
+        else:
+            response.append(final_variantsFound_element)
 
     return response
 
