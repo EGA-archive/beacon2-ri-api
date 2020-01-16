@@ -312,14 +312,14 @@ CREATE TABLE public.ontology_term_table (
 
 -- Insert mock data
 INSERT INTO public.ontology_term_table (id, ontology, term, target_table, column_name, column_value, additional_comments, label) VALUES 
-  (1,E'sex',E'1',E'public.beacon_sample_table',E'sex',E'female',NULL,NULL),
-  (2,E'sex',E'2',E'public.beacon_sample_table',E'sex',E'male',NULL,NULL),
-  (3,E'tissue',E'1',E'public.beacon_sample_table',E'tissue',E'liver',NULL,NULL),
-  (4,E'tissue',E'2',E'public.beacon_sample_table',E'tissue',E'lung',NULL,NULL),
-  (5,E'tissue',E'3',E'public.beacon_sample_table',E'tissue',E'kidney',NULL,NULL),
-  (6,E'disease',E'1',E'public.patient_table',E'disease',E'lung cancer',NULL,NULL),
-  (7,E'disease',E'2',E'public.patient_table',E'disease',E'kidney cancer',NULL,NULL),
-  (8,E'disease',E'3',E'public.patient_table',E'disease',E'hepatitis',NULL,NULL);
+  (1,E'sex',E'1',E'public.beacon_sample_table',E'sex',E'female',NULL,E'Female'),
+  (2,E'sex',E'2',E'public.beacon_sample_table',E'sex',E'male',NULL,E'Male'),
+  (3,E'tissue',E'1',E'public.beacon_sample_table',E'tissue',E'liver',NULL,E'Liver sample'),
+  (4,E'tissue',E'2',E'public.beacon_sample_table',E'tissue',E'lung',NULL,E'Lung sample'),
+  (5,E'tissue',E'3',E'public.beacon_sample_table',E'tissue',E'kidney',NULL,E'Kidney sample'),
+  (6,E'disease',E'1',E'public.patient_table',E'disease',E'lung cancer',NULL,E'Lung cancer'),
+  (7,E'disease',E'2',E'public.patient_table',E'disease',E'kidney cancer',NULL,E'Kidney cancer'),
+  (8,E'disease',E'3',E'public.patient_table',E'disease',E'hepatitis',NULL,E'Hepatitis');
 
 -- Create views
 CREATE VIEW public.ontology_term_column_correspondance AS
