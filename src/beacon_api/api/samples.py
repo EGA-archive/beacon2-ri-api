@@ -50,7 +50,8 @@ async def transform_record(db_pool, record):
     response = dict(record)
 
     for dispensable in ["id", "variant_id", "chromosome", "reference", "alternate", "start", "end", "unique_id", "sv_length"]:
-        response.pop(dispensable)
+        if response.get(dispensable):
+            response.pop(dispensable)
 
     dataset_name = dict(extra_record).pop("stable_id")   
     response["datasetId"] = dataset_name
@@ -138,9 +139,29 @@ async def fetch_target_variant(db_pool, processed_request, valid_datasets):
         return target_ids
 
 
+async def get_datasetspersample(db_pool, sample_id):
+    """
+    Fetches the DB to get a list of all the datasets a sample is found in.
+    """
+    datasets_list = []
+    async with db_pool.acquire(timeout=180) as connection:
+        try:
+            query  = f"""SELECT dataset_id FROM {DB_SCHEMA}.beacon_dataset_sample_table
+	                        WHERE sample_id = {sample_id};"""
+
+            LOG.debug(f"QUERY datasets list per sample: {query}")
+            statement = await connection.prepare(query)
+            db_response = await statement.fetch()
+
+            for record in list(db_response):
+                datasets_list.append(record['dataset_id'])
+            return datasets_list
+
+        except Exception as e:
+            raise BeaconServerError(f'Query ddatasets list per sample DB error: {e}')
 
 
-async def create_variantsFound(db_pool, processed_request, records_list, valid_datasets, include_dataset):
+async def create_variantsFound(db_pool, processed_request, records_list, valid_datasets, include_dataset, sample_id):
     """
     Function based on the variantsFound creation done in the genomicRegion endpoint.
     Takes a list of records of variants and fetches the datasetAlleleResponses to 
@@ -194,13 +215,20 @@ async def create_variantsFound(db_pool, processed_request, records_list, valid_d
         }
         variants_dict[variant_identifier]["datasetAlleleResponses"] = []
 
-        # Fetch the datasets info
+        # Fetch the datasets info (taking into account only the datasets where the sample is found)
         async with db_pool.acquire(timeout=180) as connection:
             try:
-                query  = f"""SELECT * FROM (SELECT concat_ws(':', chromosome, variant_id, reference, alternate, start, 'end', type) AS unique_id, *
-                                FROM public.beacon_data_table) AS tmp_tamble
-                                WHERE dataset_id IN ({dataset_ids}) 
-                                AND unique_id = '{variant_identifier}';"""
+                query  = f"""SELECT * FROM public.beacon_data_table d
+                                JOIN public.beacon_dataset_sample_table c
+                                ON d.dataset_id = c.dataset_id
+                                WHERE d.dataset_id IN ({dataset_ids}) 
+                                AND concat_ws(':', chromosome, variant_id, reference, alternate, start, 'end', type) = '{variant_identifier}'
+                                AND sample_id = {sample_id};"""
+
+                # query  = f"""SELECT * FROM (SELECT concat_ws(':', chromosome, variant_id, reference, alternate, start, 'end', type) AS unique_id, *
+                #                 FROM public.beacon_data_table) AS tmp_tamble
+                #                 WHERE dataset_id IN ({dataset_ids}) 
+                #                 AND unique_id = '{variant_identifier}';"""
 
                 LOG.debug(f"QUERY datasets info per variant: {query}")
                 statement = await connection.prepare(query)
@@ -216,7 +244,8 @@ async def create_variantsFound(db_pool, processed_request, records_list, valid_d
     if include_dataset in ['ALL', 'MISS']:
         for variant in variants_dict:
             list_hits = [record["internalId"] for record in variants_dict[variant]["datasetAlleleResponses"]]
-            list_all = valid_datasets
+            list_all = await get_datasetspersample(db_pool, sample_id)  
+            # list_all = valid_datasets  # this was taking into account all datasets, not only the ones that contain the sample
             accessible_missing = [int(x) for x in list_all if x not in list_hits]
             miss_datasets = await fetch_resulting_datasets(db_pool, "", misses=True, accessible_missing=accessible_missing)
             variants_dict[variant]["datasetAlleleResponses"] += miss_datasets
@@ -483,7 +512,7 @@ async def sample_request_handler(db_pool, processed_request, request):
     samples_dict = await get_samples(db_pool, filters_dict)
 
     # we'll need to apply the dataset related filters (if there is any) so we are going to generate a list
-    # with the ones that pass the filters
+    # with the ones that pass the dataset_filters filters
     valid_datasets = await get_valid_datasets(db_pool, dataset_filters)
 
     # The intersection between the datasets that are available by access and the datasets that have passed the filters
@@ -519,7 +548,7 @@ async def sample_request_handler(db_pool, processed_request, request):
                     }
                 }
 
-        variantsFound_object = await create_variantsFound(db_pool, processed_request, samples_dict[sample]["variants"], valid_datasets, include_dataset)
+        variantsFound_object = await create_variantsFound(db_pool, processed_request, samples_dict[sample]["variants"], valid_datasets, include_dataset, samples_dict[sample]["sample"].get("id"))
 
         # Depending on the endpoint, the order changes
         endpoint = request.path
