@@ -1,0 +1,86 @@
+
+#samplesPanel {
+    display: grid;
+    grid-template-columns: 2fr 5fr;
+    grid-template-areas: 'sampleCards variantResults';
+
+    #samplesWrapper {
+        grid-area: 'sampleCards';
+        .resultCard {
+            margin: 1em;
+            padding: 0;
+            width: 300px;
+            border: 1px solid #E5E8EA;
+            border-radius: 5px;
+            color: #636363;
+            
+            h3 {
+                font-size: 14px;
+                font-weight: bold;
+                margin: 0;
+                padding: 0.5em;
+                text-align: center;
+                color: white;
+                background-color: #C4C4C4;
+            }
+
+            .cardBody {
+                display: flex;
+                flex-flow: row nowrap;
+                align-items: stretch;
+
+                ul {
+                    padding: 0;
+                    margin: 0;
+                    list-style-type: none;
+                    width: 50%;
+
+                    li {
+                        padding: .1em .5em 0.5em;
+                        border-bottom: 1px solid #EFF3F6;
+                        font-size: 12px;
+                        
+                        &.listTitle {
+                            text-align: center;
+                            font-weight: bold;
+                            padding: 0.5em 1em;
+                            color: #636363;
+                        }
+                        
+                        span {
+                            display: block;
+
+                            &.var {
+                                text-align: left;
+                                font-size: 10px;
+                            }
+                            &.val {
+                                text-align: right;
+                                font-weight: bold;
+                                color: #808080;
+                                font-size: 11px;
+                            }
+                        }
+
+                    }  
+
+                    &:first-child {
+                        border-right: 1px solid #E5E8EA;
+                    }
+                }
+            }
+
+        }
+    }
+
+    #resultVariants {
+        grid-area: 'variantResults';
+        .per-variant {
+            margin: 0 auto;
+            padding: 0;
+
+            @import 'variantsPanel'; 
+        }
+    }
+
+}

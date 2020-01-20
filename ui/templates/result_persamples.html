@@ -1,0 +1,54 @@
+{% if beacon_response.value.results %}
+
+<div id="samplesPanel">
+    <div id="samplesWrapper">
+        {% for result in beacon_response.value.results %}
+        <div class="resultCard">
+            {% with result.sample.value as sample %}
+            <h3>
+                Result #{{ forloop.counter }}
+            </h3>
+            <div class="cardBody">
+                <ul>
+                    <li class="listTitle">Sample</li>
+                    {% for var, val in sample.items %}
+                        {% if val %}
+                        <li><span class="var">{{ var }}</span><span class="val">{{ val }}</span></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+                {% endwith %}
+                
+                {% with result.individual.value as individual %}
+                <ul>
+                    <li class="listTitle">Individual</li>
+                    {% for var, val in individual.items %}
+                        {% if val %}
+                        <li><span class="var">{{ var }}</span><span class="val">{{ val }}</span></li>
+                        {% endif %}                
+                    {% endfor %}
+                </ul>
+                {% endwith %}
+            </div>
+            
+        </div>
+        {% endfor %}
+    </div>
+    <div id="resultVariants">
+        <p>Resulting Variants</p>
+        <div class="per-variant">
+            <p>VariantsPanel goes here.</p>
+        </div>
+    </div>
+</div>
+
+{% else %}
+
+<div class="noVariantsFound">
+    <section class="beacon-response exists-{{ beacon_response.value.exists|yesno:'Y,N' }}">
+        <h3>Exists: <span>{{ beacon_response.value.exists }}</span></h3>
+    </section>
+    <p><span>Tip:</span> try to change the assembly ID or reduce the filters. </p>
+</div>
+
+{% endif %}
