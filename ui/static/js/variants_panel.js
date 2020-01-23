@@ -1,6 +1,6 @@
 (function(){ // scoping
 
-    variantsPanel = $("#variantsPanel");
+    variantsPanel = $(".variantsPanel");
     variantButtons = $(".variantButton", variantsPanel); 
     variantSections = $(".content.variant", variantsPanel);
     // console.log(variantButtons);
@@ -10,6 +10,7 @@
     variantsPanel.on('click', '.variantButton', function(){
 
             var me = $(this);
+            // console.log(me);
 
             variantButtons.removeClass('selected');
             me.addClass('selected');

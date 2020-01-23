@@ -1054,7 +1054,7 @@ body#response > main.per-variant .noVariantsFound p {
 body#response > main.per-variant .noVariantsFound p span {
   font-weight: bold;
 }
-body#response > main.per-variant #variantsPanel {
+body#response > main.per-variant .variantsPanel {
   display: flex;
   flex-flow: row nowrap;
   align-items: stretch;
@@ -1065,18 +1065,18 @@ body#response > main.per-variant #variantsPanel {
   border: 1px solid #EFF3F6;
   border-radius: 5px;
 }
-body#response > main.per-variant #variantsPanel .sidebar-wrapper {
+body#response > main.per-variant .variantsPanel .sidebar-wrapper {
   background-color: #EFF3F6;
   width: 175px;
   height: 100%;
   overflow: scroll;
 }
-body#response > main.per-variant #variantsPanel .sidebar-wrapper .sidebar {
+body#response > main.per-variant .variantsPanel .sidebar-wrapper .sidebar {
   display: flex;
   flex-flow: column nowrap;
   justify-content: stretch;
 }
-body#response > main.per-variant #variantsPanel .sidebar-wrapper .sidebar .variantButton {
+body#response > main.per-variant .variantsPanel .sidebar-wrapper .sidebar .variantButton {
   background-color: #D6DADE;
   min-height: 50px;
   max-height: 100px;
@@ -1087,29 +1087,29 @@ body#response > main.per-variant #variantsPanel .sidebar-wrapper .sidebar .varia
   overflow: scroll;
   cursor: pointer;
 }
-body#response > main.per-variant #variantsPanel .sidebar-wrapper .sidebar .variantButton p {
+body#response > main.per-variant .variantsPanel .sidebar-wrapper .sidebar .variantButton p {
   display: inline-block;
   padding: 1em;
   margin: 0;
   text-align: justify;
 }
-body#response > main.per-variant #variantsPanel .sidebar-wrapper .sidebar .variantButton:hover {
+body#response > main.per-variant .variantsPanel .sidebar-wrapper .sidebar .variantButton:hover {
   background-color: #CCD0D3;
 }
-body#response > main.per-variant #variantsPanel .sidebar-wrapper .sidebar .variantButton.selected {
+body#response > main.per-variant .variantsPanel .sidebar-wrapper .sidebar .variantButton.selected {
   background-color: #1D94EE;
 }
-body#response > main.per-variant #variantsPanel .sidebar-wrapper .sidebar .variantButton:nth-child(1) {
+body#response > main.per-variant .variantsPanel .sidebar-wrapper .sidebar .variantButton:nth-child(1) {
   border-top-left-radius: 5px;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper {
+body#response > main.per-variant .variantsPanel .content-wrapper {
   background-color: white;
   width: 990px;
   height: 100%;
   overflow: scroll;
   position: relative;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content {
+body#response > main.per-variant .variantsPanel .content-wrapper .content {
   display: none;
   padding: 3.5em 1em 1em 3em;
   width: 90%;
@@ -1118,48 +1118,48 @@ body#response > main.per-variant #variantsPanel .content-wrapper .content {
   grid-template-areas: "variant-header" "datasets";
   grid-gap: 1em;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content.selected {
+body#response > main.per-variant .variantsPanel .content-wrapper .content.selected {
   display: grid;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header {
   grid-area: variant-header;
   margin-left: 1em;
   display: flex;
   flex-flow: row nowrap;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header p {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header p {
   display: inline-block;
   font-weight: bold;
   margin: 0;
   margin-right: 1em;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header p small {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header p small {
   font-weight: lighter;
   font-size: 100%;
   padding-left: 0.25em;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div {
   margin: 0;
   padding: 0;
   text-decoration: none;
   display: flex;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div .logo {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div .logo {
   margin: auto 0.5em;
   padding: 0;
   position: relative;
   align-self: center;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div .logo img {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div .logo img {
   width: 16px;
   height: 16px;
   border-radius: 30%;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div .logo i {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div .logo i {
   font-size: 15px;
   color: #2196f3;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div .logo::after {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div .logo::after {
   content: "";
   width: 0;
   height: 0;
@@ -1174,7 +1174,7 @@ body#response > main.per-variant #variantsPanel .content-wrapper .content .heade
   top: 12px;
   transform: translateX(-50%);
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div div.result {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div div.result {
   display: none;
   position: absolute;
   height: 500px;
@@ -1186,11 +1186,11 @@ body#response > main.per-variant #variantsPanel .content-wrapper .content .heade
   margin: 0 auto;
   align-self: start;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div div.result .transparent {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div div.result .transparent {
   height: 10px;
   margin: 0;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div div.result .content-handover {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div div.result .content-handover {
   background-color: #353C47;
   height: 100%;
   color: white;
@@ -1200,51 +1200,51 @@ body#response > main.per-variant #variantsPanel .content-wrapper .content .heade
   border-radius: 5px;
   overflow: scroll;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div div.result .content-handover p {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div div.result .content-handover p {
   margin-left: 1em;
   font-weight: bolder;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div div.result.small {
-  max-width: 40%;
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div div.result.small {
+  max-width: 50%;
   width: auto;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div div.result.small .content-handover {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div div.result.small .content-handover {
   height: auto;
   padding: 1em;
   overflow: scroll;
   display: block;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div div.result.small .content-handover p {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div div.result.small .content-handover p {
   font-family: "Open Sans", "Helvetica Neue", Arial, sans-serif;
   font-size: 90%;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div div.result.small .content-handover p span {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div div.result.small .content-handover p span {
   font-weight: bold;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div div.result.small .content-handover p a {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div div.result.small .content-handover p a {
   text-decoration: none;
   color: white;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div:hover div.result {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div:hover div.result {
   display: block;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div:hover div.logo::after {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div:hover div.logo::after {
   display: block;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div.missing div img {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div.missing div img {
   opacity: 0.5;
   filter: alpha(opacity=50);
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div.missing div i {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div.missing div i {
   color: #B1CEE5;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div.missing:hover div.result {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div.missing:hover div.result {
   display: none;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .header div.missing:hover div.logo::after {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .header div.missing:hover div.logo::after {
   display: none;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses {
   grid-area: datasets;
   display: flex;
   flex-flow: row wrap;
@@ -1253,7 +1253,7 @@ body#response > main.per-variant #variantsPanel .content-wrapper .content .datas
   overflow: scroll;
   padding-left: 1em;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses section {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses section {
   /* flex-basis:30%; */
   min-width: 150px;
   margin: 1em;
@@ -1264,7 +1264,7 @@ body#response > main.per-variant #variantsPanel .content-wrapper .content .datas
   color: grey;
   overflow: hidden;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses section h3 {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses section h3 {
   font-size: 14px;
   font-weight: normal;
   margin: 0;
@@ -1272,31 +1272,31 @@ body#response > main.per-variant #variantsPanel .content-wrapper .content .datas
   text-align: center;
   color: white;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses section li {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses section li {
   padding: 0.5em 1em;
   border-bottom: 1px solid #E5E8EA;
   display: flex;
   justify-content: space-between;
   font-size: 90%;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses section li:last-of-type {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses section li:last-of-type {
   border-bottom: none;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses section li.handover {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses section li.handover {
   background-color: #eff3f6;
   color: #2196f3;
   position: relative;
   /* handover links */
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses section li.handover .handover-note {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses section li.handover .handover-note {
   overflow: scroll;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses section li.handover .handover-note a {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses section li.handover .handover-note a {
   display: inline-block;
   color: #2196f3;
   text-decoration: none;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses section li.handover .handover-note p {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses section li.handover .handover-note p {
   display: none;
   position: absolute;
   left: 50%;
@@ -1313,7 +1313,7 @@ body#response > main.per-variant #variantsPanel .content-wrapper .content .datas
   border-radius: 5px;
   border: 2px solid #353C47;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses section li.handover .handover-note::after {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses section li.handover .handover-note::after {
   content: "";
   width: 0;
   height: 0;
@@ -1328,38 +1328,38 @@ body#response > main.per-variant #variantsPanel .content-wrapper .content .datas
   top: 2px;
   transform: translateX(-50%);
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses section li.handover:hover .handover-note p {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses section li.handover:hover .handover-note p {
   display: block;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses section li.handover:hover .handover-note::after {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses section li.handover:hover .handover-note::after {
   display: block;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses section li span.variable {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses section li span.variable {
   display: inline-block;
   padding-right: 0.5em;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses section li span.number {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses section li span.number {
   display: inline-block;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses section ul {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses section ul {
   padding: 0;
   margin: 0;
   list-style-type: none;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses section span.number {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses section span.number {
   color: black;
   font-weight: bold;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses section.exists-Y h3 {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses section.exists-Y h3 {
   background-color: #36AE47;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses section.exists-Y h3 span {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses section.exists-Y h3 span {
   font-weight: bold;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses section.exists-N h3 {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses section.exists-N h3 {
   background-color: #F06543;
 }
-body#response > main.per-variant #variantsPanel .content-wrapper .content .dataset-responses section.exists-N h3 span {
+body#response > main.per-variant .variantsPanel .content-wrapper .content .dataset-responses section.exists-N h3 span {
   font-weight: bold;
 }
 body#response > main.per-sample {
@@ -1368,11 +1368,45 @@ body#response > main.per-sample {
 }
 body#response > main.per-sample #samplesPanel {
   display: grid;
-  grid-template-columns: 2fr 5fr;
+  grid-template-columns: 2fr 4fr;
   grid-template-areas: "sampleCards variantResults";
+  width: 1040px;
+  height: 650px;
+  margin-bottom: 4em;
+  position: relative;
 }
 body#response > main.per-sample #samplesPanel #samplesWrapper {
   grid-area: "sampleCards";
+  overflow: scroll;
+  margin: 2em 1em 1.25em 0;
+  border-top: 1px solid #E5E8EA;
+  border-bottom: 1px solid #E5E8EA;
+}
+body#response > main.per-sample #samplesPanel #samplesWrapper::before {
+  content: "";
+  width: 0;
+  height: 0;
+  display: block;
+  position: absolute;
+  z-index: 100;
+  border: 5px solid transparent;
+  border-bottom-color: 5px solid #E5E8EA;
+  left: 165px;
+  top: 11px;
+  transform: translateX(-50%);
+}
+body#response > main.per-sample #samplesPanel #samplesWrapper::after {
+  content: "";
+  width: 0;
+  height: 0;
+  display: block;
+  position: absolute;
+  z-index: 100;
+  border: 5px solid transparent;
+  border-top-color: 5px solid #E5E8EA;
+  left: 165px;
+  bottom: -40px;
+  transform: translateX(-50%);
 }
 body#response > main.per-sample #samplesPanel #samplesWrapper .resultCard {
   margin: 1em;
@@ -1382,6 +1416,12 @@ body#response > main.per-sample #samplesPanel #samplesWrapper .resultCard {
   border-radius: 5px;
   color: #636363;
 }
+body#response > main.per-sample #samplesPanel #samplesWrapper .resultCard:hover h3 {
+  background-color: #CCD0D3;
+}
+body#response > main.per-sample #samplesPanel #samplesWrapper .resultCard.selected h3 {
+  background-color: #1D94EE;
+}
 body#response > main.per-sample #samplesPanel #samplesWrapper .resultCard h3 {
   font-size: 14px;
   font-weight: bold;
@@ -1389,7 +1429,8 @@ body#response > main.per-sample #samplesPanel #samplesWrapper .resultCard h3 {
   padding: 0.5em;
   text-align: center;
   color: white;
-  background-color: #C4C4C4;
+  background-color: #D6DADE;
+  border-radius: 5px 5px 0 0;
 }
 body#response > main.per-sample #samplesPanel #samplesWrapper .resultCard .cardBody {
   display: flex;
@@ -1429,33 +1470,42 @@ body#response > main.per-sample #samplesPanel #samplesWrapper .resultCard .cardB
 body#response > main.per-sample #samplesPanel #samplesWrapper .resultCard .cardBody ul:first-child {
   border-right: 1px solid #E5E8EA;
 }
-body#response > main.per-sample #samplesPanel #resultVariants {
+body#response > main.per-sample #samplesPanel .resultVariants {
   grid-area: "variantResults";
+  display: none;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant {
+body#response > main.per-sample #samplesPanel .resultVariants.selected {
+  display: block;
+}
+body#response > main.per-sample #samplesPanel .resultVariants > p {
+  font-size: 15px;
+  font-weight: bold;
+  margin: 0.5em 0.25em;
+}
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant {
   margin: 0 auto;
   padding: 0;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant .noVariantsFound {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .noVariantsFound {
   display: grid;
   grid-auto-columns: 1;
   grid-auto-rows: 2;
   justify-content: center;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant .noVariantsFound section {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .noVariantsFound section {
   justify-self: center;
   width: 150px;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant .noVariantsFound p {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .noVariantsFound p {
   display: inline-block;
   font-size: 80%;
   color: grey;
   font-weight: lighter;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant .noVariantsFound p span {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .noVariantsFound p span {
   font-weight: bold;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel {
   display: flex;
   flex-flow: row nowrap;
   align-items: stretch;
@@ -1466,18 +1516,18 @@ body#response > main.per-sample #samplesPanel #resultVariants .per-variant #vari
   border: 1px solid #EFF3F6;
   border-radius: 5px;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .sidebar-wrapper {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .sidebar-wrapper {
   background-color: #EFF3F6;
   width: 175px;
   height: 100%;
   overflow: scroll;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .sidebar-wrapper .sidebar {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .sidebar-wrapper .sidebar {
   display: flex;
   flex-flow: column nowrap;
   justify-content: stretch;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .sidebar-wrapper .sidebar .variantButton {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .sidebar-wrapper .sidebar .variantButton {
   background-color: #D6DADE;
   min-height: 50px;
   max-height: 100px;
@@ -1488,29 +1538,29 @@ body#response > main.per-sample #samplesPanel #resultVariants .per-variant #vari
   overflow: scroll;
   cursor: pointer;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .sidebar-wrapper .sidebar .variantButton p {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .sidebar-wrapper .sidebar .variantButton p {
   display: inline-block;
   padding: 1em;
   margin: 0;
   text-align: justify;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .sidebar-wrapper .sidebar .variantButton:hover {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .sidebar-wrapper .sidebar .variantButton:hover {
   background-color: #CCD0D3;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .sidebar-wrapper .sidebar .variantButton.selected {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .sidebar-wrapper .sidebar .variantButton.selected {
   background-color: #1D94EE;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .sidebar-wrapper .sidebar .variantButton:nth-child(1) {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .sidebar-wrapper .sidebar .variantButton:nth-child(1) {
   border-top-left-radius: 5px;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper {
   background-color: white;
   width: 990px;
   height: 100%;
   overflow: scroll;
   position: relative;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content {
   display: none;
   padding: 3.5em 1em 1em 3em;
   width: 90%;
@@ -1519,48 +1569,48 @@ body#response > main.per-sample #samplesPanel #resultVariants .per-variant #vari
   grid-template-areas: "variant-header" "datasets";
   grid-gap: 1em;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content.selected {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content.selected {
   display: grid;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header {
   grid-area: variant-header;
   margin-left: 1em;
   display: flex;
   flex-flow: row nowrap;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header p {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header p {
   display: inline-block;
   font-weight: bold;
   margin: 0;
   margin-right: 1em;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header p small {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header p small {
   font-weight: lighter;
   font-size: 100%;
   padding-left: 0.25em;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div {
   margin: 0;
   padding: 0;
   text-decoration: none;
   display: flex;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div .logo {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div .logo {
   margin: auto 0.5em;
   padding: 0;
   position: relative;
   align-self: center;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div .logo img {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div .logo img {
   width: 16px;
   height: 16px;
   border-radius: 30%;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div .logo i {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div .logo i {
   font-size: 15px;
   color: #2196f3;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div .logo::after {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div .logo::after {
   content: "";
   width: 0;
   height: 0;
@@ -1575,7 +1625,7 @@ body#response > main.per-sample #samplesPanel #resultVariants .per-variant #vari
   top: 12px;
   transform: translateX(-50%);
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div div.result {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div div.result {
   display: none;
   position: absolute;
   height: 500px;
@@ -1587,11 +1637,11 @@ body#response > main.per-sample #samplesPanel #resultVariants .per-variant #vari
   margin: 0 auto;
   align-self: start;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div div.result .transparent {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div div.result .transparent {
   height: 10px;
   margin: 0;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div div.result .content-handover {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div div.result .content-handover {
   background-color: #353C47;
   height: 100%;
   color: white;
@@ -1601,51 +1651,51 @@ body#response > main.per-sample #samplesPanel #resultVariants .per-variant #vari
   border-radius: 5px;
   overflow: scroll;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div div.result .content-handover p {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div div.result .content-handover p {
   margin-left: 1em;
   font-weight: bolder;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div div.result.small {
-  max-width: 40%;
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div div.result.small {
+  max-width: 50%;
   width: auto;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div div.result.small .content-handover {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div div.result.small .content-handover {
   height: auto;
   padding: 1em;
   overflow: scroll;
   display: block;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div div.result.small .content-handover p {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div div.result.small .content-handover p {
   font-family: "Open Sans", "Helvetica Neue", Arial, sans-serif;
   font-size: 90%;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div div.result.small .content-handover p span {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div div.result.small .content-handover p span {
   font-weight: bold;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div div.result.small .content-handover p a {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div div.result.small .content-handover p a {
   text-decoration: none;
   color: white;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div:hover div.result {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div:hover div.result {
   display: block;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div:hover div.logo::after {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div:hover div.logo::after {
   display: block;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div.missing div img {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div.missing div img {
   opacity: 0.5;
   filter: alpha(opacity=50);
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div.missing div i {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div.missing div i {
   color: #B1CEE5;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div.missing:hover div.result {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div.missing:hover div.result {
   display: none;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .header div.missing:hover div.logo::after {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div.missing:hover div.logo::after {
   display: none;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses {
   grid-area: datasets;
   display: flex;
   flex-flow: row wrap;
@@ -1654,7 +1704,7 @@ body#response > main.per-sample #samplesPanel #resultVariants .per-variant #vari
   overflow: scroll;
   padding-left: 1em;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses section {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses section {
   /* flex-basis:30%; */
   min-width: 150px;
   margin: 1em;
@@ -1665,7 +1715,7 @@ body#response > main.per-sample #samplesPanel #resultVariants .per-variant #vari
   color: grey;
   overflow: hidden;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses section h3 {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses section h3 {
   font-size: 14px;
   font-weight: normal;
   margin: 0;
@@ -1673,31 +1723,31 @@ body#response > main.per-sample #samplesPanel #resultVariants .per-variant #vari
   text-align: center;
   color: white;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses section li {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses section li {
   padding: 0.5em 1em;
   border-bottom: 1px solid #E5E8EA;
   display: flex;
   justify-content: space-between;
   font-size: 90%;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses section li:last-of-type {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses section li:last-of-type {
   border-bottom: none;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses section li.handover {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses section li.handover {
   background-color: #eff3f6;
   color: #2196f3;
   position: relative;
   /* handover links */
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses section li.handover .handover-note {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses section li.handover .handover-note {
   overflow: scroll;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses section li.handover .handover-note a {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses section li.handover .handover-note a {
   display: inline-block;
   color: #2196f3;
   text-decoration: none;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses section li.handover .handover-note p {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses section li.handover .handover-note p {
   display: none;
   position: absolute;
   left: 50%;
@@ -1714,7 +1764,7 @@ body#response > main.per-sample #samplesPanel #resultVariants .per-variant #vari
   border-radius: 5px;
   border: 2px solid #353C47;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses section li.handover .handover-note::after {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses section li.handover .handover-note::after {
   content: "";
   width: 0;
   height: 0;
@@ -1729,39 +1779,58 @@ body#response > main.per-sample #samplesPanel #resultVariants .per-variant #vari
   top: 2px;
   transform: translateX(-50%);
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses section li.handover:hover .handover-note p {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses section li.handover:hover .handover-note p {
   display: block;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses section li.handover:hover .handover-note::after {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses section li.handover:hover .handover-note::after {
   display: block;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses section li span.variable {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses section li span.variable {
   display: inline-block;
   padding-right: 0.5em;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses section li span.number {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses section li span.number {
   display: inline-block;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses section ul {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses section ul {
   padding: 0;
   margin: 0;
   list-style-type: none;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses section span.number {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses section span.number {
   color: black;
   font-weight: bold;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses section.exists-Y h3 {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses section.exists-Y h3 {
   background-color: #36AE47;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses section.exists-Y h3 span {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses section.exists-Y h3 span {
   font-weight: bold;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses section.exists-N h3 {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses section.exists-N h3 {
   background-color: #F06543;
 }
-body#response > main.per-sample #samplesPanel #resultVariants .per-variant #variantsPanel .content-wrapper .content .dataset-responses section.exists-N h3 span {
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .dataset-responses section.exists-N h3 span {
   font-weight: bold;
+}
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel {
+  width: auto;
+}
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper {
+  width: auto;
+}
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .sidebar-wrapper {
+  flex-shrink: 0;
+  width: 165px;
+}
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .sidebar-wrapper .content {
+  width: auto;
+}
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content {
+  padding: 2.5em 1em 1em 2em;
+}
+body#response > main.per-sample #samplesPanel .resultVariants .per-variant .variantsPanel .content-wrapper .content .header div div.result {
+  top: 55px;
 }
 
 .handover-note:hover p {

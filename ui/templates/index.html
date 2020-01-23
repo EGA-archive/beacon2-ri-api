@@ -34,15 +34,17 @@
 	  {% else %}
 		{% if request.path == '/snp' or request.path == '/region' %}
 			<main class="per-variant">
-			{% include 'result_pervariant.html' %}
+				{% with beacon_response.value.variantsFound as variantsFound %}
+					{% include 'result_pervariant.html' %}
+				{% endwith %}
 			</main>
 		{% elif request.path == '/samples'%}
 			<main class="per-sample">
-			{% include 'result_persamples.html' %}
+				{% include 'result_persamples.html' %}
 			</main>
 		{% else %}
 			<main class="datasetAlleleResponses">
-			{% include 'result.html' %}
+				{% include 'result.html' %}
 			</main>
 		{% endif %}
       {% endif %}
@@ -114,11 +116,17 @@
 
 	{% include 'footer.html' %}
 	
-{% comment %}
-	<script src="{% static 'js/history.js' %}"></script>
-{% endcomment %}
+	{% comment %}
+		<script src="{% static 'js/history.js' %}"></script>
+		<script src="{% static 'js/variants_panel.js' %}"></script>
+		<script src="{% static 'js/samples_panel.js' %}"></script>
+	{% endcomment %}
 
-	<script src="{% static 'js/variants_panel.js' %}"></script>
+	{% if request.path == '/snp' or request.path == '/region' %}
+		<script src="{% static 'js/variants_panel.js' %}"></script>
+	{% elif request.path == '/samples'%}
+		<script src="{% static 'js/samples_panel.js' %}"></script>
+	{% endif %}
 
   </body>
 </html>
