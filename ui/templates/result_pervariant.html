@@ -1,8 +1,8 @@
-{% if beacon_response.value.variantsFound %}
-    <div id="variantsPanel">
+{% if variantsFound %}
+    <div class="variantsPanel">
         <div class="sidebar-wrapper">
             <div class="sidebar">
-                {% for variant_object in beacon_response.value.variantsFound %}
+                {% for variant_object in variantsFound %}
                     <div class="variantButton tablink{% if forloop.counter == 1 %} selected{% endif %}" >
                         <p>{{ variant_object.variant.default.value.variantDetails.chromosome}} : {{ variant_object.variant.default.value.variantDetails.start}} {{ variant_object.variant.default.value.variantDetails.referenceBases}} > {{ variant_object.variant.default.value.variantDetails.alternateBases}}</p>
                     </div>
@@ -18,7 +18,7 @@
 
 
         <div class="content-wrapper">
-            {% for variant_object in beacon_response.value.variantsFound %}
+            {% for variant_object in variantsFound %}
                 <div class="content variant{% if forloop.counter == 1 %} selected{% endif %}">
                     
                         <div class="header">

@@ -3,7 +3,7 @@
 <div id="samplesPanel">
     <div id="samplesWrapper">
         {% for result in beacon_response.value.results %}
-        <div class="resultCard">
+        <div class="resultCard{% if forloop.counter == 1 %} selected{% endif %}">  
             {% with result.sample.value as sample %}
             <h3>
                 Result #{{ forloop.counter }}
@@ -34,12 +34,18 @@
         </div>
         {% endfor %}
     </div>
-    <div id="resultVariants">
-        <p>Resulting Variants</p>
-        <div class="per-variant">
-            <p>VariantsPanel goes here.</p>
+    {% for result in beacon_response.value.results %}
+        <div class="resultVariants{% if forloop.counter == 1 %} selected{% endif %}">
+            
+            <p>Variants of Result #{{ forloop.counter }}</p> 
+            <div class="per-variant result-{{ forloop.counter }}">
+                {% with result.variantsFound as variantsFound %}
+                    {% include 'result_pervariant.html' %}
+                {% endwith %}
+            </div>
+            
         </div>
-    </div>
+    {% endfor %}
 </div>
 
 {% else %}

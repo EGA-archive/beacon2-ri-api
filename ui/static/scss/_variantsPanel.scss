@@ -23,7 +23,7 @@
     }
 }
 
-#variantsPanel {
+.variantsPanel {
     display: flex;
     flex-flow: row nowrap;
     align-items: stretch;
@@ -204,7 +204,7 @@
                         }
                         
                         &.small {
-                            max-width: 40%;
+                            max-width: 50%;
                             width: auto;
                             
                             .content-handover {
