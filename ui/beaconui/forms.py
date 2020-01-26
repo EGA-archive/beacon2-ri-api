@@ -125,7 +125,7 @@ class QueryRegionForm(forms.Form):
                                                 choices=( (i.upper(),i) for i in ('All','Hit','Miss','None') ),
                                                 label='Included Dataset Responses',
                                                 widget=forms.Select,  # instead of IncludeDatasetResponsesWidget
-                                                initial='NONE')    
+                                                initial='ALL')    
 
     def is_valid(self):
         self.full_clean() # Populate fields (or read self.errors)
