@@ -319,7 +319,12 @@ INSERT INTO public.ontology_term_table (id, ontology, term, target_table, column
   (5,E'tissue',E'3',E'public.beacon_sample_table',E'tissue',E'kidney',NULL,E'Kidney sample'),
   (6,E'disease',E'1',E'public.patient_table',E'disease',E'lung cancer',NULL,E'Lung cancer'),
   (7,E'disease',E'2',E'public.patient_table',E'disease',E'kidney cancer',NULL,E'Kidney cancer'),
-  (8,E'disease',E'3',E'public.patient_table',E'disease',E'hepatitis',NULL,E'Hepatitis');
+  (8,E'disease',E'3',E'public.patient_table',E'disease',E'hepatitis',NULL,E'Hepatitis'),
+  (9,E'GO',E'0030237',E'public.beacon_sample_table',E'sex',E'female',NULL,E'Female'),
+  (10,E'GO',E'0030238',E'public.beacon_sample_table',E'sex',E'male',NULL,E'Male'),
+  (11,E'HPO',E'0009726',E'public.patient_table',E'disease',E'kidney cancer',NULL,E'Kidney cancer'),
+  (12,E'HPO',E'0100526',E'public.patient_table',E'disease',E'lung cancer',NULL,E'Lung cancer'),
+  (13,E'HPO',E'0012115',E'public.patient_table',E'disease',E'hepatitis',NULL,E'Hepatitis');
 
 -- Create views
 CREATE VIEW public.ontology_term_column_correspondance AS

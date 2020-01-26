@@ -158,7 +158,7 @@ async def get_datasetspersample(db_pool, sample_id):
             return datasets_list
 
         except Exception as e:
-            raise BeaconServerError(f'Query ddatasets list per sample DB error: {e}')
+            raise BeaconServerError(f'Query datasets list per sample DB error: {e}')
 
 
 async def create_variantsFound(db_pool, processed_request, records_list, valid_datasets, include_dataset, sample_id):
@@ -174,6 +174,7 @@ async def create_variantsFound(db_pool, processed_request, records_list, valid_d
 
     # In the case that the query filters by variant, we want to show the specific variant(s) at the beggining of the list in the response
     # For doing this, first we want to fetch the variant_identifier(s), which will come in handy for achieving this goal
+    target_ids = ""
     target_variant_switch = False
     if processed_request.get('referenceName'):  # easy way to check if the query contains variant info
         target_ids = await fetch_target_variant(db_pool, processed_request, valid_datasets)
@@ -244,9 +245,10 @@ async def create_variantsFound(db_pool, processed_request, records_list, valid_d
     if include_dataset in ['ALL', 'MISS']:
         for variant in variants_dict:
             list_hits = [record["internalId"] for record in variants_dict[variant]["datasetAlleleResponses"]]
-            list_all = await get_datasetspersample(db_pool, sample_id)  
+            list_all = await get_datasetspersample(db_pool, sample_id)
+            list_all_valid = [x for x in list_all if x in valid_datasets]
             # list_all = valid_datasets  # this was taking into account all datasets, not only the ones that contain the sample
-            accessible_missing = [int(x) for x in list_all if x not in list_hits]
+            accessible_missing = [int(x) for x in list_all_valid if x not in list_hits]
             miss_datasets = await fetch_resulting_datasets(db_pool, "", misses=True, accessible_missing=accessible_missing)
             variants_dict[variant]["datasetAlleleResponses"] += miss_datasets
 

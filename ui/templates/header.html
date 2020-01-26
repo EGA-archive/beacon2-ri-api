@@ -8,6 +8,7 @@
     <a href="{% url 'query' %}" class="endpoint-button {% if request.path == '/' %} selected{% endif %}">Query</a>
     <a href="{% url 'snp' %}" class="endpoint-button {% if request.path == '/snp' %} selected{% endif %}">SNP</a>
     <a href="{% url 'region' %}" class="endpoint-button {% if request.path == '/region' %} selected{% endif %}">Region</a>
+    <a href="{% url 'samples' %}" class="endpoint-button {% if request.path == '/samples' %} selected{% endif %}">Samples</a>
     <a href="{% url 'levels' %}" class="access-button {% if request.path == '/access-levels' %} selected{% endif %}">Access Levels</a>
     {% if request.session.user %}
       <span>Hi, {{ request.session.user.nickname }}</span>
