@@ -22,7 +22,7 @@ from ..utils.polyvalent_functions import prepare_filter_parameter, parse_filters
 from ..utils.polyvalent_functions import fetch_datasets_access, access_resolution
 from ..utils.models import variant_object, variantAnnotation_object
 
-from .genomic_region import fetch_resulting_datasets, fetch_variantAnnotations, snp_resultsHandover
+from .genomic_query import fetch_resulting_datasets, fetch_variantAnnotations, snp_resultsHandover
 
 
 LOG = logging.getLogger(__name__)

@@ -2,9 +2,9 @@ import asynctest
 from unittest import mock
 
 from beacon_api.api.query import get_datasets
-from beacon_api.api.genomic_region import get_datasets as get_datasets_region
+from beacon_api.api.genomic_query import get_datasets as get_datasets_region
 from beacon_api.api.query import fetch_resulting_datasets
-from beacon_api.api.genomic_region import fetch_resulting_datasets as fetch_resulting_datasets_region
+from beacon_api.api.genomic_query import fetch_resulting_datasets as fetch_resulting_datasets_region
 from beacon_api.api.access_levels import special_datasets
 
 from .test_db_load import Connection
@@ -28,7 +28,7 @@ class TestGetDataFunctions(asynctest.TestCase):
         result_all = await get_datasets(None, query_parameters, "ALL")
         self.assertEqual(result_all, [])
 
-    @asynctest.mock.patch('beacon_api.api.genomic_region.fetch_resulting_datasets')
+    @asynctest.mock.patch('beacon_api.api.genomic_query.fetch_resulting_datasets')
     async def test_get_datasets_region(self, mock_filtered):
         """Test find datasets."""
         mock_filtered.return_value = []
