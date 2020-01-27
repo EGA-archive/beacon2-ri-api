@@ -279,11 +279,11 @@ ALTER TABLE public.beacon_sample_table
 ADD COLUMN patient_id  INT REFERENCES patient_table (id);
 
 -- Insert mock data into patient_table
-INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient1', 'female', '61', 'Lung cancer');
-INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient2', 'male', '70', 'Kidney cancer');
+INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient1', 'female', '61', 'lung cancer');
+INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient2', 'male', '70', 'kidney cancer');
 INSERT INTO public.patient_table (stable_id, sex, age_of_onset) VALUES ('patient3', 'female', '45');
-INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient4', 'male', '82', 'Hepatitis');
-INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient5', 'male', '65', 'Lung cancer');
+INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient4', 'male', '82', 'hepatitis');
+INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient5', 'male', '65', 'lung cancer');
 
 
 -- Tables related to the access_levels endpoint

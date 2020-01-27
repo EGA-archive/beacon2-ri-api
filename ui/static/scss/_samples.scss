@@ -160,12 +160,16 @@
                         width: auto;
                     }
                 }
-                .content-wrapper .content {
-                    padding: 2.5em 1em 1em 2em;
-                    .header div div.result {
-                        top: 55px;
+                .content-wrapper {
+                    width: 100%;
+                    .content {
+                        padding: 2.5em 1.5em 1em 2em;
+                        .header div div.result {
+                            top: 55px;
+                        }
                     }
                 }
+
             }
 
         }

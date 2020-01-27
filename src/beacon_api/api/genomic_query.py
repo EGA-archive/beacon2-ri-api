@@ -21,7 +21,7 @@ from ..utils.polyvalent_functions import fetch_datasets_access, access_resolutio
 
 from ..utils.polyvalent_functions import filter_response, snp_resultsHandover, fetch_variantAnnotations
 from .access_levels import ACCESS_LEVELS_DICT
-from ..utils.translate2accesslevels import region2access
+from ..utils.translate2accesslevels import region2access, snp2access
 from ..utils.models import variant_object, variantAnnotation_object
 
 LOG = logging.getLogger(__name__)
@@ -329,11 +329,16 @@ async def genomic_request_handler(db_pool, processed_request, request):
                     }
 
     # Before returning the response we need to filter it depending on the access levels
-    beacon_response = {"beconGenomicRegionRequest": beacon_response}  # Make sure the key matches the name in the access levels dict
-
     # NOTE we hardcode accessible_datasets and user_levels it because authentication is not implemented yet
     accessible_datasets = public_datasets
-    user_levels = ["PUBLIC"]  
-    filtered_response = filter_response(beacon_response, ACCESS_LEVELS_DICT, accessible_datasets, user_levels, region2access)
+    user_levels = ["PUBLIC"]
 
-    return filtered_response["beconGenomicRegionRequest"]
+    url_endpoint = str(request.rel_url)
+    if url_endpoint.startswith('/genomic_region'):
+        beacon_response = {"beaconGenomicRegionRequest": beacon_response}  # Make sure the key matches the name in the access levels dict
+        filtered_response = filter_response(beacon_response, ACCESS_LEVELS_DICT, accessible_datasets, user_levels, region2access)
+    else:
+        beacon_response = {"beaconGenomicSnpRequest": beacon_response}  # Make sure the key matches the name in the access levels dict
+        filtered_response = filter_response(beacon_response, ACCESS_LEVELS_DICT, accessible_datasets, user_levels, snp2access)
+
+    return filtered_response["beaconGenomicRegionRequest"]
