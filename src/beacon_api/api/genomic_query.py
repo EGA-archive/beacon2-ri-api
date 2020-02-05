@@ -337,8 +337,8 @@ async def genomic_request_handler(db_pool, processed_request, request):
     if url_endpoint.startswith('/genomic_region'):
         beacon_response = {"beaconGenomicRegionRequest": beacon_response}  # Make sure the key matches the name in the access levels dict
         filtered_response = filter_response(beacon_response, ACCESS_LEVELS_DICT, accessible_datasets, user_levels, region2access)
+        return filtered_response["beaconGenomicRegionRequest"]
     else:
         beacon_response = {"beaconGenomicSnpRequest": beacon_response}  # Make sure the key matches the name in the access levels dict
         filtered_response = filter_response(beacon_response, ACCESS_LEVELS_DICT, accessible_datasets, user_levels, snp2access)
-
-    return filtered_response["beaconGenomicRegionRequest"]
+        return filtered_response["beaconGenomicSnpRequest"]
