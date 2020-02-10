@@ -477,7 +477,7 @@ async def get_samples(db_pool, filters_dict):
 
 async def sample_request_handler(db_pool, processed_request, request):
     """
-    Execute query with SQL funciton.
+    Execute query with SQL function.
     """
 
     # First we are going to get the lists of the available datasets
@@ -485,11 +485,11 @@ async def sample_request_handler(db_pool, processed_request, request):
 
         ##### TEST
         # access_type, accessible_datasets = access_resolution(request, request['token'], request.host, public_datasets, registered_datasets, controlled_datasets)
-        # LOG.info(f"The user has this types of acces: {access_type}")
+        # LOG.info(f"The user has this types of access: {access_type}")
         # query_parameters[-2] = ",".join([str(id) for id in accessible_datasets])
         ##### END TEST
 
-    # NOTICE that rigth now we will just focus on the PUBLIC ones to easen the process, so we get all their ids and add them to the query
+    # NOTICE that right now we will just focus on the PUBLIC ones to ease the process, so we get all their ids and add them to the query
     available_datasets = public_datasets
 
     # We will output the datasets depending on the includeDatasetResponses parameter
@@ -515,7 +515,7 @@ async def sample_request_handler(db_pool, processed_request, request):
 
     # we'll need to apply the dataset related filters (if there is any) so we are going to generate a list
     # with the ones that pass the dataset_filters filters
-    valid_datasets = await get_valid_datasets(db_pool, dataset_filters)
+    valid_datasets = await  (db_pool, dataset_filters)
 
     # The intersection between the datasets that are available by access and the datasets that have passed the filters
     # is the final list of valid_datasets

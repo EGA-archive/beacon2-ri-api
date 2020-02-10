@@ -44,7 +44,7 @@ services:
     networks:
       - priv
       - pub
-    entrypoint: ['/bin/sleep','100000000']  # we don't run the beacon just after starting, we'll do it manually 
+    # entrypoint: ['/bin/sleep','100000000']  # we don't run the beacon just after starting, we'll do it manually 
 
   ui:
     build: ../ui
