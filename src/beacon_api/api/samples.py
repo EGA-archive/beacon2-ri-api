@@ -515,7 +515,7 @@ async def sample_request_handler(db_pool, processed_request, request):
 
     # we'll need to apply the dataset related filters (if there is any) so we are going to generate a list
     # with the ones that pass the dataset_filters filters
-    valid_datasets = await  (db_pool, dataset_filters)
+    valid_datasets = await  get_valid_datasets(db_pool, dataset_filters)
 
     # The intersection between the datasets that are available by access and the datasets that have passed the filters
     # is the final list of valid_datasets
