@@ -33,6 +33,23 @@ LOG = logging.getLogger(__name__)
 #                                         FORMATTING
 # ----------------------------------------------------------------------------------------------------------------------
 
+def transform_record(response):
+    
+    response["datasetId"] = response.pop("stable_id_dt")
+    response["internalId"] = response.pop("dataset_id")
+    response["exists"] = True
+    response["variantCount"] = response.pop("variant_cnt")  
+    response["callCount"] = response.pop("call_cnt") 
+    response["sampleCount"] = response.pop("sample_cnt") 
+    response["frequency"] = 0 if response.get("frequency") is None else float(response.pop("frequency"))
+    response["numVariants"] = 0 if response.get("num_variants") is None else response.pop("num_variants")
+    response["info"] = {"accessType": response.pop("access_type"),
+                        "matchingSampleCount": 0 if response.get("matching_sample_cnt") is None else response.pop("matching_sample_cnt")}
+    response["datasetHandover"] = datasetHandover(response["datasetId"])
+    
+    return response
+
+
 def create_query(processed_request):
     """
     Restructure the request to build the query object
@@ -61,17 +78,81 @@ def create_query(processed_request):
 #                                         MAIN FUNCTIONS
 # ----------------------------------------------------------------------------------------------------------------------
 
-
 # Definition of interesting columns depending on the target object, use for create_individuals_object() and 
 # create_samples_object()
+# sample_columns = ['sample_id', 'sample_stable_id', 'tissue', 'description']
+# individual_columns = ['patient_id','patient_stable_id', 'sex', 'age_of_onset', 'disease']
+# variant_columns = ['unique_id', 'dataset_id', 'data_id','chromosome', 'variant_id', 'reference', 
+#                    'alternate', 'start', 'end', 'type', 'sv_length', 'variant_cnt', 'call_cnt', 
+#                    'sample_cnt', 'matching_sample_cnt', 'frequency']
+# Definition of interesting columns depending on the target object
 sample_columns = ['sample_id', 'sample_stable_id', 'tissue', 'description']
 individual_columns = ['patient_id','patient_stable_id', 'sex', 'age_of_onset', 'disease']
-variant_columns = ['unique_id', 'dataset_id', 'data_id','chromosome', 'variant_id', 'reference', 
-                   'alternate', 'start', 'end', 'type', 'sv_length', 'variant_cnt', 'call_cnt', 
-                   'sample_cnt', 'matching_sample_cnt', 'frequency']
+variant_columns = ['unique_id','chromosome', 'variant_id', 'reference', 
+                   'alternate', 'start', 'end', 'type']
+dataset_columns = ['dataset_id', 'stable_id_dt', 'variant_cnt', 'call_cnt', 
+                   'sample_cnt', 'matching_sample_cnt', 'frequency', 'access_type']
+variant_and_dataset_columns = variant_columns + dataset_columns
 
 
-def create_individuals_object(main_df):
+async def create_variantsFound_object(db_pool, variants_df, include_dataset, processed_request, valid_datasets):
+    """
+    Create the raw object and shape as the spec at the same time by calling other functions.
+    """
+    by_dataset = variants_df.groupby('unique_id')
+    variants_found_object = []
+    for variant_id, df in by_dataset:
+        # gather the raw info
+        variant_info_raw = df[variant_columns].drop_duplicates().to_dict('r')[0]
+        datasetAlleleResponses_raw = df[dataset_columns].drop_duplicates().to_dict('r')
+        datasetAlleleResponses = [transform_record(record) for record in datasetAlleleResponses_raw]
+        
+        # rename variant_info keys
+        variant_info = {
+            "variantId": variant_info_raw.get("variant_id"),
+            "chromosome":  variant_info_raw.get("chromosome"),
+            "referenceBases": variant_info_raw.get("reference"),
+            "alternateBases": variant_info_raw.get("alternate"),
+            "variantType": variant_info_raw.get("variant_type"),
+            "start": variant_info_raw.get("start"), 
+            "end": variant_info_raw.get("end")
+        }
+        
+        # shape datasetAlleleResponse
+        
+        # If  the includeDatasets option is ALL or MISS we have to "create" the miss datasets (which will be tranformed also) and join them to the datasetAlleleResponses
+        if include_dataset in ['ALL', 'MISS']:
+
+            list_hits = [record["internalId"] for record in datasetAlleleResponses]
+            list_all = valid_datasets
+            # list_all = await get_datasetspersample(db_pool, sample_id)
+            list_all_valid = [x for x in list_all if x in valid_datasets]
+            accessible_missing = [int(x) for x in list_all_valid if x not in list_hits]
+            miss_datasets = await fetch_resulting_datasets(db_pool, "", misses=True, accessible_missing=accessible_missing)
+            datasetAlleleResponses += miss_datasets
+        datasetAlleleResponses = filter_exists(include_dataset, datasetAlleleResponses)
+        
+        
+        # do some extra stuff for variantAnnotations
+        rsID, cellBase_dict, dbSNP_dict = await fetch_variantAnnotations(variant_info)
+        if rsID: variant_info["variantId"] = rsID
+        
+        # create the dict
+        variant_found = {
+            'variant': variant_object(processed_request, variant_info),
+            'datasetAlleleResponses': datasetAlleleResponses,
+            "variantAnnotations": variantAnnotation_object(processed_request, cellBase_dict, dbSNP_dict, {}),
+            "variantHandover": snp_resultsHandover(rsID) if rsID else '',
+            "info": {}
+        }
+        
+        variants_found_object.append(variant_found)
+        
+    return variants_found_object
+
+
+
+def create_individuals_object(db_pool, main_df, include_dataset, processed_request, valid_datasets):
     by_individual = main_df.groupby('patient_id')
 
     individual_responses_list = []
@@ -102,16 +183,18 @@ def create_individuals_object(main_df):
                         }
                         for sample in samples_object]
 
-        variants_raw = individual_df[variant_columns].drop_duplicates().to_dict('r')
-        # maybe here we could call the createVariantsFound_object function (or an adapted version)
-        individual_response['variantsFound'] = variants_raw
+        # variants_raw = individual_df[variant_columns].drop_duplicates().to_dict('r')
+        # individual_response['variantsFound'] = variants_raw
+        
+        variants_df = individual_df[variant_and_dataset_columns].drop_duplicates()
+        individual_response['variantsFound'] = create_variantsFound_object(db_pool, variants_df, include_dataset, processed_request, valid_datasets)
         
         individual_responses_list.append(individual_response)
         
     return individual_responses_list
 
 
-def create_samples_object(main_df):
+async def create_samples_object(db_pool, main_df, include_dataset, processed_request, valid_datasets):
     by_sample = main_df.groupby('sample_id')
 
     sample_responses_list = []
@@ -143,16 +226,18 @@ def create_samples_object(main_df):
                         }
                         for individual in individuals_object]
 
-        variants_raw = sample_df[variant_columns].drop_duplicates().to_dict('r')
-        # maybe here we could call the createVariantsFound_object function (or an adapted version)
-        sample_response['variantsFound'] = 'variants_raw'
+        # variants_raw = sample_df[variant_columns].drop_duplicates().to_dict('r')
+        # sample_response['variantsFound'] = 'variants_raw'
+
+        variants_df = sample_df[variant_and_dataset_columns].drop_duplicates()
+        sample_response['variantsFound'] = await create_variantsFound_object(db_pool, variants_df, include_dataset, processed_request, valid_datasets)
 
         sample_responses_list.append(sample_response)
         
     return sample_responses_list
 
 
-async def get_results(db_pool, filters_dict, valid_datasets, processed_request, request):
+async def get_results(db_pool, filters_dict, valid_datasets, processed_request, request, include_dataset): 
     """
     Fetches all the data performing a complex query to the DB where all the info about
     samples, variants and individuals can be queried at once. 
@@ -194,9 +279,10 @@ async def get_results(db_pool, filters_dict, valid_datasets, processed_request, 
     async with db_pool.acquire(timeout=180) as connection:
         try:
             query  = f"""SELECT concat_ws(':', data_t.chromosome, data_t.variant_id, data_t.reference, data_t.alternate, data_t.start, data_t.end, data_t.type) AS unique_id,
-                            data_t.dataset_id, vsp_t.data_id, vsp_t.sample_id, vsp_t.patient_id, d_t.reference_genome, data_t.chromosome, data_t.variant_id, data_t.reference, 
-                            data_t.alternate, data_t.start, data_t.end, data_t.type, data_t.sv_length, data_t.variant_cnt, data_t.call_cnt, data_t.sample_cnt, data_t.matching_sample_cnt, 
-                            data_t.frequency, vsp_t.sample_stable_id, vsp_t.sex, vsp_t.tissue, vsp_t.description, vsp_t.patient_stable_id, vsp_t.age_of_onset, vsp_t.disease
+                            data_t.dataset_id, d_t.reference_genome, d_t.stable_id as stable_id_dt, d_t.access_type, vsp_t.data_id, data_t.chromosome, data_t.variant_id, 
+                            data_t.reference, data_t.alternate, data_t.start, data_t.end, data_t.type, data_t.sv_length, data_t.variant_cnt, data_t.call_cnt, data_t.sample_cnt, 
+                            data_t.matching_sample_cnt, data_t.frequency, vsp_t.sample_id, vsp_t.sample_stable_id, vsp_t.tissue, vsp_t.description, vsp_t.patient_id, vsp_t.patient_stable_id, 
+                            vsp_t.sex, vsp_t.age_of_onset, vsp_t.disease
                             FROM public.beacon_data_table as data_t
                             join (select * 
                                     from (SELECT s.id as s_id, s.stable_id as sample_stable_id, s.sex, s.tissue, s.description, 
@@ -252,9 +338,9 @@ async def get_results(db_pool, filters_dict, valid_datasets, processed_request, 
             endpoint = request.path
             LOG.debug(f"Arranging the response for the {endpoint} endpoint.")
             if endpoint == '/individuals_test':
-                response_arranged = create_individuals_object(response_df)
+                response_arranged = await create_individuals_object(db_pool, response_df, include_dataset, processed_request, valid_datasets)
             else:
-                response_arranged = create_samples_object(response_df)
+                response_arranged = await create_samples_object(db_pool, response_df, include_dataset, processed_request, valid_datasets)
 
             # Returning the arrange response
             return response_arranged
@@ -340,7 +426,7 @@ async def sample_request_handler_test(db_pool, processed_request, request):
     valid_datasets = [dataset for dataset in valid_datasets if dataset in available_datasets]
 
     # Now we perform the main query to the DB to retrieve all the sample, individual and variant raw data
-    results = await get_results(db_pool, filters_dict, valid_datasets, processed_request, request)
+    results = await get_results(db_pool, filters_dict, valid_datasets, processed_request, request, include_dataset)
 
             
     # In the response only a subset of variants will be shown, except when includeAllVariants is set to true

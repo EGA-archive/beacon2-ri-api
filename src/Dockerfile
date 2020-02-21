@@ -27,6 +27,12 @@ RUN addgroup beacon && \
 COPY --from=BUILD usr/local/lib/python3.7/ usr/local/lib/python3.7/
 COPY beacon_api /beacon/beacon_api
 
+RUN apk add --no-cache python3-dev libstdc++ && \
+    apk add --no-cache g++ && \
+    ln -s /usr/include/locale.h /usr/include/xlocale.h && \
+    pip3 install numpy && \
+    pip3 install pandas
+    
 RUN chown -R beacon:beacon /beacon
 WORKDIR /beacon
 USER beacon
