@@ -26,6 +26,8 @@ from .api.access_levels import access_levels_terms_handler
 from .api.services import services_handler
 from .api.samples import sample_request_handler
 
+from .api.samples_test import sample_request_handler_test
+
 
 
 LOG = logging.getLogger(__name__)
@@ -258,8 +260,25 @@ async def beacon_post_samples(request):
     return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)    
     
 
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         TEST: SAMPLES/INDIVIDUALS ENDPOINT OPERATIONS
+# ----------------------------------------------------------------------------------------------------------------------
 
-   
+@routes.get('/samples_test')
+@validate("samples")
+async def beacon_get_samples_test(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given SAMPLES QUERY.
+
+    It uses the '/samples' path and expects some parameters.
+    """
+    db_pool = request.app['pool']
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+
+    sample_response = await sample_request_handler_test(db_pool, processed_request, request)
+    return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         FILTERING TERMS ENDPOINT OPERATIONS
