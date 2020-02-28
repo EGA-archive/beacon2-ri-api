@@ -535,7 +535,6 @@ async def sample_request_handler(db_pool, processed_request, request):
         sample_object = {"version": "beacon-sample-v1.0",
                         "value": {
                             "id": samples_dict[sample]["sample"].get("id"),
-                            "sex": samples_dict[sample]["sample"].get("sex"),
                             "tissue": samples_dict[sample]["sample"].get("tissue"),
                             "description": samples_dict[sample]["sample"].get("description"),
                             "info": { }
@@ -544,6 +543,7 @@ async def sample_request_handler(db_pool, processed_request, request):
         patient_object = {"version": "beacon-individual-v1.0",
                 "value": {
                     "id": samples_dict[sample]["patient"].get("id"),
+                    "sex": samples_dict[sample]["patient"].get("sex"),
                     "ageOfOnset": samples_dict[sample]["patient"].get("ageOfOnset"),
                     "disease": samples_dict[sample]["patient"].get("disease"),
                     "info": { }
@@ -563,7 +563,7 @@ async def sample_request_handler(db_pool, processed_request, request):
             
     # In the response only a subset of variants will be shown, except when includeAllVariants is set to true
     # if that's not the case, we are going to create an object to facilitate the link for getting all of them
-    all_variants_url = { "info": "For optimization reasons, only a subset of variants are shown for each sample. If you would like to get all of them, visit the link below.",
+    all_variants_url = { "info": "For optimization reasons, only a subset of variants is shown for each sample. If you would like to get all of them, visit the link below.",
                         "url": f"https://testv2-beacon-api.ega-archive.org{request.rel_url}&includeAllVariants=true"
                         }
 
