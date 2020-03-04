@@ -225,7 +225,7 @@ def validate(endpoint):
             elif endpoint == "genomic_region":
                 start = obj.get("start")
                 end = obj.get("end")
-                if end < start:
+                if end <= start:
                     raise BeaconBadRequest(obj, request.host, "'end' must be greater than 'start'")
             elif endpoint == "sample_list":
                 further_validation_sample(request, obj)

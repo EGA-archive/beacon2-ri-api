@@ -21,8 +21,7 @@ from .api.exceptions import BeaconUnauthorised, BeaconBadRequest, BeaconForbidde
 from .api.query import query_request_handler
 from .api.info import info_handler
 from .api.filtering_terms import filtering_terms_handler
-from .api.genomic_snp import snp_request_handler
-from .api.genomic_region import region_request_handler
+from .api.genomic_query import genomic_request_handler
 from .api.access_levels import access_levels_terms_handler
 from .api.services import services_handler
 from .api.samples import sample_request_handler
@@ -104,7 +103,7 @@ async def beacon_get_snp(request):
     db_pool = request.app['pool']
     method, processed_request = await parse_request_object(request)
     LOG.info(f"This is the {method} processed request: {processed_request}")
-    query_response = await snp_request_handler(db_pool, processed_request, request)
+    query_response = await genomic_request_handler(db_pool, processed_request, request)
     return web.json_response(query_response, content_type='application/json', dumps=json.dumps)
 
 
@@ -116,7 +115,7 @@ async def beacon_post_snp(request):
     db_pool = request.app['pool']
     method, processed_request = await parse_request_object(request)
     LOG.info(f"This is the {method} processed request: {processed_request}")
-    query_response = await snp_request_handler(db_pool, processed_request, request)
+    query_response = await genomic_request_handler(db_pool, processed_request, request)
     return web.json_response(query_response, content_type='application/json', dumps=json.dumps)
 
 
@@ -135,7 +134,7 @@ async def beacon_get_region(request):
     db_pool = request.app['pool']
     method, processed_request = await parse_request_object(request)
     LOG.info(f"This is the {method} processed request: {processed_request}")
-    query_response = await region_request_handler(db_pool, processed_request, request)
+    query_response = await genomic_request_handler(db_pool, processed_request, request)
     return web.json_response(query_response, content_type='application/json', dumps=json.dumps)
 
 
@@ -147,7 +146,7 @@ async def beacon_post_region(request):
     db_pool = request.app['pool']
     method, processed_request = await parse_request_object(request)
     LOG.info(f"This is the {method} processed request: {processed_request}")
-    query_response = await region_request_handler(db_pool, processed_request, request)
+    query_response = await genomic_request_handler(db_pool, processed_request, request)
     return web.json_response(query_response, content_type='application/json', dumps=json.dumps)
 
 
@@ -169,10 +168,11 @@ async def beacon_get_region(request):
     db_pool = request.app['pool']
     method, processed_request = await parse_request_object(request)
     LOG.info(f"This is the {method} processed request: {processed_request}")
-    if not processed_request.get("end"):
-        response = await snp_request_handler(db_pool, processed_request, request)
-    else: 
-        response = await region_request_handler(db_pool, processed_request, request)
+    # if not processed_request.get("end"):
+    #     response = await snp_request_handler(db_pool, processed_request, request)
+    # else: 
+    #     response = await region_request_handler(db_pool, processed_request, request)
+    response = await genomic_request_handler(db_pool, processed_request, request)
     return web.json_response(response, content_type='application/json', dumps=json.dumps)
 
 
@@ -184,10 +184,11 @@ async def beacon_post_region(request):
     db_pool = request.app['pool']
     method, processed_request = await parse_request_object(request)
     LOG.info(f"This is the {method} processed request: {processed_request}")
-    if not processed_request.get("end"):
-        response = await snp_request_handler(db_pool, processed_request, request)
-    else: 
-        response = await region_request_handler(db_pool, processed_request, request)
+    # if not processed_request.get("end"):
+    #     response = await snp_request_handler(db_pool, processed_request, request)
+    # else: 
+    #     response = await region_request_handler(db_pool, processed_request, request)
+    response = await genomic_request_handler(db_pool, processed_request, request)
     return web.json_response(response, content_type='application/json', dumps=json.dumps)
 
 
@@ -256,6 +257,9 @@ async def beacon_post_samples(request):
     sample_response = await sample_request_handler(db_pool, processed_request, request)
     return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)    
     
+
+
+   
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         FILTERING TERMS ENDPOINT OPERATIONS
@@ -361,6 +365,16 @@ async def initialize(app):
         db_response =  await statement.fetch()
     set_cors(app)
     LOG.info("Initialization done.")
+
+
+# Same function as above but without the DB testing step
+# async def initialize(app):
+#     """Spin up DB a connection pool with the HTTP server."""
+#     # TO DO check if table and Database exist
+#     # and maybe exit gracefully or at least wait for a bit
+#     LOG.debug('Create PostgreSQL connection pool.')
+#     app['pool'] = await init_db_pool()
+#     set_cors(app)
 
 
 # Same function as above but without the DB testing step

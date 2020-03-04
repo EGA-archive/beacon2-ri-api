@@ -1,0 +1,177 @@
+
+#samplesPanel {
+    display: grid;
+    grid-template-columns: 2fr 4fr;
+    grid-template-areas: 'sampleCards variantResults';
+
+    width: 1040px;
+    height: 650px;
+    margin-bottom: 4em;
+    position: relative;
+
+    #samplesWrapper {
+        grid-area: 'sampleCards';
+
+        overflow: scroll;
+        margin: 2em 1em 1.25em 0;
+
+        border-top: 1px solid#E5E8EA;
+        border-bottom: 1px solid#E5E8EA;
+        
+
+
+        &::before {
+            content: '';
+            width: 0;
+            height: 0;
+            display: block;
+            position: absolute;
+            z-index: 100;
+            border: 5px solid transparent;
+            border-bottom-color: 5px solid #E5E8EA;
+            left: 165px;
+            top: 11px;
+            // left: 50%;
+            // top: 10px;
+            transform: translateX(-50%);
+        }
+        &::after {
+            content: '';
+            width: 0;
+            height: 0;
+            display: block;
+            position: absolute;
+            z-index: 100;
+            border: 5px solid transparent;
+            border-top-color: 5px solid #E5E8EA;
+            left: 165px;
+            bottom: -40px;
+            // left: 50%;
+            // top: 10px;
+            transform: translateX(-50%);
+        }
+
+        .resultCard {
+            margin: 1em;
+            padding: 0;
+            width: 300px;
+            border: 1px solid #E5E8EA;
+            border-radius: 5px;
+            color: #636363;
+
+            &:hover h3 {
+                background-color: #CCD0D3;
+            }
+
+            &.selected h3 {
+                background-color: #1D94EE; 
+            }
+
+
+            h3 {
+                font-size: 14px;
+                font-weight: bold;
+                margin: 0;
+                padding: 0.5em;
+                text-align: center;
+                color: white;
+                background-color: #D6DADE;
+                border-radius: 5px 5px 0 0;
+            }
+
+            .cardBody {
+                display: flex;
+                flex-flow: row nowrap;
+                align-items: stretch;
+
+                ul {
+                    padding: 0;
+                    margin: 0;
+                    list-style-type: none;
+                    width: 50%;
+
+                    li {
+                        padding: .1em .5em 0.5em;
+                        border-bottom: 1px solid #EFF3F6;
+                        font-size: 12px;
+                        
+                        &.listTitle {
+                            text-align: center;
+                            font-weight: bold;
+                            padding: 0.5em 1em;
+                            color: #636363;
+                        }
+                        
+                        span {
+                            display: block;
+
+                            &.var {
+                                text-align: left;
+                                font-size: 10px;
+                            }
+                            &.val {
+                                text-align: right;
+                                font-weight: bold;
+                                color: #808080;
+                                font-size: 11px;
+                            }
+                        }
+
+                    }  
+
+                    &:first-child {
+                        border-right: 1px solid #E5E8EA;
+                    }
+                }
+            }
+
+        }
+    }
+
+    // over right some properties specifically to adapt the variantsPanel
+    .resultVariants {
+        grid-area: 'variantResults';
+        display: none;
+
+        &.selected {
+            display: block;
+        }
+        > p {
+            font-size: 15px;
+            font-weight: bold;
+            margin: 0.5em 0.25em;
+        }
+
+        .per-variant {
+            margin: 0 auto;
+            padding: 0;
+
+            @import 'variantsPanel'; 
+
+            .variantsPanel {
+                width: auto; 
+                .content-wrapper {
+                   width: auto; 
+                }
+                .sidebar-wrapper {
+                    flex-shrink: 0;
+                    width: 165px;
+                    .content {
+                        width: auto;
+                    }
+                }
+                .content-wrapper {
+                    width: 100%;
+                    .content {
+                        padding: 2.5em 1.5em 1em 2em;
+                        .header div div.result {
+                            top: 55px;
+                        }
+                    }
+                }
+
+            }
+
+        }
+    }
+}

@@ -129,7 +129,7 @@ def variant_object(processed_request, variant_details, **kwargs):
         "version": "beacon-variant-v1.0",
         "value": {
                 "variantDetails": {
-                    "chromosome": variant_details.get("referenceName"),
+                    "chromosome": variant_details.get("referenceName") if variant_details.get("referenceName") else variant_details.get("chromosome"),
                     "referenceBases": variant_details.get("referenceBases"),
                     "alternateBases": variant_details.get("alternateBases"),
                     "variantType": variant_details.get("variantType"),

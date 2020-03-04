@@ -12,6 +12,7 @@ Endpoints:
 * ``/access_levels`` -  Information about the access levels of the Beacon;
 * ``/filtering terms`` -  Information about existing ontology filters in the Beacon;
 * ``/query`` -  querying/filtering datasets in the Beacon;
+* ``/genomic_query`` -  querying/filtering datasets in the Beacon that contain a certain SNP or that contain variants inside a certain region;
 * ``/genomic_snp`` -  querying/filtering datasets in the Beacon that contain a certain SNP;
 * ``/genomic_region`` -  querying/filtering datasets in the Beacon that contain variants inside a certain region;
 * ``/samples`` -  querying/filtering samples in the Beacon that match certain parameters and/or contain a certain variant;

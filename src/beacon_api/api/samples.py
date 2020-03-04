@@ -22,7 +22,7 @@ from ..utils.polyvalent_functions import prepare_filter_parameter, parse_filters
 from ..utils.polyvalent_functions import fetch_datasets_access, access_resolution
 from ..utils.models import variant_object, variantAnnotation_object
 
-from .genomic_region import fetch_resulting_datasets, fetch_variantAnnotations, snp_resultsHandover
+from .genomic_query import fetch_resulting_datasets, fetch_variantAnnotations, snp_resultsHandover
 
 
 LOG = logging.getLogger(__name__)
@@ -50,7 +50,8 @@ async def transform_record(db_pool, record):
     response = dict(record)
 
     for dispensable in ["id", "variant_id", "chromosome", "reference", "alternate", "start", "end", "unique_id", "sv_length"]:
-        response.pop(dispensable)
+        if response.get(dispensable):
+            response.pop(dispensable)
 
     dataset_name = dict(extra_record).pop("stable_id")   
     response["datasetId"] = dataset_name
@@ -94,8 +95,73 @@ def create_query(processed_request):
 #                                         MAIN FUNCTIONS
 # ----------------------------------------------------------------------------------------------------------------------
 
+async def fetch_target_variant(db_pool, processed_request, valid_datasets):
+    """
+    Fetches the target variant, i.e. a variant that is passed in the request, to get the unique_id
+    it has in the beacon_data_table, which will be useful for arranging it in the response.
+    """
 
-async def create_variantsFound(db_pool, processed_request, records_list, valid_datasets, include_dataset):
+    valid_datasets = ",".join([str(i) for i in valid_datasets])
+
+    # Gathering the variant related parameters passed in the request
+    chromosome = '' if not processed_request.get("referenceName") else processed_request.get("referenceName") 
+    reference = '' if not processed_request.get("referenceBases") else processed_request.get("referenceBases") 
+    alternate = '' if not processed_request.get("alternateBases") else processed_request.get("alternateBases")
+    start = 'null' if not processed_request.get("start") else processed_request.get("start")
+    end = 'null' if not processed_request.get("end") else processed_request.get("end")
+
+    async with db_pool.acquire(timeout=180) as connection:
+        try:
+            # Notice the query is built expecting at least chromosome, reference and start, bu not the other parameters
+            # this has to be discussed and be in syntony with the validation in utils.validate.further_validation_sample()
+            query = f"""SELECT concat_ws(':', chromosome, variant_id, reference, alternate, start, 'end', type) AS unique_id FROM public.beacon_data_table 
+                        WHERE dataset_id IN ({valid_datasets}) 
+                        AND chromosome = '{chromosome}' 
+                        AND reference = '{reference}' 
+                        AND (CASE
+                            WHEN nullif('{alternate}', '') IS NOT NULL THEN alternate = '{alternate}' ELSE true
+                            END)
+                        AND  start = {start} 
+                        AND (CASE
+                            WHEN {end} IS NOT NULL THEN 'end' = {end} ELSE true
+                            END);
+                        """
+                    
+            LOG.debug(f"QUERY target variant(s): {query}")
+            statement = await connection.prepare(query)
+            db_response = await statement.fetch()
+
+        except Exception as e:
+            raise BeaconServerError(f'Query target variant(s) DB error: {e}')
+
+        target_ids = [dict(record)['unique_id'] for record in db_response]
+
+        return target_ids
+
+
+async def get_datasetspersample(db_pool, sample_id):
+    """
+    Fetches the DB to get a list of all the datasets a sample is found in.
+    """
+    datasets_list = []
+    async with db_pool.acquire(timeout=180) as connection:
+        try:
+            query  = f"""SELECT dataset_id FROM {DB_SCHEMA}.beacon_dataset_sample_table
+	                        WHERE sample_id = {sample_id};"""
+
+            LOG.debug(f"QUERY datasets list per sample: {query}")
+            statement = await connection.prepare(query)
+            db_response = await statement.fetch()
+
+            for record in list(db_response):
+                datasets_list.append(record['dataset_id'])
+            return datasets_list
+
+        except Exception as e:
+            raise BeaconServerError(f'Query datasets list per sample DB error: {e}')
+
+
+async def create_variantsFound(db_pool, processed_request, records_list, valid_datasets, include_dataset, sample_id):
     """
     Function based on the variantsFound creation done in the genomicRegion endpoint.
     Takes a list of records of variants and fetches the datasetAlleleResponses to 
@@ -103,21 +169,41 @@ async def create_variantsFound(db_pool, processed_request, records_list, valid_d
 
     Depending on the includeAllVariants parameter, this is done by only a subset of all
     the variants (5) or all of them.
-   """
+    """
     dataset_ids = ",".join([str(i) for i in valid_datasets])
 
+    # In the case that the query filters by variant, we want to show the specific variant(s) at the beggining of the list in the response
+    # For doing this, first we want to fetch the variant_identifier(s), which will come in handy for achieving this goal
+    target_ids = ""
+    target_variant_switch = False
+    if processed_request.get('referenceName'):  # easy way to check if the query contains variant info
+        target_ids = await fetch_target_variant(db_pool, processed_request, valid_datasets)
+        target_variant_switch = True
+
+
     # Fetch the records 
-    variant_records = records_list
-    # Decide to fetch all variants or just a random subset
+    all_variant_records = records_list
+
+    # Decide to fetch all variants or just a subset (random if not target variants)
     include_all_variants = "false" if not processed_request.get("includeAllVariants") else processed_request.get("includeAllVariants")
     reduced_response = True if include_all_variants == "false" else False
     if reduced_response:
-        variant_records = random.sample(variant_records, 5)
+        if not target_variant_switch:
+            variant_records = random.sample(all_variant_records, 5)
+        else:
+            variant_records = [record for record in all_variant_records if record["unique_id"] in target_ids]
+            if len(variant_records) < 5:
+                variant_records += random.sample(all_variant_records, 5 - len(variant_records))
+
 
     # Then iterate through the variant records and create the datasetAlleleResponses object
     variants_dict = {}
     for record in variant_records:
         variant_identifier = record["unique_id"]
+
+        LOG.debug(f"variant_identifier: {variant_identifier}")
+        LOG.debug(f"record: {record}")
+        
         variants_dict[variant_identifier] = {}
         variants_dict[variant_identifier]["variantDetails"] = {
             "variantId": record.get("variant_id"),
@@ -130,13 +216,20 @@ async def create_variantsFound(db_pool, processed_request, records_list, valid_d
         }
         variants_dict[variant_identifier]["datasetAlleleResponses"] = []
 
-        # Fetch the datasets info
+        # Fetch the datasets info (taking into account only the datasets where the sample is found)
         async with db_pool.acquire(timeout=180) as connection:
             try:
-                query  = f"""SELECT * FROM (SELECT concat_ws(':', chromosome, variant_id, reference, alternate, start, 'end', type) AS unique_id, *
-                                FROM public.beacon_data_table) AS tmp_tamble
-                                WHERE dataset_id IN ({dataset_ids}) 
-                                AND unique_id = '{variant_identifier}';"""
+                query  = f"""SELECT * FROM public.beacon_data_table d
+                                JOIN public.beacon_dataset_sample_table c
+                                ON d.dataset_id = c.dataset_id
+                                WHERE d.dataset_id IN ({dataset_ids}) 
+                                AND concat_ws(':', chromosome, variant_id, reference, alternate, start, 'end', type) = '{variant_identifier}'
+                                AND sample_id = {sample_id};"""
+
+                # query  = f"""SELECT * FROM (SELECT concat_ws(':', chromosome, variant_id, reference, alternate, start, 'end', type) AS unique_id, *
+                #                 FROM public.beacon_data_table) AS tmp_tamble
+                #                 WHERE dataset_id IN ({dataset_ids}) 
+                #                 AND unique_id = '{variant_identifier}';"""
 
                 LOG.debug(f"QUERY datasets info per variant: {query}")
                 statement = await connection.prepare(query)
@@ -152,8 +245,10 @@ async def create_variantsFound(db_pool, processed_request, records_list, valid_d
     if include_dataset in ['ALL', 'MISS']:
         for variant in variants_dict:
             list_hits = [record["internalId"] for record in variants_dict[variant]["datasetAlleleResponses"]]
-            list_all = valid_datasets
-            accessible_missing = [int(x) for x in list_all if x not in list_hits]
+            list_all = await get_datasetspersample(db_pool, sample_id)
+            list_all_valid = [x for x in list_all if x in valid_datasets]
+            # list_all = valid_datasets  # this was taking into account all datasets, not only the ones that contain the sample
+            accessible_missing = [int(x) for x in list_all_valid if x not in list_hits]
             miss_datasets = await fetch_resulting_datasets(db_pool, "", misses=True, accessible_missing=accessible_missing)
             variants_dict[variant]["datasetAlleleResponses"] += miss_datasets
 
@@ -172,7 +267,11 @@ async def create_variantsFound(db_pool, processed_request, records_list, valid_d
             "info": {}
         }
 
-        response.append(final_variantsFound_element)
+        # If 'variant' -which is the unique_id of the variant- is in target_ids, do not append, but insert at the beggining
+        if variant in target_ids:
+            response.insert(0, final_variantsFound_element)
+        else:
+            response.append(final_variantsFound_element)
 
     return response
 
@@ -378,7 +477,7 @@ async def get_samples(db_pool, filters_dict):
 
 async def sample_request_handler(db_pool, processed_request, request):
     """
-    Execute query with SQL funciton.
+    Execute query with SQL function.
     """
 
     # First we are going to get the lists of the available datasets
@@ -386,11 +485,11 @@ async def sample_request_handler(db_pool, processed_request, request):
 
         ##### TEST
         # access_type, accessible_datasets = access_resolution(request, request['token'], request.host, public_datasets, registered_datasets, controlled_datasets)
-        # LOG.info(f"The user has this types of acces: {access_type}")
+        # LOG.info(f"The user has this types of access: {access_type}")
         # query_parameters[-2] = ",".join([str(id) for id in accessible_datasets])
         ##### END TEST
 
-    # NOTICE that rigth now we will just focus on the PUBLIC ones to easen the process, so we get all their ids and add them to the query
+    # NOTICE that right now we will just focus on the PUBLIC ones to ease the process, so we get all their ids and add them to the query
     available_datasets = public_datasets
 
     # We will output the datasets depending on the includeDatasetResponses parameter
@@ -415,8 +514,8 @@ async def sample_request_handler(db_pool, processed_request, request):
     samples_dict = await get_samples(db_pool, filters_dict)
 
     # we'll need to apply the dataset related filters (if there is any) so we are going to generate a list
-    # with the ones that pass the filters
-    valid_datasets = await get_valid_datasets(db_pool, dataset_filters)
+    # with the ones that pass the dataset_filters filters
+    valid_datasets = await  get_valid_datasets(db_pool, dataset_filters)
 
     # The intersection between the datasets that are available by access and the datasets that have passed the filters
     # is the final list of valid_datasets
@@ -436,7 +535,6 @@ async def sample_request_handler(db_pool, processed_request, request):
         sample_object = {"version": "beacon-sample-v1.0",
                         "value": {
                             "id": samples_dict[sample]["sample"].get("id"),
-                            "sex": samples_dict[sample]["sample"].get("sex"),
                             "tissue": samples_dict[sample]["sample"].get("tissue"),
                             "description": samples_dict[sample]["sample"].get("description"),
                             "info": { }
@@ -445,13 +543,14 @@ async def sample_request_handler(db_pool, processed_request, request):
         patient_object = {"version": "beacon-individual-v1.0",
                 "value": {
                     "id": samples_dict[sample]["patient"].get("id"),
+                    "sex": samples_dict[sample]["patient"].get("sex"),
                     "ageOfOnset": samples_dict[sample]["patient"].get("ageOfOnset"),
                     "disease": samples_dict[sample]["patient"].get("disease"),
                     "info": { }
                     }
                 }
 
-        variantsFound_object = await create_variantsFound(db_pool, processed_request, samples_dict[sample]["variants"], valid_datasets, include_dataset)
+        variantsFound_object = await create_variantsFound(db_pool, processed_request, samples_dict[sample]["variants"], valid_datasets, include_dataset, samples_dict[sample]["sample"].get("id"))
 
         # Depending on the endpoint, the order changes
         endpoint = request.path
@@ -464,7 +563,7 @@ async def sample_request_handler(db_pool, processed_request, request):
             
     # In the response only a subset of variants will be shown, except when includeAllVariants is set to true
     # if that's not the case, we are going to create an object to facilitate the link for getting all of them
-    all_variants_url = { "info": "For optimization reasons, only a subset of variants are shown for each sample. If you would like to get all of them, visit the link below.",
+    all_variants_url = { "info": "For optimization reasons, only a subset of variants is shown for each sample. If you would like to get all of them, visit the link below.",
                         "url": f"https://testv2-beacon-api.ega-archive.org{request.rel_url}&includeAllVariants=true"
                         }
 

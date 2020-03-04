@@ -18,6 +18,8 @@ services:
     image: postgres:9.6-alpine
     volumes:
       - ./db:/docker-entrypoint-initdb.d
+    ports:
+      - "5049:5432"  # to be able to connect to the db from outside the Docker container (dev reasons)
     networks:
       - priv
 
@@ -34,6 +36,7 @@ services:
       - DATABASE_NAME=beacon
       - DATABASE_SCHEMA=public
     volumes:
+      - ../src/beacon_api:/beacon/beacon_api  # we do that to be able to modify the code and update the container "live"
       - ./beacon/beacon.conf:/beacon/beacon_api/conf/config.ini
       - ./beacon/access_levels.yml:/beacon/beacon_api/utils/access_levels.yml
     ports:
@@ -41,6 +44,7 @@ services:
     networks:
       - priv
       - pub
+    # entrypoint: ['/bin/sleep','100000000']  # we don't run the beacon just after starting, we'll do it manually 
 
   ui:
     build: ../ui
@@ -51,6 +55,7 @@ services:
       - BEACON_UI_CONF=/beacon/conf.ini
     volumes:
       - ./beacon/ui.conf:/beacon/conf.ini
+      - ../ui/beaconui:/beacon/beaconui   # we do that to be able to modify the code and update the container "live"
       - ../ui/static:/beacon/static
       - ../ui/templates:/beacon/templates
       - ./beacon/beacon_project_small.png:/beacon/static/logo.png

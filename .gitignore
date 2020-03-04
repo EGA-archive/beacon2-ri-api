@@ -112,3 +112,6 @@ venv.bak/
 
 # Grunt
 /ui/grunt
+
+# Tests tmp
+/tests/tmp/

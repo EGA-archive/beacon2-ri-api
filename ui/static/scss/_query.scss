@@ -252,8 +252,8 @@ form#query {
 			section {
 				padding: 0.5em 1em 1em;
 				margin: 0.5em 0;
-				display:flex;
-				align-items:center;
+				display: flex;
+				align-items: stretch;
 			
 				input { 
 					flex-grow: 1;
@@ -272,7 +272,10 @@ form#query {
 					border: 1px solid #DDDDDD;
 					line-height: 1.15;
 				}
-				i { margin-left:1ex; }
+				i { 
+					margin-left:1ex;
+					align-self: center;
+				}
 				/* input + i { margin-left:1ex; } */
 			}
 		}

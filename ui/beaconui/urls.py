@@ -6,7 +6,8 @@ from .views import (BeaconQueryView,
                     BeaconRegionView,
                     BeaconAccessLevelsView,
                     BeaconFilteringTermsView,
-                    TestingView)
+                    TestingView,
+                    BeaconSamplesView)
 from .auth import BeaconLoginView, BeaconLogoutView
 
 urlpatterns = [
@@ -14,6 +15,7 @@ urlpatterns = [
     path('', BeaconQueryView.as_view(), name='query'),
     path('snp', BeaconSNPView.as_view(), name='snp'),
     path('region', BeaconRegionView.as_view(), name='region'),
+    path('samples', BeaconSamplesView.as_view(), name='samples'),
     # Access Levels
     path('access-levels', BeaconAccessLevelsView.as_view(), name='levels'),
     # Filtering terms

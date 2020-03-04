@@ -206,3 +206,13 @@ class TestingView(View):
         ctx = {}
         return render(request, template_name, ctx)
 
+
+class BeaconSamplesView(BaseView):
+    formbase = 'QuerySamplesForm'
+    api_endpoint = conf.CONF.get('beacon-api', 'samples')
+    api_endpoint_error = '[beacon-api] samples endpoint misconfigured'
+    # cheat_data = {
+    #     'query': "1 : 14900 - 15000",
+    #     'assemblyId': 'grch37',
+    #     'includeDatasetResponses': 'ALL',
+    # }

@@ -279,11 +279,11 @@ ALTER TABLE public.beacon_sample_table
 ADD COLUMN patient_id  INT REFERENCES patient_table (id);
 
 -- Insert mock data into patient_table
-INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient1', 'female', '61', 'Lung cancer');
-INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient2', 'male', '70', 'Kidney cancer');
+INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient1', 'female', '61', 'lung cancer');
+INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient2', 'male', '70', 'kidney cancer');
 INSERT INTO public.patient_table (stable_id, sex, age_of_onset) VALUES ('patient3', 'female', '45');
-INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient4', 'male', '82', 'Hepatitis');
-INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient5', 'male', '65', 'Lung cancer');
+INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient4', 'male', '82', 'hepatitis');
+INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient5', 'male', '65', 'lung cancer');
 
 
 -- Tables related to the access_levels endpoint
@@ -312,14 +312,19 @@ CREATE TABLE public.ontology_term_table (
 
 -- Insert mock data
 INSERT INTO public.ontology_term_table (id, ontology, term, target_table, column_name, column_value, additional_comments, label) VALUES 
-  (1,E'sex',E'1',E'public.beacon_sample_table',E'sex',E'female',NULL,NULL),
-  (2,E'sex',E'2',E'public.beacon_sample_table',E'sex',E'male',NULL,NULL),
-  (3,E'tissue',E'1',E'public.beacon_sample_table',E'tissue',E'liver',NULL,NULL),
-  (4,E'tissue',E'2',E'public.beacon_sample_table',E'tissue',E'lung',NULL,NULL),
-  (5,E'tissue',E'3',E'public.beacon_sample_table',E'tissue',E'kidney',NULL,NULL),
-  (6,E'disease',E'1',E'public.patient_table',E'disease',E'lung cancer',NULL,NULL),
-  (7,E'disease',E'2',E'public.patient_table',E'disease',E'kidney cancer',NULL,NULL),
-  (8,E'disease',E'3',E'public.patient_table',E'disease',E'hepatitis',NULL,NULL);
+  (1,E'sex',E'1',E'public.beacon_sample_table',E'sex',E'female',NULL,E'Female'),
+  (2,E'sex',E'2',E'public.beacon_sample_table',E'sex',E'male',NULL,E'Male'),
+  (3,E'tissue',E'1',E'public.beacon_sample_table',E'tissue',E'liver',NULL,E'Liver sample'),
+  (4,E'tissue',E'2',E'public.beacon_sample_table',E'tissue',E'lung',NULL,E'Lung sample'),
+  (5,E'tissue',E'3',E'public.beacon_sample_table',E'tissue',E'kidney',NULL,E'Kidney sample'),
+  (6,E'disease',E'1',E'public.patient_table',E'disease',E'lung cancer',NULL,E'Lung cancer'),
+  (7,E'disease',E'2',E'public.patient_table',E'disease',E'kidney cancer',NULL,E'Kidney cancer'),
+  (8,E'disease',E'3',E'public.patient_table',E'disease',E'hepatitis',NULL,E'Hepatitis'),
+  (9,E'GO',E'0030237',E'public.beacon_sample_table',E'sex',E'female',NULL,E'Female'),
+  (10,E'GO',E'0030238',E'public.beacon_sample_table',E'sex',E'male',NULL,E'Male'),
+  (11,E'HPO',E'0009726',E'public.patient_table',E'disease',E'kidney cancer',NULL,E'Kidney cancer'),
+  (12,E'HPO',E'0100526',E'public.patient_table',E'disease',E'lung cancer',NULL,E'Lung cancer'),
+  (13,E'HPO',E'0012115',E'public.patient_table',E'disease',E'hepatitis',NULL,E'Hepatitis');
 
 -- Create views
 CREATE VIEW public.ontology_term_column_correspondance AS
