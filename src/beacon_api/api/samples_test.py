@@ -99,9 +99,20 @@ async def create_variantsFound_object(db_pool, variants_df, include_dataset, pro
     """
     Create the raw object and shape as the spec at the same time by calling other functions.
     """
-    by_dataset = variants_df.groupby('unique_id')
+    # Decide to show all variants or just a subset
+    include_all_variants = "false" if not processed_request.get("includeAllVariants") else processed_request.get("includeAllVariants")
+    reduced_response = True if include_all_variants == "false" else False
+    all_variants = list(variants_df.unique_id)
+    if reduced_response and len(all_variants) > 5:
+        all_variants = list(variants_df.unique_id)
+        subset_variants = random.sample(all_variants, 5)
+        variants_df = variants_df[variants_df.unique_id.isin(subset_variants)]
+
+    by_variant = variants_df.groupby('unique_id')
+
+    # Iterate and create the objects
     variants_found_object = []
-    for variant_id, df in by_dataset:
+    for variant_id, df in by_variant:
         # gather the raw info
         variant_info_raw = df[variant_columns].drop_duplicates().to_dict('r')[0]
         datasetAlleleResponses_raw = df[dataset_columns].drop_duplicates().to_dict('r')
@@ -118,6 +129,10 @@ async def create_variantsFound_object(db_pool, variants_df, include_dataset, pro
             "end": variant_info_raw.get("end")
         }
         
+        problem = variant_info_raw.get("end")
+        print(f"problem: {problem} type: {type(problem)}")
+
+
         # shape datasetAlleleResponse
         
         # If  the includeDatasets option is ALL or MISS we have to "create" the miss datasets (which will be tranformed also) and join them to the datasetAlleleResponses
@@ -147,12 +162,11 @@ async def create_variantsFound_object(db_pool, variants_df, include_dataset, pro
         }
         
         variants_found_object.append(variant_found)
-        
     return variants_found_object
 
 
 
-def create_individuals_object(db_pool, main_df, include_dataset, processed_request, valid_datasets):
+async def create_individuals_object(db_pool, main_df, include_dataset, processed_request, valid_datasets):
     by_individual = main_df.groupby('patient_id')
 
     individual_responses_list = []
@@ -187,10 +201,9 @@ def create_individuals_object(db_pool, main_df, include_dataset, processed_reque
         # individual_response['variantsFound'] = variants_raw
         
         variants_df = individual_df[variant_and_dataset_columns].drop_duplicates()
-        individual_response['variantsFound'] = create_variantsFound_object(db_pool, variants_df, include_dataset, processed_request, valid_datasets)
+        individual_response['variantsFound'] = await create_variantsFound_object(db_pool, variants_df, include_dataset, processed_request, valid_datasets)
         
         individual_responses_list.append(individual_response)
-        
     return individual_responses_list
 
 
@@ -341,10 +354,11 @@ async def get_results(db_pool, filters_dict, valid_datasets, processed_request, 
                 response_arranged = await create_individuals_object(db_pool, response_df, include_dataset, processed_request, valid_datasets)
             else:
                 response_arranged = await create_samples_object(db_pool, response_df, include_dataset, processed_request, valid_datasets)
-
+            LOG.debug(f"Arrangement done for the {endpoint} endpoint.")
             # Returning the arrange response
             return response_arranged
         else:
+            LOG.debug(f"No response for this query on the {endpoint} endpoint.")
             return []
 
 
@@ -477,5 +491,4 @@ async def sample_request_handler_test(db_pool, processed_request, request):
                         
                         }
                     }
-    
     return beacon_response
