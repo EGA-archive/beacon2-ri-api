@@ -342,13 +342,15 @@ async def get_results(db_pool, filters_dict, valid_datasets, processed_request, 
         except Exception as e:
             raise BeaconServerError(f'Query samples/individuals DB error: {e}')
         
+        endpoint = request.path
         if response: 
             # Converting the response to a DataFrame 
             response_df = pd.DataFrame(response)
+            # Making sure we don't have NaN values
+            response_df = response_df.where(response_df.notnull(), None)
 
             # Calling the functions to create the objects
             # Depending on the endpoint, the function changes
-            endpoint = request.path
             LOG.debug(f"Arranging the response for the {endpoint} endpoint.")
             if endpoint == '/individuals_test':
                 response_arranged = await create_individuals_object(db_pool, response_df, include_dataset, processed_request, valid_datasets)
