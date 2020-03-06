@@ -129,10 +129,6 @@ async def create_variantsFound_object(db_pool, variants_df, include_dataset, pro
             "end": variant_info_raw.get("end")
         }
         
-        problem = variant_info_raw.get("end")
-        print(f"problem: {problem} type: {type(problem)}")
-
-
         # shape datasetAlleleResponse
         
         # If  the includeDatasets option is ALL or MISS we have to "create" the miss datasets (which will be tranformed also) and join them to the datasetAlleleResponses
@@ -352,7 +348,7 @@ async def get_results(db_pool, filters_dict, valid_datasets, processed_request, 
             # Calling the functions to create the objects
             # Depending on the endpoint, the function changes
             LOG.debug(f"Arranging the response for the {endpoint} endpoint.")
-            if endpoint == '/individuals_test':
+            if endpoint == '/individuals':
                 response_arranged = await create_individuals_object(db_pool, response_df, include_dataset, processed_request, valid_datasets)
             else:
                 response_arranged = await create_samples_object(db_pool, response_df, include_dataset, processed_request, valid_datasets)
@@ -398,7 +394,7 @@ async def get_valid_datasets(db_pool, dataset_filters):
 #                                         HANDLER FUNCTION
 # ----------------------------------------------------------------------------------------------------------------------
 
-async def sample_request_handler_test(db_pool, processed_request, request):
+async def sample_ind_request_handler(db_pool, processed_request, request):
     """
     Execute query with SQL function.
     """
