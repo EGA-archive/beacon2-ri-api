@@ -1,37 +1,38 @@
 ##########################
 ## Build env
 ##########################
-FROM python:3.7-alpine3.9 AS BUILD
+FROM python:buster AS BUILD
 
-RUN apk add gcc postgresql-dev musl-dev libressl-dev libffi-dev make
-RUN pip install --upgrade pip
+ENV DEBIAN_FRONTEND noninteractive
 
 COPY requirements.txt /tmp/requirements.txt
-RUN pip install -r /tmp/requirements.txt
+
+RUN apt-get update; \
+    apt-get upgrade -y; \
+    apt-get install -y --no-install-recommends \
+    ca-certificates pkg-config patch git gcc g++ make \
+    bzip2 libssl-dev libffi-dev libpq-dev \
+    ; \
+    rm -rf /var/lib/apt/lists/*; \
+    pip install --upgrade pip; \
+    pip install -r /tmp/requirements.txt
 
 ##########################
 ## Final image
 ##########################
-FROM python:3.7-alpine3.9
+FROM python:buster
 
 LABEL maintainer "CRG System Developers"
 LABEL org.label-schema.schema-version="2.0"
 LABEL org.label-schema.vcs-url="https://github.com/EGA-archive/beacon-2.x/"
 
-RUN apk add --no-cache --update libressl postgresql-libs
+COPY --from=BUILD /usr/local/lib              /usr/local/lib
 
-RUN addgroup beacon && \
-    adduser -D -G beacon beacon && \
+RUN groupadd beacon && \
+    useradd -M -g beacon beacon && \
     mkdir /beacon
 
-COPY --from=BUILD usr/local/lib/python3.7/ usr/local/lib/python3.7/
 COPY beacon_api /beacon/beacon_api
-
-RUN apk add --no-cache python3-dev libstdc++ && \
-    apk add --no-cache g++ && \
-    ln -s /usr/include/locale.h /usr/include/xlocale.h && \
-    pip3 install numpy && \
-    pip3 install pandas
     
 RUN chown -R beacon:beacon /beacon
 WORKDIR /beacon
