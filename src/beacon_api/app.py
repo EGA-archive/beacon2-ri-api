@@ -24,7 +24,8 @@ from .api.filtering_terms import filtering_terms_handler
 from .api.genomic_query import genomic_request_handler
 from .api.access_levels import access_levels_terms_handler
 from .api.services import services_handler
-from .api.samples import sample_request_handler
+# from .api.samples.bak import sample_request_handler
+from .api.samples_ind import sample_ind_request_handler
 
 
 
@@ -196,9 +197,37 @@ async def beacon_post_region(request):
 #                                         SAMPLES ENDPOINT OPERATIONS
 # ----------------------------------------------------------------------------------------------------------------------
 
+# @routes.get('/samples')
+# @validate("samples")
+# async def beacon_get_samples(request):
+#     """
+#     Use the HTTP protocol 'GET' to return a Json object of a response to a given SAMPLES QUERY.
+
+#     It uses the '/samples' path and expects some parameters.
+#     """
+#     db_pool = request.app['pool']
+#     method, processed_request = await parse_request_object(request)
+#     LOG.info(f"This is the {method} processed request: {processed_request}")
+
+#     sample_response = await sample_request_handler(db_pool, processed_request, request)
+#     return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)
+
+
+
+# @routes.post('/samples')
+# @validate("samples")
+# async def beacon_post_samples(request):
+#     """Find samples using POST endpoint."""
+#     db_pool = request.app['pool']
+#     method, processed_request = await parse_request_object(request)
+#     LOG.info(f"This is the {method} processed request: {processed_request}")
+
+#     sample_response = await sample_request_handler(db_pool, processed_request, request)
+#     return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)    
+    
 @routes.get('/samples')
 @validate("samples")
-async def beacon_get_samples(request):
+async def beacon_get_samples_test(request):
     """
     Use the HTTP protocol 'GET' to return a Json object of a response to a given SAMPLES QUERY.
 
@@ -208,58 +237,82 @@ async def beacon_get_samples(request):
     method, processed_request = await parse_request_object(request)
     LOG.info(f"This is the {method} processed request: {processed_request}")
 
-    sample_response = await sample_request_handler(db_pool, processed_request, request)
+    sample_response = await sample_ind_request_handler(db_pool, processed_request, request)
     return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)
-
 
 
 @routes.post('/samples')
 @validate("samples")
-async def beacon_post_samples(request):
+async def beacon_get_samples_test(request):
     """Find samples using POST endpoint."""
     db_pool = request.app['pool']
     method, processed_request = await parse_request_object(request)
     LOG.info(f"This is the {method} processed request: {processed_request}")
 
-    sample_response = await sample_request_handler(db_pool, processed_request, request)
-    return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)    
-    
+    sample_response = await sample_ind_request_handler(db_pool, processed_request, request)
+    return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         INDIVIDUAL ENDPOINT OPERATIONS
 # ----------------------------------------------------------------------------------------------------------------------
 
 # Note that we use the samples operations since both endpoints are almost the same
+# @routes.get('/individuals')
+# @validate("samples")
+# async def beacon_get_samples(request):
+#     """
+#     Use the HTTP protocol 'GET' to return a Json object of a response to a given INDIVIDUALS QUERY.
+
+#     It uses the '/individuals' path and expects some parameters.
+#     """
+#     db_pool = request.app['pool']
+#     method, processed_request = await parse_request_object(request)
+#     LOG.info(f"This is the {method} processed request: {processed_request}")
+
+#     sample_response = await sample_request_handler(db_pool, processed_request, request)
+#     return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)
+
+
+
+# @routes.post('/individuals')
+# @validate("samples")
+# async def beacon_post_samples(request):
+#     db_pool = request.app['pool']
+#     method, processed_request = await parse_request_object(request)
+#     LOG.info(f"This is the {method} processed request: {processed_request}")
+
+#     sample_response = await sample_request_handler(db_pool, processed_request, request)
+#     return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)    
+
+
 @routes.get('/individuals')
 @validate("samples")
-async def beacon_get_samples(request):
+async def beacon_get_samples_test(request):
     """
-    Use the HTTP protocol 'GET' to return a Json object of a response to a given INDIVIDUALS QUERY.
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given SAMPLES QUERY.
 
-    It uses the '/individuals' path and expects some parameters.
+    It uses the '/samples' path and expects some parameters.
     """
     db_pool = request.app['pool']
     method, processed_request = await parse_request_object(request)
     LOG.info(f"This is the {method} processed request: {processed_request}")
 
-    sample_response = await sample_request_handler(db_pool, processed_request, request)
+    sample_response = await sample_ind_request_handler(db_pool, processed_request, request)
     return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)
-
 
 
 @routes.post('/individuals')
 @validate("samples")
-async def beacon_post_samples(request):
+async def beacon_get_samples_test(request):
+    """Find samples using POST endpoint."""
     db_pool = request.app['pool']
     method, processed_request = await parse_request_object(request)
     LOG.info(f"This is the {method} processed request: {processed_request}")
 
-    sample_response = await sample_request_handler(db_pool, processed_request, request)
-    return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)    
-    
+    sample_response = await sample_ind_request_handler(db_pool, processed_request, request)
+    return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)
 
-
-   
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         FILTERING TERMS ENDPOINT OPERATIONS
