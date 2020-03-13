@@ -19,7 +19,7 @@
                 </ul>
                 {% endwith %}
                 
-                {% with result.individual.value as individual %}
+                {% with result.individuals.0.value as individual %}
                 <ul>
                     <li class="listTitle">Individual</li>
                     {% for var, val in individual.items %}
