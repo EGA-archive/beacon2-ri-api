@@ -464,8 +464,7 @@ async def sample_ind_request_handler(db_pool, processed_request, request):
                     },
                     "value": { 'beaconId': __id__,
                         'apiVersion': __apiVersion__,
-                        'exists': '',
-                        # 'exists': any([dataset['exists'] for result in results for variant in result["variantsFound"] for dataset in variant["datasetAlleleResponses"]]),
+                        'exists': any([dataset['exists'] for result in results for variant in result["variantsFound"] for dataset in variant["datasetAlleleResponses"]]),
                         'request': { "meta": { "request": { 
                                                             "Sample": "beacon-sample-v1",
                                                             "Variant": ["beacon-variant-v0.1"]  + variant,
