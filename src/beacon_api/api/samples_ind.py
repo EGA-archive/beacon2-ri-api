@@ -400,7 +400,7 @@ async def sample_ind_request_handler(db_pool, processed_request, request):
     """
 
     # First we are going to get the lists of the available datasets
-    public_datasets, registered_datasets, controlled_datasets = await fetch_datasets_access(db_pool, processed_request.get("datasetIds"))
+    public_datasets, registered_datasets, controlled_datasets = await fetch_datasets_access(db_pool, str(processed_request.get("datasetIds")))
 
         ##### TEST
         # access_type, accessible_datasets = access_resolution(request, request['token'], request.host, public_datasets, registered_datasets, controlled_datasets)
