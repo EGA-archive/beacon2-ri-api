@@ -134,7 +134,8 @@ def variant_object(processed_request, variant_details, **kwargs):
                     "alternateBases": variant_details.get("alternateBases"),
                     "variantType": variant_details.get("variantType"),
                     "start": variant_details.get("start"),
-                    "end": variant_details.get("end")
+                    "end": variant_details.get("end"),
+                    "assemblyId": processed_request.get("assemblyId")
                 },
                 "info": {'rsID': variant_details.get("variantId")},
             }
@@ -247,7 +248,169 @@ def variantAnnotation_object(processed_request, cellBase, dbSNP, clinVar):
 #                                                    SAMPLE 
 # ----------------------------------------------------------------------------------------------------------------------
 
+def biosample_object(sample_info, processed_request):
+    """
+    """
+    
+    # Accepted alternative models
+    accepted_list = ["ga4gh-phenopacket-biosample-v0.1"]
+
+    # default
+    beacon_biosample_v1_0 = {
+    "version": "beacon-biosample-v1.0",
+    "value": 
+        {
+            "id": sample_info.get("sample_stable_id"),
+            "tissue": sample_info.get("tissue"),
+            "description": sample_info.get("description"),
+            "info": { }
+        }
+    }
+
+    # alternative
+    ga4gh_phenopacket_biosample_v0_1 = {
+        "version": "ga4gh-phenopacket-biosample-v0.1",
+        "value": 
+            { 
+                "id": sample_info.get("sample_stable_id"),
+
+                "individualId": "",
+
+                "description": sample_info.get("description"),
+
+                "sampledTissue": {
+                    "id": "",
+                    "label": sample_info.get("tissue")
+                },
+                
+                "ageOfIndividualAtCollection": {
+                    "age": ""
+                },
+                
+                "tumorProgression": {
+                    "id": "",
+                    "label": ""
+                },
+                
+                "phenotypicFeatures": {
+                    "id": "",
+                    "label": ""
+                },
+
+                "procedure": {
+                    "code": {
+                    "id": "",
+                    "label": ""
+                    }
+                },
+
+                "isControlSample": None
+            }
+        }
+
+        
+
+    # Equivalence dict
+    name2dict = {
+        "ga4gh-phenopacket-biosample-v0.1" : ga4gh_phenopacket_biosample_v0_1
+    }
+
+    # Request
+    alternatives = processed_request.get("biosample").split(",") if processed_request.get("biosample") else []
+    if "beacon-biosample-v1.0" in alternatives:
+        alternatives.remove("beacon-biosample-v1.0")
+
+    if not alternatives:
+        return {"default": beacon_biosample_v1_0,
+                "alternativeSchemas": [] }
+    else:
+        alt_resp_list = [name2dict[alt] for alt in alternatives if alt in accepted_list]
+        return {"default": beacon_biosample_v1_0,
+                "alternativeSchemas": alt_resp_list }
+
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                                    INDIVIDUAL 
 # ----------------------------------------------------------------------------------------------------------------------
+
+
+def individual_object(individual_info, processed_request):
+    """
+    """
+    
+    # Accepted alternative models
+    accepted_list = ["ga4gh-phenopacket-individual-v0.1"]
+
+    # default
+    beacon_individual_v1_0 = {
+    "version": "beacon-individual-v1.0",
+    "value": 
+        {
+            "id": individual_info.get("patient_stable_id"),
+            "sex": individual_info.get("sex"),
+            "ageOfOnset": individual_info.get("age_of_onset"),
+            "disease": individual_info.get("disease"),
+            "info": { }
+        }
+    }
+
+    # alternative
+    ga4gh_phenopacket_individual_v0_1 = {
+        "version": "ga4gh-phenopacket-individual-v0.1",
+        "value": 
+            {
+                "individual": {
+                    "id": individual_info.get("patient_stable_id"),
+                    "ageAtBaseline": {
+                        "age": ""
+                    },
+                    "sex": individual_info.get("sex")
+                },
+
+                "phenotypicFeatures": [{
+                "ethnicity": {
+                    "id": "",
+                    "label": ""
+                    },
+                }, {
+                "geographicOrigin": {
+                    "id": "",
+                    "label": ""
+                }
+                }],
+
+                "diseases": [{
+                    "term": {
+                    "id": "",
+                    "label": individual_info.get("disease")
+                    },
+                    "ageOfOnset": {
+                        "age": individual_info.get("age_of_onset")
+                    },
+                    "diseaseStage": [{
+                    "id": "",
+                    "label": ""
+                    }],
+                }]
+            }
+        }
+
+
+    # Equivalence dict
+    name2dict = {
+        "ga4gh-phenopacket-individual-v0.1" : ga4gh_phenopacket_individual_v0_1
+    }
+
+    # Request
+    alternatives = processed_request.get("individual").split(",") if processed_request.get("individual") else []
+    if "beacon-individual-v1.0" in alternatives:
+        alternatives.remove("beacon-individual-v1.0")
+
+    if not alternatives:
+        return {"default": beacon_individual_v1_0,
+                "alternativeSchemas": [] }
+    else:
+        alt_resp_list = [name2dict[alt] for alt in alternatives if alt in accepted_list]
+        return {"default": beacon_individual_v1_0,
+                "alternativeSchemas": alt_resp_list }

@@ -21,7 +21,7 @@ from ..conf.config import DB_SCHEMA
 from ..utils.polyvalent_functions import create_prepstmt_variables, filter_exists, datasetHandover
 from ..utils.polyvalent_functions import prepare_filter_parameter, parse_filters_request
 from ..utils.polyvalent_functions import fetch_datasets_access, access_resolution
-from ..utils.models import variant_object, variantAnnotation_object
+from ..utils.models import variant_object, variantAnnotation_object, biosample_object, individual_object
 
 from .genomic_query import fetch_resulting_datasets, fetch_variantAnnotations, snp_resultsHandover
 
@@ -172,25 +172,10 @@ async def create_individuals_object(db_pool, main_df, include_dataset, processed
         individual_response = {}
 
         individual_object = individual_df[individual_columns].drop_duplicates().to_dict('r')[0]
-        individual_response['individual'] =  {"version": "beacon-individual-v1.0",
-                "value": {
-                    "id": individual_object.get("patient_stable_id"),
-                    "sex": individual_object.get("sex"),
-                    "ageOfOnset": individual_object.get("age_of_onset"),
-                    "disease": individual_object.get("disease"),
-                    "info": { }
-                    }
-                }
+        individual_object = individual_object(individual_object, processed_request)
 
         samples_object = individual_df[sample_columns].drop_duplicates().to_dict('r')
-        individual_response['samples'] = [{"version": "beacon-sample-v1.0",
-                        "value": {
-                            "id": sample.get("sample_stable_id"),
-                            "tissue": sample.get("tissue"),
-                            "description": sample.get("description"),
-                            "info": { }
-                            }
-                        }
+        individual_response['samples'] = [biosample_object(sample, processed_request)
                         for sample in samples_object]
 
         # variants_raw = individual_df[variant_columns].drop_duplicates().to_dict('r')
@@ -214,26 +199,12 @@ async def create_samples_object(db_pool, main_df, include_dataset, processed_req
 
 
         sample_object = sample_df[sample_columns].drop_duplicates().to_dict('r')[0]
-        sample_response['sample'] = {"version": "beacon-sample-v1.0",
-                        "value": {
-                            "id": sample_object.get("sample_stable_id"),
-                            "tissue": sample_object.get("tissue"),
-                            "description": sample_object.get("description"),
-                            "info": { }
-                            }
-                        }
+        sample_response['sample'] = biosample_object(sample_object, processed_request)
 
         individuals_object = sample_df[individual_columns].drop_duplicates().to_dict('r')
-        sample_response['individuals'] = [{"version": "beacon-individual-v1.0",
-                        "value": {
-                            "id": individual.get("patient_stable_id"),
-                            "sex": individual.get("sex"),
-                            "ageOfOnset": individual.get("age_of_onset"),
-                            "disease": individual.get("disease"),
-                            "info": { }
-                            }
-                        }
+        sample_response['individuals'] = [individual_object(individual, processed_request)
                         for individual in individuals_object]
+
 
         # variants_raw = sample_df[variant_columns].drop_duplicates().to_dict('r')
         # sample_response['variantsFound'] = 'variants_raw'
@@ -454,23 +425,28 @@ async def sample_ind_request_handler(db_pool, processed_request, request):
     variant = processed_request.get("variant").split(",") if processed_request.get("variant") else []
     variantAnnotation = processed_request.get("variantAnnotation").split(",") if processed_request.get("variantAnnotation") else [] 
     variantMetadata = processed_request.get("variantMetadata").split(",") if processed_request.get("variantMetadata") else [] 
+    biosample = processed_request.get("biosample").split(",") if processed_request.get("biosample") else [] 
+    individual = processed_request.get("individual").split(",") if processed_request.get("individual") else [] 
 
     # Once all this is done, we build the response object
     beacon_response = {
                     "meta": {
                         "Variant": ["beacon-variant-v0.1", "ga4gh-variant-representation-v0.1"],
   	                    "VariantAnnotation": ["beacon-variant-annotation-v1.0"],
-                        "VariantMetadata": ["beacon-variant-metadata-v1.0"]
+                        "VariantMetadata": ["beacon-variant-metadata-v1.0"],
+                        "biosample": ["beacon-biosample-v0.1", "ga4gh-phenopacket-biosample-v0.1"],
+                        "individual": ["beacon-individual-v0.1", "ga4gh-phenopacket-individual-v0.1"],
                     },
                     "value": { 'beaconId': __id__,
                         'apiVersion': __apiVersion__,
-                        'exists': '',
-                        # 'exists': any([dataset['exists'] for result in results for variant in result["variantsFound"] for dataset in variant["datasetAlleleResponses"]]),
+                        # 'exists': '',
+                        'exists': any([dataset['exists'] for result in results for variant in result["variantsFound"] for dataset in variant["datasetAlleleResponses"]]),
                         'request': { "meta": { "request": { 
-                                                            "Sample": "beacon-sample-v1",
                                                             "Variant": ["beacon-variant-v0.1"]  + variant,
                                                             "VariantAnnotation": ["beacon-variant-annotation-v1.0"] + variantAnnotation,
-                                                            "VariantMetadata": ["beacon-variant-metadata-v1.0"] + variantMetadata
+                                                            "VariantMetadata": ["beacon-variant-metadata-v1.0"] + variantMetadata,
+                                                            "sample": ["beacon-biosample-v0.1"] + biosample,
+                                                            "individual": ["beacon-individual-v0.1"] + individual
                                                         },
                                                 "apiVersion": __apiVersion__,
                                             },
