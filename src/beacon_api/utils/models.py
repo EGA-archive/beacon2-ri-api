@@ -186,34 +186,36 @@ def variant_object(processed_request, variant_details, **kwargs):
 #                                               VARIANT METADATA
 # ----------------------------------------------------------------------------------------------------------------------
 
-def variantMetadata_object(processed_request):
-    """
-    Builds the variantAnnotation object.
-    Since we only have one model for this object we keep it simple.
-    """ 
-    
-    beacon_variant_metadata_v1_0 = {
-                "default": {
-                    "version": "beacon-variant-metadata-v1.0",
-                    "value": {
-                        "geneId": "",
-                        "HGVSId": "",
-                        "transcriptId": "",
-                        "alleleId": "",
-                        "variantClassification": "",
-                        "variantType": "",
-                        "disease": "",
-                        "proteinChange": "",
-                        "clinVarId": "",
-                        "pubmedId": "",
-                        "timestamp": "",
-                        "info": { }
-                    } 
-                },
-                "alternativeSchemas": []
-            }
+# DEPRECATED
 
-    return beacon_variant_metadata_v1_0
+# def variantMetadata_object(processed_request):
+#     """
+#     Builds the variantAnnotation object.
+#     Since we only have one model for this object we keep it simple.
+#     """ 
+    
+#     beacon_variant_metadata_v1_0 = {
+#                 "default": {
+#                     "version": "beacon-variant-metadata-v1.0",
+#                     "value": {
+#                         "geneId": "",
+#                         "HGVSId": "",
+#                         "transcriptId": "",
+#                         "alleleId": "",
+#                         "variantClassification": "",
+#                         "variantType": "",
+#                         "disease": "",
+#                         "proteinChange": "",
+#                         "clinVarId": "",
+#                         "pubmedId": "",
+#                         "timestamp": "",
+#                         "info": { }
+#                     } 
+#                 },
+#                 "alternativeSchemas": []
+#             }
+
+#     return beacon_variant_metadata_v1_0
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -226,11 +228,26 @@ def variantAnnotation_object(processed_request, cellBase, dbSNP, clinVar):
     Since we only have one model for this object we keep it simple.
     """ 
 
+    clinical_relevance = {
+        "variantClassification": "",
+        "diseaseId": "",
+        "references": []
+    }
+
     beacon_variant_annotation_v1_0 =  {
 				"default": {
 					"version": "beacon-variant-annotation-v1.0",
 					"value": {
-						"variantMetadata": variantMetadata_object(processed_request),
+                        "variantId": "",
+                        "alternativeIds": [],
+                        "genomicHGVSId": "",
+                        "proteinHGVSIds": [],
+                        "molecularConsequence": "",
+                        "variantGeneRelationship": "",
+                        "geneId": [],
+                        "transcriptIds": [],
+                        "clinicalRelevance": clinical_relevance,
+                        "alleleOrigin": [],
 						"info": {
 							"cellBase": cellBase,
 							"dbSNP": dbSNP,
@@ -256,14 +273,44 @@ def biosample_object(sample_info, processed_request):
     accepted_list = ["ga4gh-phenopacket-biosample-v0.1"]
 
     # default
+
+    # beacon_biosample_v1_0 = {
+    # "version": "beacon-biosample-v1.0",
+    # "value": 
+    #     {
+    #         "id": sample_info.get("sample_stable_id"),
+    #         "tissue": sample_info.get("tissue"),
+    #         "description": sample_info.get("description"),
+    #         "info": { }
+    #     }
+    # }
+
+
+    sample_origin = {
+        "organ": "",
+        "tissue": "",
+        "cellType": ""
+    }
+
+    cancer_features = {
+        "tumorProgression": "",
+        "tumorGrade": ""
+    }
+    
     beacon_biosample_v1_0 = {
-    "version": "beacon-biosample-v1.0",
-    "value": 
-        {
-            "id": sample_info.get("sample_stable_id"),
-            "tissue": sample_info.get("tissue"),
-            "description": sample_info.get("description"),
-            "info": { }
+        "version": "beacon-biosample-v1.0",
+        "value": 
+            {
+                "individualId": "",
+                "bioSampleId": "",
+                "description": "",
+                "biosampleStatus": "",
+                "individualAgeAtCollection": "",
+                "sampleOrigin": sample_origin,
+                "obtentionProcedure": "",
+                "cancerFeatures": cancer_features,
+                "info": ""
+            }
         }
     }
 
@@ -343,15 +390,55 @@ def individual_object(individual_info, processed_request):
     accepted_list = ["ga4gh-phenopacket-individual-v0.1"]
 
     # default
+
+    # beacon_individual_v1_0 = {
+    # "version": "beacon-individual-v1.0",
+    # "value": 
+    #     {
+    #         "id": individual_info.get("patient_stable_id"),
+    #         "sex": individual_info.get("sex"),
+    #         "ageOfOnset": individual_info.get("age_of_onset"),
+    #         "disease": individual_info.get("disease"),
+    #         "info": { }
+    #     }
+    # }
+
+    age = {
+        "age": "",
+        "ageGroup": ""
+    } 
+
+    diseases = [
+        {
+            "disease": "",
+            "ageOfOnset": "",
+            "stage": "",
+            "familyHistory": None
+        }
+    ]
+
+    pedigrees = [
+        {
+            "pedigreeId": "",
+            "disease": "",
+            "pedigreeRole": "",
+            "numberOfIndividualsTested": None
+        }
+    ]
+
     beacon_individual_v1_0 = {
     "version": "beacon-individual-v1.0",
     "value": 
         {
-            "id": individual_info.get("patient_stable_id"),
+            "datasetId": "",
+            "individualId": individual_info.get("patient_stable_id"),
+            "age": age,
             "sex": individual_info.get("sex"),
-            "ageOfOnset": individual_info.get("age_of_onset"),
-            "disease": individual_info.get("disease"),
-            "info": { }
+            "ethnicity": "",
+            "geographicOrigin": "",
+            "diseases": diseases,
+            "pedigrees": pedigrees,
+            "info": ""
         }
     }
 
