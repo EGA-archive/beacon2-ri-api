@@ -361,6 +361,7 @@ def biosample_object(sample_info, processed_request):
     }
 
     # Request
+    processed_request = processed_request if processed_request else {}
     alternatives = processed_request.get("biosample").split(",") if processed_request.get("biosample") else []
     if "beacon-biosample-v1.0" in alternatives:
         alternatives.remove("beacon-biosample-v1.0")
@@ -408,20 +409,22 @@ def individual_object(individual_info, processed_request):
 
     diseases = [
         {
-            "disease": "",
-            "ageOfOnset": "",
-            "stage": "",
-            "familyHistory": None
+            "disease": disease.get("disease"),
+            "ageOfOnset": disease.get("age"),
+            "stage": disease.get("stage"),
+            "familyHistory": disease.get("family_history")
         }
+        for disease in individual_info.get("diseases")
     ]
 
     pedigrees = [
         {
-            "pedigreeId": "",
-            "disease": "",
-            "pedigreeRole": "",
-            "numberOfIndividualsTested": None
+            "pedigreeId": pedigree.get("pedigree_id"),
+            "disease": pedigree.get("disease"),
+            "pedigreeRole": pedigree.get("pedigree_role"),
+            "numberOfIndividualsTested": pedigree.get("number_of_individuals_tested")
         }
+        for pedigree in individual_info.get("pedigrees")
     ]
 
     beacon_individual_v1_0 = {
@@ -456,28 +459,29 @@ def individual_object(individual_info, processed_request):
                 "phenotypicFeatures": [{
                 "ethnicity": {
                     "id": "",
-                    "label": ""
+                    "label": individual_info.get("ethnicity")
                     },
                 }, {
                 "geographicOrigin": {
                     "id": "",
-                    "label": ""
+                    "label": individual_info.get("geographic_origin")
                 }
                 }],
 
                 "diseases": [{
                     "term": {
-                    "id": "",
-                    "label": individual_info.get("disease")
-                    },
+                        "id": "",
+                        "label": disease.get("disease")
+                        },
                     "ageOfOnset": {
-                        "age": individual_info.get("age_of_onset")
-                    },
-                    "diseaseStage": [{
-                    "id": "",
-                    "label": ""
-                    }],
-                }]
+                        "age": disease.get("age")
+                        },
+                    "diseaseStage": {
+                        "id": "",
+                        "label": disease.get("stage")
+                        }
+                }
+                for disease in individual_info.get("diseases")]
             }
         }
 
@@ -488,6 +492,7 @@ def individual_object(individual_info, processed_request):
     }
 
     # Request
+    processed_request = processed_request if processed_request else {}
     alternatives = processed_request.get("individual").split(",") if processed_request.get("individual") else []
     if "beacon-individual-v1.0" in alternatives:
         alternatives.remove("beacon-individual-v1.0")
