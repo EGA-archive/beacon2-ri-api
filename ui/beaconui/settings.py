@@ -24,6 +24,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['tf.crg.eu',
                  'ega-archive.org',
                  'xfer13.local',
+                 'xfer13.crg.eu',
                  '130.239.81.195',
                  '84.88.52.84',
                  'localhost']
