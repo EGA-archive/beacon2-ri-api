@@ -86,8 +86,10 @@ def create_query(processed_request):
 #                    'alternate', 'start', 'end', 'type', 'sv_length', 'variant_cnt', 'call_cnt', 
 #                    'sample_cnt', 'matching_sample_cnt', 'frequency']
 # Definition of interesting columns depending on the target object
-sample_columns = ['sample_id', 'sample_stable_id', 'tissue', 'description']
-individual_columns = ['patient_id','patient_stable_id', 'sex', 'age_of_onset', 'disease']
+sample_columns = ['sample_id', 'sample_stable_id', 'description', 'biosample_status', 'individual_age_at_collection_age',
+                 'individual_age_at_collection_age_group', 'organ', 'tissue', 'cell_type', 'obtention_procedure', 
+                 'tumor_progression', 'tumor_grade', 'patient_stable_id']
+individual_columns = ['patient_id','patient_stable_id', 'sex', 'ethnicity', 'geographic_origin']
 variant_columns = ['unique_id','chromosome', 'variant_id', 'reference', 
                    'alternate', 'start', 'end', 'type']
 dataset_columns = ['dataset_id', 'stable_id_dt', 'variant_cnt', 'call_cnt', 
@@ -171,20 +173,24 @@ async def create_individuals_object(db_pool, main_df, include_dataset, processed
     for individual_id, individual_df in by_individual:
         individual_response = {}
 
-        individual_object = individual_df[individual_columns].drop_duplicates().to_dict('r')[0]
-        individual_object = individual_object(individual_object, processed_request)
+        individual = individual_df[individual_columns].drop_duplicates().to_dict('r')[0]
+        individual_response['individual'] = individual_object(individual, processed_request)
 
-        samples_object = individual_df[sample_columns].drop_duplicates().to_dict('r')
-        individual_response['samples'] = [biosample_object(sample, processed_request)
-                        for sample in samples_object]
+        if processed_request:
+            samples_object = individual_df[sample_columns].drop_duplicates().to_dict('r')
+            individual_response['samples'] = [biosample_object(sample, processed_request)
+                            for sample in samples_object]
 
-        # variants_raw = individual_df[variant_columns].drop_duplicates().to_dict('r')
-        # individual_response['variantsFound'] = variants_raw
-        
-        variants_df = individual_df[variant_and_dataset_columns].drop_duplicates()
-        individual_response['variantsFound'] = await create_variantsFound_object(db_pool, variants_df, include_dataset, processed_request, valid_datasets)
-        
-        individual_responses_list.append(individual_response)
+            # variants_raw = individual_df[variant_columns].drop_duplicates().to_dict('r')
+            # individual_response['variantsFound'] = variants_raw
+            
+            variants_df = individual_df[variant_and_dataset_columns].drop_duplicates()
+            individual_response['variantsFound'] = await create_variantsFound_object(db_pool, variants_df, include_dataset, processed_request, valid_datasets)
+            
+            individual_responses_list.append(individual_response)
+        else:
+            individual_responses_list.append(individual_response['individual'])
+
     return individual_responses_list
 
 
@@ -201,18 +207,22 @@ async def create_samples_object(db_pool, main_df, include_dataset, processed_req
         sample_object = sample_df[sample_columns].drop_duplicates().to_dict('r')[0]
         sample_response['sample'] = biosample_object(sample_object, processed_request)
 
-        individuals_object = sample_df[individual_columns].drop_duplicates().to_dict('r')
-        sample_response['individuals'] = [individual_object(individual, processed_request)
-                        for individual in individuals_object]
+        
+        if processed_request:
+            individuals_object = sample_df[individual_columns].drop_duplicates().to_dict('r')
+            sample_response['individuals'] = [individual_object(individual, processed_request)
+                            for individual in individuals_object]
 
 
-        # variants_raw = sample_df[variant_columns].drop_duplicates().to_dict('r')
-        # sample_response['variantsFound'] = 'variants_raw'
+            # variants_raw = sample_df[variant_columns].drop_duplicates().to_dict('r')
+            # sample_response['variantsFound'] = 'variants_raw'
 
-        variants_df = sample_df[variant_and_dataset_columns].drop_duplicates()
-        sample_response['variantsFound'] = await create_variantsFound_object(db_pool, variants_df, include_dataset, processed_request, valid_datasets)
+            variants_df = sample_df[variant_and_dataset_columns].drop_duplicates()
+            sample_response['variantsFound'] = await create_variantsFound_object(db_pool, variants_df, include_dataset, processed_request, valid_datasets)
 
-        sample_responses_list.append(sample_response)
+            sample_responses_list.append(sample_response)
+        else:
+            sample_responses_list.append(sample_response['sample'])
         
     return sample_responses_list
 
@@ -231,7 +241,7 @@ async def get_results(db_pool, filters_dict, valid_datasets, processed_request, 
     alternate = '' if not processed_request.get("alternateBases") else processed_request.get("alternateBases")
     start = 'null' if not processed_request.get("start") else processed_request.get("start")
     end = 'null' if not processed_request.get("end") else processed_request.get("end")
-    reference_genome = 'null' if not processed_request.get("assemblyId") else processed_request.get("assemblyId")
+    reference_genome = '' if not processed_request.get("assemblyId") else processed_request.get("assemblyId")
 
     dataset_ids = ",".join([str(i) for i in valid_datasets])
 
@@ -261,12 +271,17 @@ async def get_results(db_pool, filters_dict, valid_datasets, processed_request, 
             query  = f"""SELECT concat_ws(':', data_t.chromosome, data_t.variant_id, data_t.reference, data_t.alternate, data_t.start, data_t.end, data_t.type) AS unique_id,
                             data_t.dataset_id, d_t.reference_genome, d_t.stable_id as stable_id_dt, d_t.access_type, vsp_t.data_id, data_t.chromosome, data_t.variant_id, 
                             data_t.reference, data_t.alternate, data_t.start, data_t.end, data_t.type, data_t.sv_length, data_t.variant_cnt, data_t.call_cnt, data_t.sample_cnt, 
-                            data_t.matching_sample_cnt, data_t.frequency, vsp_t.sample_id, vsp_t.sample_stable_id, vsp_t.tissue, vsp_t.description, vsp_t.patient_id, vsp_t.patient_stable_id, 
-                            vsp_t.sex, vsp_t.age_of_onset, vsp_t.disease
+                            data_t.matching_sample_cnt, data_t.frequency, vsp_t.sample_id, vsp_t.sample_stable_id, vsp_t.description, vsp_t.biosample_status, 
+							vsp_t.individual_age_at_collection_age, vsp_t.individual_age_at_collection_age_group, vsp_t.organ, vsp_t.tissue, vsp_t.cell_type, 
+							vsp_t.obtention_procedure, vsp_t.tumor_progression, vsp_t.tumor_grade,
+							vsp_t.patient_id, vsp_t.patient_stable_id, 
+                            vsp_t.sex, vsp_t.ethnicity, vsp_t.geographic_origin
                             FROM public.beacon_data_table as data_t
                             join (select * 
-                                    from (SELECT s.id as s_id, s.stable_id as sample_stable_id, s.sex, s.tissue, s.description, 
-                                            p.id as patient_id, p.stable_id as patient_stable_id, p.age_of_onset, p.disease 
+                                    from (SELECT s.id as s_id, s.stable_id as sample_stable_id, s.description, 
+										  	s.biosample_status, s.individual_age_at_collection_age, s.individual_age_at_collection_age_group, 
+										  	s.organ, s.tissue, s.cell_type, s.obtention_procedure, s.tumor_progression, s.tumor_grade,
+                                            p.id as patient_id, p.stable_id as patient_stable_id,  p.sex, p.ethnicity, p.geographic_origin
                                             FROM beacon_sample_table s 
                                             JOIN patient_table p ON s.patient_id = p.id 
                                             -- patient and sample filters
@@ -296,7 +311,7 @@ async def get_results(db_pool, filters_dict, valid_datasets, processed_request, 
                                 WHEN {end} IS NOT NULL THEN 'end' = {end} ELSE true
                                 END)
                             AND (CASE
-                                WHEN ('{reference_genome}') IS NOT NULL THEN reference_genome = '{reference_genome}' ELSE true
+                                WHEN nullif('{reference_genome}', '') IS NOT NULL THEN reference_genome = '{reference_genome}' ELSE true
                                 END);"""
 
             LOG.debug(f"QUERY samples/individuals: {query}")
@@ -439,8 +454,8 @@ async def sample_ind_request_handler(db_pool, processed_request, request):
                     },
                     "value": { 'beaconId': __id__,
                         'apiVersion': __apiVersion__,
-                        # 'exists': '',
-                        'exists': any([dataset['exists'] for result in results for variant in result["variantsFound"] for dataset in variant["datasetAlleleResponses"]]),
+                        'exists': any(results),
+                        # 'exists': any([dataset['exists'] for result in results for variant in result["variantsFound"] for dataset in variant["datasetAlleleResponses"]]),
                         'request': { "meta": { "request": { 
                                                             "Variant": ["beacon-variant-v0.1"]  + variant,
                                                             "VariantAnnotation": ["beacon-variant-annotation-v1.0"] + variantAnnotation,

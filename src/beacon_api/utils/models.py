@@ -285,33 +285,31 @@ def biosample_object(sample_info, processed_request):
     #     }
     # }
 
-
     sample_origin = {
-        "organ": "",
-        "tissue": "",
-        "cellType": ""
+        "organ": sample_info.get("organ"),
+        "tissue": sample_info.get("tissue"),
+        "cellType": sample_info.get("cell_type")
     }
 
     cancer_features = {
-        "tumorProgression": "",
-        "tumorGrade": ""
+        "tumorProgression": sample_info.get("tumor_progression"),
+        "tumorGrade": sample_info.get("tumor_grade")
     }
     
     beacon_biosample_v1_0 = {
         "version": "beacon-biosample-v1.0",
         "value": 
             {
-                "individualId": "",
-                "bioSampleId": "",
-                "description": "",
-                "biosampleStatus": "",
-                "individualAgeAtCollection": "",
+                "individualId": sample_info.get("patient_stable_id"),
+                "bioSampleId": sample_info.get("sample_stable_id"),
+                "description": sample_info.get("description"),
+                "biosampleStatus": sample_info.get("biosample_status"),
+                "individualAgeAtCollection": sample_info.get("individual_age_at_collection_age"),
                 "sampleOrigin": sample_origin,
-                "obtentionProcedure": "",
+                "obtentionProcedure": sample_info.get("obtention_procedure"),
                 "cancerFeatures": cancer_features,
                 "info": ""
             }
-        }
     }
 
     # alternative
@@ -321,7 +319,7 @@ def biosample_object(sample_info, processed_request):
             { 
                 "id": sample_info.get("sample_stable_id"),
 
-                "individualId": "",
+                "individualId": sample_info.get("patient_stable_id"),
 
                 "description": sample_info.get("description"),
 
@@ -331,12 +329,12 @@ def biosample_object(sample_info, processed_request):
                 },
                 
                 "ageOfIndividualAtCollection": {
-                    "age": ""
+                    "age": sample_info.get("individual_age_at_collection_age")
                 },
                 
                 "tumorProgression": {
                     "id": "",
-                    "label": ""
+                    "label": sample_info.get("tumor_progression")
                 },
                 
                 "phenotypicFeatures": {
@@ -347,7 +345,7 @@ def biosample_object(sample_info, processed_request):
                 "procedure": {
                     "code": {
                     "id": "",
-                    "label": ""
+                    "label": sample_info.get("obtention_procedure")
                     }
                 },
 
@@ -434,8 +432,8 @@ def individual_object(individual_info, processed_request):
             "individualId": individual_info.get("patient_stable_id"),
             "age": age,
             "sex": individual_info.get("sex"),
-            "ethnicity": "",
-            "geographicOrigin": "",
+            "ethnicity": individual_info.get("ethnicity"),
+            "geographicOrigin": individual_info.get("geographic_origin"),
             "diseases": diseases,
             "pedigrees": pedigrees,
             "info": ""
