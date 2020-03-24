@@ -439,10 +439,8 @@ async def get_results_simple(db_pool, valid_datasets, request, processed_request
     if response: 
         # Converting the response to a DataFrame 
         response_df = pd.DataFrame(response)
-        print("1", response_df.disease)
         # Making sure we don't have NaN values
         response_df = response_df.where(response_df.notnull(), None)
-        print("2", response_df.disease)
 
         # Calling the functions to create the objects
         # Depending on the endpoint, the function changes

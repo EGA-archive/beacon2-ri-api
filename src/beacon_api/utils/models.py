@@ -409,7 +409,7 @@ def individual_object(individual_info, processed_request):
 
     diseases = [
         {
-            "disease": disease.get("disease"),
+            "diseaseId": disease.get("disease"),
             "ageOfOnset": disease.get("age"),
             "stage": disease.get("stage"),
             "familyHistory": disease.get("family_history")
@@ -420,20 +420,20 @@ def individual_object(individual_info, processed_request):
     pedigrees = [
         {
             "pedigreeId": pedigree.get("pedigree_id"),
-            "disease": pedigree.get("pedigree_disease"),
             "pedigreeRole": pedigree.get("pedigree_role"),
-            "numberOfIndividualsTested": pedigree.get("number_of_individuals_tested")
+            "numberOfIndividualsTested": pedigree.get("number_of_individuals_tested"),
+            "diseaseId": pedigree.get("pedigree_disease")
+
         }
         for pedigree in individual_info.get("pedigrees")
+        if any(pedigree.values())
     ]
 
     beacon_individual_v1_0 = {
     "version": "beacon-individual-v1.0",
     "value": 
         {
-            "datasetId": "",
             "individualId": individual_info.get("patient_stable_id"),
-            "age": age,
             "sex": individual_info.get("sex"),
             "ethnicity": individual_info.get("ethnicity"),
             "geographicOrigin": individual_info.get("geographic_origin"),
