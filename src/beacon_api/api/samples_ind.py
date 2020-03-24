@@ -96,7 +96,7 @@ dataset_columns = ['dataset_id', 'stable_id_dt', 'variant_cnt', 'call_cnt',
                    'sample_cnt', 'matching_sample_cnt', 'frequency', 'access_type']
 variant_and_dataset_columns = variant_columns + dataset_columns
 disease_columns = ['disease', 'age', 'age_group', 'stage', 'family_history']
-pedigree_columns = ['pedigree_id', 'pedigree_role', 'number_of_individuals_tested', 'disease', 'description'] 
+pedigree_columns = ['pedigree_id', 'pedigree_role', 'number_of_individuals_tested', 'pedigree_disease', 'pedigree_description'] 
 
 
 async def create_variantsFound_object(db_pool, variants_df, include_dataset, processed_request, valid_datasets):
@@ -393,7 +393,7 @@ async def get_results_simple(db_pool, valid_datasets, request, processed_request
                             -- patient_disease_table
                             pd.disease, pd.age, pd.age_group, pd.stage, pd.family_history,
                             -- patient_pedigree_table
-                            pp.pedigree_id, pp.pedigree_role, pp.number_of_individuals_tested, pp.disease, pp.description
+                            pp.pedigree_id, pp.pedigree_role, pp.number_of_individuals_tested, pp.pedigree_disease, pp.pedigree_description
                                     FROM (SELECT p.*, s.id as sample_id FROM patient_table as p 
                                     JOIN beacon_sample_table as s
                                     ON p.id = s.patient_id) as p
@@ -403,9 +403,11 @@ async def get_results_simple(db_pool, valid_datasets, request, processed_request
                                     LEFT JOIN patient_disease_table as pd
                                     ON p.id = pd.patient_id
                                     -- patient_pedigree_table
-                                    LEFT JOIN (SELECT * FROM patient_pedigree_table
-								    JOIN pedigree_table
-								  	ON pedigree_id = id) as pp
+                                    LEFT JOIN (SELECT patient_id, pedigree_id, pedigree_role, number_of_individuals_tested, 
+											   disease as pedigree_disease, pedigree_table.description as pedigree_description
+												FROM patient_pedigree_table
+												JOIN pedigree_table
+												ON pedigree_id = id) as pp
 						            ON p.id = pp.patient_id
                                     WHERE 
                                     -- dataset filter
@@ -437,8 +439,10 @@ async def get_results_simple(db_pool, valid_datasets, request, processed_request
     if response: 
         # Converting the response to a DataFrame 
         response_df = pd.DataFrame(response)
+        print("1", response_df.disease)
         # Making sure we don't have NaN values
         response_df = response_df.where(response_df.notnull(), None)
+        print("2", response_df.disease)
 
         # Calling the functions to create the objects
         # Depending on the endpoint, the function changes

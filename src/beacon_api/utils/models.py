@@ -420,7 +420,7 @@ def individual_object(individual_info, processed_request):
     pedigrees = [
         {
             "pedigreeId": pedigree.get("pedigree_id"),
-            "disease": pedigree.get("disease"),
+            "disease": pedigree.get("pedigree_disease"),
             "pedigreeRole": pedigree.get("pedigree_role"),
             "numberOfIndividualsTested": pedigree.get("number_of_individuals_tested")
         }
