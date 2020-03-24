@@ -26,6 +26,7 @@ from .api.access_levels import access_levels_terms_handler
 from .api.services import services_handler
 # from .api.samples.bak import sample_request_handler
 from .api.samples_ind import sample_ind_request_handler
+from .api.samples_ind_rest import by_id_handler
 
 
 
@@ -226,7 +227,7 @@ async def beacon_post_region(request):
 #     return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)    
     
 @routes.get('/samples')
-@validate("samples")
+@validate("samples_ind")
 async def beacon_get_samples_test(request):
     """
     Use the HTTP protocol 'GET' to return a Json object of a response to a given SAMPLES QUERY.
@@ -242,7 +243,7 @@ async def beacon_get_samples_test(request):
 
 
 @routes.post('/samples')
-@validate("samples")
+@validate("samples_ind")
 async def beacon_get_samples_test(request):
     """Find samples using POST endpoint."""
     db_pool = request.app['pool']
@@ -287,12 +288,12 @@ async def beacon_get_samples_test(request):
 
 
 @routes.get('/individuals')
-@validate("samples")
+@validate("samples_ind")
 async def beacon_get_samples_test(request):
     """
-    Use the HTTP protocol 'GET' to return a Json object of a response to a given SAMPLES QUERY.
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given INDIVIDUALS QUERY.
 
-    It uses the '/samples' path and expects some parameters.
+    It uses the '/individuals' path and expects some parameters.
     """
     db_pool = request.app['pool']
     method, processed_request = await parse_request_object(request)
@@ -303,9 +304,9 @@ async def beacon_get_samples_test(request):
 
 
 @routes.post('/individuals')
-@validate("samples")
+@validate("samples_ind")
 async def beacon_get_samples_test(request):
-    """Find samples using POST endpoint."""
+    """Find individuals using POST endpoint."""
     db_pool = request.app['pool']
     method, processed_request = await parse_request_object(request)
     LOG.info(f"This is the {method} processed request: {processed_request}")
@@ -313,6 +314,49 @@ async def beacon_get_samples_test(request):
     sample_response = await sample_ind_request_handler(db_pool, processed_request, request)
     return web.json_response(sample_response, content_type='application/json', dumps=json.dumps)
 
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+#                                    SAMPLES/INDIVIDUALS REST ENDPOINT OPERATIONS
+# ----------------------------------------------------------------------------------------------------------------------
+
+# individuals
+@routes.get('/individuals/{target_id_req}')
+@validate("samples_ind_by_id")
+async def beacon_get_individual_by_id(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given INDIVIDUALS QUERY.
+
+    It uses the '/individuals/{individual_stable_id_req}' path and doesn't expect parameters.
+    """
+
+    db_pool = request.app['pool']
+    LOG.info(f"Using {request.path}")
+    LOG.info(f"This is the {request.method} variable request: {request.match_info['target_id_req']}")
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+
+    response = await by_id_handler(db_pool, request, processed_request)
+    return web.json_response(response, content_type='application/json', dumps=json.dumps)
+
+# samples
+@routes.get('/samples/{target_id_req}')
+@validate("samples_ind_by_id")
+async def beacon_get_individual_by_id(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given INDIVIDUALS QUERY.
+
+    It uses the '/individuals/{individual_stable_id_req}' path and doesn't expect parameters.
+    """
+
+    db_pool = request.app['pool']
+    LOG.info(f"Using {request.path}")
+    LOG.info(f"This is the {request.method} variable request: {request.match_info['target_id_req']}")
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+
+    response = await by_id_handler(db_pool, request, processed_request)
+    return web.json_response(response, content_type='application/json', dumps=json.dumps)
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         FILTERING TERMS ENDPOINT OPERATIONS

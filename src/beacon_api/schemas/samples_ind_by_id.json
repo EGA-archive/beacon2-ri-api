@@ -1,0 +1,14 @@
+{
+  "definitions": {},
+  "type": "object",
+  "additionalProperties": false,
+  "required": [],
+  "properties": {
+    "biosample": {
+      "type": "string"
+    },
+    "individual": {
+      "type": "string"
+    }
+  }
+}

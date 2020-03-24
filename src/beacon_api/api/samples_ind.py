@@ -368,7 +368,7 @@ async def get_results(db_pool, filters_dict, valid_datasets, processed_request, 
             return []
 
 
-async def get_results_simple(db_pool, valid_datasets, request, processed_request):
+async def get_results_simple(db_pool, valid_datasets, request, processed_request, target_id_req = ''):
     """
     Fetches the samples or individuals info ONLY if the query doesn't specify any parameters. 
     """
@@ -386,8 +386,12 @@ async def get_results_simple(db_pool, valid_datasets, request, processed_request
                         ON s.patient_id = p.id
                         WHERE 
                         -- dataset filter
-                        dataset_id IN ({dataset_ids});
-                    """
+                        dataset_id IN ({dataset_ids})
+                        -- sample id filter
+                        AND (CASE
+                            WHEN nullif('{target_id_req}', '') IS NOT NULL THEN s.stable_id = '{target_id_req}' ELSE true
+                            END);"""
+
     query_individuals = f"""SELECT p.id as patient_id, p.stable_id as patient_stable_id, p.sex, p.ethnicity, 
                             p.geographic_origin, dataset_id,
                             -- patient_disease_table
@@ -411,15 +415,19 @@ async def get_results_simple(db_pool, valid_datasets, request, processed_request
 						            ON p.id = pp.patient_id
                                     WHERE 
                                     -- dataset filter
-                                    dataset_id IN ({dataset_ids});
-                        """
+                                    dataset_id IN ({dataset_ids})
+                                    -- individual id filter
+                                    AND (CASE
+                                        WHEN nullif('{target_id_req}', '') IS NOT NULL THEN p.stable_id = '{target_id_req}' ELSE true
+                                        END);"""
+
     # performing the actual query to the DB
     async with db_pool.acquire(timeout=180) as connection:
         try:
             endpoint = request.path
-            if endpoint == '/samples':
+            if endpoint.startswith('/samples'):
                 query = query_samples
-            elif endpoint == '/individuals':
+            elif endpoint.startswith('/individuals'):
                 query = query_individuals
             else:
                 LOG.debug("The endpoint is different than 'samples' and 'individuals'. Please try again.")
@@ -445,7 +453,7 @@ async def get_results_simple(db_pool, valid_datasets, request, processed_request
         # Calling the functions to create the objects
         # Depending on the endpoint, the function changes
         LOG.debug(f"Arranging the response for the {endpoint} endpoint.")
-        if endpoint == '/individuals':
+        if endpoint.startswith('/individuals'):
             response_arranged = await create_individuals_object('', response_df, '', processed_request, '', simple = True)
         else:
             response_arranged = await create_samples_object('', response_df, '', processed_request, '', simple = True)

@@ -285,6 +285,11 @@ def biosample_object(sample_info, processed_request):
     #     }
     # }
 
+    age = {
+        "age": sample_info.get("individual_age_at_collection_age"),
+        "ageGroup": sample_info.get("individual_age_at_collection_age_group")
+    } 
+
     sample_origin = {
         "organ": sample_info.get("organ"),
         "tissue": sample_info.get("tissue"),
@@ -300,11 +305,11 @@ def biosample_object(sample_info, processed_request):
         "version": "beacon-biosample-v1.0",
         "value": 
             {
-                "individualId": sample_info.get("patient_stable_id"),
                 "bioSampleId": sample_info.get("sample_stable_id"),
+                "individualId": sample_info.get("patient_stable_id"),
                 "description": sample_info.get("description"),
                 "biosampleStatus": sample_info.get("biosample_status"),
-                "individualAgeAtCollection": sample_info.get("individual_age_at_collection_age"),
+                "individualAgeAtCollection": age,
                 "sampleOrigin": sample_origin,
                 "obtentionProcedure": sample_info.get("obtention_procedure"),
                 "cancerFeatures": cancer_features,
@@ -401,11 +406,6 @@ def individual_object(individual_info, processed_request):
     #         "info": { }
     #     }
     # }
-
-    age = {
-        "age": "",
-        "ageGroup": ""
-    } 
 
     diseases = [
         {
