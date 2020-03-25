@@ -55,4 +55,55 @@ async def by_id_handler(db_pool, request, processed_request):
     target_id_req = request.match_info['target_id_req']
     results = await get_results_simple(db_pool, valid_datasets, request, processed_request, target_id_req = target_id_req)
 
-    return results
+
+    # In this case, the query field will be empty
+    query = []
+
+    # Make lists of the models requests to show it in the response
+    variant = processed_request.get("variant").split(",") if processed_request.get("variant") else []
+    variantAnnotation = processed_request.get("variantAnnotation").split(",") if processed_request.get("variantAnnotation") else [] 
+    variantMetadata = processed_request.get("variantMetadata").split(",") if processed_request.get("variantMetadata") else [] 
+    biosample = processed_request.get("biosample").split(",") if processed_request.get("biosample") else [] 
+    individual = processed_request.get("individual").split(",") if processed_request.get("individual") else [] 
+
+    # Once all this is done, we build the response object
+    beacon_response = {
+                    "meta": {
+                        "Variant": ["beacon-variant-v0.1", "ga4gh-variant-representation-v0.1"],
+  	                    "VariantAnnotation": ["beacon-variant-annotation-v1.0"],
+                        "VariantMetadata": ["beacon-variant-metadata-v1.0"],
+                        "biosample": ["beacon-biosample-v0.1", "ga4gh-phenopacket-biosample-v0.1"],
+                        "individual": ["beacon-individual-v0.1", "ga4gh-phenopacket-individual-v0.1"],
+                    },
+                    "value": { 'beaconId': __id__,
+                        'apiVersion': __apiVersion__,
+                        'exists': any(results),
+                        # 'exists': any([dataset['exists'] for result in results for variant in result["variantsFound"] for dataset in variant["datasetAlleleResponses"]]),
+                        'request': { "meta": { "request": { 
+                                                            "Variant": ["beacon-variant-v0.1"]  + variant,
+                                                            "VariantAnnotation": ["beacon-variant-annotation-v1.0"] + variantAnnotation,
+                                                            "VariantMetadata": ["beacon-variant-metadata-v1.0"] + variantMetadata,
+                                                            "sample": ["beacon-biosample-v0.1"] + biosample,
+                                                            "individual": ["beacon-individual-v0.1"] + individual
+                                                        },
+                                                "apiVersion": __apiVersion__,
+                                            },
+                                    "query": query
+                                    },
+                        'results': results,
+                        'info': None,
+                        'resultsHandover': None,
+                        'beaconHandover': [ { "handoverType" : {
+                                                "id" : "CUSTOM",
+                                                "label" : "Organization contact"
+                                                },
+                                                "note" : "Organization contact details maintaining this Beacon",
+                                                "url" : "mailto:beacon.ega@crg.eu"
+                                            } ]
+                        
+                        }
+                    }
+
+
+
+    return beacon_response
