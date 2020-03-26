@@ -274,6 +274,16 @@ async def get_results(db_pool, filters_dict, valid_datasets, processed_request, 
     samples_filter_dict = None if not filters_dict.get(target_table_sample) else filters_dict.get(target_table_sample)
     patients_filter_dict = None if not filters_dict.get(target_table_patient) else filters_dict.get(target_table_patient)
 
+    # Update the patients_filter_dict with disease and pedigree info
+    target_table_patient_disease = f"{DB_SCHEMA}.patient_disease_table"
+    if filters_dict.get(target_table_patient_disease):
+        patients_filter_dict.update(filters_dict.get(target_table_patient_disease))
+
+    target_table_patient_pedigree = f"{DB_SCHEMA}.patient_pedigree_table"
+    if filters_dict.get(target_table_patient_pedigree):
+        patients_filter_dict.update(filters_dict.get(target_table_patient_pedigree))
+
+    # Join everything in an SQL-friendly format
     if samples_filter_dict:
         for column, list_values in samples_filter_dict.items():
             sentence_part = f""" s.{column} IN ('{"','".join(list_values)}')"""
@@ -484,10 +494,6 @@ async def get_results_simple(db_pool, valid_datasets, request, processed_request
     else:
         LOG.debug(f"No response for this query on the {endpoint} endpoint.")
         return []
-
-
-
-
 
 
 
