@@ -297,15 +297,36 @@ async def get_results(db_pool, filters_dict, valid_datasets, processed_request, 
 							vsp_t.individual_age_at_collection_age, vsp_t.individual_age_at_collection_age_group, vsp_t.organ, vsp_t.tissue, vsp_t.cell_type, 
 							vsp_t.obtention_procedure, vsp_t.tumor_progression, vsp_t.tumor_grade,
 							vsp_t.patient_id, vsp_t.patient_stable_id, 
-                            vsp_t.sex, vsp_t.ethnicity, vsp_t.geographic_origin
+                            vsp_t.sex, vsp_t.ethnicity, vsp_t.geographic_origin,
+							-- patient_disease_table
+							vsp_t.disease, vsp_t.age, vsp_t.age_group, vsp_t.stage, vsp_t.family_history,
+							-- patient_pedigree_table
+							vsp_t.pedigree_id, vsp_t.pedigree_role, vsp_t.number_of_individuals_tested, vsp_t.pedigree_disease, vsp_t.pedigree_description
                             FROM public.beacon_data_table as data_t
                             join (select * 
                                     from (SELECT s.id as s_id, s.stable_id as sample_stable_id, s.description, 
 										  	s.biosample_status, s.individual_age_at_collection_age, s.individual_age_at_collection_age_group, 
 										  	s.organ, s.tissue, s.cell_type, s.obtention_procedure, s.tumor_progression, s.tumor_grade,
-                                            p.id as patient_id, p.stable_id as patient_stable_id,  p.sex, p.ethnicity, p.geographic_origin
+                                            p.*
                                             FROM beacon_sample_table s 
-                                            JOIN patient_table p ON s.patient_id = p.id 
+                                            JOIN (SELECT p.id as patient_id, p.stable_id as patient_stable_id, p.sex, p.ethnicity, 
+													p.geographic_origin,
+													-- patient_disease_table
+													pd.disease, pd.age, pd.age_group, pd.stage, pd.family_history,
+													-- patient_pedigree_table
+													pp.pedigree_id, pp.pedigree_role, pp.number_of_individuals_tested, pp.pedigree_disease, pp.pedigree_description
+															FROM patient_table p 
+															-- patient_disease_table
+															LEFT JOIN patient_disease_table as pd
+															ON p.id = pd.patient_id
+															-- patient_pedigree_table
+															LEFT JOIN (SELECT patient_id, pedigree_id, pedigree_role, number_of_individuals_tested, 
+																	   disease as pedigree_disease, pedigree_table.description as pedigree_description
+																		FROM patient_pedigree_table
+																		JOIN pedigree_table
+																		ON pedigree_id = id) as pp
+															ON p.id = pp.patient_id) as p 
+										  	ON s.patient_id = p.patient_id
                                             -- patient and sample filters
                                             WHERE (CASE WHEN {sentence_exists} THEN {sentence} ELSE true END) AND s.tissue IS NOT NULL) as sample_t
                                     join public.beacon_data_sample_table as data_sample_t
