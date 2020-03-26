@@ -26,7 +26,7 @@ from .api.access_levels import access_levels_terms_handler
 from .api.services import services_handler
 # from .api.samples.bak import sample_request_handler
 from .api.samples_ind import sample_ind_request_handler
-from .api.samples_ind_rest import by_id_handler
+from .api.samples_ind_rest import by_id_handler, smt_by_id
 
 
 
@@ -320,16 +320,16 @@ async def beacon_get_samples_test(request):
 #                                    SAMPLES/INDIVIDUALS REST ENDPOINT OPERATIONS
 # ----------------------------------------------------------------------------------------------------------------------
 
-# individuals
+# Individuals
+## Individual by ID
 @routes.get('/individuals/{target_id_req}')
 @validate("samples_ind_by_id")
 async def beacon_get_individual_by_id(request):
     """
     Use the HTTP protocol 'GET' to return a Json object of a response to a given INDIVIDUALS QUERY.
 
-    It uses the '/individuals/{individual_stable_id_req}' path and doesn't expect parameters.
+    It uses the '/individuals/{individual_stable_id_req}' path and doesn't expect parameters (just alternative schemas).
     """
-
     db_pool = request.app['pool']
     LOG.info(f"Using {request.path}")
     LOG.info(f"This is the {request.method} variable request: {request.match_info['target_id_req']}")
@@ -339,14 +339,52 @@ async def beacon_get_individual_by_id(request):
     response = await by_id_handler(db_pool, request, processed_request)
     return web.json_response(response, content_type='application/json', dumps=json.dumps)
 
-# samples
-@routes.get('/samples/{target_id_req}')
-@validate("samples_ind_by_id")
+## Samples from individual by individual ID
+@routes.get('/individuals/{target_id_req}/samples')
+@validate("samples_ind")
 async def beacon_get_individual_by_id(request):
     """
     Use the HTTP protocol 'GET' to return a Json object of a response to a given INDIVIDUALS QUERY.
 
-    It uses the '/individuals/{individual_stable_id_req}' path and doesn't expect parameters.
+    It uses the '/individuals/{individual_stable_id_req}/samples' path, it can expect parameters.
+    """
+    db_pool = request.app['pool']
+    LOG.info(f"Using {request.path}")
+    LOG.info(f"This is the {request.method} variable request: {request.match_info['target_id_req']}")
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+
+    response = await smt_by_id(db_pool, processed_request, request)
+    return web.json_response(response, content_type='application/json', dumps=json.dumps)
+
+## Variants from individual by individual ID
+@routes.get('/individuals/{target_id_req}/variants')
+@validate("samples_ind")
+async def beacon_get_individual_by_id(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given INDIVIDUALS QUERY.
+
+    It uses the '/individuals/{individual_stable_id_req}/variants' path, it can expect parameters.
+    """
+    db_pool = request.app['pool']
+    LOG.info(f"Using {request.path}")
+    LOG.info(f"This is the {request.method} variable request: {request.match_info['target_id_req']}")
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+
+    response = await smt_by_id(db_pool, processed_request, request)
+    return web.json_response(response, content_type='application/json', dumps=json.dumps)
+
+
+# Samples
+## Sample by sample ID
+@routes.get('/samples/{target_id_req}')
+@validate("samples_ind_by_id")
+async def beacon_get_individual_by_id(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given SAMPLES QUERY.
+
+    It uses the '/samples/{target_id_req}' path and doesn't expect parameters.
     """
 
     db_pool = request.app['pool']
@@ -357,6 +395,43 @@ async def beacon_get_individual_by_id(request):
 
     response = await by_id_handler(db_pool, request, processed_request)
     return web.json_response(response, content_type='application/json', dumps=json.dumps)
+
+## Individual from sample by sample ID
+@routes.get('/samples/{target_id_req}/individuals')
+@validate("samples_ind")
+async def beacon_get_individual_by_id(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given SAMPLES QUERY.
+
+    It uses the '/samples/{target_id_req}/individuals' path, it can expect parameters.
+    """
+    db_pool = request.app['pool']
+    LOG.info(f"Using {request.path}")
+    LOG.info(f"This is the {request.method} variable request: {request.match_info['target_id_req']}")
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+
+    response = await smt_by_id(db_pool, processed_request, request)
+    return web.json_response(response, content_type='application/json', dumps=json.dumps)
+
+## Variants from sample by sample ID
+@routes.get('/samples/{target_id_req}/variants')
+@validate("samples_ind")
+async def beacon_get_individual_by_id(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of a response to a given SAMPLES QUERY.
+
+    It uses the '/samples/{target_id_req}/variants' path, it can expect parameters.
+    """
+    db_pool = request.app['pool']
+    LOG.info(f"Using {request.path}")
+    LOG.info(f"This is the {request.method} variable request: {request.match_info['target_id_req']}")
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+
+    response = await smt_by_id(db_pool, processed_request, request)
+    return web.json_response(response, content_type='application/json', dumps=json.dumps)
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         FILTERING TERMS ENDPOINT OPERATIONS
