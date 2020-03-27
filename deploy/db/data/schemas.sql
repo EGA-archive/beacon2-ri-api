@@ -272,9 +272,10 @@ SELECT
 
 -- Tables related to the samples/individuals endpoints
 -- Create patient table
-CREATE TABLE public.patient_table(
+CREATE TABLE public.patient_table
+(
     id serial NOT NULL,
-    stable_id text,
+    stable_id text NOT NULL UNIQUE,
     sex text NOT NULL,
     ethnicity text,
     geographic_origin text,
@@ -294,6 +295,7 @@ CREATE TABLE public.patient_disease_table(
 
 CREATE TABLE public.pedigree_table(
     id serial NOT NULL PRIMARY KEY,
+	stable_id text NOT NULL UNIQUE,
     description text NOT NULL
 );
 
@@ -339,7 +341,7 @@ INSERT INTO public.patient_disease_table (patient_id, disease, age, age_group, s
 (3, 'Parkinson', 'P56Y2M26D', 'Adult', 'Acute onset', false),
 (4, 'Alzheimer', 'P72Y6M11D', 'Adult', 'Acute onset', false);
 
-INSERT INTO public.pedigree_table VALUES (1, 'Some pedigree');
+INSERT INTO public.pedigree_table (id, stable_id, description) VALUES (1, 'PED001', 'Some pedigree');
 
 -- identical twin relationship ERO:0002041
 INSERT INTO public.patient_pedigree_table(patient_id, pedigree_id, pedigree_role, number_of_individuals_tested, disease) VALUES 
@@ -370,45 +372,44 @@ CREATE TABLE public.ontology_term_table (
     column_name text NOT NULL,
     column_value text,
     additional_comments text,
-    label text
+    label text,
+    target_table_alias text NOT NULL
 );
 
 -- Insert mock data
-INSERT INTO public.ontology_term_table(ontology, term, label, target_table, column_name, column_value) VALUES
+INSERT INTO public.ontology_term_table(ontology, term, label, target_table, column_name, column_value, target_table_alias) VALUES
 -- patient_table
-('NCIT','C17998','unknown','public.patient_table','sex','unknown'),
-('NCIT','C46113','female','public.patient_table','sex','female'),
-('NCIT','C46112','male','public.patient_table','sex','male'),
-('NCIT','C45908','other','public.patient_table','sex','C45908'),
-('NCIT','C126531','Latin American','public.patient_table','ethnicity','Latin American'),
-('NCIT','C43851','European','public.patient_table','ethnicity','European'),
-('NCIT','C42331','African','public.patient_table','ethnicity','African'),
-('GAZ','00002459','United States of America','public.patient_table','geographic_origin','United States of America'),
-('GAZ','00000591','Spain','public.patient_table','geographic_origin','Spain'),
-('GAZ','00003934','Egypt','public.patient_table','geographic_origin','Egypt'),
-('GAZ','00001086','Democratic Republic of the Congo','public.patient_table','geographic_origin','Democratic Republic of the Congo'),
+('NCIT','C17998','unknown','public.patient_table','sex','unknown','pat'),
+('NCIT','C46113','female','public.patient_table','sex','female','pat'),
+('NCIT','C46112','male','public.patient_table','sex','male','pat'),
+('NCIT','C45908','other','public.patient_table','sex','other','pat'),
+('NCIT','C126531','Latin American','public.patient_table','ethnicity','Latin American','pat'),
+('NCIT','C43851','European','public.patient_table','ethnicity','European','pat'),
+('NCIT','C42331','African','public.patient_table','ethnicity','African','pat'),
+('GAZ','00002459','United States of America','public.patient_table','geographic_origin','United States of America','pat'),
+('GAZ','00000591','Spain','public.patient_table','geographic_origin','Spain','pat'),
+('GAZ','00003934','Egypt','public.patient_table','geographic_origin','Egypt','pat'),
+('GAZ','00001086','Democratic Republic of the Congo','public.patient_table','geographic_origin','Democratic Republic of the Congo','pat'),
 -- patient_disease_table
-('NCIT','C27954','Adolescent','public.patient_disease_table','age_group','Adolescent'),
-('NCIT','C17600','Adult','public.patient_disease_table','age_group','Adult'),
--- patient_disease_table
-('HP','0001300','Parkinson','public.patient_disease_table','disease','Parkinson'),
-('HP','0002511','Alzheimer','public.patient_disease_table','disease','Alzheimer'),
-('HP','0004789','Lactose intolerance','public.patient_disease_table','disease','Lactose intolerance'),
-('OGMS','0000119','Acute onset','public.patient_disease_table','stage','Acute onset'),
+('NCIT','C27954','Adolescent','public.patient_disease_table','age_group','Adolescent','pat_dis'),
+('NCIT','C17600','Adult','public.patient_disease_table','age_group','Adult','pat_dis'),
+('HP','0001300','Parkinson','public.patient_disease_table','disease','Parkinson','pat_dis'),
+('HP','0002511','Alzheimer','public.patient_disease_table','disease','Alzheimer','pat_dis'),
+('HP','0004789','Lactose intolerance','public.patient_disease_table','disease','Lactose intolerance','pat_dis'),
+('OGMS','0000119','Acute onset','public.patient_disease_table','stage','Acute onset','pat_dis'),
 -- patient_pedigree_table
-('ERO','0002041','identical twin relationship','public.patient_pedigree_table','pedigree_role','identical twin relationship'),
+('ERO','0002041','identical twin relationship','public.patient_pedigree_table','pedigree_role','identical twin relationship','pat_ped'),
 -- beacon_sample_table
-('NCIT','C15189','biopsy','public.beacon_sample_table','obtention_procedure','biopsy'),
-('NCIT','C84509','Primary Malignant Neoplasm','public.beacon_sample_table','tumor_progression','Primary Malignant Neoplasm'),
-('EFO','0009655','abnormal sample','public.beacon_sample_table','biosample_status','abnormal sample'),
-('UBERON','0002107','liver','public.beacon_sample_table','organ','liver'),
-('UBERON','0001281','hepatic sinusoid','public.beacon_sample_table','tissue','hepatic sinusoid'),
-('CL','0000091','Kupffer cell','public.beacon_sample_table','cell_type','Kupffer cell'),
-('MONDO','0024492','tumor grade 2, general grading system','public.beacon_sample_table','tumor_grade','tumor grade 2, general grading system'),
-('NCIT','C27954','Adolescent','public.beacon_sample_table','individual_age_at_collection_age_group','Adolescent'),
-('NCIT','C17600','Adult','public.beacon_sample_table','individual_age_at_collection_age_group','Adult')
+('NCIT','C15189','biopsy','public.beacon_sample_table','obtention_procedure','biopsy','sam'),
+('NCIT','C84509','Primary Malignant Neoplasm','public.beacon_sample_table','tumor_progression','Primary Malignant Neoplasm','sam'),
+('EFO','0009655','abnormal sample','public.beacon_sample_table','biosample_status','abnormal sample','sam'),
+('UBERON','0002107','liver','public.beacon_sample_table','organ','liver','sam'),
+('UBERON','0001281','hepatic sinusoid','public.beacon_sample_table','tissue','hepatic sinusoid','sam'),
+('CL','0000091','Kupffer cell','public.beacon_sample_table','cell_type','Kupffer cell','sam'),
+('MONDO','0024492','tumor grade 2, general grading system','public.beacon_sample_table','tumor_grade','tumor grade 2, general grading system','sam'),
+('NCIT','C27954','Adolescent','public.beacon_sample_table','individual_age_at_collection_age_group','Adolescent','sam'),
+('NCIT','C17600','Adult','public.beacon_sample_table','individual_age_at_collection_age_group','Adult','sam')
 ;
-
 
 -- Create views
 CREATE VIEW public.ontology_term_column_correspondance AS
