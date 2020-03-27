@@ -44,9 +44,24 @@ CREATE TABLE public.beacon_data_table (
 
 );
 
-CREATE TABLE public.beacon_sample_table (
-	id serial NOT NULL PRIMARY KEY,
-	stable_id text NOT NULL
+-- updated table for v2
+-- the patient_id reference will be included after creting the patient_table
+CREATE TABLE public.beacon_sample_table(
+    id serial NOT NULL,
+    stable_id text NOT NULL,
+    -- patient_id integer REFERENCES public.patient_table(id),
+    description text,
+    biosample_status text,
+    individual_age_at_collection_age text,
+    individual_age_at_collection_age_group text,
+    organ text,
+    tissue text,
+    cell_type text,
+    obtention_procedure text,
+    tumor_progression text,
+    tumor_grade text,
+    CONSTRAINT beacon_sample_table_pkey PRIMARY KEY (id),
+    CONSTRAINT sample_unique UNIQUE (stable_id)
 );
 
 CREATE TABLE public.beacon_dataset_sample_table (
@@ -254,36 +269,85 @@ SELECT
   FROM service_table s
   JOIN organization_table o ON s.organization_id=o.id;
 
--- Add columns to beacon_sample_table
-ALTER TABLE beacon_sample_table
-ADD COLUMN sex text,
-ADD COLUMN tissue text,
-ADD COLUMN description text, 
-ADD CONSTRAINT sex_constraint CHECK (LOWER(sex) = ANY(ARRAY['female'::text,'male'::text,'other'::text,'unknown'::text]));
 
-
-
--- Tables related to the samples endpoint
+-- Tables related to the samples/individuals endpoints
 -- Create patient table
-CREATE TABLE patient_table (
-  id SERIAL NOT NULL PRIMARY KEY,
-  stable_id text,
-  sex text,
-  age_of_onset int,
-  disease text,
-  CONSTRAINT sex_constraint CHECK (LOWER(sex) = ANY(ARRAY['female'::text,'male'::text,'other'::text,'unknown'::text]))
+CREATE TABLE public.patient_table(
+    id serial NOT NULL,
+    stable_id text,
+    sex text NOT NULL,
+    ethnicity text,
+    geographic_origin text,
+    CONSTRAINT patient_table_pkey PRIMARY KEY (id),
+    CONSTRAINT sex_constraint CHECK (lower(sex) = ANY (ARRAY['female'::text, 'male'::text, 'other'::text, 'unknown'::text]))
+);
+
+CREATE TABLE public.patient_disease_table(
+    id serial NOT NULL PRIMARY KEY,
+    patient_id integer NOT NULL REFERENCES public.patient_table(id),
+    disease text NOT NULL,
+    age text,
+    age_group text,
+    stage text NOT NULL,
+    family_history boolean NOT NULL
+);
+
+CREATE TABLE public.pedigree_table(
+    id serial NOT NULL PRIMARY KEY,
+    description text NOT NULL
+);
+
+CREATE TABLE public.patient_pedigree_table(
+    patient_id integer NOT NULL REFERENCES public.patient_table(id),
+    pedigree_id integer NOT NULL REFERENCES public.pedigree_table(id),
+    pedigree_role text NOT NULL,
+    number_of_individuals_tested integer,
+    disease text NOT NULL,
+    PRIMARY KEY (patient_id, pedigree_id)
 );
 
 -- Add patient column to beacon_sample_table
 ALTER TABLE public.beacon_sample_table
-ADD COLUMN patient_id  INT REFERENCES patient_table (id);
+ADD COLUMN patient_id integer REFERENCES public.patient_table(id);
 
--- Insert mock data into patient_table
-INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient1', 'female', '61', 'lung cancer');
-INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient2', 'male', '70', 'kidney cancer');
-INSERT INTO public.patient_table (stable_id, sex, age_of_onset) VALUES ('patient3', 'female', '45');
-INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient4', 'male', '82', 'hepatitis');
-INSERT INTO public.patient_table (stable_id, sex, age_of_onset, disease) VALUES ('patient5', 'male', '65', 'lung cancer');
+-- START Insert mock data
+
+-- Latin American NCIT:C126531
+-- European NCIT:C43851
+-- African NCIT: C42331 
+-- United States of America GAZ:00002459
+-- Spain GAZ:00000591
+-- Egypt GAZ:00003934
+-- Democratic Republic of the Congo GAZ:00001086
+INSERT INTO public.patient_table (id, stable_id, sex, ethnicity, geographic_origin) VALUES 
+(1, 'patient1', 'female', 'Latin American', 'United States of America'),
+(2, 'patient2', 'male', 'European', 'United States of America'),
+(3, 'patient3', 'female', 'European', 'Spain'),
+(4, 'patient4', 'male', 'African', 'Egypt'),
+(5, 'patient5', 'male', 'African', 'Democratic Republic of the Congo');
+
+-- Parkinson HP:0001300
+-- Alzheimer HP:0002511
+-- Lactose intolerance HP:0004789
+-- Adolescent NCIT:C27954
+-- Adult NCIT:C17600
+-- Acute onset OGMS:0000119
+INSERT INTO public.patient_disease_table (patient_id, disease, age, age_group, stage, family_history) VALUES
+(1, 'Lactose intolerance', 'P12Y5M1D', 'Adolescent', 'Acute onset', false),
+(1, 'Lactose intolerance', 'P12Y5M1D', 'Adolescent', 'Acute onset', true),
+(2, 'Lactose intolerance', 'P25Y9M18D', 'Adult', 'Acute onset', false),
+(3, 'Parkinson', 'P56Y2M26D', 'Adult', 'Acute onset', false),
+(4, 'Alzheimer', 'P72Y6M11D', 'Adult', 'Acute onset', false);
+
+INSERT INTO public.pedigree_table VALUES (1, 'Some pedigree');
+
+-- identical twin relationship ERO:0002041
+INSERT INTO public.patient_pedigree_table(patient_id, pedigree_id, pedigree_role, number_of_individuals_tested, disease) VALUES 
+(1,1, 'identical twin relationship', 2, 'Lactose intolerance');
+
+-- updates on the beacon_sample_table are done in updates.sql
+
+-- END Insert mock data
 
 
 -- Tables related to the access_levels endpoint
@@ -295,7 +359,6 @@ CREATE TABLE public.dataset_access_level_table (
     access_level text NOT NULL CHECK (access_level = ANY (ARRAY['NOT_SUPPORTED'::text, 'PUBLIC'::text, 'REGISTERED'::text, 'CONTROLLED'::text])),
     CONSTRAINT dataset_access_level_table_pkey PRIMARY KEY (dataset_id, parent_field, field)
 );
-
 
 -- Tables related to the filtering terms
 -- Create table
@@ -311,20 +374,41 @@ CREATE TABLE public.ontology_term_table (
 );
 
 -- Insert mock data
-INSERT INTO public.ontology_term_table (id, ontology, term, target_table, column_name, column_value, additional_comments, label) VALUES 
-  (1,E'sex',E'1',E'public.beacon_sample_table',E'sex',E'female',NULL,E'Female'),
-  (2,E'sex',E'2',E'public.beacon_sample_table',E'sex',E'male',NULL,E'Male'),
-  (3,E'tissue',E'1',E'public.beacon_sample_table',E'tissue',E'liver',NULL,E'Liver sample'),
-  (4,E'tissue',E'2',E'public.beacon_sample_table',E'tissue',E'lung',NULL,E'Lung sample'),
-  (5,E'tissue',E'3',E'public.beacon_sample_table',E'tissue',E'kidney',NULL,E'Kidney sample'),
-  (6,E'disease',E'1',E'public.patient_table',E'disease',E'lung cancer',NULL,E'Lung cancer'),
-  (7,E'disease',E'2',E'public.patient_table',E'disease',E'kidney cancer',NULL,E'Kidney cancer'),
-  (8,E'disease',E'3',E'public.patient_table',E'disease',E'hepatitis',NULL,E'Hepatitis'),
-  (9,E'GO',E'0030237',E'public.beacon_sample_table',E'sex',E'female',NULL,E'Female'),
-  (10,E'GO',E'0030238',E'public.beacon_sample_table',E'sex',E'male',NULL,E'Male'),
-  (11,E'HPO',E'0009726',E'public.patient_table',E'disease',E'kidney cancer',NULL,E'Kidney cancer'),
-  (12,E'HPO',E'0100526',E'public.patient_table',E'disease',E'lung cancer',NULL,E'Lung cancer'),
-  (13,E'HPO',E'0012115',E'public.patient_table',E'disease',E'hepatitis',NULL,E'Hepatitis');
+INSERT INTO public.ontology_term_table(ontology, term, label, target_table, column_name, column_value) VALUES
+-- patient_table
+('NCIT','C17998','unknown','public.patient_table','sex','unknown'),
+('NCIT','C46113','female','public.patient_table','sex','female'),
+('NCIT','C46112','male','public.patient_table','sex','male'),
+('NCIT','C45908','other','public.patient_table','sex','C45908'),
+('NCIT','C126531','Latin American','public.patient_table','ethnicity','Latin American'),
+('NCIT','C43851','European','public.patient_table','ethnicity','European'),
+('NCIT','C42331','African','public.patient_table','ethnicity','African'),
+('GAZ','00002459','United States of America','public.patient_table','geographic_origin','United States of America'),
+('GAZ','00000591','Spain','public.patient_table','geographic_origin','Spain'),
+('GAZ','00003934','Egypt','public.patient_table','geographic_origin','Egypt'),
+('GAZ','00001086','Democratic Republic of the Congo','public.patient_table','geographic_origin','Democratic Republic of the Congo'),
+-- patient_disease_table
+('NCIT','C27954','Adolescent','public.patient_disease_table','age_group','Adolescent'),
+('NCIT','C17600','Adult','public.patient_disease_table','age_group','Adult'),
+-- patient_disease_table
+('HP','0001300','Parkinson','public.patient_disease_table','disease','Parkinson'),
+('HP','0002511','Alzheimer','public.patient_disease_table','disease','Alzheimer'),
+('HP','0004789','Lactose intolerance','public.patient_disease_table','disease','Lactose intolerance'),
+('OGMS','0000119','Acute onset','public.patient_disease_table','stage','Acute onset'),
+-- patient_pedigree_table
+('ERO','0002041','identical twin relationship','public.patient_pedigree_table','pedigree_role','identical twin relationship'),
+-- beacon_sample_table
+('NCIT','C15189','biopsy','public.beacon_sample_table','obtention_procedure','biopsy'),
+('NCIT','C84509','Primary Malignant Neoplasm','public.beacon_sample_table','tumor_progression','Primary Malignant Neoplasm'),
+('EFO','0009655','abnormal sample','public.beacon_sample_table','biosample_status','abnormal sample'),
+('UBERON','0002107','liver','public.beacon_sample_table','organ','liver'),
+('UBERON','0001281','hepatic sinusoid','public.beacon_sample_table','tissue','hepatic sinusoid'),
+('CL','0000091','Kupffer cell','public.beacon_sample_table','cell_type','Kupffer cell'),
+('MONDO','0024492','tumor grade 2, general grading system','public.beacon_sample_table','tumor_grade','tumor grade 2, general grading system'),
+('NCIT','C27954','Adolescent','public.beacon_sample_table','individual_age_at_collection_age_group','Adolescent'),
+('NCIT','C17600','Adult','public.beacon_sample_table','individual_age_at_collection_age_group','Adult')
+;
+
 
 -- Create views
 CREATE VIEW public.ontology_term_column_correspondance AS

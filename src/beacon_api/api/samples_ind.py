@@ -21,7 +21,7 @@ from ..conf.config import DB_SCHEMA
 from ..utils.polyvalent_functions import create_prepstmt_variables, filter_exists, datasetHandover
 from ..utils.polyvalent_functions import prepare_filter_parameter, parse_filters_request
 from ..utils.polyvalent_functions import fetch_datasets_access, access_resolution
-from ..utils.models import variant_object, variantAnnotation_object
+from ..utils.models import variant_object, variantAnnotation_object, biosample_object, individual_object
 
 from .genomic_query import fetch_resulting_datasets, fetch_variantAnnotations, snp_resultsHandover
 
@@ -86,13 +86,17 @@ def create_query(processed_request):
 #                    'alternate', 'start', 'end', 'type', 'sv_length', 'variant_cnt', 'call_cnt', 
 #                    'sample_cnt', 'matching_sample_cnt', 'frequency']
 # Definition of interesting columns depending on the target object
-sample_columns = ['sample_id', 'sample_stable_id', 'tissue', 'description']
-individual_columns = ['patient_id','patient_stable_id', 'sex', 'age_of_onset', 'disease']
+sample_columns = ['sample_id', 'sample_stable_id', 'description', 'biosample_status', 'individual_age_at_collection_age',
+                 'individual_age_at_collection_age_group', 'organ', 'tissue', 'cell_type', 'obtention_procedure', 
+                 'tumor_progression', 'tumor_grade', 'patient_stable_id']
+individual_columns = ['patient_id','patient_stable_id', 'sex', 'ethnicity', 'geographic_origin']
 variant_columns = ['unique_id','chromosome', 'variant_id', 'reference', 
                    'alternate', 'start', 'end', 'type']
 dataset_columns = ['dataset_id', 'stable_id_dt', 'variant_cnt', 'call_cnt', 
                    'sample_cnt', 'matching_sample_cnt', 'frequency', 'access_type']
 variant_and_dataset_columns = variant_columns + dataset_columns
+disease_columns = ['disease', 'age', 'age_group', 'stage', 'family_history']
+pedigree_columns = ['pedigree_id', 'pedigree_role', 'number_of_individuals_tested', 'pedigree_disease', 'pedigree_description'] 
 
 
 async def create_variantsFound_object(db_pool, variants_df, include_dataset, processed_request, valid_datasets):
@@ -162,7 +166,7 @@ async def create_variantsFound_object(db_pool, variants_df, include_dataset, pro
 
 
 
-async def create_individuals_object(db_pool, main_df, include_dataset, processed_request, valid_datasets):
+async def create_individuals_object(db_pool, main_df, include_dataset, processed_request, valid_datasets, simple = False):
     by_individual = main_df.groupby('patient_id')
 
     individual_responses_list = []
@@ -171,39 +175,35 @@ async def create_individuals_object(db_pool, main_df, include_dataset, processed
     for individual_id, individual_df in by_individual:
         individual_response = {}
 
-        individual_object = individual_df[individual_columns].drop_duplicates().to_dict('r')[0]
-        individual_response['individual'] =  {"version": "beacon-individual-v1.0",
-                "value": {
-                    "id": individual_object.get("patient_stable_id"),
-                    "sex": individual_object.get("sex"),
-                    "ageOfOnset": individual_object.get("age_of_onset"),
-                    "disease": individual_object.get("disease"),
-                    "info": { }
-                    }
-                }
+        individual = individual_df[individual_columns].drop_duplicates().to_dict('r')[0]
 
-        samples_object = individual_df[sample_columns].drop_duplicates().to_dict('r')
-        individual_response['samples'] = [{"version": "beacon-sample-v1.0",
-                        "value": {
-                            "id": sample.get("sample_stable_id"),
-                            "tissue": sample.get("tissue"),
-                            "description": sample.get("description"),
-                            "info": { }
-                            }
-                        }
-                        for sample in samples_object]
+        # adding the info about diseases and pedigrees
+        diseases = individual_df[disease_columns].drop_duplicates().to_dict('r')
+        individual.update({'diseases': diseases})
+        pedigrees = individual_df[pedigree_columns].drop_duplicates().to_dict('r')
+        individual.update({'pedigrees': pedigrees})
 
-        # variants_raw = individual_df[variant_columns].drop_duplicates().to_dict('r')
-        # individual_response['variantsFound'] = variants_raw
-        
-        variants_df = individual_df[variant_and_dataset_columns].drop_duplicates()
-        individual_response['variantsFound'] = await create_variantsFound_object(db_pool, variants_df, include_dataset, processed_request, valid_datasets)
-        
-        individual_responses_list.append(individual_response)
+        individual_response['individual'] = individual_object(individual, processed_request)
+
+        if not simple:
+            samples_object = individual_df[sample_columns].drop_duplicates().to_dict('r')
+            individual_response['samples'] = [biosample_object(sample, processed_request)
+                            for sample in samples_object]
+
+            # variants_raw = individual_df[variant_columns].drop_duplicates().to_dict('r')
+            # individual_response['variantsFound'] = variants_raw
+            
+            variants_df = individual_df[variant_and_dataset_columns].drop_duplicates()
+            individual_response['variantsFound'] = await create_variantsFound_object(db_pool, variants_df, include_dataset, processed_request, valid_datasets)
+            
+            individual_responses_list.append(individual_response)
+        else:
+            individual_responses_list.append(individual_response['individual'])
+
     return individual_responses_list
 
 
-async def create_samples_object(db_pool, main_df, include_dataset, processed_request, valid_datasets):
+async def create_samples_object(db_pool, main_df, include_dataset, processed_request, valid_datasets, simple = False):
     by_sample = main_df.groupby('sample_id')
 
     sample_responses_list = []
@@ -214,34 +214,37 @@ async def create_samples_object(db_pool, main_df, include_dataset, processed_req
 
 
         sample_object = sample_df[sample_columns].drop_duplicates().to_dict('r')[0]
-        sample_response['sample'] = {"version": "beacon-sample-v1.0",
-                        "value": {
-                            "id": sample_object.get("sample_stable_id"),
-                            "tissue": sample_object.get("tissue"),
-                            "description": sample_object.get("description"),
-                            "info": { }
-                            }
-                        }
+        sample_response['sample'] = biosample_object(sample_object, processed_request)
 
-        individuals_object = sample_df[individual_columns].drop_duplicates().to_dict('r')
-        sample_response['individuals'] = [{"version": "beacon-individual-v1.0",
-                        "value": {
-                            "id": individual.get("patient_stable_id"),
-                            "sex": individual.get("sex"),
-                            "ageOfOnset": individual.get("age_of_onset"),
-                            "disease": individual.get("disease"),
-                            "info": { }
-                            }
-                        }
-                        for individual in individuals_object]
+        
+        if not simple:
+            # individuals_object = sample_df[individual_columns].drop_duplicates().to_dict('r')
+            individual_response_list = []
+            by_individual = sample_df.groupby('patient_id')
 
-        # variants_raw = sample_df[variant_columns].drop_duplicates().to_dict('r')
-        # sample_response['variantsFound'] = 'variants_raw'
+            for individual_id, individual_df in by_individual:
 
-        variants_df = sample_df[variant_and_dataset_columns].drop_duplicates()
-        sample_response['variantsFound'] = await create_variantsFound_object(db_pool, variants_df, include_dataset, processed_request, valid_datasets)
+                individual = individual_df[individual_columns].drop_duplicates().to_dict('r')[0]
 
-        sample_responses_list.append(sample_response)
+                # adding the info about diseases and pedigrees
+                diseases = individual_df[disease_columns].drop_duplicates().to_dict('r')
+                individual.update({'diseases': diseases})
+                pedigrees = individual_df[pedigree_columns].drop_duplicates().to_dict('r')
+                individual.update({'pedigrees': pedigrees})
+
+                individual_response_list.append(individual_object(individual, processed_request))
+
+            sample_response['individuals'] = individual_response_list
+
+            # variants_raw = sample_df[variant_columns].drop_duplicates().to_dict('r')
+            # sample_response['variantsFound'] = 'variants_raw'
+
+            variants_df = sample_df[variant_and_dataset_columns].drop_duplicates()
+            sample_response['variantsFound'] = await create_variantsFound_object(db_pool, variants_df, include_dataset, processed_request, valid_datasets)
+
+            sample_responses_list.append(sample_response)
+        else:
+            sample_responses_list.append(sample_response['sample'])
         
     return sample_responses_list
 
@@ -260,7 +263,7 @@ async def get_results(db_pool, filters_dict, valid_datasets, processed_request, 
     alternate = '' if not processed_request.get("alternateBases") else processed_request.get("alternateBases")
     start = 'null' if not processed_request.get("start") else processed_request.get("start")
     end = 'null' if not processed_request.get("end") else processed_request.get("end")
-    reference_genome = 'null' if not processed_request.get("assemblyId") else processed_request.get("assemblyId")
+    reference_genome = '' if not processed_request.get("assemblyId") else processed_request.get("assemblyId")
 
     dataset_ids = ",".join([str(i) for i in valid_datasets])
 
@@ -271,6 +274,16 @@ async def get_results(db_pool, filters_dict, valid_datasets, processed_request, 
     samples_filter_dict = None if not filters_dict.get(target_table_sample) else filters_dict.get(target_table_sample)
     patients_filter_dict = None if not filters_dict.get(target_table_patient) else filters_dict.get(target_table_patient)
 
+    # Update the patients_filter_dict with disease and pedigree info
+    target_table_patient_disease = f"{DB_SCHEMA}.patient_disease_table"
+    if filters_dict.get(target_table_patient_disease):
+        patients_filter_dict.update(filters_dict.get(target_table_patient_disease))
+
+    target_table_patient_pedigree = f"{DB_SCHEMA}.patient_pedigree_table"
+    if filters_dict.get(target_table_patient_pedigree):
+        patients_filter_dict.update(filters_dict.get(target_table_patient_pedigree))
+
+    # Join everything in an SQL-friendly format
     if samples_filter_dict:
         for column, list_values in samples_filter_dict.items():
             sentence_part = f""" s.{column} IN ('{"','".join(list_values)}')"""
@@ -290,14 +303,40 @@ async def get_results(db_pool, filters_dict, valid_datasets, processed_request, 
             query  = f"""SELECT concat_ws(':', data_t.chromosome, data_t.variant_id, data_t.reference, data_t.alternate, data_t.start, data_t.end, data_t.type) AS unique_id,
                             data_t.dataset_id, d_t.reference_genome, d_t.stable_id as stable_id_dt, d_t.access_type, vsp_t.data_id, data_t.chromosome, data_t.variant_id, 
                             data_t.reference, data_t.alternate, data_t.start, data_t.end, data_t.type, data_t.sv_length, data_t.variant_cnt, data_t.call_cnt, data_t.sample_cnt, 
-                            data_t.matching_sample_cnt, data_t.frequency, vsp_t.sample_id, vsp_t.sample_stable_id, vsp_t.tissue, vsp_t.description, vsp_t.patient_id, vsp_t.patient_stable_id, 
-                            vsp_t.sex, vsp_t.age_of_onset, vsp_t.disease
+                            data_t.matching_sample_cnt, data_t.frequency, vsp_t.sample_id, vsp_t.sample_stable_id, vsp_t.description, vsp_t.biosample_status, 
+							vsp_t.individual_age_at_collection_age, vsp_t.individual_age_at_collection_age_group, vsp_t.organ, vsp_t.tissue, vsp_t.cell_type, 
+							vsp_t.obtention_procedure, vsp_t.tumor_progression, vsp_t.tumor_grade,
+							vsp_t.patient_id, vsp_t.patient_stable_id, 
+                            vsp_t.sex, vsp_t.ethnicity, vsp_t.geographic_origin,
+							-- patient_disease_table
+							vsp_t.disease, vsp_t.age, vsp_t.age_group, vsp_t.stage, vsp_t.family_history,
+							-- patient_pedigree_table
+							vsp_t.pedigree_id, vsp_t.pedigree_role, vsp_t.number_of_individuals_tested, vsp_t.pedigree_disease, vsp_t.pedigree_description
                             FROM public.beacon_data_table as data_t
                             join (select * 
-                                    from (SELECT s.id as s_id, s.stable_id as sample_stable_id, s.sex, s.tissue, s.description, 
-                                            p.id as patient_id, p.stable_id as patient_stable_id, p.age_of_onset, p.disease 
+                                    from (SELECT s.id as s_id, s.stable_id as sample_stable_id, s.description, 
+										  	s.biosample_status, s.individual_age_at_collection_age, s.individual_age_at_collection_age_group, 
+										  	s.organ, s.tissue, s.cell_type, s.obtention_procedure, s.tumor_progression, s.tumor_grade,
+                                            p.*
                                             FROM beacon_sample_table s 
-                                            JOIN patient_table p ON s.patient_id = p.id 
+                                            JOIN (SELECT p.id as patient_id, p.stable_id as patient_stable_id, p.sex, p.ethnicity, 
+													p.geographic_origin,
+													-- patient_disease_table
+													pd.disease, pd.age, pd.age_group, pd.stage, pd.family_history,
+													-- patient_pedigree_table
+													pp.pedigree_id, pp.pedigree_role, pp.number_of_individuals_tested, pp.pedigree_disease, pp.pedigree_description
+															FROM patient_table p 
+															-- patient_disease_table
+															LEFT JOIN patient_disease_table as pd
+															ON p.id = pd.patient_id
+															-- patient_pedigree_table
+															LEFT JOIN (SELECT patient_id, pedigree_id, pedigree_role, number_of_individuals_tested, 
+																	   disease as pedigree_disease, pedigree_table.description as pedigree_description
+																		FROM patient_pedigree_table
+																		JOIN pedigree_table
+																		ON pedigree_id = id) as pp
+															ON p.id = pp.patient_id) as p 
+										  	ON s.patient_id = p.patient_id
                                             -- patient and sample filters
                                             WHERE (CASE WHEN {sentence_exists} THEN {sentence} ELSE true END) AND s.tissue IS NOT NULL) as sample_t
                                     join public.beacon_data_sample_table as data_sample_t
@@ -325,7 +364,7 @@ async def get_results(db_pool, filters_dict, valid_datasets, processed_request, 
                                 WHEN {end} IS NOT NULL THEN 'end' = {end} ELSE true
                                 END)
                             AND (CASE
-                                WHEN ('{reference_genome}') IS NOT NULL THEN reference_genome = '{reference_genome}' ELSE true
+                                WHEN nullif('{reference_genome}', '') IS NOT NULL THEN reference_genome = '{reference_genome}' ELSE true
                                 END);"""
 
             LOG.debug(f"QUERY samples/individuals: {query}")
@@ -358,6 +397,103 @@ async def get_results(db_pool, filters_dict, valid_datasets, processed_request, 
         else:
             LOG.debug(f"No response for this query on the {endpoint} endpoint.")
             return []
+
+
+async def get_results_simple(db_pool, valid_datasets, request, processed_request, target_id_req = ''):
+    """
+    Fetches the samples or individuals info ONLY if the query doesn't specify any parameters. 
+    """
+    dataset_ids = ",".join([str(i) for i in valid_datasets])
+
+    query_samples = f"""SELECT s.id as sample_id, s.stable_id as sample_stable_id, 
+                        s.description, s.biosample_status, s.individual_age_at_collection_age, 
+                        s.individual_age_at_collection_age_group, s.organ, s.tissue, s.cell_type, 
+                        s.obtention_procedure, s.tumor_progression, s.tumor_grade, s.patient_id,
+                        p.stable_id as patient_stable_id, dts.dataset_id 
+                        FROM beacon_sample_table as s
+                        JOIN beacon_dataset_sample_table as dts
+                        ON s.id = dts.sample_id
+                        JOIN patient_table as p
+                        ON s.patient_id = p.id
+                        WHERE 
+                        -- dataset filter
+                        dataset_id IN ({dataset_ids})
+                        -- sample id filter
+                        AND (CASE
+                            WHEN nullif('{target_id_req}', '') IS NOT NULL THEN s.stable_id = '{target_id_req}' ELSE true
+                            END);"""
+
+    query_individuals = f"""SELECT p.id as patient_id, p.stable_id as patient_stable_id, p.sex, p.ethnicity, 
+                            p.geographic_origin, dataset_id,
+                            -- patient_disease_table
+                            pd.disease, pd.age, pd.age_group, pd.stage, pd.family_history,
+                            -- patient_pedigree_table
+                            pp.pedigree_id, pp.pedigree_role, pp.number_of_individuals_tested, pp.pedigree_disease, pp.pedigree_description
+                                    FROM (SELECT p.*, s.id as sample_id FROM patient_table as p 
+                                    JOIN beacon_sample_table as s
+                                    ON p.id = s.patient_id) as p
+                                    JOIN beacon_dataset_sample_table as dts
+                                    ON p.sample_id = dts.sample_id
+                                    -- patient_disease_table
+                                    LEFT JOIN patient_disease_table as pd
+                                    ON p.id = pd.patient_id
+                                    -- patient_pedigree_table
+                                    LEFT JOIN (SELECT patient_id, pedigree_id, pedigree_role, number_of_individuals_tested, 
+											   disease as pedigree_disease, pedigree_table.description as pedigree_description
+												FROM patient_pedigree_table
+												JOIN pedigree_table
+												ON pedigree_id = id) as pp
+						            ON p.id = pp.patient_id
+                                    WHERE 
+                                    -- dataset filter
+                                    dataset_id IN ({dataset_ids})
+                                    -- individual id filter
+                                    AND (CASE
+                                        WHEN nullif('{target_id_req}', '') IS NOT NULL THEN p.stable_id = '{target_id_req}' ELSE true
+                                        END);"""
+
+    # performing the actual query to the DB
+    async with db_pool.acquire(timeout=180) as connection:
+        try:
+            endpoint = request.path
+            if endpoint.startswith('/samples'):
+                query = query_samples
+            elif endpoint.startswith('/individuals'):
+                query = query_individuals
+            else:
+                LOG.debug("The endpoint is different than 'samples' and 'individuals'. Please try again.")
+                raise BeaconServerError(f'Query simple samples/individuals error')
+
+
+            LOG.debug(f"QUERY simple samples/individuals: {query}")
+            statement = await connection.prepare(query)
+            db_response = await statement.fetch()
+
+            response = []
+            for record in list(db_response):
+                response.append(dict(record))
+        except Exception as e:
+            raise BeaconServerError(f'Query simple samples/individuals DB error: {e}')
+    # parsing the response
+    if response: 
+        # Converting the response to a DataFrame 
+        response_df = pd.DataFrame(response)
+        # Making sure we don't have NaN values
+        response_df = response_df.where(response_df.notnull(), None)
+
+        # Calling the functions to create the objects
+        # Depending on the endpoint, the function changes
+        LOG.debug(f"Arranging the response for the {endpoint} endpoint.")
+        if endpoint.startswith('/individuals'):
+            response_arranged = await create_individuals_object('', response_df, '', processed_request, '', simple = True)
+        else:
+            response_arranged = await create_samples_object('', response_df, '', processed_request, '', simple = True)
+        LOG.debug(f"Arrangement done for the {endpoint} endpoint.")
+        # Returning the arrange response
+        return response_arranged
+    else:
+        LOG.debug(f"No response for this query on the {endpoint} endpoint.")
+        return []
 
 
 
@@ -438,7 +574,11 @@ async def sample_ind_request_handler(db_pool, processed_request, request):
     valid_datasets = [dataset for dataset in valid_datasets if dataset in available_datasets]
 
     # Now we perform the main query to the DB to retrieve all the sample, individual and variant raw data
-    results = await get_results(db_pool, filters_dict, valid_datasets, processed_request, request, include_dataset)
+    # if we don't have parameters, that means we can respond with a simple list of samples/individuals
+    if not processed_request or (len(processed_request) == 1 and ('individual' in processed_request.keys() or 'biosample' in processed_request.keys())):
+        results = await get_results_simple(db_pool, valid_datasets, request, processed_request)
+    else:
+        results = await get_results(db_pool, filters_dict, valid_datasets, processed_request, request, include_dataset)
 
             
     # In the response only a subset of variants will be shown, except when includeAllVariants is set to true
@@ -454,22 +594,28 @@ async def sample_ind_request_handler(db_pool, processed_request, request):
     variant = processed_request.get("variant").split(",") if processed_request.get("variant") else []
     variantAnnotation = processed_request.get("variantAnnotation").split(",") if processed_request.get("variantAnnotation") else [] 
     variantMetadata = processed_request.get("variantMetadata").split(",") if processed_request.get("variantMetadata") else [] 
+    biosample = processed_request.get("biosample").split(",") if processed_request.get("biosample") else [] 
+    individual = processed_request.get("individual").split(",") if processed_request.get("individual") else [] 
 
     # Once all this is done, we build the response object
     beacon_response = {
                     "meta": {
                         "Variant": ["beacon-variant-v0.1", "ga4gh-variant-representation-v0.1"],
   	                    "VariantAnnotation": ["beacon-variant-annotation-v1.0"],
-                        "VariantMetadata": ["beacon-variant-metadata-v1.0"]
+                        "VariantMetadata": ["beacon-variant-metadata-v1.0"],
+                        "biosample": ["beacon-biosample-v0.1", "ga4gh-phenopacket-biosample-v0.1"],
+                        "individual": ["beacon-individual-v0.1", "ga4gh-phenopacket-individual-v0.1"],
                     },
                     "value": { 'beaconId': __id__,
                         'apiVersion': __apiVersion__,
-                        'exists': any([dataset['exists'] for result in results for variant in result["variantsFound"] for dataset in variant["datasetAlleleResponses"]]),
+                        'exists': any(results),
+                        # 'exists': any([dataset['exists'] for result in results for variant in result["variantsFound"] for dataset in variant["datasetAlleleResponses"]]),
                         'request': { "meta": { "request": { 
-                                                            "Sample": "beacon-sample-v1",
                                                             "Variant": ["beacon-variant-v0.1"]  + variant,
                                                             "VariantAnnotation": ["beacon-variant-annotation-v1.0"] + variantAnnotation,
-                                                            "VariantMetadata": ["beacon-variant-metadata-v1.0"] + variantMetadata
+                                                            "VariantMetadata": ["beacon-variant-metadata-v1.0"] + variantMetadata,
+                                                            "sample": ["beacon-biosample-v0.1"] + biosample,
+                                                            "individual": ["beacon-individual-v0.1"] + individual
                                                         },
                                                 "apiVersion": __apiVersion__,
                                             },
