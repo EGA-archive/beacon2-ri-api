@@ -214,7 +214,7 @@ async def get_individuals_rest(db_pool, request):
 
     # 1. REQUEST PROCESSING
     
-    # We get the raw request
+    # Get the raw request
     raw_request = dict(request.rel_url.query)
 
     # Add individualId parameter if used
@@ -222,10 +222,15 @@ async def get_individuals_rest(db_pool, request):
         individual_id = request.match_info['target_id_req']
         raw_request.update({"individualId": individual_id})
 
-    # First we parse the request to prepare it to be used in the SQL function
+    # Prepare pagination
+    skip = 0 if not raw_request.get("skip") else raw_request.get("skip")
+    limit = 10 if not raw_request.get("limit") else raw_request.get("limit")
+    raw_request.update({"skip": skip, "limit": limit})
+
+    # Parse the request to prepare it to be used in the SQL function
     query_parameters = request2queryparameters(raw_request)
 
-    # Then we parse the request to see if there is any alternativeSchema
+    # Also check request to see if there is any alternativeSchema
     alternative_schemas = raw_request.get("individualSchemas").split(",") if raw_request.get("individualSchemas") else []
 
     # 2. GET VALID/ACCESSIBLE DATASETS
