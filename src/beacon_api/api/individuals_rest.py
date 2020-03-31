@@ -28,21 +28,32 @@ def create_query(processed_request):
     """
     Restructure the request to build the query object
     """
+
+    reference_bases_req = processed_request.get("referenceBases")
+    alternate_bases_req = processed_request.get("alternateBases")
+    reference_name_req = processed_request.get("referenceName")
+    start_req = processed_request.get("start")
+    end_req = processed_request.get("end")
+    assembly_id_req = processed_request.get("assemblyId")
+    dataset_ids_req = processed_request.get("datasetIds")
+    filters_req = processed_request.get("filters")
+
+
     query = {
         "variant": {
-            "referenceBases": "" if not processed_request.get("referenceBases") else processed_request.get("referenceBases"),
-            "alternateBases": "" if not processed_request.get("alternateBases") else processed_request.get("alternateBases"),
-            "referenceName": "" if not processed_request.get("referenceName") else processed_request.get("referenceName"),
-            "start": None if not processed_request.get("start") else processed_request.get("start"),
-            "end": None if not processed_request.get("end") else processed_request.get("end"),
-            "assemblyId": "" if not processed_request.get("assemblyId") else processed_request.get("assemblyId")
+            "referenceBases": "" if not reference_bases_req else reference_bases_req,
+            "alternateBases": "" if not alternate_bases_req else alternate_bases_req,
+            "referenceName": "" if not reference_name_req else reference_name_req,
+            "start": None if not start_req else start_req,
+            "end": None if not end_req else end_req,
+            "assemblyId": "" if not assembly_id_req else assembly_id_req
             },
         "datasets": {
-            "datasetIds": None if not processed_request.get("datasetIds") else processed_request.get("datasetIds"),
+            "datasetIds": None if not dataset_ids_req else dataset_ids_req,
             "includeDatasetResponses": ""
             # "includeDatasetResponses": "ALL" if not processed_request.get("includeDatasetResponses") else processed_request.get("includeDatasetResponses")
              },
-        "filters": None if not processed_request.get("filters") else processed_request.get("filters"),
+        "filters": None if not filters_req else filters_req,
     }
 
     return query
@@ -56,7 +67,8 @@ def create_final_response(raw_request, results):
     """
     Create the final response as the Beacon Schema expects. 
     """
-    alt_schemas_ind = [] if not raw_request.get("individualSchemas") else raw_request.get("individualSchemas").split(",")
+    alt_schemas_ind_req = raw_request.get("individualSchemas")
+    alt_schemas_ind = [] if not alt_schemas_ind_req else alt_schemas_ind_req.split(",")
     query = create_query(raw_request)
 
     final_response = {
@@ -223,15 +235,18 @@ async def get_individuals_rest(db_pool, request):
         raw_request.update({"individualId": individual_id})
 
     # Prepare pagination
-    skip = 0 if not raw_request.get("skip") else raw_request.get("skip")
-    limit = 10 if not raw_request.get("limit") else raw_request.get("limit")
+    skip_req = raw_request.get("skip")
+    limit_req = raw_request.get("limit")
+    skip = 0 if not skip_req else skip_req
+    limit = 10 if not limit_req else limit_req
     raw_request.update({"skip": skip, "limit": limit})
 
     # Parse the request to prepare it to be used in the SQL function
     query_parameters = request2queryparameters(raw_request)
 
     # Also check request to see if there is any alternativeSchema
-    alternative_schemas = raw_request.get("individualSchemas").split(",") if raw_request.get("individualSchemas") else []
+    alternative_schemas_req = raw_request.get("individualSchemas")
+    alternative_schemas = alternative_schemas_req.split(",") if alternative_schemas_req else []
 
     # 2. GET VALID/ACCESSIBLE DATASETS
 
