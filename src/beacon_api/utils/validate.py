@@ -38,6 +38,7 @@ async def parse_request_object(request):
         # GET parameters are returned as strings
         int_params = ['start', 'end', 'endMax', 'endMin', 'startMax', 'startMin']
         items = {k: (int(v) if k in int_params else v) for k, v in request.rel_url.query.items()}
+        # parse the arrays
         if 'datasetIds' in items:
             items['datasetIds'] = request.rel_url.query.get('datasetIds').split(',')
         elif 'filters' in items:
@@ -291,3 +292,39 @@ def validate_access_levels(func):
 
         return await func(request, *args)
     return wrapped
+
+
+def validate_simple(endpoint):
+    """
+    Validate against JSON schema an return something.
+    Return a parsed object if there is a POST.
+    If there is a get do not return anything just validate.
+
+    Same as above but simplified.
+    """
+    def wrapper(func):
+
+        @wraps(func) # just to get the documentation of the decorated function
+        async def wrapped(request, *args):            
+            if not isinstance(request, web.Request):
+                raise BeaconServicesBadRequest(request, request.host, "invalid request: This does not seem a valid HTTP Request.")
+            try:
+                _, obj = await parse_request_object(request)
+            except Exception:
+                raise BeaconServerError("Could not properly parse the provided Request Body as JSON.")
+            try:
+                # jsonschema.validate(obj, schema)
+                LOG.info('Validate against JSON schema.')
+                schema = load_schema(endpoint)
+                DefaultValidatingDraft7Validator(schema).validate(obj)
+            except ValidationError as e:
+                if len(e.path) > 0:
+                    LOG.error(f'Bad Request: {e.message} caused by input: {e.instance} in {e.path[0]}')
+                    raise BeaconServicesBadRequest(obj, request.host, f"Provided input: '{e.instance}' is not correct for field: '{e.path[0]}', {e.message}")
+                else:
+                    LOG.error(f'Bad Request: {e.message} caused by input: {e.instance}')
+                    raise BeaconServicesBadRequest(obj, request.host, f"Provided input: '{e.instance}' is not correct because: '{e.message}'")
+
+            return await func(request, *args)
+        return wrapped
+    return wrapper

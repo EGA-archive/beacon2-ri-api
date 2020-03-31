@@ -388,6 +388,7 @@ def biosample_object(sample_info, processed_request):
 
 def individual_object(individual_info, processed_request):
     """
+    Shapes the objects using the names return by custom SQL queries. 
     """
     
     # Accepted alternative models
@@ -503,4 +504,109 @@ def individual_object(individual_info, processed_request):
     else:
         alt_resp_list = [name2dict[alt] for alt in alternatives if alt in accepted_list]
         return {"default": beacon_individual_v1_0,
+                "alternativeSchemas": alt_resp_list }
+
+
+
+def individual_object_rest(individual_info, alternative_schemas):
+    """
+    Shapes the objects using the names return by the query_patients() SQL funciton. 
+    """
+    
+    # Accepted alternative models
+    accepted_list = ["ga4gh-phenopacket-individual-v0.1"]
+
+    diseases = [
+        {
+            "diseaseId": disease.get("disease_id"),
+            "ageOfOnset": disease.get("disease_age_of_onset_age"),
+            "stage": disease.get("disease_stage"),
+            "familyHistory": disease.get("disease_family_history")
+        }
+        for disease in individual_info.get("diseases")
+    ]
+
+    pedigrees = [
+        {
+            "pedigreeId": pedigree.get("pedigree_stable_id"),
+            "pedigreeRole": pedigree.get("pedigree_role"),
+            "numberOfIndividualsTested": pedigree.get("pedigree_no_individuals_tested"),
+            "diseaseId": pedigree.get("pedigree_disease_id")
+
+        }
+        for pedigree in individual_info.get("pedigrees")
+        if any(pedigree.values())
+    ]
+
+    beacon_individual_v0_1 = {
+    "version": "beacon-individual-v0.1",
+    "value": 
+        {
+            "individualId": individual_info.get("individual_stable_id"),
+            "sex": individual_info.get("sex"),
+            "ethnicity": individual_info.get("ethnicity"),
+            "geographicOrigin": individual_info.get("geographic_origin"),
+            "diseases": diseases,
+            "pedigrees": pedigrees,
+            "info": ""
+        }
+    }
+
+    # alternative
+    ga4gh_phenopacket_individual_v0_1 = {
+        "version": "ga4gh-phenopacket-individual-v0.1",
+        "value": 
+            {
+                "individual": {
+                    "id": individual_info.get("individual_stable_id"),
+                    "ageAtBaseline": {
+                        "age": ""
+                    },
+                    "sex": individual_info.get("sex")
+                },
+
+                "phenotypicFeatures": [{
+                "ethnicity": {
+                    "id": "",
+                    "label": individual_info.get("ethnicity")
+                    },
+                }, {
+                "geographicOrigin": {
+                    "id": "",
+                    "label": individual_info.get("geographic_origin")
+                }
+                }],
+
+                "diseases": [{
+                    "term": {
+                        "id": "",
+                        "label": disease.get("disease_id")
+                        },
+                    "ageOfOnset": {
+                        "age": disease.get("disease_age_of_onset_age")
+                        },
+                    "diseaseStage": {
+                        "id": "",
+                        "label": disease.get("disease_stage")
+                        }
+                }
+                for disease in individual_info.get("diseases")]
+            }
+        }
+
+    # Equivalence dict
+    name2dict = {
+        "ga4gh-phenopacket-individual-v0.1" : ga4gh_phenopacket_individual_v0_1
+    }
+
+    # Request
+    if "beacon-individual-v0.1" in alternative_schemas:
+        alternative_schemas.remove("beacon-individual-v0.1")
+
+    if not alternative_schemas:
+        return {"default": beacon_individual_v0_1,
+                "alternativeSchemas": [] }
+    else:
+        alt_resp_list = [name2dict[alt] for alt in alternative_schemas if alt in accepted_list]
+        return {"default": beacon_individual_v0_1,
                 "alternativeSchemas": alt_resp_list }

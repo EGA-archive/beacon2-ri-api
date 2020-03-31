@@ -155,7 +155,7 @@ BEGIN
 	-- 	'pat_ped'
 	-- 	'pat_dis'
 	-- In the future, we may have filters on beacon_data_table
-	IF _filters_converted LIKE '%dat.' THEN _join_variant_table=TURE; END IF;
+	IF _filters_converted LIKE '%dat.' THEN _join_variant_table=TRUE; END IF;
 
 	---------------------
 	---------------------
@@ -299,8 +299,4 @@ BEGIN
 	-- #11=_end_min, #12=_end_max, #13=_individual_stable_id
 END
 $BODY$;
-
-ALTER FUNCTION public.query_patients(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text, text, text)
-    OWNER TO microaccounts_dev;
-
 
