@@ -519,7 +519,10 @@ def individual_object_rest(individual_info, alternative_schemas):
     diseases = [
         {
             "diseaseId": disease.get("disease_id"),
-            "ageOfOnset": disease.get("disease_age_of_onset_age"),
+            "ageOfOnset": {
+                "age": disease.get("disease_age_of_onset_age"),
+                "ageGroup": disease.get("disease_age_of_onset_age_group")
+            },
             "stage": disease.get("disease_stage"),
             "familyHistory": disease.get("disease_family_history")
         }
