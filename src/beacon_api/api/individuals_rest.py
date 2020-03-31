@@ -56,7 +56,7 @@ def create_final_response(raw_request, results):
     """
     Create the final response as the Beacon Schema expects. 
     """
-    alt_schemas_ind = [] if not raw_request.get("Individual") else raw_request.get("Individual").split(",")
+    alt_schemas_ind = [] if not raw_request.get("individualSchemas") else raw_request.get("individualSchemas").split(",")
     query = create_query(raw_request)
 
     final_response = {
