@@ -18,7 +18,14 @@ from .exceptions import BeaconBadRequest, BeaconServerError, BeaconForbidden, Be
 from .. import __apiVersion__, __id__
 from ..conf.config import DB_SCHEMA
 
+
+# Constants
 LOG = logging.getLogger(__name__)
+# Make lists with the column names that the main SQL function returns
+individual_columns = ['individual_stable_id', 'sex', 'ethnicity', 'geographic_origin']
+disease_columns = ['disease_id', 'disease_age_of_onset_age', 'disease_age_of_onset_age_group', 'disease_stage', 'disease_family_history']
+pedigree_columns = ['pedigree_stable_id', 'pedigree_role', 'pedigree_no_individuals_tested', 'pedigree_disease_id']         
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         SECONDARY FUNCTIONS (called by the main functions)
@@ -29,31 +36,21 @@ def create_query(processed_request):
     Restructure the request to build the query object
     """
 
-    reference_bases_req = processed_request.get("referenceBases")
-    alternate_bases_req = processed_request.get("alternateBases")
-    reference_name_req = processed_request.get("referenceName")
-    start_req = processed_request.get("start")
-    end_req = processed_request.get("end")
-    assembly_id_req = processed_request.get("assemblyId")
-    dataset_ids_req = processed_request.get("datasetIds")
-    filters_req = processed_request.get("filters")
-
-
     query = {
         "variant": {
-            "referenceBases": "" if not reference_bases_req else reference_bases_req,
-            "alternateBases": "" if not alternate_bases_req else alternate_bases_req,
-            "referenceName": "" if not reference_name_req else reference_name_req,
-            "start": None if not start_req else start_req,
-            "end": None if not end_req else end_req,
-            "assemblyId": "" if not assembly_id_req else assembly_id_req
+            "referenceBases": processed_request.get("referenceBases", ""),
+            "alternateBases": processed_request.get("alternateBases", ""),
+            "referenceName": processed_request.get("referenceName", ""),
+            "start": processed_request.get("start"),
+            "end": processed_request.get("end"),
+            "assemblyId": processed_request.get("assemblyId", "")
             },
         "datasets": {
-            "datasetIds": None if not dataset_ids_req else dataset_ids_req,
+            "datasetIds": processed_request.get("datasetIds"),
             "includeDatasetResponses": ""
             # "includeDatasetResponses": "ALL" if not processed_request.get("includeDatasetResponses") else processed_request.get("includeDatasetResponses")
              },
-        "filters": None if not filters_req else filters_req,
+        "filters": processed_request.get("filters"),
     }
 
     return query
@@ -111,11 +108,7 @@ def create_individuals_object(response_df, schemas_request):
     Shapes the individuals DataFrame response into a Beacon object.
     Takes the request to check if alternativeSchemas have been requested.
     """
-    # Make lists with the column names that the function returns
-    individual_columns = ['individual_stable_id', 'sex', 'ethnicity', 'geographic_origin']
-    disease_columns = ['disease_id', 'disease_age_of_onset_age', 'disease_age_of_onset_age_group', 'disease_stage', 'disease_family_history']
-    pedigree_columns = ['pedigree_stable_id', 'pedigree_role', 'pedigree_no_individuals_tested', 'pedigree_disease_id']         
-
+    # Here we use the lists with the column names that the main SQL function returns
 
     responses_list = []
     by_individual = response_df.groupby('individual_stable_id')
@@ -235,10 +228,8 @@ async def get_individuals_rest(db_pool, request):
         raw_request.update({"individualId": individual_id})
 
     # Prepare pagination
-    skip_req = raw_request.get("skip")
-    limit_req = raw_request.get("limit")
-    skip = 0 if not skip_req else skip_req
-    limit = 10 if not limit_req else limit_req
+    skip = raw_request.get("skip", 0)
+    limit = raw_request.get("limit", 10)
     raw_request.update({"skip": skip, "limit": limit})
 
     # Parse the request to prepare it to be used in the SQL function
