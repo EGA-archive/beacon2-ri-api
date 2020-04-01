@@ -75,7 +75,7 @@ def create_final_response(raw_request, results):
             "receivedRequest": {
                 "meta": {
                     "requestedSchemas": {
-                        "Individual": alt_schemas_ind
+                        "individualSchemas": alt_schemas_ind
                     },
                     "apiVersion": __apiVersion__  # it is hardcoded because we only return v2 for this endpoint
                 },
@@ -152,7 +152,7 @@ async def get_result(db_pool, query_parameters):
 
             return True, response_df
         else:
-            LOG.debug(f"No response for this query on the {endpoint} endpoint.")
+            LOG.debug(f"No response for this query.")
             return False, []
 
 
@@ -244,8 +244,9 @@ async def get_individuals_rest(db_pool, request):
     # We want to get a list of the datasets available in the database separated in three lists
     # depending on the access level (we check all of them if the user hasn't specified anything, if some
     # there were given, those are the only ones that are checked)
-    request_datasets = query_parameters[-3]
-    public_datasets, registered_datasets, controlled_datasets = await fetch_datasets_access(db_pool, request_datasets)
+    request_datasets = query_parameters[-3].split(",") if query_parameters[-3] != "null" else "null"
+    public_datasets, registered_datasets, controlled_datasets = await fetch_datasets_access(db_pool, str(request_datasets))
+    print(public_datasets)
 
     ##### TEST CODE TO USE WHEN AAI is integrated
     # access_type, accessible_datasets = access_resolution(request, request['token'], request.host, public_datasets,
