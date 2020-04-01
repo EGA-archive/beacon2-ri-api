@@ -1,0 +1,94 @@
+{
+  "definitions": {},
+  "type": "object",
+  "additionalProperties": false,
+  "required": [],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "properties": {
+        "requestedSchemas": {
+          "type": "object",
+          "properties": {
+            "individualSchemas": {
+              "type": "array",
+              "default": [],
+              "items": {
+                "type": "string",
+                "enum": ["ga4gh-phenopacket-individual-v0.1", "beacon-individual-v0.1"]  
+            }
+          }
+        },
+        "apiVersion": {
+          "type": "string",
+          "enum": ["v2.0"]
+        }
+      }
+    },
+    "query": {
+      "type": "object",
+      "properties": {
+        "variant": {
+          "type": "object",
+          "properties": {
+            "referenceBases": {
+              "type": "string",
+              "pattern": "^([ACGTN]+)$"      
+            },
+            "alternateBases": {
+              "type": "string",
+              "pattern": "^([ACGTN]+)$"              
+            },
+            "referenceName": {
+              "type": "string",
+              "enum": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
+                "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "X", "Y", "MT"
+              ]      
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0              
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "assemblyId": {
+              "type": "string",
+              "pattern": "^((GRCh|hg)[0-9]+([.]?p[0-9]+)?)$"      
+            }    
+          }
+        },
+        "datasets": {
+          "type": "object",
+          "properties": {
+            "datasetIds": {
+              "type": "array",
+              "default": [],
+              "items": {
+                "type": "string",
+                "default": "none",
+                "pattern": "^[^<>'\"/;`%{}+=]*$"      
+              }
+            },
+            "includeDatasetResponses": {
+              "type": "string"
+            }
+          }
+        },
+        "filters": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string",
+            "default": "none",
+            "pattern": ".*:.+=?>?<?[0-9]*$"  
+          }
+        },
+        "customFilters": {
+          "type": "string"
+        }      
+      }
+    }
+  }
+}
