@@ -41,10 +41,13 @@ async def parse_request_object(request):
         # parse the arrays
         if 'datasetIds' in items:
             items['datasetIds'] = request.rel_url.query.get('datasetIds').split(',')
-        elif 'filters' in items:
+        if 'filters' in items:
             items['filters'] = request.rel_url.query.get('filters').split(',')
-        elif 'customFilters' in items:
+        if 'customFilters' in items:
             items['customFilters'] = request.rel_url.query.get('customFilters').split(',')
+        if 'individualSchemas' in items:
+            items['individualSchemas'] = request.rel_url.query.get('individualSchemas').split(',')
+
         obj = json.dumps(items)
         LOG.info('Parsed GET request parameters.')
         return request.method, json.loads(obj)

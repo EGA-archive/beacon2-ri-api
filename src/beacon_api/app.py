@@ -473,7 +473,7 @@ async def beacon_get_individual_by_id(request):
 # ----------------------------------------------------------------------------------------------------------------------
 
 @routes.get('/individuals_rest')
-@validate_simple("individuals_rest")
+@validate_simple("individuals_rest_GET")
 async def beacon_get_individuals_rest(request):
     """
     Use the HTTP protocol 'GET' to return a Json object of a response to a given INDIVIDUALS QUERY.
@@ -487,7 +487,7 @@ async def beacon_get_individuals_rest(request):
     return web.json_response(response, content_type='application/json', dumps=json.dumps)
 
 @routes.get('/individuals_rest/{target_id_req}')
-@validate_simple("individuals_rest")
+@validate_simple("individuals_rest_GET")
 async def beacon_get_individuals_rest(request):
     """
     Use the HTTP protocol 'GET' to return a Json object of a response to a given INDIVIDUALS QUERY.
