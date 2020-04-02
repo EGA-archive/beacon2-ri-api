@@ -7,6 +7,7 @@ Query individuals, use variant/samples/individuals filters.
 """
 import logging
 import pandas as pd
+import sys
 
 
 from ..utils.polyvalent_functions import fetch_datasets_access, access_resolution
@@ -20,12 +21,16 @@ from ..conf.config import DB_SCHEMA
 
 
 # Constants
+
 LOG = logging.getLogger(__name__)
-# Make lists with the column names that the main SQL function returns
+
+## Make lists with the column names that the main SQL function returns
 individual_columns = ['individual_stable_id', 'sex', 'ethnicity', 'geographic_origin']
 disease_columns = ['disease_id', 'disease_age_of_onset_age', 'disease_age_of_onset_age_group', 'disease_stage', 'disease_family_history']
 pedigree_columns = ['pedigree_stable_id', 'pedigree_role', 'pedigree_no_individuals_tested', 'pedigree_disease_id']         
 
+## Parameters that this endpoint takes. Useful for transforming the POST dictionary into a GET like dictionary
+parameters = ['variantType', 'start', 'startMin', 'startMax','end', 'endMin', 'endMax', 'referenceName', 'referenceBases', 'alternateBases', 'assemblyId', 'datasetIds', 'individualId', 'filters', 'individualSchemas']
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         SECONDARY FUNCTIONS (called by the main functions)
@@ -207,6 +212,21 @@ def request2queryparameters(raw_request):
 
     return query_parameters
 
+def mimic_get_request(input_dict):
+    """
+    Iterates through the post dictionary and
+    it flattens it to mimic the get request. 
+    """
+    final_dict = {}
+    for key, val in input_dict.items():
+        if isinstance(val,dict):
+            tmp_dict = mimic_get_request(val)
+            final_dict.update(tmp_dict)
+        else:
+            if key in parameters:
+                final_dict.update({key: ",".join(val)})
+    return final_dict
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         HANDLER FUNCTION
@@ -219,8 +239,12 @@ async def get_individuals_rest(db_pool, request):
 
     # 1. REQUEST PROCESSING
     
-    # Get the raw request
-    raw_request = dict(request.rel_url.query)
+    # Depending on the request method (POST or GET) we fetch the raw request differently
+    if request.method == "GET":
+        raw_request = dict(request.rel_url.query)
+    elif request.method == "POST":
+        post_request = await request.json()
+        raw_request = mimic_get_request(post_request) 
 
     # Add individualId parameter if used
     if dict(request.match_info):
@@ -246,7 +270,6 @@ async def get_individuals_rest(db_pool, request):
     # there were given, those are the only ones that are checked)
     request_datasets = query_parameters[-3].split(",") if query_parameters[-3] != "null" else "null"
     public_datasets, registered_datasets, controlled_datasets = await fetch_datasets_access(db_pool, str(request_datasets))
-    print(public_datasets)
 
     ##### TEST CODE TO USE WHEN AAI is integrated
     # access_type, accessible_datasets = access_resolution(request, request['token'], request.host, public_datasets,

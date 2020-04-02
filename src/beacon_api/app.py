@@ -472,6 +472,7 @@ async def beacon_get_individual_by_id(request):
 #                                    REST INDIVIDUALS (FROM SCRATCH) ENDPOINT
 # ----------------------------------------------------------------------------------------------------------------------
 
+# GET
 @routes.get('/individuals_rest')
 @validate_simple("individuals_rest_GET")
 async def beacon_get_individuals_rest(request):
@@ -492,7 +493,37 @@ async def beacon_get_individuals_rest(request):
     """
     Use the HTTP protocol 'GET' to return a Json object of a response to a given INDIVIDUALS QUERY.
 
+    It uses the '/individuals/{target_id_req}' path, it can expect parameters.
+    """
+    db_pool = request.app['pool']
+    LOG.info(f"Using {request.path}")
+
+    response = await get_individuals_rest(db_pool, request)
+    return web.json_response(response, content_type='application/json', dumps=json.dumps)
+
+
+# POST
+@routes.post('/individuals_rest')
+@validate_simple("individuals_rest_POST")
+async def beacon_get_individuals_rest(request):
+    """
+    Use the HTTP protocol 'POST' to return a Json object of a response to a given INDIVIDUALS QUERY.
+
     It uses the '/individuals' path, it can expect parameters.
+    """
+    db_pool = request.app['pool']
+    LOG.info(f"Using {request.path}")
+
+    response = await get_individuals_rest(db_pool, request)
+    return web.json_response(response, content_type='application/json', dumps=json.dumps)
+
+@routes.post('/individuals_rest/{target_id_req}')
+@validate_simple("individuals_rest_POST")
+async def beacon_get_individuals_rest(request):
+    """
+    Use the HTTP protocol 'POST' to return a Json object of a response to a given INDIVIDUALS QUERY.
+
+    It uses the '/individuals/{target_id_req}' path, it can expect parameters.
     """
     db_pool = request.app['pool']
     LOG.info(f"Using {request.path}")

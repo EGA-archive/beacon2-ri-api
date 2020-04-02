@@ -16,11 +16,12 @@
               "items": {
                 "type": "string",
                 "enum": ["ga4gh-phenopacket-individual-v0.1", "beacon-individual-v0.1"]  
+              }
             }
-          }
+          } 
         },
         "apiVersion": {
-          "type": "string",
+          "type": ["string", "null"],
           "enum": ["v2.0"]
         }
       }
