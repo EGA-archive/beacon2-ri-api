@@ -233,7 +233,7 @@ async def fetch_datasets_access(db_pool, datasets):
     controlled = []
     async with db_pool.acquire(timeout=180) as connection:
         async with connection.transaction():
-            datasets_query = None if datasets == "null" or not datasets else ast.literal_eval(datasets)
+            datasets_query = None if datasets == "null" or not datasets else ast.literal_eval(datasets)  # JSON to python list
             try:
                 query = f"""SELECT access_type, id, stable_id FROM {DB_SCHEMA}.beacon_dataset
                            WHERE coalesce(stable_id = any($1), true);

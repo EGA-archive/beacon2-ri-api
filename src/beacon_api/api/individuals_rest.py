@@ -247,7 +247,7 @@ async def get_individuals_rest(db_pool, request, processed_request):
     # depending on the access level (we check all of them if the user hasn't specified anything, if some
     # there were given, those are the only ones that are checked)
     request_datasets = query_parameters[-3].split(",") if query_parameters[-3] != "null" else "null"
-    public_datasets, registered_datasets, controlled_datasets = await fetch_datasets_access(db_pool, str(request_datasets))
+    public_datasets, registered_datasets, controlled_datasets = await fetch_datasets_access(db_pool, str(request_datasets))  # the datasets are passed as JSON, e.g. "[1,2]"
 
     ##### TEST CODE TO USE WHEN AAI is integrated
     # access_type, accessible_datasets = access_resolution(request, request['token'], request.host, public_datasets,
