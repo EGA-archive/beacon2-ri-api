@@ -474,7 +474,7 @@ async def beacon_get_individual_by_id(request):
 
 # GET
 @routes.get('/individuals_rest')
-@validate_simple("individuals_rest_GET")
+@validate_simple("individuals_rest")
 async def beacon_get_individuals_rest(request):
     """
     Use the HTTP protocol 'GET' to return a Json object of a response to a given INDIVIDUALS QUERY.
@@ -483,12 +483,14 @@ async def beacon_get_individuals_rest(request):
     """
     db_pool = request.app['pool']
     LOG.info(f"Using {request.path}")
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
 
-    response = await get_individuals_rest(db_pool, request)
+    response = await get_individuals_rest(db_pool, request, processed_request)
     return web.json_response(response, content_type='application/json', dumps=json.dumps)
 
 @routes.get('/individuals_rest/{target_id_req}')
-@validate_simple("individuals_rest_GET")
+@validate_simple("individuals_rest")
 async def beacon_get_individuals_rest(request):
     """
     Use the HTTP protocol 'GET' to return a Json object of a response to a given INDIVIDUALS QUERY.
@@ -497,14 +499,16 @@ async def beacon_get_individuals_rest(request):
     """
     db_pool = request.app['pool']
     LOG.info(f"Using {request.path}")
-
-    response = await get_individuals_rest(db_pool, request)
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
+    
+    response = await get_individuals_rest(db_pool, request, processed_request)
     return web.json_response(response, content_type='application/json', dumps=json.dumps)
 
 
 # POST
 @routes.post('/individuals_rest')
-@validate_simple("individuals_rest_POST")
+@validate_simple("individuals_rest")
 async def beacon_get_individuals_rest(request):
     """
     Use the HTTP protocol 'POST' to return a Json object of a response to a given INDIVIDUALS QUERY.
@@ -513,12 +517,14 @@ async def beacon_get_individuals_rest(request):
     """
     db_pool = request.app['pool']
     LOG.info(f"Using {request.path}")
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
 
-    response = await get_individuals_rest(db_pool, request)
+    response = await get_individuals_rest(db_pool, request, processed_request)
     return web.json_response(response, content_type='application/json', dumps=json.dumps)
 
 @routes.post('/individuals_rest/{target_id_req}')
-@validate_simple("individuals_rest_POST")
+@validate_simple("individuals_rest")
 async def beacon_get_individuals_rest(request):
     """
     Use the HTTP protocol 'POST' to return a Json object of a response to a given INDIVIDUALS QUERY.
@@ -527,8 +533,10 @@ async def beacon_get_individuals_rest(request):
     """
     db_pool = request.app['pool']
     LOG.info(f"Using {request.path}")
+    method, processed_request = await parse_request_object(request)
+    LOG.info(f"This is the {method} processed request: {processed_request}")
 
-    response = await get_individuals_rest(db_pool, request)
+    response = await get_individuals_rest(db_pool, request, processed_request)
     return web.json_response(response, content_type='application/json', dumps=json.dumps)
 
 ########################################################################################################################

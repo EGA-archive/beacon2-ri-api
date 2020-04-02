@@ -21,6 +21,21 @@ LOG = logging.getLogger(__name__)
 #                                                PARSING FUNCTIONS
 # ----------------------------------------------------------------------------------------------------------------------
 
+def mimic_get_request(input_dict):
+    """
+    Iterates through the post dictionary and
+    it flattens it to mimic the get request. 
+    """
+    final_dict = {}
+    for key, val in input_dict.items():
+        if isinstance(val,dict):
+            tmp_dict = mimic_get_request(val)
+            final_dict.update(tmp_dict)
+        else:
+            if val and val not in ["", "null", None]:
+                final_dict.update({key: ",".join(val)})
+    return final_dict
+
 
 async def parse_request_object(request):
     """Parse as JSON Object depending on the request method.
@@ -28,29 +43,29 @@ async def parse_request_object(request):
     For POST request parse the body, while for the GET request parse the query parameters.
     """
     if request.method == 'POST':
-        LOG.info('Parsed POST request body.')
-        return request.method, await request.json()  # we are always expecting JSON
-
+        post_request = await request.json()
+        raw_request = mimic_get_request(post_request) 
+        LOG.info('Flatening POST request.')
     if request.method == 'GET':
-        # LOG.info(f"This is the request object: {request}")
-        # LOG.info(f"These are the request.items: {request.rel_url.query.items()}")
-        
-        # GET parameters are returned as strings
-        int_params = ['start', 'end', 'endMax', 'endMin', 'startMax', 'startMin']
-        items = {k: (int(v) if k in int_params else v) for k, v in request.rel_url.query.items()}
-        # parse the arrays
-        if 'datasetIds' in items:
-            items['datasetIds'] = request.rel_url.query.get('datasetIds').split(',')
-        if 'filters' in items:
-            items['filters'] = request.rel_url.query.get('filters').split(',')
-        if 'customFilters' in items:
-            items['customFilters'] = request.rel_url.query.get('customFilters').split(',')
-        if 'individualSchemas' in items:
-            items['individualSchemas'] = request.rel_url.query.get('individualSchemas').split(',')
+        raw_request = dict(request.rel_url.query.items())
 
-        obj = json.dumps(items)
-        LOG.info('Parsed GET request parameters.')
-        return request.method, json.loads(obj)
+    # Parameters are returned as strings
+    int_params = ['start', 'end', 'endMax', 'endMin', 'startMax', 'startMin']
+    items = {k: (int(v) if k in int_params else v) for k, v in raw_request.items()}
+
+    # parse the arrays
+    if 'datasetIds' in items:
+        items['datasetIds'] = raw_request.get('datasetIds').split(',')
+    if 'filters' in items:
+        items['filters'] = raw_request.get('filters').split(',')
+    if 'customFilters' in items:
+        items['customFilters'] = raw_request.get('customFilters').split(',')
+    if 'individualSchemas' in items:
+        items['individualSchemas'] = raw_request.get('individualSchemas').split(',')
+
+    obj = json.dumps(items)
+    LOG.info('Parsed request parameters.')
+    return request.method, json.loads(obj)
 
 
 async def parse_basic_request_object(request):

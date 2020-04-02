@@ -29,8 +29,6 @@ individual_columns = ['individual_stable_id', 'sex', 'ethnicity', 'geographic_or
 disease_columns = ['disease_id', 'disease_age_of_onset_age', 'disease_age_of_onset_age_group', 'disease_stage', 'disease_family_history']
 pedigree_columns = ['pedigree_stable_id', 'pedigree_role', 'pedigree_no_individuals_tested', 'pedigree_disease_id']         
 
-## Parameters that this endpoint takes. Useful for transforming the POST dictionary into a GET like dictionary
-parameters = ['variantType', 'start', 'startMin', 'startMax','end', 'endMin', 'endMax', 'referenceName', 'referenceBases', 'alternateBases', 'assemblyId', 'datasetIds', 'individualId', 'filters', 'individualSchemas']
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         SECONDARY FUNCTIONS (called by the main functions)
@@ -65,12 +63,11 @@ def create_query(processed_request):
 #                                         MAIN FUNCTIONS (called by the handler)
 # ----------------------------------------------------------------------------------------------------------------------
 
-def create_final_response(raw_request, results):
+def create_final_response(raw_request, results, alternative_schemas):
     """
     Create the final response as the Beacon Schema expects. 
     """
-    alt_schemas_ind_req = raw_request.get("individualSchemas")
-    alt_schemas_ind = [] if not alt_schemas_ind_req else alt_schemas_ind_req.split(",")
+    alt_schemas_ind = alternative_schemas
     query = create_query(raw_request)
 
     final_response = {
@@ -184,6 +181,7 @@ def request2queryparameters(raw_request):
     "filters"]  # _filters text
     
     int_params = ['start', 'end', 'endMax', 'endMin', 'startMax', 'startMin']
+    list_parameters = ['datasetIds', 'filters', 'individualSchemas']
 
     ## Iterate correct_parameters to create the query_parameters list from the raw_request 
     ## in the required order and with the right types
@@ -194,6 +192,8 @@ def request2queryparameters(raw_request):
         if query_param:  # control if the user has used the parameter
             if param in int_params:
                 query_parameters.append(int(query_param))
+            elif param in list_parameters:
+                query_parameters.append(",".join(query_param))
             else:
                 query_parameters.append(str(query_param))
         else:
@@ -212,56 +212,34 @@ def request2queryparameters(raw_request):
 
     return query_parameters
 
-def mimic_get_request(input_dict):
-    """
-    Iterates through the post dictionary and
-    it flattens it to mimic the get request. 
-    """
-    final_dict = {}
-    for key, val in input_dict.items():
-        if isinstance(val,dict):
-            tmp_dict = mimic_get_request(val)
-            final_dict.update(tmp_dict)
-        else:
-            if key in parameters:
-                final_dict.update({key: ",".join(val)})
-    return final_dict
-
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         HANDLER FUNCTION
 # ----------------------------------------------------------------------------------------------------------------------
 
-async def get_individuals_rest(db_pool, request):
+async def get_individuals_rest(db_pool, request, processed_request):
     """
     Main function of the endpoint. 
     """
 
     # 1. REQUEST PROCESSING
-    
-    # Depending on the request method (POST or GET) we fetch the raw request differently
-    if request.method == "GET":
-        raw_request = dict(request.rel_url.query)
-    elif request.method == "POST":
-        post_request = await request.json()
-        raw_request = mimic_get_request(post_request) 
 
     # Add individualId parameter if used
     if dict(request.match_info):
         individual_id = request.match_info['target_id_req']
-        raw_request.update({"individualId": individual_id})
+        processed_request.update({"individualId": individual_id})
 
     # Prepare pagination
-    skip = raw_request.get("skip", 0)
-    limit = raw_request.get("limit", 10)
-    raw_request.update({"skip": skip, "limit": limit})
+    skip = processed_request.get("skip", 0)
+    limit = processed_request.get("limit", 10)
+    processed_request.update({"skip": skip, "limit": limit})
 
     # Parse the request to prepare it to be used in the SQL function
-    query_parameters = request2queryparameters(raw_request)
+    query_parameters = request2queryparameters(processed_request)
 
     # Also check request to see if there is any alternativeSchema
-    alternative_schemas_req = raw_request.get("individualSchemas")
-    alternative_schemas = alternative_schemas_req.split(",") if alternative_schemas_req else []
+    alternative_schemas_req = processed_request.get("individualSchemas")
+    alternative_schemas = alternative_schemas_req if alternative_schemas_req else []
 
     # 2. GET VALID/ACCESSIBLE DATASETS
 
@@ -300,6 +278,6 @@ async def get_individuals_rest(db_pool, request):
 
     # 5. CREATE FINAL RESPONSE
     LOG.info('Creating the final response.')
-    final_response = create_final_response(raw_request, results)
+    final_response = create_final_response(processed_request, results, alternative_schemas)
     LOG.info('Done.')
     return final_response
