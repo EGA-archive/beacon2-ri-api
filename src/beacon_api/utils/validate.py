@@ -49,11 +49,11 @@ async def parse_request_object(request):
     if request.method == 'GET':
         raw_request = dict(request.rel_url.query.items())
 
-    # Parameters are returned as strings
+    # Some parameters are returned as strings, others as integers
     int_params = ['start', 'end', 'endMax', 'endMin', 'startMax', 'startMin']
     items = {k: (int(v) if k in int_params else v) for k, v in raw_request.items()}
 
-    # parse the arrays
+    # Parse the arrays
     if 'datasetIds' in items:
         items['datasetIds'] = raw_request.get('datasetIds').split(',')
     if 'filters' in items:
@@ -62,10 +62,10 @@ async def parse_request_object(request):
         items['customFilters'] = raw_request.get('customFilters').split(',')
     if 'individualSchemas' in items:
         items['individualSchemas'] = raw_request.get('individualSchemas').split(',')
-
-    obj = json.dumps(items)
+    
+    obj = json.dumps(items)  # to JSON
     LOG.info('Parsed request parameters.')
-    return request.method, json.loads(obj)
+    return request.method, json.loads(obj)  # back to python dict
 
 
 async def parse_basic_request_object(request):
@@ -112,9 +112,10 @@ DefaultValidatingDraft7Validator = extend_with_default(Draft7Validator)
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-#                                         QUERY END POINT FURTHER VALIDATION
+#                                         FURTHER VALIDATIONS
 # ----------------------------------------------------------------------------------------------------------------------
 
+# QUERY
 def further_validation_query(request, request_dict):
     """
     It  takes a dictionary of the request parameters and checks the correct
@@ -168,10 +169,8 @@ def further_validation_query(request, request_dict):
     if mateName:
         raise BeaconBadRequest(request_dict, request.host, "Queries using 'mateName' are not implemented")
 
-# ----------------------------------------------------------------------------------------------------------------------
-#                                   SAMPLE_LIST ENDPOINT FURTHER VALIDATION
-# ----------------------------------------------------------------------------------------------------------------------
 
+# SAMPLES
 def further_validation_sample(request, request_dict):
     """
     It  takes a dictionary of the request parameters and checks the correct
@@ -198,7 +197,7 @@ def further_validation_sample(request, request_dict):
     if not start and (referenceBases or alternateBases):
         raise BeaconBadRequest(request_dict, request.host, "'start' is needed when using 'referenceBases' or 'alternateBases'")
      
-    ## to be continued...
+    ## to be continued...?
 
       
 
@@ -208,10 +207,7 @@ def further_validation_sample(request, request_dict):
 
 def validate(endpoint):
     """
-    Validate against JSON schema an return something.
-
-    Return a parsed object if there is a POST.
-    If there is a get do not return anything just validate.
+    Validate against JSON schema.
     """
     def wrapper(func):
 
@@ -315,9 +311,6 @@ def validate_access_levels(func):
 def validate_simple(endpoint):
     """
     Validate against JSON schema an return something.
-    Return a parsed object if there is a POST.
-    If there is a get do not return anything just validate.
-
     Same as above but simplified.
     """
     def wrapper(func):

@@ -271,7 +271,7 @@ async def beacon_get_region(request):
 
 
 
-@routes.post('/gVariant')
+@routes.post('/g_variant')
 @validate("gVariant")
 async def beacon_post_region(request):
     """Find datasets using POST endpoint."""

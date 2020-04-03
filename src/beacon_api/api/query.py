@@ -55,8 +55,8 @@ async def transform_record(db_pool, record):
     response["variantCount"] = response.pop("variant_cnt")  
     response["callCount"] = response.pop("call_cnt") 
     response["sampleCount"] = response.pop("sample_cnt") 
-    response["frequency"] = 0 if response.get("frequency") is None else float(response.pop("frequency"))
-    response["numVariants"] = 0 if response.get("num_variants") is None else response.pop("num_variants")
+    response["frequency"] = response.get("frequency", 0) 
+    response["numVariants"] = response.get("num_variants", 0) 
     response["info"] = {"access_type": dict(extra_record).pop("access_type")}   
     
     return response
@@ -79,10 +79,8 @@ def transform_misses(record):
 
     return response
 
-
-
 # ----------------------------------------------------------------------------------------------------------------------
-#                                         MAIN QUERY TO THE DATABASE
+#                                         SECONDARY FUNCTIONS (called by the main functions)
 # ----------------------------------------------------------------------------------------------------------------------
 
 async def fetch_resulting_datasets(db_pool, query_parameters, misses=False, accessible_missing=None):
@@ -121,7 +119,28 @@ async def fetch_resulting_datasets(db_pool, query_parameters, misses=False, acce
         except Exception as e:
                 raise BeaconServerError(f'Query resulting datasets DB error: {e}') 
 
+
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         MAIN FUNCTIONS (called by the handler)
+# ----------------------------------------------------------------------------------------------------------------------
+
+def create_final_response(processed_request, datasets, include_dataset):
+    """
+    Create the final response as the Beacon Schema expects. 
+    """
+    # We create the final dictionary with all the info we want to return
+    beacon_response = { 'beaconId': __id__,
+                        'apiVersion': __apiVersion__,
+                        'exists': any([x['exists'] for x in datasets]),
+                        'info': None,
+                        'alleleRequest': processed_request,
+                        'datasetAlleleResponses': filter_exists(include_dataset, datasets)}
     
+    # Before returning the response we need to filter it depending on the access levels
+    beacon_response = {"beaconAlleleResponse": beacon_response}
+
+    return beacon_response
+
 
 async def get_datasets(db_pool, query_parameters, include_dataset):
     """
@@ -150,18 +169,11 @@ async def get_datasets(db_pool, query_parameters, include_dataset):
     return response
 
 
-# ----------------------------------------------------------------------------------------------------------------------
-#                                         HANDLER FUNCTION
-# ----------------------------------------------------------------------------------------------------------------------
-
-async def query_request_handler(db_pool, processed_request, request):
+def request2queryparameters(processed_request):
     """
-    Construct the Query response. 
-
-    Process and prepare the parameters, fetch dataset access information, execute
-    main queries and prepare the response object. 
+    Reorganize the request to match the query_data_summary_response() SQL function input.
     """
-    # First we parse the query to prepare it to be used in the SQL function
+
     # We create the list of the parameters that the SQL function needs
     correct_parameters =  [
 	"variantType",
@@ -183,7 +195,7 @@ async def query_request_handler(db_pool, processed_request, request):
     query_parameters = []
 
     # Iterate correct_parameters to create the query_parameters list from the processed_request 
-    # in the requiered order and with the right types
+    # in the required order and with the right types
     for param in correct_parameters:
         query_param = processed_request.get(param)
         if query_param:
@@ -206,21 +218,25 @@ async def query_request_handler(db_pool, processed_request, request):
     LOG.debug(f"Query param: {query_parameters}")
     LOG.debug(f"Query param types: {[type(x) for x in query_parameters]}")
 
-    # We want to get a list of the datasets available in the database separated in three lists
-    # depending on the access level (we check all of them if the user hasn't specified anything, if some
-    # there were given, those are the only ones that are checked)
-    public_datasets, registered_datasets, controlled_datasets = await fetch_datasets_access(db_pool, query_parameters[-2])
+    return query_parameters
 
-    ##### TEST CODE TO USE WHEN AAI is integrated
-    # access_type, accessible_datasets = access_resolution(request, request['token'], request.host, public_datasets,
-    #                                                      registered_datasets, controlled_datasets)
-    # LOG.info(f"The user has this types of acces: {access_type}")
-    # query_parameters[-2] = ",".join([str(id) for id in accessible_datasets])
-    ##### END TEST
 
-    # NOTE that rigth now we will just focus on the PUBLIC ones to easen the process, so we get all their 
-    # ids and add them to the query
-    query_parameters[-2] = ",".join([str(id) for id in public_datasets])
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         HANDLER FUNCTION
+# ----------------------------------------------------------------------------------------------------------------------
+
+async def query_request_handler(db_pool, processed_request, request):
+    """
+    Construct the Query response. 
+
+    Process and prepare the parameters, fetch dataset access information, execute
+    main queries and prepare the response object. 
+    """
+
+    # 1. REQUEST PROCESSING
+
+    # Parse the request to prepare it to be used in the SQL function
+    query_parameters = request2queryparameters(processed_request)
 
     # We adapt the filters parameter to be able to use it in the SQL function (e.g. '(technology)::jsonb ?& array[''Illumina Genome Analyzer II'', ''Illumina HiSeq 2000'']')
     if query_parameters[-1] != "null":
@@ -232,29 +248,45 @@ async def query_request_handler(db_pool, processed_request, request):
     if processed_request.get("includeDatasetResponses"):
         include_dataset  = processed_request.get("includeDatasetResponses")
     else:
-        include_dataset  = "ALL"
+        include_dataset  = "NONE"
+
+    # 2. GET VALID/ACCESSIBLE DATASETS
+
+    # We want to get a list of the datasets available in the database separated in three lists
+    # depending on the access level (we check all of them if the user hasn't specified anything, if some
+    # there were given, those are the only ones that are checked)
+    public_datasets, registered_datasets, controlled_datasets = await fetch_datasets_access(db_pool, query_parameters[-2])
+
+    ##### TEST CODE TO USE WHEN AAI is integrated
+    # access_type, accessible_datasets = access_resolution(request, request['token'], request.host, public_datasets,
+    #                                                      registered_datasets, controlled_datasets)
+    # LOG.info(f"The user has this types of access: {access_type}")
+    # query_parameters[-2] = ",".join([str(id) for id in accessible_datasets])
+    ##### END TEST
+
+    # NOTE that right now we will just focus on the PUBLIC ones to ease the process, so we get all their 
+    # ids and add them to the query
+    query_parameters[-2] = ",".join([str(id) for id in public_datasets])
 
     LOG.info(f"Query FINAL param: {query_parameters}")
+
+    # 3. RETRIEVE DATA FROM THE DB (use SQL function)
+
     LOG.info('Connecting to the DB to make the query.')
-
     datasets = await get_datasets(db_pool, query_parameters, include_dataset)
-
     LOG.info('Query done.')
 
-    # We create the final dictionary with all the info we want to return
-    beacon_response = { 'beaconId': __id__,
-                        'apiVersion': __apiVersion__,
-                        'exists': any([x['exists'] for x in datasets]),
-                        'info': None,
-                        'alleleRequest': processed_request,
-                        'datasetAlleleResponses': filter_exists(include_dataset, datasets)}
+    # 5. CREATE FINAL RESPONSE
     
-    # Before returning the response we need to filter it depending on the access levels
-    beacon_response = {"beaconAlleleResponse": beacon_response}
+    LOG.info('Creating the final response.')
+    beacon_response = create_final_response(processed_request, datasets, include_dataset)
+    
+    # 6. FILTER FINAL RESPONSE
 
     # NOTE we hardcode accessible_datasets and user_levels it because authentication is not implemented yet
     accessible_datasets = public_datasets
     user_levels = ["PUBLIC"]  
     filtered_response = filter_response(beacon_response, ACCESS_LEVELS_DICT, accessible_datasets, user_levels, query2access)
+    LOG.info('Done.')
 
     return filtered_response["beaconAlleleResponse"]

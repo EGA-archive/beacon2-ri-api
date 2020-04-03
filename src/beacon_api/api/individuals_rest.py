@@ -22,6 +22,7 @@ from ..conf.config import DB_SCHEMA
 
 # Constants
 
+## Logs
 LOG = logging.getLogger(__name__)
 
 ## Make lists with the column names that the main SQL function returns
@@ -51,7 +52,6 @@ def create_query(processed_request):
         "datasets": {
             "datasetIds": processed_request.get("datasetIds"),
             "includeDatasetResponses": ""
-            # "includeDatasetResponses": "ALL" if not processed_request.get("includeDatasetResponses") else processed_request.get("includeDatasetResponses")
              },
         "filters": processed_request.get("filters"),
     }
@@ -78,6 +78,7 @@ def create_final_response(raw_request, results, alternative_schemas):
                 "meta": {
                     "requestedSchemas": {
                         "individualSchemas": alt_schemas_ind
+                        # REVIEW
                     },
                     "apiVersion": __apiVersion__  # it is hardcoded because we only return v2 for this endpoint
                 },

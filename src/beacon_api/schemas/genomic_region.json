@@ -71,13 +71,13 @@
         "pattern": ".*:.+=?>?<?[0-9]*$"
       }
     },
-    "variant": {
+    "variantSchemas": {
       "type": "string"
     },
-    "variantAnnotation": {
+    "variantAnnotationSchemas": {
       "type": "string"
     },
-    "variantMetadata": {
+    "variantMetadataSchemas": {
       "type": "string"
     }  
   }

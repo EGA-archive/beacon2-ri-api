@@ -141,6 +141,7 @@ async def prepare_filter_parameter(db_pool, filters_request):
             statement = await connection.prepare(query)
             db_response = await statement.fetch()
 
+            # Organize the responses in a dict with the target_table as keys and as value another dict with column_name as keys and a list of column_value as value
             filter_dict = {}
             for record in list(db_response):
                 if record["target_table"] not in filter_dict.keys():
@@ -153,7 +154,7 @@ async def prepare_filter_parameter(db_pool, filters_request):
                 else:
                     filter_dict[record["target_table"]][record["column_name"]].append(record["column_value"])
 
-            # After we have retrieved the values in a dict with the target_table as keys and as value another dict with column_name as keys, we need to create the final string
+            # After creating filter_dict, we need to create a list with the SQL strings
             strings_list = []
             final_string = ""
             for target_table, column_name_dict in filter_dict.items():
@@ -163,7 +164,7 @@ async def prepare_filter_parameter(db_pool, filters_request):
                         string = f'({column_name})::jsonb ?& array[{string_values}]'
                         strings_list.append(string)
 
-            # Once we have the response, we parse it to create the final string needed as input
+            # Once we have the different strings, we join them to create the final SQL string
             if not strings_list:
                 final_string = 'null'
             else:

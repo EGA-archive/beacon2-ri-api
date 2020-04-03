@@ -88,10 +88,33 @@ def transform_misses(record):
     return response
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         SECONDARY FUNCTIONS (called by the main functions)
+# ----------------------------------------------------------------------------------------------------------------------
 
-# ----------------------------------------------------------------------------------------------------------------------
-#                                         MAIN QUERY TO THE DATABASE
-# ----------------------------------------------------------------------------------------------------------------------
+def create_query(processed_request):
+    """
+    Restructure the request to build the query object
+    """
+
+    query = {
+        "variant": {
+            "referenceBases": processed_request.get("referenceBases", ""),
+            "alternateBases": processed_request.get("alternateBases", ""),
+            "referenceName": processed_request.get("referenceName", ""),
+            "start": processed_request.get("start"),
+            "end": processed_request.get("end"),
+            "assemblyId": processed_request.get("assemblyId", "")
+            },
+        "datasets": {
+            "datasetIds": processed_request.get("datasetIds"),
+            "includeDatasetResponses": processed_request.get("includeDatasetResponses")
+             },
+        "filters": processed_request.get("filters"),
+    }
+
+    return query
+
 
 async def fetch_resulting_datasets(db_pool, query_parameters, misses=False, accessible_missing=None):
     """
@@ -130,6 +153,67 @@ async def fetch_resulting_datasets(db_pool, query_parameters, misses=False, acce
                 raise BeaconServerError(f'Query resulting datasets DB error: {e}') 
     
 
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         MAIN FUNCTIONS (called by the handler)
+# ----------------------------------------------------------------------------------------------------------------------
+
+def create_final_response(processed_request, variantsFound):
+    """
+    Create the final response as the Beacon Schema expects. 
+    """
+
+    # Create the query object to show it in the response
+    query = create_query(processed_request)
+
+    # Make lists of the models requests to show it in the response
+    variant_schemas_req = processed_request.get("variantSchemas")
+    variantAnnotation_schemas_req = processed_request.get("variantAnnotationSchemas")
+    variantMetadata_schemas_req = processed_request.get("variantMetadataSchemas")
+
+    variant = variant_schemas_req.split(",") if variant_schemas_req else []
+    variantAnnotation = variantAnnotation_schemas_req.split(",") if variantAnnotation_schemas_req else [] 
+    variantMetadata = variantMetadata_schemas_req.split(",") if variantMetadata_schemas_req else [] 
+
+    # We create the final dictionary with all the info we want to return
+    beacon_response = {
+                    "meta": {
+                        "beaconId": __id__,
+                        "apiVersion": __apiVersion__,
+                        "receivedRequest": {
+                            "meta": {
+                                "requestedSchemas": {
+                                    "variantSchemas": variant  # Now only the variant object has an alternative
+                                    # REVIEW
+                                },
+                                "apiVersion": __apiVersion__  # it is hardcoded because we only return v2 for this endpoint
+                            },
+                            "query": query
+                        },
+                        "returnedSchemas": {
+                            "Variant": ["beacon-variant-v0.1"]  + variant,
+                            "VariantAnnotation": ["beacon-variant-annotation-v1.0"] + variantAnnotation,
+                            "VariantMetadata": ["beacon-variant-metadata-v1.0"] + variantMetadata                    
+                        }
+                    },
+                    "value": {
+                        'exists': any([dataset['exists'] for variant in variantsFound for dataset in variant["datasetAlleleResponses"]]),
+                        "error": None,
+                        'variantsFound': variantsFound,
+                        'info': None,
+                        'resultsHandover': None,
+                        'beaconHandover': [ { "handoverType" : {
+                                                "id" : "CUSTOM",
+                                                "label" : "Organization contact"
+                                                },
+                                                "note" : "Organization contact details maintaining this Beacon",
+                                                "url" : "mailto:beacon.ega@crg.eu"
+                                            } ]
+                        
+                        }
+                    }
+
+    return beacon_response
+
 
 async def get_datasets(db_pool, query_parameters, include_dataset, processed_request):
     """
@@ -145,7 +229,7 @@ async def get_datasets(db_pool, query_parameters, include_dataset, processed_req
     variants_dict = {}
     for record in all_datasets:
         variant_identifier = record.get("variant_composite_id")
-        # If the DB doens't have a unique variant identifier, we construct one
+        # If the DB doesn't have a unique variant identifier, we construct one
         # important_parameters = map(str, [record.get("chromosome"), record.get("variant_id"), record.get("reference"), record.get("alternate"), record.get("start"), record.get("end"), record.get("variant_type")])
         # variant_identifier = "|".join(important_parameters)
 
@@ -165,7 +249,7 @@ async def get_datasets(db_pool, query_parameters, include_dataset, processed_req
         else:
             variants_dict[variant_identifier]["datasetAlleleResponses"].append(await transform_record(db_pool, record))
 
-    # If  the includeDatasets option is ALL or MISS we have to "create" the miss datasets (which will be tranformed also) and join them to the datasetAlleleResponses
+    # If the includeDatasets option is ALL or MISS we have to "create" the miss datasets (which will be tranformed also) and join them to the datasetAlleleResponses
     if include_dataset in ['ALL', 'MISS']:
         for variant in variants_dict:
             list_hits = [record["internalId"] for record in variants_dict[variant]["datasetAlleleResponses"]]
@@ -193,19 +277,11 @@ async def get_datasets(db_pool, query_parameters, include_dataset, processed_req
 
     return response
     
-
-# ----------------------------------------------------------------------------------------------------------------------
-#                                         HANDLER FUNCTION
-# ----------------------------------------------------------------------------------------------------------------------
-
-async def genomic_request_handler(db_pool, processed_request, request):
+    
+def request2queryparameters(processed_request):
     """
-    Construct the Query response. 
-
-    Process and prepare the parameters, fetch dataset access information, execute
-    main queries and prepare the response object. 
+    Reorganize the request to match the query_summary_response() SQL function input.
     """
-    # First we parse the query to prepare it to be used in the SQL function
     # We create a list of the parameters that the SQL function needs
     correct_parameters =  [
 	"variantType",
@@ -227,7 +303,7 @@ async def genomic_request_handler(db_pool, processed_request, request):
     query_parameters = []
 
     # Iterate correct_parameters to create the query_parameters list from the processed_request 
-    # in the requiered order and with the right types
+    # in the required order and with the right types
     for param in correct_parameters:
         query_param = processed_request.get(param)
         if query_param:
@@ -249,21 +325,25 @@ async def genomic_request_handler(db_pool, processed_request, request):
     LOG.debug(f"Query param: {query_parameters}")
     LOG.debug(f"Query param types: {[type(x) for x in query_parameters]}")
 
-    # We want to get a list of the datasets available in the database separated in three lists
-    # depending on the access level (we check all of them if the user hasn't specified anything, if some
-    # there were given, those are the only ones that are checked)
-    public_datasets, registered_datasets, controlled_datasets = await fetch_datasets_access(db_pool, query_parameters[-2])
+    return query_parameters
 
-    ##### TEST CODE TO USE WHEN AAI is integrated
-    # access_type, accessible_datasets = access_resolution(request, request['token'], request.host, public_datasets,
-    #                                                      registered_datasets, controlled_datasets)
-    # LOG.info(f"The user has this types of acces: {access_type}")
-    # query_parameters[-2] = ",".join([str(id) for id in accessible_datasets])
-    ##### END TEST
 
-    # NOTE that rigth now we will just focus on the PUBLIC ones to easen the process, so we get all their 
-    # ids and add them to the query
-    query_parameters[-2] = ",".join([str(id) for id in public_datasets])
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         HANDLER FUNCTION
+# ----------------------------------------------------------------------------------------------------------------------
+
+async def genomic_request_handler(db_pool, processed_request, request):
+    """
+    Construct the Query response. 
+
+    Process and prepare the parameters, fetch dataset access information, execute
+    main queries and prepare the response object. 
+    """
+
+    # 1. REQUEST PROCESSING
+
+    # Parse the request to prepare it to be used in the SQL function
+    query_parameters = request2queryparameters(processed_request)
 
     # We adapt the filters parameter to be able to use it in the SQL function (e.g. '(technology)::jsonb ?& array[''Illumina Genome Analyzer II'', ''Illumina HiSeq 2000'']')
     if query_parameters[-1] != "null":
@@ -276,57 +356,42 @@ async def genomic_request_handler(db_pool, processed_request, request):
     if processed_request.get("includeDatasetResponses"):
         include_dataset  = processed_request.get("includeDatasetResponses")
     else:
-        include_dataset  = "ALL"
+        include_dataset  = "NONE"
+
+
+    # 2. GET VALID/ACCESSIBLE DATASETS
+
+    # We want to get a list of the datasets available in the database separated in three lists
+    # depending on the access level (we check all of them if the user hasn't specified anything, if some
+    # there were given, those are the only ones that are checked)
+    public_datasets, registered_datasets, controlled_datasets = await fetch_datasets_access(db_pool, query_parameters[-2])
+
+    ##### TEST CODE TO USE WHEN AAI is integrated
+    # access_type, accessible_datasets = access_resolution(request, request['token'], request.host, public_datasets,
+    #                                                      registered_datasets, controlled_datasets)
+    # LOG.info(f"The user has this types of access: {access_type}")
+    # query_parameters[-2] = ",".join([str(id) for id in accessible_datasets])
+    ##### END TEST
+
+    # NOTE that right now we will just focus on the PUBLIC ones to ease the process, so we get all their 
+    # ids and add them to the query
+    query_parameters[-2] = ",".join([str(id) for id in public_datasets])
 
     LOG.info(f"Query FINAL param: {query_parameters}")
+
+    # 3. RETRIEVE DATA FROM THE DB (use SQL function)
+
     LOG.info('Connecting to the DB to make the query.')
-
     variantsFound = await get_datasets(db_pool, query_parameters, include_dataset, processed_request)
-
     LOG.info('Query done.')
 
-    # Create the query object to show it in the response
-    query = processed_request.copy()
-    if query.get("variant"):
-        query.pop("variant")
+    # 5. CREATE FINAL RESPONSE
 
-    # Make lists of the models requests to show it in the response
-    variant = processed_request.get("variant").split(",") if processed_request.get("variant") else []
-    variantAnnotation = processed_request.get("variantAnnotation").split(",") if processed_request.get("variantAnnotation") else [] 
-    variantMetadata = processed_request.get("variantMetadata").split(",") if processed_request.get("variantMetadata") else [] 
+    LOG.info('Creating the final response.')
+    beacon_response = create_final_response(processed_request, variantsFound)
+    LOG.info('Done.')
 
-    # We create the final dictionary with all the info we want to return
-    beacon_response = {
-                    "meta": {
-                        "Variant": ["beacon-variant-v0.1", "ga4gh-variant-representation-v0.1"],
-  	                    "VariantAnnotation": ["beacon-variant-annotation-v1.0"],
-                        "VariantMetadata": ["beacon-variant-metadata-v1.0"]
-                    },
-                    "value": { 'beaconId': __id__,
-                        'apiVersion': __apiVersion__,
-                        'exists': any([dataset['exists'] for variant in variantsFound for dataset in variant["datasetAlleleResponses"]]),
-                        'request': { "meta": { "request": {
-                                                            "Variant": ["beacon-variant-v0.1"]  + variant,
-                                                            "VariantAnnotation": ["beacon-variant-annotation-v1.0"] + variantAnnotation,
-                                                            "VariantMetadata": ["beacon-variant-metadata-v1.0"] + variantMetadata
-                                                        },
-                                                "apiVersion": __apiVersion__,
-                                            },
-                                    "query": query
-                                    },
-                        'variantsFound': variantsFound,
-                        'info': None,
-                        'resultsHandover': None,
-                        'beaconHandover': [ { "handoverType" : {
-                                                "id" : "CUSTOM",
-                                                "label" : "Organization contact"
-                                                },
-                                                "note" : "Organization contact details maintaining this Beacon",
-                                                "url" : "mailto:beacon.ega@crg.eu"
-                                            } ]
-                        
-                        }
-                    }
+    # 6. FILTER FINAL RESPONSE
 
     # Before returning the response we need to filter it depending on the access levels
     # NOTE we hardcode accessible_datasets and user_levels it because authentication is not implemented yet
