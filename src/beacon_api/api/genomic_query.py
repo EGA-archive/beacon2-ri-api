@@ -224,6 +224,8 @@ async def get_datasets(db_pool, query_parameters, include_dataset, processed_req
 
     # Fetch the records of all the hit datasets
     all_datasets = await fetch_resulting_datasets(db_pool, query_parameters)
+    LOG.debug(f"hit_datasets: {all_datasets}")
+
 
     # Then parse the records to be able to separate them by variants, note that we add the hit records already transformed to form the datasetAlleleResponses
     variants_dict = {}
@@ -340,10 +342,32 @@ async def genomic_request_handler(db_pool, processed_request, request):
     main queries and prepare the response object. 
     """
 
-    # 1. REQUEST PROCESSING
+    # 1. GET VALID/ACCESSIBLE DATASETS
+
+    datasets_request = processed_request.get("datasetIds")
+
+    # We want to get a list of the datasets available in the database separated in three lists
+    # depending on the access level (we check all of them if the user hasn't specified anything, if some
+    # there were given, those are the only ones that are checked)
+    public_datasets, registered_datasets, controlled_datasets = await fetch_datasets_access(db_pool, datasets_request)
+
+    ##### TEST CODE TO USE WHEN AAI is integrated
+    # access_type, accessible_datasets = access_resolution(request, request['token'], request.host, public_datasets,
+    #                                                      registered_datasets, controlled_datasets)
+    # LOG.info(f"The user has this types of access: {access_type}")
+    # query_parameters[-2] = ",".join([str(id) for id in accessible_datasets])
+    ##### END TEST
+
+    # NOTE that right now we will just focus on the PUBLIC ones to ease the process, so we get all their 
+    # ids and add them to the query
+    datasets_request = ",".join([str(id) for id in public_datasets])
+    processed_request_upd = processed_request.copy()
+    processed_request_upd["datasetIds"] = datasets_request
+
+    # 2. REQUEST PROCESSING
 
     # Parse the request to prepare it to be used in the SQL function
-    query_parameters = request2queryparameters(processed_request)
+    query_parameters = request2queryparameters(processed_request_upd)
 
     # We adapt the filters parameter to be able to use it in the SQL function (e.g. '(technology)::jsonb ?& array[''Illumina Genome Analyzer II'', ''Illumina HiSeq 2000'']')
     if query_parameters[-1] != "null":
@@ -357,25 +381,6 @@ async def genomic_request_handler(db_pool, processed_request, request):
         include_dataset  = processed_request.get("includeDatasetResponses")
     else:
         include_dataset  = "NONE"
-
-
-    # 2. GET VALID/ACCESSIBLE DATASETS
-
-    # We want to get a list of the datasets available in the database separated in three lists
-    # depending on the access level (we check all of them if the user hasn't specified anything, if some
-    # there were given, those are the only ones that are checked)
-    public_datasets, registered_datasets, controlled_datasets = await fetch_datasets_access(db_pool, query_parameters[-2])
-
-    ##### TEST CODE TO USE WHEN AAI is integrated
-    # access_type, accessible_datasets = access_resolution(request, request['token'], request.host, public_datasets,
-    #                                                      registered_datasets, controlled_datasets)
-    # LOG.info(f"The user has this types of access: {access_type}")
-    # query_parameters[-2] = ",".join([str(id) for id in accessible_datasets])
-    ##### END TEST
-
-    # NOTE that right now we will just focus on the PUBLIC ones to ease the process, so we get all their 
-    # ids and add them to the query
-    query_parameters[-2] = ",".join([str(id) for id in public_datasets])
 
     LOG.info(f"Query FINAL param: {query_parameters}")
 

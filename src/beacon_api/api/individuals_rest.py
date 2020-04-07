@@ -58,6 +58,12 @@ def create_query(processed_request):
 
     return query
 
+def simple_listener(c, m):
+    """We pass this to connection.add_log_listener() 
+    for getting the SQL Messages in the LOGS of the Beacon.
+    """
+    print(m)
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         MAIN FUNCTIONS (called by the handler)
@@ -136,7 +142,8 @@ async def get_result(db_pool, query_parameters):
     async with db_pool.acquire(timeout=180) as connection:
         response = []
         try: 
-            query = f"""SELECT * FROM {DB_SCHEMA}.query_patients({create_prepstmt_variables(14)});"""
+            # connection.add_log_listener(simple_listener)
+            query = f"""SELECT * FROM {DB_SCHEMA}.query_patients({create_prepstmt_variables(17)});"""
             LOG.debug(f"QUERY to fetch hits: {query}")
             statement = await connection.prepare(query)
             db_response = await statement.fetch(*query_parameters)         
@@ -176,12 +183,16 @@ def request2queryparameters(raw_request):
 	"referenceName",  # _chromosome character varying
 	"referenceBases",  # _reference_bases text
 	"alternateBases",  # _alternate_bases text
-	"assemblyId",  # _reference_genome text
+    "assemblyId",  # _reference_genome text
 	"datasetIds",  # _dataset_ids text
+    "biosampleId", # _biosample_stable_id text,
     "individualId",  # _individual_stable_id text
-    "filters"]  # _filters text
-    
-    int_params = ['start', 'end', 'endMax', 'endMin', 'startMax', 'startMin']
+    "filters", # _filters text
+    "skip",  # _skip integer
+    "limit"]  # _limit integer
+
+
+    int_params = ['start', 'end', 'endMax', 'endMin', 'startMax', 'startMin', 'skip', 'limit']
     list_parameters = ['datasetIds', 'filters', 'individualSchemas']
 
     ## Iterate correct_parameters to create the query_parameters list from the raw_request 
@@ -190,7 +201,7 @@ def request2queryparameters(raw_request):
 
     for param in correct_parameters:
         query_param = raw_request.get(param)
-        if query_param:  # control if the user has used the parameter
+        if query_param or query_param == 0:  # control if the user has used the parameter
             if param in int_params:
                 query_parameters.append(int(query_param))
             elif param in list_parameters:
@@ -205,8 +216,8 @@ def request2queryparameters(raw_request):
 
     # At this point we have a list with the needed parameters called query_parameters, the only thing 
     # laking is to update the datasetsIds (it can be "null" or what the user specified)
-    LOG.debug(f"Raw param: {dict(raw_request)}")
-    LOG.debug(f"Raw param types: {[type(x) for x in dict(raw_request)]}")
+    LOG.debug(f"Raw param: {raw_request}")
+    LOG.debug(f"Raw param types: {[type(x) for x in raw_request.values()]}")
     LOG.debug(f"Correct param: {correct_parameters}")
     LOG.debug(f"Query param: {query_parameters}")
     LOG.debug(f"Query param types: {[type(x) for x in query_parameters]}")
@@ -223,43 +234,41 @@ async def get_individuals_rest(db_pool, request, processed_request):
     Main function of the endpoint. 
     """
 
-    # 1. REQUEST PROCESSING
+    # 1. GET VALID/ACCESSIBLE DATASETS
+
+    datasets_request = processed_request.get("datasetIds")
+
+    # We want to get a list of the datasets available in the database separated in three lists
+    # depending on the access level (we check all of them if the user hasn't specified anything, if some
+    # there were given, those are the only ones that are checked)
+    public_datasets, registered_datasets, controlled_datasets = await fetch_datasets_access(db_pool, datasets_request)
+
+    ##### TEST CODE TO USE WHEN AAI is integrated
+    # access_type, accessible_datasets = access_resolution(request, request['token'], request.host, public_datasets,
+    #                                                      registered_datasets, controlled_datasets)
+    # LOG.info(f"The user has this types of access: {access_type}")
+    # query_parameters[-2] = ",".join([str(id) for id in accessible_datasets])
+    ##### END TEST
+
+    # NOTE that right now we will just focus on the PUBLIC ones to ease the process, so we get all their 
+    # ids and add them to the query
+    datasets_request = ",".join([str(id) for id in public_datasets])
+    processed_request_upd = processed_request.copy()
+    processed_request_upd["datasetIds"] = list(datasets_request)
+
+    # 2. REQUEST PROCESSING
 
     # Add individualId parameter if used
     if dict(request.match_info):
         individual_id = request.match_info['target_id_req']
         processed_request.update({"individualId": individual_id})
 
-    # Prepare pagination
-    skip = processed_request.get("skip", 0)
-    limit = processed_request.get("limit", 10)
-    processed_request.update({"skip": skip, "limit": limit})
-
     # Parse the request to prepare it to be used in the SQL function
-    query_parameters = request2queryparameters(processed_request)
+    query_parameters = request2queryparameters(processed_request_upd)
 
     # Also check request to see if there is any alternativeSchema
     alternative_schemas_req = processed_request.get("individualSchemas")
     alternative_schemas = alternative_schemas_req if alternative_schemas_req else []
-
-    # 2. GET VALID/ACCESSIBLE DATASETS
-
-    # We want to get a list of the datasets available in the database separated in three lists
-    # depending on the access level (we check all of them if the user hasn't specified anything, if some
-    # there were given, those are the only ones that are checked)
-    request_datasets = query_parameters[-3].split(",") if query_parameters[-3] != "null" else "null"
-    public_datasets, registered_datasets, controlled_datasets = await fetch_datasets_access(db_pool, str(request_datasets))  # the datasets are passed as JSON, e.g. "[1,2]"
-
-    ##### TEST CODE TO USE WHEN AAI is integrated
-    # access_type, accessible_datasets = access_resolution(request, request['token'], request.host, public_datasets,
-    #                                                      registered_datasets, controlled_datasets)
-    # LOG.info(f"The user has this types of access: {access_type}")
-    # query_parameters[-3] = ",".join([str(id) for id in accessible_datasets])
-    ##### END TEST
-
-    # NOTE that right now we will just focus on the PUBLIC ones to ease the process, so we get all their 
-    # ids and add them to the SQL query parameters
-    query_parameters[-3] = ",".join([str(id) for id in public_datasets])  # e.g. '1,2,3'
 
     LOG.info(f"Query FINAL param: {query_parameters}")
 

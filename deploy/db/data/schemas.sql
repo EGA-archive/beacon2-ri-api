@@ -387,7 +387,8 @@ INSERT INTO public.ontology_term_table(ontology, term, label, target_table, colu
 ('NCIT','C43851','European','public.patient_table','ethnicity','European','pat'),
 ('NCIT','C42331','African','public.patient_table','ethnicity','African','pat'),
 ('GAZ','00002459','United States of America','public.patient_table','geographic_origin','United States of America','pat'),
-('GAZ','00000591','Spain','public.patient_table','geographic_origin','Spain','pat'),
+('GAZ','00000591','Spain','public.patient_table','geogra
+phic_origin','Spain','pat'),
 ('GAZ','00003934','Egypt','public.patient_table','geographic_origin','Egypt','pat'),
 ('GAZ','00001086','Democratic Republic of the Congo','public.patient_table','geographic_origin','Democratic Republic of the Congo','pat'),
 -- patient_disease_table
@@ -399,6 +400,9 @@ INSERT INTO public.ontology_term_table(ontology, term, label, target_table, colu
 ('OGMS','0000119','Acute onset','public.patient_disease_table','stage','Acute onset','pat_dis'),
 -- patient_pedigree_table
 ('ERO','0002041','identical twin relationship','public.patient_pedigree_table','pedigree_role','identical twin relationship','pat_ped'),
+('HP','0001300','Parkinson','public.patient_pedigree_table','disease','Parkinson','pat_ped'),
+('HP','0002511','Alzheimer','public.patient_pedigree_table','disease','Alzheimer','pat_ped'),
+('HP','0004789','Lactose intolerance','public.patient_pedigree_table','disease','Lactose intolerance','pat_ped'),
 -- beacon_sample_table
 ('NCIT','C15189','biopsy','public.beacon_sample_table','obtention_procedure','biopsy','sam'),
 ('NCIT','C84509','Primary Malignant Neoplasm','public.beacon_sample_table','tumor_progression','Primary Malignant Neoplasm','sam'),
@@ -415,5 +419,55 @@ INSERT INTO public.ontology_term_table(ontology, term, label, target_table, colu
 CREATE VIEW public.ontology_term_column_correspondance AS
 SELECT id, ontology, term, target_table, column_name, column_value, additional_comments FROM public.ontology_term_table;
 
-CREATE VIEW public.ontology_term AS
-SELECT id, ontology, term, label FROM public.ontology_term_table;
+CREATE OR REPLACE VIEW public.ontology_term AS
+SELECT * FROM public.ontology_term_table;
+
+CREATE OR REPLACE VIEW public.patient AS
+SELECT * FROM public.patient_table;
+
+-- DROP VIEW public.patient_w_ontology_terms;
+CREATE OR REPLACE VIEW public.patient_w_ontology_terms AS
+SELECT pat.id, 
+	pat.stable_id, 
+	pat.sex, 
+	CASE WHEN ot_sex.id IS NOT NULL THEN ot_sex.ontology || ':' || ot_sex.term ELSE null::text END AS sex_ontology,
+	pat.ethnicity, 
+	CASE WHEN ot_ethnicity.id IS NOT NULL THEN ot_ethnicity.ontology || ':' || ot_ethnicity.term ELSE null::text END AS ethnicity_ontology,
+	pat.geographic_origin,
+	CASE WHEN ot_geo_origin.id IS NOT NULL THEN ot_geo_origin.ontology || ':' || ot_geo_origin.term ELSE null::text END AS geographic_origin_ontology
+FROM public.patient_table pat
+LEFT JOIN public.ontology_term ot_sex ON ot_sex.target_table='public.patient_table' AND ot_sex.column_name='sex' AND lower(ot_sex.column_value)=lower(pat.sex)
+LEFT JOIN public.ontology_term ot_ethnicity ON ot_ethnicity.target_table='public.patient_table' AND ot_ethnicity.column_name='ethnicity' AND lower(ot_ethnicity.column_value)=lower(pat.ethnicity)
+LEFT JOIN public.ontology_term ot_geo_origin ON ot_geo_origin.target_table='public.patient_table' AND ot_geo_origin.column_name='geographic_origin' AND lower(ot_geo_origin.column_value)=lower(pat.geographic_origin)
+;
+
+-- DROP VIEW public.patient_pedigree_w_ontology_terms;
+CREATE OR REPLACE VIEW public.patient_pedigree_w_ontology_terms AS
+SELECT pat_ped.patient_id, 
+	pat_ped.pedigree_id, 
+	pat_ped.pedigree_role, 
+	CASE WHEN ot_role.id IS NOT NULL THEN ot_role.ontology || ':' || ot_role.term ELSE null::text END AS pedigree_role_ontology,
+	pat_ped.number_of_individuals_tested, 
+	pat_ped.disease,
+	CASE WHEN ot_disease.id IS NOT NULL THEN ot_disease.ontology || ':' || ot_disease.term ELSE null::text END AS disease_ontology
+FROM public.patient_pedigree_table pat_ped
+LEFT JOIN public.ontology_term ot_role ON ot_role.target_table='public.patient_pedigree_table' AND ot_role.column_name='pedigree_role' AND lower(ot_role.column_value)=lower(pat_ped.pedigree_role)
+LEFT JOIN public.ontology_term ot_disease ON ot_disease.target_table='public.patient_pedigree_table' AND ot_disease.column_name='disease' AND lower(ot_disease.column_value)=lower(pat_ped.disease)
+;
+
+CREATE OR REPLACE VIEW public.patient_disease_w_ontology_terms AS
+SELECT pat_dis.id, 
+	pat_dis.patient_id, 
+	pat_dis.disease, 
+	CASE WHEN ot_disease.id IS NOT NULL THEN ot_disease.ontology || ':' || ot_disease.term ELSE null::text END AS disease_ontology,
+	pat_dis.age, 
+	pat_dis.age_group, 
+	CASE WHEN ot_age_group.id IS NOT NULL THEN ot_age_group.ontology || ':' || ot_age_group.term ELSE null::text END AS age_group_ontology,
+	pat_dis.stage, 
+	CASE WHEN ot_stage.id IS NOT NULL THEN ot_stage.ontology || ':' || ot_stage.term ELSE null::text END AS stage_ontology,
+	pat_dis.family_history
+FROM public.patient_disease_table pat_dis
+LEFT JOIN public.ontology_term ot_disease ON ot_disease.target_table='public.patient_disease_table' AND ot_disease.column_name='disease' AND lower(ot_disease.column_value)=lower(pat_dis.disease)
+LEFT JOIN public.ontology_term ot_age_group ON ot_age_group.target_table='public.patient_disease_table' AND ot_age_group.column_name='age_group' AND lower(ot_age_group.column_value)=lower(pat_dis.age_group)
+LEFT JOIN public.ontology_term ot_stage ON ot_stage.target_table='public.patient_disease_table' AND ot_stage.column_name='stage' AND lower(ot_stage.column_value)=lower(pat_dis.stage)
+;

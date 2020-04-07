@@ -1,4 +1,4 @@
--- DROP FUNCTION public.query_patients(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text, text, text);
+-- DROP FUNCTION public.query_patients(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text, text, text, text, integer, integer);
 
 CREATE OR REPLACE FUNCTION public.query_patients(
 	_variant_type text,
@@ -13,201 +13,179 @@ CREATE OR REPLACE FUNCTION public.query_patients(
 	_alternate_bases text,
 	_reference_genome text,
 	_dataset_ids text,
+	_biosample_stable_id text,
 	_individual_stable_id text,
-	_filters text)
+	_filters text,
+	_skip integer,
+	_limit integer)
     RETURNS TABLE(
 		individual_stable_id text,
 		sex text,
+		sex_ontology text,
 		ethnicity text,
+		ethnicity_ontology text,
 		geographic_origin text,
+		geographic_origin_ontology text,
 		disease_id text,
+		disease_id_ontology text,
 		disease_age_of_onset_age text,
 		disease_age_of_onset_age_group text,
+		disease_age_of_onset_age_group_ontology text,
 		disease_stage text,
+		disease_stage_ontology text,
 		disease_family_history bool,
 		pedigree_stable_id text,
 		pedigree_role text,
+		pedigree_role_ontology text,
 		pedigree_no_individuals_tested int,
-		pedigree_disease_id text
+		pedigree_disease_id text,
+		pedigree_disease_id_ontology text
 	) 
     LANGUAGE 'plpgsql'
 AS $BODY$
 
 DECLARE
 	_query text;
-	_check_variant_params bool;
 	_filters_converted text;
 	_join_variant_table bool;
+	_offset integer;
 BEGIN
-	-- _filters format: comma separated list of CURIEs
-	-- 		Example: NCIT:C46113,NCIT:C17600,GAZ:00001086
-	-- _dataset_ids: comma separated list of IDs
-	--		Example: 1,2,3
-
-	-- Initialize String parameters
-	IF _variant_type IS NOT NULL AND _variant_type = 'null' THEN _variant_type = null; END IF;
-	IF _chromosome IS NOT NULL AND _chromosome = 'null' THEN _chromosome = null; END IF;
-	IF _reference_bases IS NOT NULL AND _reference_bases = 'null' THEN _reference_bases = null; END IF;
-	IF _alternate_bases IS NOT NULL AND _alternate_bases = 'null' THEN _alternate_bases = null; END IF;
-	IF _reference_genome IS NOT NULL AND _reference_genome = 'null' THEN _reference_genome = null; END IF;
-	IF _dataset_ids IS NOT NULL AND _dataset_ids = 'null' THEN _dataset_ids = null; END IF;
+	--------------------
+	-- INIT OF PARAMS --
+	--------------------
+	-- Initialize text parameters
+	IF _biosample_stable_id IS NOT NULL AND _biosample_stable_id = 'null' THEN _biosample_stable_id = null; END IF;
 	IF _individual_stable_id IS NOT NULL AND _individual_stable_id = 'null' THEN _individual_stable_id = null; END IF;
-	IF _filters IS NOT NULL AND _filters = 'null' THEN _filters = null; END IF;
 
-	-- Initialize boolean variables
-	_filters_converted = FALSE;
-	_join_variant_table = FALSE;
+	------------------------
+	-- END INIT OF PARAMS --
+	------------------------
 	
-	IF _start IS NOT NULL OR _end IS NOT NULL 
-		OR _start_min IS NOT NULL OR _start_max IS NOT NULL OR _end_min IS NOT NULL OR _end_max IS NOT NULL
-		OR _chromosome IS NOT NULL OR _reference_genome IS NOT NULL OR _variant_type IS NOT NULL
-		OR _reference_bases IS NOT NULL OR _alternate_bases IS NOT NULL
-	THEN
-			-- Check the variant parameters
-			_check_variant_params = TRUE;
-			_join_variant_table = TRUE;
-	END IF;	
-
-	IF _check_variant_params THEN
-		-- start: Precise start coordinate position, allele locus (0-based, inclusive).
-		-- end: Precise end coordinate (0-based, exclusive).
-		--
-		-- start only:
-		--   - for single positions, e.g. the start of a specified sequence alteration
-		--     where the size is given through the specified alternate_bases
-		--   - typical use are queries for SNV and small InDels
-		--   - the use of "start" without an "end" parameter requires the use of
-		--     "reference_bases"
-		--
-		-- start and end:
-		--   - special use case for exactly determined structural changes
-		--
-		-- start_min + start_max + end_min + end_max
-		--   - for querying imprecise positions (e.g. identifying all structural
-		--     variants starting anywhere between start_min <-> start_max, and ending
-		--     anywhere between end_min <-> end_max
-		--   - single or double sided precise matches can be achieved by setting
-		--     start_min = start_max XOR end_min = end_max
-
-		IF _chromosome IS NULL THEN RAISE EXCEPTION '_chromosome is required'; END IF;
-		--IF _alternate_bases IS NULL AND _variant_type IS NULL THEN RAISE EXCEPTION 'Either _alternate_bases or _variant_type is required'; END IF;
-		IF _reference_genome IS NULL THEN RAISE EXCEPTION '_reference_genome is required'; END IF;
-
-		IF _start IS NULL
-		THEN
-			-- _start is null but _end is provided
-			IF _end IS NOT NULL
-				THEN RAISE EXCEPTION '_start is required if _end is provided';
-			END IF;
-			-- _start, _start_min, _start_max, _end_min, _end_max are null
-			IF _start_min IS NULL AND _start_max IS NULL AND _end_min IS NULL AND _end_max IS NULL
-				THEN RAISE EXCEPTION 'Either _start or all of _start_min, _start_max, _end_min and _end_max are required';
-			-- _start is null and some of _start_min, _start_max, _end_min or _end_max are null too
-			ELSIF _start_min IS NULL OR _start_max IS NULL OR _end_min IS NULL OR _end_max IS NULL
-				THEN RAISE EXCEPTION 'All of _start_min, _start_max, _end_min and _end_max are required';
-			END IF;
-		-- _start is not null and either _start_min, _start_max, _end_min or _end_max has been provided too
-		ELSIF _start_min IS NOT NULL OR _start_max IS NOT NULL OR _end_min IS NOT NULL OR _end_max IS NOT NULL
-			THEN RAISE EXCEPTION '_start cannot be provided at the same time as _start_min, _start_max, _end_min and _end_max';
-		ELSIF _end IS NULL AND _reference_bases='N' 
-			THEN RAISE EXCEPTION '_reference_bases cannot be N if _end is missing';
-		END IF;
-
-		IF _start IS NOT NULL AND _end IS NULL AND _reference_bases IS NULL
-		THEN RAISE EXCEPTION '_reference_bases is required if _start is provided and _end is missing';
-		END IF;
-
-		_variant_type = upper(_variant_type);
-		_reference_bases=upper(_reference_bases);
-		_alternate_bases=upper(_alternate_bases);
-		_reference_genome=lower(_reference_genome);
-
-		IF _variant_type IS NOT NULL THEN
-		  IF _variant_type NOT IN ('DEL','DUP','INS','INV','CNV','DUP:TANDEM','DEL:ME','INS:ME')
-			THEN RAISE EXCEPTION 'Structural variant type not implemented yet';
-		  --ELSIF _alternate_bases IS NOT NULL AND _alternate_bases!='N'
-			--THEN RAISE EXCEPTION 'If _variant_type provided, _alternate_bases must be N or null';
-		  END IF;
-		END IF;
-
-		IF _variant_type IS NULL AND _alternate_bases IS NULL
-		  --THEN RAISE EXCEPTION 'Either _variant_type or _alternate_bases is mandatory';
-		  THEN _alternate_bases='*';
-		END IF;
-		IF _alternate_bases='N' THEN _alternate_bases='*'; END IF; -- Look for any variant
-	END IF;
+	RAISE NOTICE 'Parameters before validation:  
+		_variant_type=%, 
+		_start=%, _start_min=%, _start_max=%, 
+		_end=%, _end_min=%, _end_max=%,
+		_chromosome=%, _reference_bases=%, _alternate_bases=%,
+		_reference_genome=%, _dataset_ids=%,
+		_limit=%, _offset=%,
+		_filters=%, _filters_converted=%,
+		_join_variant_table=%', 
+		_variant_type, _start, _start_min, _start_max, _end, _end_min, _end_max,
+		_chromosome, _reference_bases, _alternate_bases, _reference_genome, _dataset_ids,
+		_limit, _offset, _filters, _filters_converted, _join_variant_table;
 	
-	-- Prepare filters
-	SELECT string_agg(q.my_filter, ' AND ') INTO _filters_converted
-	FROM (
-		select target_table_alias || '.' || column_name || '=' || quote_literal(column_value) as my_filter
-		from (
-			SELECT trim(split_part(filter_term,':',1)) AS ontology, 
-				trim(split_part(filter_term,':',2)) AS term
-			FROM regexp_split_to_table(trim('NCIT:C46113,NCIT:C17600,GAZ:00001086'), ',') AS filter_term
-		)q
-		LEFT JOIN public.ontology_term_table ot ON ot.ontology=q.ontology AND ot.term=q.term
-	)q;
+	SELECT vp._variant_type, 
+		vp._start, vp._start_min, vp._start_max, 
+		vp._end, vp._end_min, vp._end_max,
+		vp._chromosome, vp._reference_bases, vp._alternate_bases, 
+		vp._reference_genome, vp._dataset_ids,
+		vp._limit, vp._offset, 
+		vp._filters_converted, vp._filters,
+		vp._join_variant_table
+	INTO _variant_type, 
+		_start, _start_min, _start_max, 
+		_end, _end_min, _end_max,
+		_chromosome, _reference_bases, _alternate_bases, 
+		_reference_genome, _dataset_ids,
+		_limit, _offset, 
+		_filters_converted, _filters,
+		_join_variant_table
+	FROM public.validate_params(_variant_type, _start, _start_min, _start_max, _end, _end_min, _end_max,
+		_chromosome, _reference_bases, _alternate_bases, _reference_genome, _dataset_ids, _filters, 
+		_skip, _limit
+	)vp;
 	
-	-- Aliases used in ontology_term_table_
+	RAISE NOTICE 'Parameters after validation:  
+		_variant_type=%, 
+		_start=%, _start_min=%, _start_max=%, 
+		_end=%, _end_min=%, _end_max=%,
+		_chromosome=%, _reference_bases=%, _alternate_bases=%,
+		_reference_genome=%, _dataset_ids=%,
+		_limit=%, _offset=%,
+		_filters=%, _filters_converted=%,
+		_join_variant_table=%', 
+		_variant_type, _start, _start_min, _start_max, _end, _end_min, _end_max,
+		_chromosome, _reference_bases, _alternate_bases, _reference_genome, _dataset_ids,
+		_limit, _offset, _filters, _filters_converted, _join_variant_table;
+	
+	-- Aliases used in ontology_term_table
 	-- 	'pat'
 	-- 	'sam'
 	-- 	'pat_ped'
 	-- 	'pat_dis'
 	-- In the future, we may have filters on beacon_data_table
-	IF _filters_converted LIKE '%dat.' THEN _join_variant_table=TRUE; END IF;
+	
+	-- Check what other tables should be joined depending on the filters provided
+	IF _filters_converted LIKE '%dat.%' THEN _join_variant_table=TRUE; END IF;
+	
+	RAISE NOTICE '_biosample_stable_id=%', _biosample_stable_id; 
+	RAISE NOTICE '_individual_stable_id=%', _individual_stable_id;
 
-	---------------------
 	---------------------
 	-- BUILD THE QUERY --
 	---------------------
-	---------------------
-
 	_query = '
 		SELECT DISTINCT
 			pat.stable_id AS individual_id,
 			pat.sex AS sex,
+			pat.sex_ontology AS sex_ontology,
 			pat.ethnicity AS ethnicity,
+			pat.ethnicity_ontology AS ethnicity_ontology,
 			pat.geographic_origin AS geographic_origin,
+			pat.geographic_origin_ontology AS geographic_origin_ontology,
 			pat_dis.disease AS disease_id,
+			pat_dis.disease_ontology AS disease_id_ontology,
 			pat_dis.age AS disease_age_of_onset_age,
 			pat_dis.age_group AS disease_age_of_onset_age_group,
+			pat_dis.age_group_ontology AS disease_age_of_onset_age_group_ontology,
 			pat_dis.stage AS disease_stage,
+			pat_dis.stage_ontology AS disease_stage_ontology,
 			pat_dis.family_history AS disease_family_history,
 			ped.stable_id AS pedigree_id,
 			pat_ped.pedigree_role AS pedigree_role,
+			pat_ped.pedigree_role_ontology AS pedigree_role_ontology,
 			pat_ped.number_of_individuals_tested AS pedigree_no_individuals_tested,
-			pat_ped.disease AS pedigree_disease_id
-		FROM public.patient_table pat
-		LEFT JOIN public.patient_pedigree_table pat_ped ON pat_ped.patient_id=pat.id
+			pat_ped.disease AS pedigree_disease_id,
+			pat_ped.disease_ontology AS pedigree_disease_id_ontology
+		FROM public.patient_w_ontology_terms pat 
+		LEFT JOIN public.patient_pedigree_w_ontology_terms pat_ped ON pat_ped.patient_id=pat.id
 		LEFT JOIN public.pedigree_table ped ON ped.id=pat_ped.pedigree_id
-		LEFT JOIN public.patient_disease_table pat_dis ON pat_dis.patient_id=pat.id
+		LEFT JOIN public.patient_disease_w_ontology_terms pat_dis ON pat_dis.patient_id=pat.id 
 		INNER JOIN public.beacon_sample_table sam ON sam.patient_id=pat.id
 		INNER JOIN public.beacon_dataset_sample_table dataset_sam ON dataset_sam.sample_id=sam.id
 		';
 	
+	
+	-- Join other tables only if they are necessary
 	IF _join_variant_table THEN
 		_query = _query || '
 		INNER JOIN public.beacon_data_sample_table dat_sam ON dat_sam.sample_id=sam.id
-		INNER JOIN public.beacon_data_table dat ON dat.id=dat_sam.data_id
+		INNER JOIN public.beacon_data_table bdat ON bdat.id=dat_sam.data_id
+		INNER JOIN public.beacon_dataset_table bdataset ON bdataset.id=bdat.dataset_id
 		';
 	END IF;
 	
-	_query = _query || '
-		WHERE
-		';
-
+	
 	-- Datasets
-	_query = _query || ' dataset_sam.dataset_id = ANY (string_to_array($7, '','')::int[])';
+	_query = _query || '
+		WHERE dataset_sam.dataset_id = ANY (string_to_array($7, '','')::int[])';
 	
-	IF _individual_stable_id IS NOT NULL THEN
-		_query =  _query || ' AND ' || '
-		pat.stable_id=$13
-		';
+
+	IF _biosample_stable_id IS NOT NULL THEN
+		_query =  _query || '
+		AND sam.stable_id=$13';
 	END IF;
 	
+
+	IF _individual_stable_id IS NOT NULL THEN
+		_query =  _query || '
+		AND pat.stable_id=$14';
+	END IF;
+	
+
 	IF _filters IS NOT NULL THEN
-		_query = _query || ' AND ' ||
+		_query = _query || ' 
+		AND ' ||
 		(SELECT string_agg(q.my_filter, ' AND ') as my_filter
 		FROM (
 			select target_table_alias || '.' || column_name || '=' || quote_literal(column_value) as my_filter
@@ -220,83 +198,107 @@ BEGIN
 		)q);
 	END IF;
 
+
+
 	IF _join_variant_table THEN
 		IF _variant_type IN ('DUP','DEL','INS','INV','CNV','DUP:TANDEM','DEL:ME','INS:ME') THEN
-			_query = _query || ' bdat.type=$1 AND';
+			_query = _query || '
+			AND bdat.type=$1 AND';
 		END IF;
 
 		raise notice '_alternate_bases: %', _alternate_bases;
 		raise notice '_dataset_ids: %', _dataset_ids;
 
 		IF _start_min IS NOT NULL THEN
-			_query = _query || ' bdat.start >= $9 AND bdat.start < $10
-							AND bdat.end >= $11	AND bdat.end < $12 AND
-			 ';
+			_query = _query || '
+			AND bdat.start >= $9 AND bdat.start < $10
+			AND bdat.end >= $11	AND bdat.end < $12';
 		ELSIF _alternate_bases != '*' OR (_alternate_bases = '*' AND _end IS NULL)
 			OR (_alternate_bases IS NULL AND _variant_type IS NOT NULL) THEN
 		  -- Looking for an exact match
-			_query = _query || ' bdat.start = $2 AND';
+			_query = _query || '
+			AND bdat.start = $2';
 		END IF;
 
+
 		IF _end IS NOT NULL THEN
-		  -- Remember that end is exclusive
-		  IF _alternate_bases = '*' THEN
-			 -- Looking for any variant within this range
-			_query = _query || ' (bdat.start >= $2 AND bdat.start < $8 ' ||
-			 'OR bdat.end >= $2 AND bdat.end < $8) AND
-			 ';
-		  ELSE
-			-- Looking for an exact match
-			  _query = _query || ' bdat.end = ($8-1) AND
-			 ';
+			-- Remember that end is exclusive
+			IF _alternate_bases = '*' THEN
+				-- Looking for any variant within this range
+				_query = _query || '
+				AND (bdat.start >= $2 AND bdat.start < $8
+				OR bdat.end >= $2 AND bdat.end < $8)';
+			ELSE
+				-- Looking for an exact match
+				_query = _query || '
+				AND bdat.end = ($8-1)';
 			END IF;
 		END IF;
 
 		-- Chromosome
-		_query = _query || ' bdat.chromosome=$3 AND';
+		_query = _query || '
+		AND bdat.chromosome=$3';
 
 		-- Reference parameter is not mandatory
 		IF _reference_bases IS NOT NULL AND _reference_bases!='N' THEN
-			_query=_query || ' bdat.reference=$4 AND';
+			_query=_query || '
+			AND bdat.reference=$4';
 		END IF;
 
 		-- Alternate bases
 		IF _alternate_bases IS NOT NULL THEN
 		  IF _variant_type='INS' THEN
-			  _query = _query || ' bdat.alternate like bdat.reference || $5 || ''%'' AND';
+			  _query = _query || '
+			  AND bdat.alternate like bdat.reference || $5 || ''%'' ';
 			ELSIF _alternate_bases NOT IN ('N','*') THEN
-			  _query = _query || ' bdat.alternate=$5 AND';
+			  _query = _query || '
+			  AND bdat.alternate=$5';
 			END IF;
 		END IF;
 
 		-- Convert reference_genome column to lower case
-		_query = _query || ' lower(bdataset.reference_genome)=$6 AND';
+		_query = _query || '
+		AND lower(bdataset.reference_genome)=$6';
 	END IF;
+
 
 	_query = _query || ' 
 	ORDER BY pat.stable_id,
 			pat.sex,
+			pat.sex_ontology,
 			pat.ethnicity,
+			pat.ethnicity_ontology,
 			pat.geographic_origin,
+			pat.geographic_origin_ontology,
 			pat_dis.disease,
+			pat_dis.disease_ontology,
 			pat_dis.age,
 			pat_dis.age_group,
+			pat_dis.age_group_ontology,
 			pat_dis.stage,
+			pat_dis.stage_ontology,
 			pat_dis.family_history,
 			ped.stable_id,
 			pat_ped.pedigree_role,
+			pat_ped.pedigree_role_ontology,
 			pat_ped.number_of_individuals_tested,
-			pat_ped.disease';
+			pat_ped.disease,
+			pat_ped.disease_ontology';
+	
+
+	-- Apply pagination
+	_query = _query || '
+	LIMIT $15 OFFSET $16';
 
 	RAISE NOTICE '_query: %', _query;
 
 	RETURN QUERY EXECUTE _query
 	USING _variant_type, _start, _chromosome, _reference_bases, _alternate_bases, 
 		_reference_genome, _dataset_ids, _end, _start_min, _start_max, _end_min, _end_max, 
-		_individual_stable_id;
+		_biosample_stable_id, _individual_stable_id, _limit, _offset;
 	-- #1=_variant_type, #2=_start, #3=_chromosome, #4=_reference_bases, #5=_alternate_bases, 
 	-- #6=_reference_genome, #7=_dataset_ids, #8=_end, #9=_start_min, #10=_start_max, 
-	-- #11=_end_min, #12=_end_max, #13=_individual_stable_id
+	-- #11=_end_min, #12=_end_max, #13=_biosample_stable_id, #14=_individual_stable_id,
+	-- #15=_limit, #16=_offset
 END
 $BODY$;
-
