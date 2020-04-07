@@ -15,8 +15,13 @@ from .. import __id__, __beacon_name__, __apiVersion__
 LOG = logging.getLogger(__name__)
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         MAIN FUNCTION
+# ----------------------------------------------------------------------------------------------------------------------
+
 async def fetch_filtering_terms(db_pool):
-    """Execute query for returning the filtering terms.
+    """
+    Execute query for returning the filtering terms.
     """
     # Take one connection from the database pool
     async with db_pool.acquire(timeout=180) as connection:
@@ -35,6 +40,10 @@ async def fetch_filtering_terms(db_pool):
             except Exception as e:
                 raise BeaconServerError(f'Query metadata DB error: {e}')
 
+
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         HANDLER FUNCTION
+# ----------------------------------------------------------------------------------------------------------------------
 
 async def filtering_terms_handler(host, db_pool):
     """Construct the `Beacon` app information dict.

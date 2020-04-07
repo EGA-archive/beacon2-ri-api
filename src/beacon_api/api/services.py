@@ -1,5 +1,5 @@
 """
-Sercive Endpoint.
+Service Endpoint.
 
 The service endpoint reveals information about this beacon useful for the Beacon Network.
 
@@ -111,15 +111,16 @@ async def fetch_filtered_services(db_pool, processed_request):
     Fetch the services based on the filter parameters given.
     """
     # Get the parameters
-    service_type = None if not processed_request.get('serviceType') else processed_request.get('serviceType')
-    list_format =  None if not processed_request.get('listFormat') else processed_request.get('listFormat')
-    version = None if not processed_request.get('apiVersion') else processed_request.get('apiVersion')
+    service_type = processed_request.get('serviceType') 
+    list_format =  processed_request.get('listFormat')
+    version = processed_request.get('apiVersion')
 
     list_services = ["'" + service_type + "'"] if service_type else ["'GA4GHBeacon'", "'GA4GHAggregator'", "'GA4GHRegistry'"]
     version = ["'" + version + "'"] if version else ['version']
 
     # Take one connection from the database pool
     async with db_pool.acquire(timeout=180) as connection:
+        services = []
         # Fetch different parameters depending on the list_format
         if not list_format or list_format == 'long':
             try:
@@ -133,8 +134,12 @@ async def fetch_filtered_services(db_pool, processed_request):
                 db_response = await statement.fetch()
             except Exception as e:
                 raise BeaconServerError(f'Query service DB error: {e}')
-        elif list_format == 'short': # returns only id, name, serviceURL, ServiceType and open.
+            for record in list(db_response):
+                transformed_service = transform_services(record)
+                services.append(transformed_service)
+            return services
 
+        elif list_format == 'short':  # returns only id, name, serviceURL, ServiceType and open.
             try:
                 query = f"""SELECT service_stable_id, service_name, service_url, service_type, open
                            FROM service WHERE
@@ -146,12 +151,10 @@ async def fetch_filtered_services(db_pool, processed_request):
                 db_response = await statement.fetch()
             except Exception as e:
                 raise BeaconServerError(f'Query short service DB error: {e}')
-        services = []
-        for record in list(db_response):
-            transformed_service = transform_services(record, short=True) if list_format == 'short' else transform_services(record)
-            services.append(transformed_service)
-        return services
-
+            for record in list(db_response):
+                transformed_service = transform_services(record, short=True)
+                services.append(transformed_service)
+            return services
 
 
 # ----------------------------------------------------------------------------------------------------------------------

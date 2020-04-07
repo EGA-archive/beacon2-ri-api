@@ -38,9 +38,11 @@ def mimic_get_request(input_dict):
 
 
 async def parse_request_object(request):
-    """Parse as JSON Object depending on the request method.
+    """
+    Parse as JSON Object depending on the request method.
 
-    For POST request parse the body, while for the GET request parse the query parameters.
+    For POST request parse the body, while for the GET request parse the parameters
+    related to queries (if any).
     """
     if request.method == 'POST':
         post_request = await request.json()

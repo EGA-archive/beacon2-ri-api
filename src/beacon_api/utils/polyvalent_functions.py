@@ -222,7 +222,7 @@ def access_resolution(request, token, host, public_data, registered_data, contro
             raise BeaconUnauthorised(request, host, "missing_token", 'Unauthorized access to dataset(s), missing token.')
         # token is present, but is missing perms (user authed but no access)
         raise BeaconForbidden(request, host, 'Access to dataset(s) is forbidden.')
-    LOG.info(f"Accesible datasets are: {list(access)}.")
+    LOG.info(f"Accessible datasets are: {list(access)}.")
     return permissions, list(access)
 
 

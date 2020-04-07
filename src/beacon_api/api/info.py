@@ -35,17 +35,16 @@ def transform_metadata(record):
     """Format the metadata record we got from the database to adhere to the response schema."""
     response = dict(record)
 
+
     response["id"] = response.pop("datasetId")  
     response["name"] = None
-    response["description"] = response.pop("description")
-    response["assemblyId"] = response.pop("assemblyId")  
     response["createDateTime"] = None 
     response["updateDateTime"] = None
     response["dataUseConditions"] = None
     response["version"] = None
-    response["variantCount"] = 0 if response.get("variantCount") is None else response.get("variantCount")
-    response["callCount"] = 0 if response.get("callCount") is None else response.get("callCount")
-    response["sampleCount"] = 0 if response.get("sampleCount") is None else response.get("sampleCount")
+    response["variantCount"] = response.get("variantCount", 0) 
+    response["callCount"] = response.get("callCount", 0)
+    response["sampleCount"] = response.get("sampleCount", 0)
     response["externalURL"] = None
     response["info"] = {"accessType": response.get("accessType"),
                         "authorized": 'true' if response.pop("accessType") == "PUBLIC" else 'false'}  
@@ -57,7 +56,7 @@ def transform_metadata(record):
 #                                         MAIN QUERY TO THE DATABASE
 # ----------------------------------------------------------------------------------------------------------------------
 
-async def fetch_dataset_metadata(db_pool, datasets=None, access_type=None):
+async def fetch_dataset_metadata(db_pool):
     """
     Execute query for returning dataset metadata.
 
@@ -65,29 +64,22 @@ async def fetch_dataset_metadata(db_pool, datasets=None, access_type=None):
     """
     # Take one connection from the database pool
     async with db_pool.acquire(timeout=180) as connection:
-        # Start a new session with the connection
-        async with connection.transaction():
-            # Fetch dataset metadata according to user request
-            datasets_query = None if not datasets else datasets
-            access_query = None if not access_type else access_type
-            try:
-
-                query = """SELECT stable_id as "datasetId", description as "description", access_type as "accessType",
-                           reference_genome as "assemblyId", variant_cnt as "variantCount",
-                           call_cnt as "callCount", sample_cnt as "sampleCount"
-                           FROM beacon_dataset WHERE
-                           coalesce(stable_id = any($1::varchar[]), true)
-                           AND coalesce(access_type = any($2::varchar[]), true);
-                           """
-                statement = await connection.prepare(query)
-                db_response = await statement.fetch(datasets_query, access_query)
-                metadata = []
-                LOG.info(f"Showing the INFO endpoint.")
-                for record in list(db_response):
-                    metadata.append(transform_metadata(record))
-                return metadata
-            except Exception as e:
-                raise BeaconServerError(f'Query metadata DB error: {e}')
+        # Fetch dataset metadata according to user request
+        try:
+            query = """SELECT stable_id as "datasetId", description as "description", access_type as "accessType",
+                        reference_genome as "assemblyId", variant_cnt as "variantCount",
+                        call_cnt as "callCount", sample_cnt as "sampleCount"
+                        FROM beacon_dataset;
+                        """
+            statement = await connection.prepare(query)
+            db_response = await statement.fetch()
+            metadata = []
+            LOG.info(f"Showing the INFO endpoint.")
+            for record in list(db_response):
+                metadata.append(transform_metadata(record))
+            return metadata
+        except Exception as e:
+            raise BeaconServerError(f'Query metadata DB error: {e}')
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -124,10 +116,7 @@ async def info_handler(request, processed_request, pool, info_endpoint=False, se
     elif service_info:
         LOG.info('Using GA4GH Discovery format for Service Info.')
         beacon_info = GA4GH_ServiceInfo_v01(request.host)
-    # if there is no info, the default model
-    else:
-        LOG.info('Using Beacon API Specification format for Service Info.')
-        beacon_info = Beacon_v1(request.host)
+
 
     beacon_info.update({'datasets': beacon_dataset,
                         # If one sets up a beacon it is recommended to adjust these sample requests

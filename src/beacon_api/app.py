@@ -51,7 +51,7 @@ async def beacon_get(request):
     It uses the '/' and '/service-info' path and only serves an information giver.
     """
     LOG.info('GET request to the info endpoint.')
-    method, processed_request = await parse_basic_request_object(request)
+    _, processed_request = await parse_request_object(request)
     db_pool = request.app['pool']
     if str(request.rel_url) == '/service-info':
         LOG.info('Using GA4GH Discovery format for Service Info.')
@@ -59,7 +59,7 @@ async def beacon_get(request):
     elif str(request.rel_url).startswith('/info'):    
         response = await info_handler(request, processed_request, db_pool, info_endpoint=True)
     else:
-        response = await info_handler(request, processed_request, db_pool)
+        response = await info_handler(request, processed_request, db_pool, info_endpoint=True)
     return web.json_response(response)
 
 
@@ -86,7 +86,7 @@ async def beacon_filtering_terms(request):
 
 @routes.get('/access_levels')
 @validate_access_levels
-async def beacon_access_levels(request):
+async def beacon_get_access_levels(request):
     """
     Use the HTTP protocol 'GET' to return a Json object of the ACCESS LEVELS.
 
@@ -117,7 +117,7 @@ async def beacon_post_access_levels(request):
 
 @routes.get('/services')
 @validate_services
-async def beacon_get(request):
+async def beacon_get_services(request):
     """
     Use the HTTP protocol 'GET' to return a Json object of all the necessary info of the SERVICES.
 
@@ -133,7 +133,7 @@ async def beacon_get(request):
 
 @routes.post('/services')
 @validate_services
-async def beacon_get(request):
+async def beacon_post_services(request):
     """
     Use the HTTP protocol 'GET' to return a Json object of all the necessary info of the SERVICES.
 
@@ -491,7 +491,7 @@ async def beacon_get_individuals_rest(request):
 
 @routes.get('/individuals_rest/{target_id_req}')
 @validate_simple("individuals_rest")
-async def beacon_get_individuals_rest(request):
+async def beacon_post_individuals_rest(request):
     """
     Use the HTTP protocol 'GET' to return a Json object of a response to a given INDIVIDUALS QUERY.
 

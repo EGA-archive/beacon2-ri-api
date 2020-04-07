@@ -376,11 +376,7 @@ async def genomic_request_handler(db_pool, processed_request, request):
         query_parameters[-1] = 'null' if not processed_filters_param else processed_filters_param
 
     # We will output the datasets depending on the includeDatasetResponses parameter
-    include_dataset = ""
-    if processed_request.get("includeDatasetResponses"):
-        include_dataset  = processed_request.get("includeDatasetResponses")
-    else:
-        include_dataset  = "NONE"
+    include_dataset = processed_request.get("includeDatasetResponses", "NONE")
 
     LOG.info(f"Query FINAL param: {query_parameters}")
 
