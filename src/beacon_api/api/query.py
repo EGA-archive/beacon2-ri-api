@@ -16,9 +16,11 @@ from .exceptions import BeaconBadRequest, BeaconServerError, BeaconForbidden, Be
 from .. import __apiVersion__, __id__
 from ..conf.config import DB_SCHEMA
 
-from ..utils.polyvalent_functions import create_prepstmt_variables, filter_exists
-from ..utils.polyvalent_functions import prepare_filter_parameter, parse_filters_request
-from ..utils.polyvalent_functions import fetch_datasets_access, access_resolution
+from ..utils.polyvalent_functions import (create_prepstmt_variables,
+                                          filter_exists,
+                                          prepare_filter_parameter,
+                                          fetch_datasets_access,
+                                          access_resolution)
 
 from ..utils.polyvalent_functions import filter_response
 from .access_levels import ACCESS_LEVELS_DICT
@@ -34,12 +36,16 @@ LOG = logging.getLogger(__name__)
 async def transform_record(db_pool, record):
     """Format the record we got from the database to adhere to the response schema."""
 
+    dataset_id = record.pop("dataset_id")
+    if dataset_id is None:
+        LOG.error('Ohhh shit')
+
     # Before creating the dict, we want to get the stable_id frm the DB
     async with db_pool.acquire(timeout=180) as connection:
         try: 
             query = f"""SELECT stable_id, access_type
                         FROM beacon_dataset
-                        WHERE id={dict(record).pop("dataset_id")};
+                        WHERE id=$1;
                         """
             statement = await connection.prepare(query)
             extra_record = await statement.fetchrow()
@@ -47,37 +53,39 @@ async def transform_record(db_pool, record):
             raise BeaconServerError(f'Query metadata (stableID) DB error: {e}') 
 
     response = dict(record)
+    
+    datasetId = extra_record.get("stable_id")
+    internalId = response.pop("dataset_id")
+    if datasetId is None or internalId is None:
+        LOG.error('Ohhh shit')
 
-    response.pop("id")
-    response["datasetId"] = dict(extra_record).pop("stable_id")  
-    response["internalId"] = response.pop("dataset_id")
+    response.pop("id", None)
+    response["datasetId"] = datasetId
+    response["internalId"] = internalId
     response["exists"] = True
-    response["variantCount"] = response.pop("variant_cnt")  
-    response["callCount"] = response.pop("call_cnt") 
-    response["sampleCount"] = response.pop("sample_cnt") 
-    response["frequency"] = 0 if response.get("frequency") is None else float(response.pop("frequency"))
+    response["variantCount"] = response.get("variant_cnt", 0)  
+    response["callCount"] = response.get("call_cnt", 0) 
+    response["sampleCount"] = response.get("sample_cnt", 0) 
+    response["frequency"] = float(response.get("frequency", 0))
     response["numVariants"] = response.get("num_variants", 0) 
-    response["info"] = {"access_type": dict(extra_record).pop("access_type")}   
+    response["info"] = {"access_type": extra_record.get("access_type")}   
     
     return response
 
 
 def transform_misses(record):
     """Format the missed datasets record we got from the database to adhere to the response schema."""
-    
-    response = {}
-    response["datasetId"] = dict(record).get("stableId")  
-    response["internalId"] = dict(record).get("datasetId")
-    response["exists"] = False
-    # response["datasetId"] = ''  
-    response["variantCount"] = 0
-    response["callCount"] = 0
-    response["sampleCount"] = 0
-    response["frequency"] = 0 
-    response["numVariants"] = 0 
-    response["info"] = {"access_type": dict(record).get("accessType")}
-
-    return response
+    return {
+        "datasetId": record.get("stableId"),
+        "internalId": record.get("datasetId"),
+        "exists": False,
+        "variantCount": 0,
+        "callCount": 0,
+        "sampleCount": 0,
+        "frequency": 0,
+        "numVariants": 0, 
+        "info": {"access_type": record.get("accessType")},
+    }
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         SECONDARY FUNCTIONS (called by the main functions)
@@ -110,9 +118,9 @@ async def fetch_resulting_datasets(db_pool, query_parameters, misses=False, acce
                 query = f"""SELECT * FROM {DB_SCHEMA}.query_data_summary_response({create_prepstmt_variables(13)});"""
                 LOG.debug(f"QUERY to fetch hits: {query}")
                 statement = await connection.prepare(query)
-                db_response = await statement.fetch(*query_parameters)         
+                db_response = await statement.fetch(*query_parameters, record_factory=MartaDict)
 
-            for record in list(db_response):
+            for record in db_response:
                 processed = transform_misses(record) if misses else await transform_record(db_pool, record)
                 datasets.append(processed)
             return datasets
@@ -146,27 +154,43 @@ async def get_datasets(db_pool, query_parameters, include_dataset):
     """
     Find datasets based on query parameters.
     """
-    hit_datasets = []
-    miss_datasets = []
-    response = []
-    dataset_ids = query_parameters[-2]
 
     # Fetch datasets where the variant is found
     hit_datasets = await fetch_resulting_datasets(db_pool, query_parameters)
+    response = hit_datasets
 
     # If the response has to include the datasets where the variant is not found, 
     # we want to fetch info about them and shape them to be shown
     if include_dataset in ['ALL', 'MISS']:
+        dataset_ids = query_parameters[-2]
         list_all = list(map(int, dataset_ids.split(",")))
         LOG.debug(f"list_all: {list_all}")
-        list_hits  =  [dict["internalId"] for dict in hit_datasets]
+        list_hits  =  [d["internalId"] for d in hit_datasets]
         LOG.debug(f"list_hits: {list_hits}")
         accessible_missing = [int(x) for x in list_all if x not in list_hits]
         LOG.debug(f"accessible_missing: {accessible_missing}")
         miss_datasets = await fetch_resulting_datasets(db_pool, query_parameters, misses=True, accessible_missing=accessible_missing)
-    response = hit_datasets + miss_datasets
+        response = hit_datasets + miss_datasets
     return response
 
+
+
+_INT_PARAMS = ['start', 'end', 'endMax', 'endMin', 'startMax', 'startMin']
+_CORRECT_PARAMETERS =  [
+    "variantType",
+    "start",
+    "startMin",
+    "startMax",
+    "end",
+    "endMin",
+    "endMax",
+    "referenceName",
+    "referenceBases",
+    "alternateBases",
+    "assemblyId",
+    "datasetIds",
+    "filters"
+]
 
 def request2queryparameters(processed_request):
     """
@@ -174,48 +198,27 @@ def request2queryparameters(processed_request):
     """
 
     # We create the list of the parameters that the SQL function needs
-    correct_parameters =  [
-	"variantType",
-	"start",
-	"startMin",
-	"startMax",
-	"end",
-	"endMin",
-	"endMax",
-	"referenceName",
-	"referenceBases",
-	"alternateBases",
-	"assemblyId",
-	"datasetIds",
-    "filters"]
     
-    int_params = ['start', 'end', 'endMax', 'endMin', 'startMax', 'startMin']
-
     query_parameters = []
 
     # Iterate correct_parameters to create the query_parameters list from the processed_request 
     # in the required order and with the right types
-    for param in correct_parameters:
+    for param in _CORRECT_PARAMETERS:
         query_param = processed_request.get(param)
         if query_param:
-            if param in int_params:
+            if param in _INT_PARAMS:
                 query_parameters.append(int(query_param))
             else:
                 query_parameters.append(str(query_param))
         else:
-            if param in int_params:
+            if param in _INT_PARAMS:
                 query_parameters.append(None)
             else:
                 query_parameters.append("null")
 
-
     # At this point we have a list with the needed parameters called query_parameters, the only thing 
     # laking is to update the datasetsIds (it can be "null" or processed_request.get("datasetIds"))
     # then we have to take into account the access permissions
-
-    LOG.debug(f"Correct param: {correct_parameters}")
-    LOG.debug(f"Query param: {query_parameters}")
-    LOG.debug(f"Query param types: {[type(x) for x in query_parameters]}")
 
     return query_parameters
 

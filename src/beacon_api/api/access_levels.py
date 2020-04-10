@@ -9,19 +9,30 @@ import sys
 import os
 import logging
 from pathlib import Path
+import yaml
 
 
 from .exceptions import BeaconAccesLevelsError, BeaconServerError, BeaconAccessLevelsBadRequest
-from .. import __id__, __beacon_name__, __apiVersion__
-from ..utils.polyvalent_functions import find_yml_and_load
+from .. import conf
 
 LOG = logging.getLogger(__name__)
-"""Load the logging configurations from a YAML file."""
 
-# Load the access levels dict
-_here = Path(__file__).parent
-ACCESS_LEVELS_FILE = os.getenv('BEACON_ACCESS_LEVELS', _here.parent / "utils/access_levels.yml")
-ACCESS_LEVELS_DICT = find_yml_and_load(ACCESS_LEVELS_FILE)
+
+# Try to load the access levels yaml into a dict,
+# from the envvar BEACON_ACCESS_LEVELS if defined,
+# and [here]/access_levels.yml otherwise
+try:
+    filepath = Path(os.getenv('BEACON_ACCESS_LEVELS', Path(__file__).parent / "access_levels.yml"))
+    if filepath.suffix not in ('.yaml', '.yml'):
+      LOG.error("Unsupported format for %s", filepath)
+      ACCESS_LEVELS_DICT = None
+    else:
+      with open(filepath, 'r') as stream:
+        ACCESS_LEVELS_DICT = yaml.safe_load(stream)
+except Exception as e: # or just OSError?
+  LOG.error("Error loading the access levels: %s", e)
+  ACCESS_LEVELS_DICT = None
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         BASIC FUNCTIONS
@@ -238,9 +249,9 @@ async def access_levels_terms_handler(db_pool, processed_request, request):
     access_level_fields, special_datasets = await get_access_levels(request, processed_request, db_pool)
 
     beacon_answer = {        
-        'id': __id__,
-        'name': __beacon_name__,
-        'apiVersion': __apiVersion__,
+        'id': conf.beacon_id,
+        'name': conf.beacon_name,
+        'apiVersion': conf.api_version,
         'fields': access_level_fields,
         'datasets': special_datasets
     }

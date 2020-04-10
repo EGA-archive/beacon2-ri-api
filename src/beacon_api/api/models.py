@@ -2,48 +2,24 @@
 Functions and dictionaries used to shape diverse objects according to the spec. 
 """
 
-from .. import (__id__,
-                __beacon_name__,
-                __apiVersion__,
-                __org_id__,
-                __org_name__,
-                __org_description__,
-                __org_adress__,
-                __org_welcomeUrl__,
-                __org_contactUrl__,
-                __org_logoUrl__,
-                __org_info__,
-                __description__,
-                __version__,
-                __welcomeUrl__,
-                __alternativeUrl__,
-                __createDateTime__,
-                __updateDateTime__,
-                __service__,
-                __serviceUrl__,
-                __entryPoint__,
-                __open__,
-                __service_type__,
-                __documentationUrl__,
-                __environment__)
-
+from .. import conf
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                                 BEACON INFO 
 # ----------------------------------------------------------------------------------------------------------------------
 
 organization = {
-    'id': __id__,
-    'name': __beacon_name__,
-    'description': __org_description__,
-    'address': __org_adress__,
-    'welcomeUrl': __org_welcomeUrl__,
-    'contactUrl': __org_contactUrl__,
-    'logoUrl': __org_logoUrl__,
-    'info': __org_info__,
+    'id': conf.beacon_id,
+    'name': conf.beacon_name,
+    'description': conf.org_description,
+    'address': conf.org_adress,
+    'welcomeUrl': conf.org_welcome_url,
+    'contactUrl': conf.org_contact_url,
+    'logoUrl': conf.org_logo_url,
+    'info': conf.org_info,
 }
 
-sample_allele_request = [ {
+sample_allele_requests = [ {
     "alternateBases" : "A",
     "referenceBases" : "G",
     "referenceName" : "Y",
@@ -88,41 +64,37 @@ sample_allele_request = [ {
   } ]
 
 
-def Beacon_v1(host):
-    Beacon_v1 = {
-        'id': __id__,
-        'name': __beacon_name__,
-        'serviceType': __service__,
-        'apiVersion': __apiVersion__,
-        'serviceUrl': __serviceUrl__,
-        'entryPoint': __entryPoint__,
-        'organization': organization,
-        'description': __description__,
-        'version': __version__,
-        'open': __open__,
-        'welcomeUrl': __welcomeUrl__,
-        'alternativeUrl': __alternativeUrl__,
-        'createDateTime': __createDateTime__,
-        'updateDateTime': __updateDateTime__,
-    }
-    return Beacon_v1
+Beacon_v1 = {
+    'id': conf.beacon_id,
+    'name': conf.beacon_name,
+    'serviceType': conf.service,
+    'apiVersion': conf.api_version,
+    'serviceUrl': conf.service_url,
+    'entryPoint': conf.entry_point,
+    'organization': organization,
+    'description': conf.description,
+    'version': conf.version,
+    'open': conf.is_open,
+    'welcomeUrl': conf.welcome_url,
+    'alternativeUrl': conf.alternative_url,
+    'createDateTime': conf.create_datetime,
+    'updateDateTime': conf.update_datetime,
+}
 
-def GA4GH_ServiceInfo_v01(host):
-    GA4GH_ServiceInfo_v01 = {
-        'id': __id__,
-        'name': __beacon_name__,
-        'type': __service_type__,
-        'description': __description__,
-        "organization": {'name': __org_name__,
-                        'url': __org_welcomeUrl__},
-        'contactUrl': __org_contactUrl__,
-        'documentationUrl': __documentationUrl__,
-        'createDateTime': __createDateTime__,
-        'updateDateTime': __updateDateTime__,
-        'environment': __environment__,
-        'version': __version__,
-    }
-    return GA4GH_ServiceInfo_v01
+GA4GH_ServiceInfo_v01 = {
+    'id': conf.beacon_id,
+    'name': conf.beacon_name,
+    'type': conf.service_type,
+    'description': conf.description,
+    "organization": {'name': conf.org_name,
+                     'url': conf.org_welcome_url},
+    'contactUrl': conf.org_contact_url,
+    'documentationUrl': conf.documentation_url,
+    'createDateTime': conf.create_datetime,
+    'updateDateTime': conf.update_datetime,
+    'environment': conf.environment,
+    'version': conf.version,
+}
 
 
 # ----------------------------------------------------------------------------------------------------------------------

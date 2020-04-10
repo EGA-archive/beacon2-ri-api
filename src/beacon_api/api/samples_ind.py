@@ -18,9 +18,12 @@ from .exceptions import BeaconBadRequest, BeaconServerError, BeaconForbidden, Be
 from .. import __apiVersion__, __id__
 from ..conf.config import DB_SCHEMA
 
-from ..utils.polyvalent_functions import create_prepstmt_variables, filter_exists, datasetHandover
-from ..utils.polyvalent_functions import prepare_filter_parameter, parse_filters_request
-from ..utils.polyvalent_functions import fetch_datasets_access, access_resolution
+from ..utils.polyvalent_functions import (create_prepstmt_variables,
+                                          filter_exists,
+                                          datasetHandover,
+                                          prepare_filter_parameter,
+                                          fetch_datasets_access,
+                                          access_resolution)
 from ..utils.models import variant_object, variantAnnotation_object, biosample_object, individual_object
 
 from .genomic_query import fetch_resulting_datasets, fetch_variantAnnotations, snp_resultsHandover

@@ -1,5 +1,5 @@
 """
-Functions used by different endopoints. 
+Functions used by different endpoints. 
  - To do basic operations
  - To parse the filters request
  - To manage access resolution
@@ -11,9 +11,9 @@ import yaml
 import requests
 from pathlib import Path
 
-from ..api.exceptions import BeaconBadRequest, BeaconServerError, BeaconForbidden, BeaconUnauthorised
-from .. import __apiVersion__
-from ..conf.config import DB_SCHEMA
+from .. import conf
+from ..api.exceptions import BeaconBadRequest, BeaconServerError, BeaconForbidden, BeaconUnauthorised, capture_server_error
+
 
 LOG = logging.getLogger(__name__)
 
@@ -24,13 +24,7 @@ LOG = logging.getLogger(__name__)
 def create_prepstmt_variables(value):
     """Takes a value of how many prepared variables you want to pass a query
     and creates a string to put it in it"""
-    dollars = []
-    for element in range(value):
-        element += 1
-        variable = "$" + str(element)
-        dollars.append(variable)
-
-    return ", ".join(dollars)
+    return 
 
 
 
@@ -43,42 +37,22 @@ def filter_exists(include_dataset, datasets):
     elif include_dataset == 'NONE':
         return []
     elif include_dataset == 'HIT':
-        return [d for d in datasets if d['exists'] is True]
+        return [d for d in datasets if d.get('exists') is True]
     elif include_dataset == 'MISS':
-        return [d for d in datasets if d['exists'] is False]
+        return [d for d in datasets if d.get('exists') is False]
 
 
 def datasetHandover(dataset_name):
     """Return the datasetHandover with the correct name of the dataset."""
-    datasetHandover = [ { "handoverType" : {
-                                        "id" : "CUSTOM",
-                                        "label" : "Dataset info"
-                                    },
-                                    "note" : "Dataset information and DAC contact details in EGA Website",
-                                    "url" : f"https://ega-archive.org/datasets/{dataset_name}"
-                                    } ]
-    return datasetHandover
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-#                                         YAML LOADER
-# ----------------------------------------------------------------------------------------------------------------------
-
-def find_yml_and_load(input_file):
-    """Try to load the access levels yaml and return it as a dict."""
-    file = Path(input_file)
-
-    if not file.exists():
-        LOG.error(f"The file '{file}' does not exist", file=sys.stderr)
-        return
-
-    if file.suffix in ('.yaml', '.yml'):
-        with open(file, 'r') as stream:
-            file_dict = yaml.safe_load(stream)
-            return file_dict
-
-    # Otherwise, fail
-    LOG.error(f"Unsupported format for {file}", file=sys.stderr)
+    return [
+        { "handoverType" : {
+            "id" : "CUSTOM",
+            "label" : "Dataset info"
+        },
+          "note" : "Dataset information and DAC contact details in EGA Website",
+          "url" : f"https://ega-archive.org/datasets/{dataset_name}"
+        }
+    ]
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -89,30 +63,19 @@ def parse_filters_request(filters_request_list):
     """Create a list of the filters passed in the query, where each filter
     is another list in the main list with the following elements: ontology, term, operator, value.
     """
-    list_filters = []
+
     for unprocessed_filter in filters_request_list:
-        filter_elements = unprocessed_filter.split(":")
-        ontology = filter_elements[0]
-        operator_switch = False
+        ontology, expression = unprocessed_filter.split(":", 1) # DAZ: pray it has ':'
         for operator in [">=", "<=", "=",  ">", "<"]:  # TO DO: raise an error if "=<" or "=>" are given
-            if operator in filter_elements[1]:
-                operator = operator
-                term = filter_elements[1].split(operator)[0]
-                value = filter_elements[1].split(operator)[1]
-                operator_switch = True
+            if operator in expression:
+                term, value = expression.split(operator, 1)
+                yield [ontology, term,  operator, value]
                 break
-
-        if operator_switch:
-            final_elements = [ontology, term,  operator, value]
-            operator_switch = False
-        else:
-            final_elements = [ontology, filter_elements[1]]
-
-        list_filters.append(final_elements)
-
-    return list_filters
+        else: # no operator worked
+            yield [ontology, expression]
 
 
+@capture_server_error('Query filters DB error: ')
 async def prepare_filter_parameter(db_pool, filters_request):
     """Parse the filters parameters given in the query to create the string that needs to be passed
     to the SQL query.
@@ -121,58 +84,59 @@ async def prepare_filter_parameter(db_pool, filters_request):
     """
 
     # First we want to parse the filters request
-    if isinstance(filters_request, list):
-        list_filters = parse_filters_request(filters_request)
-    else:
-        list_filters = parse_filters_request(ast.literal_eval(filters_request))
+    if not isinstance(filters_request, list):
+        filters_request = ast.literal_eval(filters_request)
         
-    combinations_list = "','".join([":".join([filter_elements[0],filter_elements[1]]) for filter_elements in list_filters])
+    list_filters = parse_filters_request(filters_request) # DAZ: I got read of the intermediate list
+        
+    combinations_list = "','".join([":".join(filter_elements[0:1]) for filter_elements in list_filters])
     combinations_list =  "'" + combinations_list + "'"
+    # DAZ: what is that ?
 
     # Then we connect to the DB and retrieve the parameters that will be passed to the main query
     async with db_pool.acquire(timeout=180) as connection:
 
-        try: 
-            query  = f"""SELECT target_table, column_name, column_value 
-                        FROM ontology_term_column_correspondance
-                        WHERE concat_ws(':', ontology, term) IN ({combinations_list})"""
+        query  = f"""SELECT target_table, column_name, column_value 
+                     FROM ontology_term_column_correspondance
+                     WHERE concat_ws(':', ontology, term) IN ({combinations_list})"""
 
-            LOG.debug(f"QUERY filters info: {query}")
-            statement = await connection.prepare(query)
-            db_response = await statement.fetch()
+        LOG.debug("QUERY filters info: %s", query)
+        statement = await connection.prepare(query)
+        db_response = await statement.fetch()
 
-            # Organize the responses in a dict with the target_table as keys and as value another dict with column_name as keys and a list of column_value as value
-            filter_dict = {}
-            for record in list(db_response):
-                if record["target_table"] not in filter_dict.keys():
-                    filter_dict[record["target_table"]] = {}
-                    filter_dict[record["target_table"]][record["column_name"]] = []
-                    filter_dict[record["target_table"]][record["column_name"]].append(record["column_value"])
-                elif record["column_name"] not in filter_dict[record["target_table"]].keys():
-                    filter_dict[record["target_table"]][record["column_name"]] = []
-                    filter_dict[record["target_table"]][record["column_name"]].append(record["column_value"])
-                else:
-                    filter_dict[record["target_table"]][record["column_name"]].append(record["column_value"])
+        # Organize the responses in a dict with the target_table as keys
+        # and as value another dict with column_name as keys and a list of column_value as value
+        filter_dict = {}
+        for record in db_response:
+            target_table = record["target_table"]
+            column_name = record["column_name"]
+            column_value = str(record["column_value"])
+            d = filter_dict.get(target_table, None)
+            if d is None:
+                d = {}
+                filter_dict[target_table] = d
+            c = d.get(column_name, None)
+            if c is None:
+                c = []
+                d[column_name] = c
+            c.append(column_value)
 
-            # After creating filter_dict, we need to create a list with the SQL strings
-            strings_list = []
-            final_string = ""
-            for target_table, column_name_dict in filter_dict.items():
-                if target_table == "public.beacon_dataset_table":
-                    for column_name, values in column_name_dict.items():
-                        string_values = ", ".join("'" + str(value) + "'" for value in values)
-                        string = f'({column_name})::jsonb ?& array[{string_values}]'
-                        strings_list.append(string)
+        # After creating filter_dict, we need to create a list with the SQL strings
+        strings_list = []
+        final_string = ""
+        for target_table, column_name_dict in filter_dict.items():
+            if target_table == "public.beacon_dataset_table":
+                for column_name, values in column_name_dict.items():
+                    string_values = ", ".join(f"'{value}'" for value in values)
+                    string = f'({column_name})::jsonb ?& array[{string_values}]'
+                    strings_list.append(string)
 
-            # Once we have the different strings, we join them to create the final SQL string
-            if not strings_list:
-                final_string = 'null'
-            else:
-                final_string = " AND ".join(strings_list)
-            return str(final_string), filter_dict
-
-        except Exception as e:
-               raise BeaconServerError(f'Query filters DB error: {e}') 
+        # Once we have the different strings, we join them to create the final SQL string
+        if not strings_list:
+            final_string = 'null'
+        else:
+            final_string = " AND ".join(strings_list)
+        return final_string, filter_dict
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -205,12 +169,13 @@ def access_resolution(request, token, host, public_data, registered_data, contro
         raise BeaconForbidden(request, host, 'Access to dataset(s) is forbidden.')
     
     
-    if controlled_data and 'permissions' in token and token['permissions']:
+    token_permissions = token.get('permissions')
+    if controlled_data and token_permissions:
         # The idea is to return only accessible datasets
 
         # Default event, when user doesn't specify dataset ids
         # Contains only dataset ids from token that are present at beacon
-        controlled_access = set(controlled_data).intersection(set(token['permissions']))
+        controlled_access = set(controlled_data).intersection(set(token_permissions))
         access = access.union(controlled_access)
         if controlled_access:
             permissions.append("CONTROLLED")
@@ -223,9 +188,13 @@ def access_resolution(request, token, host, public_data, registered_data, contro
         # token is present, but is missing perms (user authed but no access)
         raise BeaconForbidden(request, host, 'Access to dataset(s) is forbidden.')
     LOG.info(f"Accessible datasets are: {list(access)}.")
-    return permissions, list(access)
+    return permissions, list(access)  # DAZ: Maybe no need to convert it
 
 
+# This method can be removed, in favor for postgres partitioning
+# https://www.postgresql.org/docs/12/ddl-partitioning.html
+# We can use the 3 access types: PUBLIC, REGISTERED and CONTROLLED
+@capture_server_error(prefix='Query available datasets DB error: ')
 async def fetch_datasets_access(db_pool, datasets):
     """Retrieve 3 list of the available datasets depending on the access type"""
     LOG.info('Retrieving info about the available datasets (id and access type).')
@@ -235,23 +204,21 @@ async def fetch_datasets_access(db_pool, datasets):
     async with db_pool.acquire(timeout=180) as connection:
         async with connection.transaction():
             datasets_query = None if datasets == "null" or not datasets else datasets
-            try:
-                query = f"""SELECT access_type, id, stable_id FROM {DB_SCHEMA}.beacon_dataset
-                           WHERE coalesce(stable_id = any($1), true);
-                           """
-                LOG.debug(f"QUERY datasets access: {query}")
-                statement = await connection.prepare(query)
-                db_response = await statement.fetch(datasets_query)
-                for record in list(db_response):
-                    if record['access_type'] == 'PUBLIC':
-                        public.append(record['id'])
-                    if record['access_type'] == 'REGISTERED':
-                        registered.append(record['id'])
-                    if record['access_type'] == 'CONTROLLED':
-                        controlled.append(record['id'])
-                return public, registered, controlled
-            except Exception as e:
-                raise BeaconServerError(f'Query available datasets DB error: {e}')
+            query = f"""SELECT access_type, id::text, stable_id FROM {conf.database_schema}.beacon_dataset
+                        WHERE coalesce(stable_id = any($1), true);
+                     """
+            LOG.debug(f"QUERY datasets access: {query}")
+            statement = await connection.prepare(query)
+            db_response = await statement.fetch(datasets_query)
+            for record in db_response:
+                access_type = record['access_type']
+                if access_type == 'PUBLIC':
+                    public.append(record['id'])
+                if access_type == 'REGISTERED':
+                    registered.append(record['id'])
+                if access_type == 'CONTROLLED':
+                    controlled.append(record['id'])
+            return public, registered, controlled
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                    FILTER RESPONSE BASED ON ACCESS LEVELS
@@ -334,27 +301,27 @@ async def fetch_variantAnnotations(variant_details):
     """
     
     # cellBase
-    chrom = variant_details.get("chromosome") if variant_details.get("chromosome") else variant_details.get("referenceName")
+    chrom = variant_details.get("chromosome", variant_details.get("referenceName"))
     start = variant_details.get("start")
     ref = variant_details.get("referenceBases")
-    alt = variant_details.get("alternateBases") if variant_details.get("alternateBases") else '-'
+    alt = variant_details.get("alternateBases", '-')
 
-    variant_id = ":".join([str(chrom), str(start + 1), ref, alt])
-    url = f"http://cellbase.clinbioinfosspa.es/cb/webservices/rest/v4/hsapiens/genomic/variant/{variant_id}/annotation"
+    url = f"http://cellbase.clinbioinfosspa.es/cb/webservices/rest/v4/hsapiens/genomic/variant/{chrom}:{start+1}:{ref}:{alt}/annotation"
     r = requests.get(url)
-    cellBase_dict = r.json() if r else ''
+    cellBase_dict = r.json() if r.status_code == 200 else ''
     try:
         cellBase_rsID = cellBase_dict["response"][0]["result"][0]["id"]
-    except:
+    except KeyError as ke:
         cellBase_rsID = None
 
     # dbSNP
-    rsID = variant_details.get("variantId") if (variant_details.get("variantId") and variant_details.get("variantId") != ".") else cellBase_rsID
+    variant_id = variant_details.get("variantId")
+    rsID = variant_id if variant_id != "." else cellBase_rsID
     if rsID:
         url = f"https://api.ncbi.nlm.nih.gov/variation/v0/beta/refsnp/{rsID[2:]}"
         r = requests.get(url)
-        dnSNP_dict = r.json() if r else ''
+        dnSNP_dict = r.json() if r.status_code == 200 else ''
     else:
-        dnSNP_dict = ''
+        dnSNP_dict = ''  # DAZ: eh... a dict ?
 
     return rsID, cellBase_dict, dnSNP_dict

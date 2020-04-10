@@ -11,13 +11,13 @@ import sys
 
 
 from ..utils.polyvalent_functions import fetch_datasets_access, access_resolution
-from ..utils.polyvalent_functions import create_prepstmt_variables
 from ..utils.models import individual_object_rest
 
 
 from .exceptions import BeaconBadRequest, BeaconServerError, BeaconForbidden, BeaconUnauthorised
 from .. import __apiVersion__, __id__
 from ..conf.config import DB_SCHEMA
+from ..utils import capture_server_error
 
 
 # Constants
@@ -40,7 +40,7 @@ def create_query(processed_request):
     Restructure the request to build the query object
     """
 
-    query = {
+    return {
         "variant": {
             "referenceBases": processed_request.get("referenceBases", ""),
             "alternateBases": processed_request.get("alternateBases", ""),
@@ -56,13 +56,11 @@ def create_query(processed_request):
         "filters": processed_request.get("filters"),
     }
 
-    return query
-
 def simple_listener(c, m):
     """We pass this to connection.add_log_listener() 
     for getting the SQL Messages in the LOGS of the Beacon.
     """
-    print(m)
+    LOG.debug(m)  # We ignore "c"
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -125,104 +123,85 @@ def create_individuals_object(response_df, schemas_request):
         individual = individual_df[individual_columns].drop_duplicates().to_dict('r')[0]
         # adding the info about diseases and pedigrees
         diseases = individual_df[disease_columns].drop_duplicates().to_dict('r')
-        individual.update({'diseases': diseases})
+        individual['diseases'] = diseases
         pedigrees = individual_df[pedigree_columns].drop_duplicates().to_dict('r')
-        individual.update({'pedigrees': pedigrees})
+        individual['pedigrees'] = pedigrees
 
         responses_list.append(individual_object_rest(individual, schemas_request))
     
     return responses_list
 
 
+@capture_server_error(prefix='Query individuals DB error: ')
 async def get_result(db_pool, query_parameters):
     """
     Contacts the DB to fetch the info.
     Returns a pd.DataFrame with the response. 
     """
+
     async with db_pool.acquire(timeout=180) as connection:
-        response = []
-        try: 
-            # connection.add_log_listener(simple_listener)
-            query = f"""SELECT * FROM {DB_SCHEMA}.query_patients({create_prepstmt_variables(17)});"""
-            LOG.debug(f"QUERY to fetch hits: {query}")
-            statement = await connection.prepare(query)
-            db_response = await statement.fetch(*query_parameters)         
 
-            for record in list(db_response):
-                response.append(dict(record))
+        # connection.add_log_listener(simple_listener)
+        dollars = ", ".join(["$" + str(i) for i in range(1, len(query_parameters) + 1)])
+        query = f"""SELECT * FROM {DB_SCHEMA}.query_patients({dollars});"""
+        LOG.debug("QUERY to fetch hits: %s", query)
+        statement = await connection.prepare(query)
+        db_response = await statement.fetch(*query_parameters)
 
-        except Exception as e:
-                raise BeaconServerError(f'Query individuals DB error: {e}') 
-
-        if response:
+        if db_response: # maybe better to test db_response
             # Converting the response to a DataFrame 
+            response = [dict(record) for record in db_response]
             response_df = pd.DataFrame(response)
             # Making sure we don't have NaN values
             response_df = response_df.where(response_df.notnull(), None)
-
             return True, response_df
         else:
-            LOG.debug(f"No response for this query.")
+            LOG.debug("No response for this query.")
             return False, []
 
+## We create a list of the parameters that the SQL function needs
+_CORRECT_PARAMETERS =  [
+    "variantType",  # _variant_type text
+    "start",  # _start integer
+    "startMin",  # _start_min integer
+    "startMax",  # _start_max integer
+    "end",  # _end integer
+    "endMin",  # _end_min integer
+    "endMax",  # _end_max integer
+    "referenceName",  # _chromosome character varying
+    "referenceBases",  # _reference_bases text
+    "alternateBases",  # _alternate_bases text
+    "assemblyId",  # _reference_genome text
+    "datasetIds",  # _dataset_ids text
+    "biosampleId", # _biosample_stable_id text,
+    "individualId",  # _individual_stable_id text
+    "filters", # _filters text
+    "skip",  # _skip integer
+    "limit"]  # _limit integer
+_INT_PARAMS = ['start', 'end', 'endMax', 'endMin', 'startMax', 'startMin', 'skip', 'limit']
+_LIST_PARAMETERS = ['datasetIds', 'filters', 'individualSchemas']
 
 def request2queryparameters(raw_request):
     """
     Reorganize the request to match the query_patients() SQL function input.
     """
 
-    ## We create a list of the parameters that the SQL function needs
-    correct_parameters =  [
-	"variantType",  # _variant_type text
-	"start",  # _start integer
-	"startMin",  # _start_min integer
-	"startMax",  # _start_max integer
-	"end",  # _end integer
-	"endMin",  # _end_min integer
-	"endMax",  # _end_max integer
-	"referenceName",  # _chromosome character varying
-	"referenceBases",  # _reference_bases text
-	"alternateBases",  # _alternate_bases text
-    "assemblyId",  # _reference_genome text
-	"datasetIds",  # _dataset_ids text
-    "biosampleId", # _biosample_stable_id text,
-    "individualId",  # _individual_stable_id text
-    "filters", # _filters text
-    "skip",  # _skip integer
-    "limit"]  # _limit integer
-
-
-    int_params = ['start', 'end', 'endMax', 'endMin', 'startMax', 'startMin', 'skip', 'limit']
-    list_parameters = ['datasetIds', 'filters', 'individualSchemas']
-
     ## Iterate correct_parameters to create the query_parameters list from the raw_request 
     ## in the required order and with the right types
-    query_parameters = []
-
-    for param in correct_parameters:
+    for param in _CORRECT_PARAMETERS:
         query_param = raw_request.get(param)
-        if query_param or query_param == 0:  # control if the user has used the parameter
-            if param in int_params:
-                query_parameters.append(int(query_param))
-            elif param in list_parameters:
-                query_parameters.append(",".join(query_param))
-            else:
-                query_parameters.append(str(query_param))
-        else:
-            if param in int_params:
-                query_parameters.append(None)
-            else:
-                query_parameters.append("null")
+        if not (query_param or (isinstance(query_param,int) and query_param == 0)):  # control if the user has used the parameter
+            yield None
+            continue
 
-    # At this point we have a list with the needed parameters called query_parameters, the only thing 
-    # laking is to update the datasetsIds (it can be "null" or what the user specified)
-    LOG.debug(f"Raw param: {raw_request}")
-    LOG.debug(f"Raw param types: {[type(x) for x in raw_request.values()]}")
-    LOG.debug(f"Correct param: {correct_parameters}")
-    LOG.debug(f"Query param: {query_parameters}")
-    LOG.debug(f"Query param types: {[type(x) for x in query_parameters]}")
-
-    return query_parameters
+        if param in _INT_PARAMS:
+            yield query_param  # let it crash if not already an int
+            continue
+        if param in _LIST_PARAMETERS:
+            yield ",".join(query_param)
+            continue
+        # otherwise
+        yield query_param
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -252,9 +231,7 @@ async def get_individuals_rest(db_pool, request, processed_request):
 
     # NOTE that right now we will just focus on the PUBLIC ones to ease the process, so we get all their 
     # ids and add them to the query
-    datasets_request = ",".join([str(id) for id in public_datasets])
-    processed_request_upd = processed_request.copy()
-    processed_request_upd["datasetIds"] = list(datasets_request)
+    datasets_request = ",".join(public_datasets)
 
     # 2. REQUEST PROCESSING
 
@@ -264,22 +241,24 @@ async def get_individuals_rest(db_pool, request, processed_request):
         processed_request.update({"individualId": individual_id})
 
     # Parse the request to prepare it to be used in the SQL function
-    query_parameters = request2queryparameters(processed_request_upd)
+    processed_request_upd = processed_request.copy()
+    processed_request_upd["datasetIds"] = list(datasets_request)
+    query_parameters = list(request2queryparameters(processed_request_upd))
 
-    # Also check request to see if there is any alternativeSchema
-    alternative_schemas_req = processed_request.get("individualSchemas")
-    alternative_schemas = alternative_schemas_req if alternative_schemas_req else []
-
-    LOG.info(f"Query FINAL param: {query_parameters}")
+    LOG.info("Query FINAL param: %s", query_parameters)
 
     # 3. RETRIEVE DATA FROM THE DB (use SQL function)
-
     LOG.info('Connecting to the DB to make the query.')
     exists, response_df = await get_result(db_pool, query_parameters)
     LOG.info('Query done.')
     
     # 4. CREATE INDIVIDUALS OBJECT
     LOG.info('Shaping the DB response.')
+
+    # Also check request to see if there is any alternativeSchema
+    alternative_schemas_req = processed_request.get("individualSchemas")
+    alternative_schemas = alternative_schemas_req if alternative_schemas_req else []
+
     if exists:
         results = create_individuals_object(response_df, alternative_schemas)
     else:

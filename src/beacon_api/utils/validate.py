@@ -6,37 +6,52 @@ import re
 import os
 import logging
 from functools import wraps
+
 import aiohttp
 from aiohttp import web
-
 from jsonschema import Draft7Validator, validators
 from jsonschema.exceptions import ValidationError
 
-from ..api.exceptions import BeaconUnauthorised, BeaconBadRequest, BeaconForbidden, BeaconServerError, BeaconServicesBadRequest, BeaconAccessLevelsBadRequest
-from ..schemas import load_schema
+#from ..schemas import load_schema
+from ..api.exceptions import (BeaconUnauthorised,
+                              BeaconBadRequest,
+                              BeaconForbidden,
+                              BeaconServerError,
+                              BeaconServicesBadRequest,
+                              BeaconAccessLevelsBadRequest,
+                              capture_server_error)
 
 LOG = logging.getLogger(__name__)
+
+def load_schema(name):
+    raise NotImplementedError('load_schema is unused')
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                                PARSING FUNCTIONS
 # ----------------------------------------------------------------------------------------------------------------------
 
-def mimic_get_request(input_dict):
+def flatten_dict(input_dict):
     """
     Iterates through the post dictionary and
     it flattens it to mimic the get request. 
+
+    We expect keys of the dictionary (and all sub-dict) to be unique
     """
     final_dict = {}
     for key, val in input_dict.items():
         if isinstance(val,dict):
-            tmp_dict = mimic_get_request(val)
+            tmp_dict = flatten_dict(val)
             final_dict.update(tmp_dict)
         else:
             if val and val not in ["", "null", None]:
-                final_dict.update({key: ",".join(val)})
+                final_dict[key] = ",".join(val)
     return final_dict
 
 
+_INT_PARAMS = set(['start', 'end', 'endMax', 'endMin', 'startMax', 'startMin'])
+_ARRAY_PARAMS = set(['datasetIds', 'filters', 'customFilters', 'individualSchemas'])
+
+@capture_server_error(prefix="Could not properly parse the provided Request Body as JSON.")
 async def parse_request_object(request):
     """
     Parse as JSON Object depending on the request method.
@@ -46,30 +61,24 @@ async def parse_request_object(request):
     """
     if request.method == 'POST':
         post_request = await request.json()
-        raw_request = mimic_get_request(post_request) 
-        LOG.info('Flatening POST request.')
+        raw_request = flatten_dict(post_request) 
+        LOG.info('Flattening POST request.')
     if request.method == 'GET':
         raw_request = dict(request.rel_url.query.items())
 
-    # Some parameters are returned as strings, others as integers
-    int_params = ['start', 'end', 'endMax', 'endMin', 'startMax', 'startMin']
-    items = {k: (int(v) if k in int_params else v) for k, v in raw_request.items()}
+    # Some parameters are returned as strings, others as integers, and others as arrays
+    for k, v in raw_request.items():
+        if k in _INT_PARAMS:
+            raw_request[k] = int(v)
+        if k in _ARRAY_PARAMS:
+            raw_request[k] = v.split(',')  # empty string -> []
+        # others are kept as strings
 
-    # Parse the arrays
-    if 'datasetIds' in items:
-        items['datasetIds'] = raw_request.get('datasetIds').split(',')
-    if 'filters' in items:
-        items['filters'] = raw_request.get('filters').split(',')
-    if 'customFilters' in items:
-        items['customFilters'] = raw_request.get('customFilters').split(',')
-    if 'individualSchemas' in items:
-        items['individualSchemas'] = raw_request.get('individualSchemas').split(',')
-    
-    obj = json.dumps(items)  # to JSON
     LOG.info('Parsed request parameters.')
-    return request.method, json.loads(obj)  # back to python dict
+    return request.method, raw_request
 
 
+@capture_server_error(prefix="Could not properly parse the provided Request Body as JSON.")
 async def parse_basic_request_object(request):
     """Parse as JSON Object depending on the request method.
 
@@ -87,6 +96,9 @@ async def parse_basic_request_object(request):
         LOG.info('Parsed GET request parameters.')
         return request.method, json.loads(obj)
 
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         VALIDATOR
+# ----------------------------------------------------------------------------------------------------------------------
 
 def extend_with_default(validator_class):
     """Include default values present in JSON Schema.
@@ -96,9 +108,10 @@ def extend_with_default(validator_class):
     validate_properties = validator_class.VALIDATORS["properties"]
 
     def set_defaults(validator, properties, instance, schema):
-        for property, subschema in properties.items():
-            if "default" in subschema:
-                instance.setdefault(property, subschema["default"])
+        for prop, subschema in properties.items():
+            default = subschema.get("default")
+            if default is not None:
+                instance.setdefault(prop, default)
 
         for error in validate_properties(
             validator, properties, instance, schema,
@@ -117,8 +130,9 @@ DefaultValidatingDraft7Validator = extend_with_default(Draft7Validator)
 #                                         FURTHER VALIDATIONS
 # ----------------------------------------------------------------------------------------------------------------------
 
+
 # QUERY
-def further_validation_query(request, request_dict):
+def further_validation_query(request, query_params):
     """
     It  takes a dictionary of the request parameters and checks the correct
     combination of parameters, the lack of required parameters, etc. It takes
@@ -126,54 +140,60 @@ def further_validation_query(request, request_dict):
     the JSON schema. 
     """
 
-    # Define values with the result of the get()
-    referenceName = request_dict.get("referenceName")
-    assemblyId = request_dict.get("assemblyId")
-    referenceBases = request_dict.get("referenceBases")
-    alternateBases = request_dict.get("alternateBases")
-    variantType = request_dict.get("variantType")
-    start = request_dict.get("start")
-    end = request_dict.get("end")
-    startMin = request_dict.get("startMin")
-    startMax = request_dict.get("startMax")
-    endMin = request_dict.get("endMin")
-    endMax =  request_dict.get("endMax")
-    mateName = request_dict.get("mateName")
+    def bad_request(m):
+        raise BeaconBadRequest(query_params, request.host, m)
 
-    # Do the checking
+    # Define values with the result of the get()
+    referenceName = query_params.get("referenceName")
+    assemblyId = query_params.get("assemblyId")
+    referenceBases = query_params.get("referenceBases")
+
     if not referenceName or not assemblyId or not referenceBases:
-        raise BeaconBadRequest(request_dict, request.host, "All 'referenceName', 'referenceBases' and/or 'assemblyId' are required")
+        bad_request("All 'referenceName', 'referenceBases' and/or 'assemblyId' are required")
+
+    alternateBases = query_params.get("alternateBases")
+    variantType = query_params.get("variantType")
+
     if not variantType and not alternateBases:
-        raise BeaconBadRequest(request_dict, request.host, "Either 'alternateBases' or 'variantType' is required")
-    elif variantType and (alternateBases and alternateBases != "N"):
-        raise BeaconBadRequest(request_dict, request.host, "If 'variantType' is provided then 'alternateBases' must be empty or equal to 'N'")
+        bad_request("Either 'alternateBases' or 'variantType' is required")
+
+    if variantType and alternateBases != "N":
+        bad_request("If 'variantType' is provided then 'alternateBases' must be empty or equal to 'N'")
+
+    start = query_params.get("start")
+    end = query_params.get("end")
+    startMin = query_params.get("startMin")
+    startMax = query_params.get("startMax")
+    endMin = query_params.get("endMin")
+    endMax =  query_params.get("endMax")
 
     if not start:
         if end:
-            raise BeaconBadRequest(request_dict, request.host, "'start' is required if 'end' is provided")
+            bad_request("'start' is required if 'end' is provided")
         elif not startMin and not startMax and not endMin and not endMax:
-            raise BeaconBadRequest(request_dict, request.host, "Either 'start' or all of 'startMin', 'startMax', 'endMin' and 'endMax' are required")
+            bad_request("Either 'start' or all of 'startMin', 'startMax', 'endMin' and 'endMax' are required")
         elif not startMin or not startMax or not endMin or not endMax:
-            raise BeaconBadRequest(request_dict, request.host, "All of 'startMin', 'startMax', 'endMin' and 'endMax' are required")
+            bad_request("All of 'startMin', 'startMax', 'endMin' and 'endMax' are required")
     else:
         if startMin or startMax or endMin or startMax:
-            raise BeaconBadRequest(request_dict, request.host, "'start' cannot be provided at the same time as 'startMin', 'startMax', 'endMin' and 'endMax'")
+            bad_request("'start' cannot be provided at the same time as 'startMin', 'startMax', 'endMin' and 'endMax'")
         if not end and referenceBases == "N":
-            raise BeaconBadRequest(request_dict, request.host, "'referenceBases' cannot be 'N' if 'start' is provided and 'end' is missing")
+            bad_request("'referenceBases' cannot be 'N' if 'start' is provided and 'end' is missing")
 
     if variantType != 'BND' and end and end < start:
-        raise BeaconBadRequest(request_dict, request.host, "'end' must be greater than 'start'")
+        bad_request("'end' must be greater than 'start'")
     if endMin and endMin > endMax:
-        raise BeaconBadRequest(request_dict, request.host, "'endMin' must be smaller than 'endMax'")
+        bad_request("'endMin' must be smaller than 'endMax'")
     if startMin and startMin > startMax:
-        raise BeaconBadRequest(request_dict, request.host, "'startMin' must be smaller than 'startMax'") 
+        bad_request("'startMin' must be smaller than 'startMax'") 
 
+    mateName = query_params.get("mateName")
     if mateName:
-        raise BeaconBadRequest(request_dict, request.host, "Queries using 'mateName' are not implemented")
+        bad_request("Queries using 'mateName' are not implemented")
 
 
 # SAMPLES
-def further_validation_sample(request, request_dict):
+def further_validation_sample(request, query_params):
     """
     It  takes a dictionary of the request parameters and checks the correct
     combination of parameters, the lack of required parameters, etc. It takes
@@ -181,23 +201,27 @@ def further_validation_sample(request, request_dict):
     the JSON schema. 
     """
 
-    # Define values with the result of the get()
-    referenceName = request_dict.get("referenceName")
-    assemblyId = request_dict.get("assemblyId")
-    referenceBases = request_dict.get("referenceBases")
-    alternateBases = request_dict.get("alternateBases")
-    start = request_dict.get("start")
-    end = request_dict.get("end")
-    filters = request_dict.get("filters")
-    datasetIds = request_dict.get("datasetIds")
+    def bad_request(m):
+        raise BeaconBadRequest(query_params, request.host, m)
 
-    # Do the checking
+    start = query_params.get("start")
+    end = query_params.get("end")
+
     if end and not start:
-        raise BeaconBadRequest(request_dict, request.host, "'end' can't be provided without 'start'")
+        bad_request("'end' can't be provided without 'start'")
+
+    # Define values with the result of the get()
+    referenceName = query_params.get("referenceName")
+    assemblyId = query_params.get("assemblyId")
+
     if start and (not referenceName or not assemblyId):
-        raise BeaconBadRequest(request_dict, request.host, "'referenceName' and 'assemblyId' are requiered when 'start' is given")
+        bad_request("'referenceName' and 'assemblyId' are requiered when 'start' is given")
+
+    referenceBases = query_params.get("referenceBases")
+    alternateBases = query_params.get("alternateBases")
+
     if not start and (referenceBases or alternateBases):
-        raise BeaconBadRequest(request_dict, request.host, "'start' is needed when using 'referenceBases' or 'alternateBases'")
+        bad_request("'start' is needed when using 'referenceBases' or 'alternateBases'")
      
     ## to be continued...?
 
@@ -206,138 +230,69 @@ def further_validation_sample(request, request_dict):
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         MAIN VALIDATION FUNCTIONS
 # ----------------------------------------------------------------------------------------------------------------------
+def convert_error(error_from, error_to):
+    def wrapper(func):
+        def decorator(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except error_form as e:
+                LOG.error('Bad Request: %s caused by input: %s%s',
+                          e.message, e.instance, ' in '+str(e.path[0]) if e.path else '')
+                raise error_to(obj,
+                            request.host,
+                            f"Provided input: '{e.instance}' is not correct for field: '{e.path[0]}'") from e
+        return decorator
+    return wrapper
 
-def validate(endpoint):
+def further_validation(endpoint, request, obj):
+    # Further validation
+    if endpoint == "query":
+        further_validation_query(request, obj)
+    elif endpoint == "genomic_region":
+        start = obj.get("start")
+        end = obj.get("end")
+        if end <= start:
+            raise BeaconBadRequest(obj, request.host, "'end' must be greater than 'start'")
+    elif endpoint == "sample_list":
+        further_validation_sample(request, obj)
+
+# _SCHEMA = None
+
+def _validate(endpoint, parse_func):
     """
     Validate against JSON schema.
     """
     def wrapper(func):
 
         @wraps(func) # just to get the documentation of the decorated function (beacon_get_query(request))
-        async def wrapped(request, *args):
-            if not isinstance(request, web.Request):
-                raise BeaconBadRequest(request, request.host, "invalid request: This does not seem a valid HTTP Request.")
-            try:
-                _, obj = await parse_request_object(request)
-            except Exception:
-                raise BeaconServerError("Could not properly parse the provided Request Body as JSON.")
-            try:
-                # jsonschema.validate(obj, schema)
-                LOG.info('Validate against JSON schema.')
-                schema = load_schema(endpoint)
-                DefaultValidatingDraft7Validator(schema).validate(obj)
-            except ValidationError as e:
-                if len(e.path) > 0:
-                    LOG.error(f'Bad Request: {e.message} caused by input: {e.instance} in {e.path[0]}')
-                    raise BeaconBadRequest(obj, request.host, f"Provided input: '{e.instance}' is not correct for field: '{e.path[0]}'")
-                else:
-                    LOG.error(f'Bad Request: {e.message} caused by input: {e.instance}')
-                    raise BeaconBadRequest(obj, request.host, f"Provided input: '{e.instance}' is not correct because: '{e.message}'")
-            
-            # Further validation
-            if endpoint == "query":
-                further_validation_query(request, obj)
-            elif  endpoint == "genomic_snp":
-                LOG.debug("The genomic_snp endpoint does not require further validation")
-            elif endpoint == "genomic_region":
-                start = obj.get("start")
-                end = obj.get("end")
-                if end <= start:
-                    raise BeaconBadRequest(obj, request.host, "'end' must be greater than 'start'")
-            elif endpoint == "sample_list":
-                further_validation_sample(request, obj)
+        async def decorator(request, *args):
+            # assert isinstance(request, web.Request), "invalid request: This does not seem a valid HTTP Request."
+            method, obj = await parse_func(request)
 
-            return await func(request, *args)
-        return wrapped
+            # jsonschema.validate(obj, schema)
+            LOG.info('Validate against JSON schema: %s', endpoint)
+            # global _SCHEMA
+            # if _SCHEMA is None:
+            _SCHEMA = load_schema(endpoint)
+            DefaultValidatingDraft7Validator(_SCHEMA).validate(obj)
+
+            further_validation(endpoint, request, obj)
+
+            return await func(method, obj, request, *args)
+        return decorator
     return wrapper
 
+@convert_error(ValidationError, BeaconBadRequest)
+def validate(endpoint):
+    return _validate(endpoint, parse_request_object)
 
+@convert_error(ValidationError, BeaconServicesBadRequest)
 def validate_services(func):
-    """
-    Same as before but adapted to the services endpoint. It calls a different parser function and error.
-    """
+    return _validate("services", parse_basic_request_object)(func)
 
-    async def wrapped(request, *args):
-        if not isinstance(request, web.Request):
-            raise BeaconServicesBadRequest(request, request.host, "invalid request: This does not seem a valid HTTP Request.")
-        try:
-            _, obj = await parse_basic_request_object(request)
-        except Exception:
-            raise BeaconServerError("Could not properly parse the provided Request Body as JSON.")
-        try:
-            # jsonschema.validate(obj, schema)
-            LOG.info('Validate against JSON schema.')
-            schema = load_schema("services")
-            DefaultValidatingDraft7Validator(schema).validate(obj)
-        except ValidationError as e:
-            if len(e.path) > 0:
-                LOG.error(f'Bad Request: {e.message} caused by input: {e.instance} in {e.path[0]}')
-                raise BeaconServicesBadRequest(obj, request.host, f"Provided input: '{e.instance}' is not correct for field: '{e.path[0]}', {e.message}")
-            else:
-                LOG.error(f'Bad Request: {e.message} caused by input: {e.instance}')
-                raise BeaconServicesBadRequest(obj, request.host, f"Provided input: '{e.instance}' is not correct because: '{e.message}'")
-
-        return await func(request, *args)
-    return wrapped
-
-
+@convert_error(ValidationError, BeaconAccessLevelsBadRequest)
 def validate_access_levels(func):
-    """
-    Same as before but adapted to the access levels endpoint. It calls a different parser function and error.
-    """
-
-    async def wrapped(request, *args):
-        if not isinstance(request, web.Request):
-            raise BeaconServicesBadRequest(request, request.host, "invalid request: This does not seem a valid HTTP Request.")
-        try:
-            _, obj = await parse_basic_request_object(request)
-        except Exception:
-            raise BeaconServerError("Could not properly parse the provided Request Body as JSON.")
-        try:
-            # jsonschema.validate(obj, schema)
-            LOG.info('Validate against JSON schema.')
-            schema = load_schema("access_levels")
-            DefaultValidatingDraft7Validator(schema).validate(obj)
-        except ValidationError as e:
-            if len(e.path) > 0:
-                LOG.error(f'Bad Request: {e.message} caused by input: {e.instance} in {e.path[0]}')
-                raise BeaconAccessLevelsBadRequest(request.host, f"Provided input: '{e.instance}' is not correct for field: '{e.path[0]}', {e.message}")
-            else:
-                LOG.error(f'Bad Request: {e.message} caused by input: {e.instance}')
-                raise BeaconAccessLevelsBadRequest(request.host, f"Provided input: '{e.instance}' is not correct because: '{e.message}'")
-
-        return await func(request, *args)
-    return wrapped
+    return _validate("access_levels", parse_basic_request_object)(func)
 
 
-def validate_simple(endpoint):
-    """
-    Validate against JSON schema an return something.
-    Same as above but simplified.
-    """
-    def wrapper(func):
-
-        @wraps(func) # just to get the documentation of the decorated function
-        async def wrapped(request, *args):            
-            if not isinstance(request, web.Request):
-                raise BeaconServicesBadRequest(request, request.host, "invalid request: This does not seem a valid HTTP Request.")
-            try:
-                _, obj = await parse_request_object(request)
-            except Exception:
-                raise BeaconServerError("Could not properly parse the provided Request Body as JSON.")
-            try:
-                # jsonschema.validate(obj, schema)
-                LOG.info('Validate against JSON schema.')
-                schema = load_schema(endpoint)
-                DefaultValidatingDraft7Validator(schema).validate(obj)
-            except ValidationError as e:
-                if len(e.path) > 0:
-                    LOG.error(f'Bad Request: {e.message} caused by input: {e.instance} in {e.path[0]}')
-                    raise BeaconServicesBadRequest(obj, request.host, f"Provided input: '{e.instance}' is not correct for field: '{e.path[0]}', {e.message}")
-                else:
-                    LOG.error(f'Bad Request: {e.message} caused by input: {e.instance}')
-                    raise BeaconServicesBadRequest(obj, request.host, f"Provided input: '{e.instance}' is not correct because: '{e.message}'")
-
-            return await func(request, *args)
-        return wrapped
-    return wrapper
+validate_simple = validate
