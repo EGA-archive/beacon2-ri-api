@@ -19,20 +19,17 @@ _fields = ['referenceName', 'referenceBases', 'assemblyId',
            'alternateBases', 'variantType', 'start', 'end', 'startMin', 'startMax',
            'endMin', 'endMax', 'ids']
 
-def process_exception_data(request, host, error_code, error):
+def process_exception_data(error_code, error, fields=None):
     """Return request data as dictionary."""
-    LOG.error('Raising from %s: %s', host, error)
+    LOG.error('Error %s: %s', error_code, error)
     
-    alleleRequest = { k: request.get(k) for k in _fields }
-    alleleRequest['includeDatasetResponses'] = request.get("includeDatasetResponses", "NONE")
-        
     return {
         'beaconId': conf.beacon_id,
         "apiVersion": conf.api_version,
         'exists': None,
         'error': {'errorCode': error_code,
                   'errorMessage': error},
-        'alleleRequest': alleleRequest,
+        'alleleRequest': dict(fields or []),
         # showing empty datasetsAlleRsponse as no datasets found
         # A null/None would represent no data while empty array represents
         # none found or error and corresponds with exists null/None
@@ -47,12 +44,12 @@ class BeaconBadRequest(web.HTTPBadRequest):
     Used in conjuction with JSON Schema validator.
     """
 
-    def __init__(self, request, host, error):
+    def __init__(self, error, fields=None):
         """Return custom bad request exception."""
-        data = process_exception_data(request, host, 400, error)
+        data = process_exception_data(400, error, fields=fields)
+        self.message = error
         super().__init__(text=json.dumps(data),
                          content_type="application/json")
-
 
 class BeaconUnauthorised(web.HTTPUnauthorized):
     """HTTP Exception returns with 401 code with a custom error message.
@@ -61,16 +58,16 @@ class BeaconUnauthorised(web.HTTPUnauthorized):
     Used in conjuction with Token authentication aiohttp middleware.
     """
 
-    def __init__(self, request, host, error, error_message):
+    def __init__(self, request, error):
         """Return custom unauthorized exception."""
-        data = process_exception_data(request, host, 401, error)
-        headers_401 = {"WWW-Authenticate": f"Bearer realm=\"{conf.url}\"\n\
+        data = process_exception_data(request, 401, error)
+        headers = {"WWW-Authenticate": f"Bearer realm=\"{conf.url}\"\n\
                          error=\"{error}\"\n\
                          error_description=\"{error_message}\""}
         super().__init__(text=json.dumps(data),
                          content_type="application/json",
                          # we use auth scheme Bearer by default
-                         headers=headers_401)
+                         headers=headers)
 
 
 class BeaconForbidden(web.HTTPForbidden):
@@ -81,9 +78,9 @@ class BeaconForbidden(web.HTTPForbidden):
     but not granted the resource. Used in conjuction with Token authentication aiohttp middleware.
     """
 
-    def __init__(self, request, host, error):
+    def __init__(self, request, error):
         """Return custom forbidden exception."""
-        data = process_exception_data(request, host, 403, error)
+        data = process_exception_data(request, 403, error)
         super().__init__(text=json.dumps(data),
                          content_type="application/json")
 
@@ -98,8 +95,8 @@ class BeaconServerError(web.HTTPInternalServerError):
         """Return custom forbidden exception."""
         data = {'errorCode': 500,
                 'errorMessage': error}
-        raise super().__init__(text=json.dumps(data),
-                               content_type="application/json")
+        super().__init__(text=json.dumps(data),
+                         content_type="application/json")
 
 
 class BeaconAccesLevelsError(web.HTTPBadRequest):
@@ -125,7 +122,7 @@ class BeaconServicesBadRequest(web.HTTPBadRequest):
     Generates custom exception messages based on request parameters.
     """
 
-    def __init__(self, query_parameters, host, error):
+    def __init__(self, query_parameters, error):
         """Return request data as dictionary."""
         LOG.error('400 ERROR MESSAGE: %s', error)
         data = {'beaconId': conf.beacon_id,
@@ -147,7 +144,7 @@ class BeaconAccessLevelsBadRequest(web.HTTPBadRequest):
     Generates custom exception messages based on request parameters.
     """
 
-    def __init__(self, host, error):
+    def __init__(self, error):
         """Return request data as dictionary."""
         LOG.error('400 ERROR MESSAGE: %s', error)
         data = {'beaconId': conf.beacon_id,
@@ -164,7 +161,7 @@ class BeaconBasicBadRequest(web.HTTPBadRequest):
 
     Generates custom exception messages based on request parameters.
     """
-    def __init__(self, request, host, error):
+    def __init__(self, request, error):
         """Return request data as dictionary."""
         LOG.error('400 ERROR MESSAGE: %s', error)
         data = { 'beaconId': conf.beacon_id,
@@ -173,16 +170,3 @@ class BeaconBasicBadRequest(web.HTTPBadRequest):
                  'request': request if isinstance(request, dict) else dict(request) }
         super().__init__(text=json.dumps(data),
                          content_type="application/json")
-
-
-
-def capture_server_error(prefix=''):
-    def wrapper(func):
-        @wraps(func)
-        def decorator(*args, **kwargs):
-            try:
-                return func(*args, **kwargs)
-            except Exception as e:
-                raise BeaconServerError(f'{prefix}{e}') from e
-        return decorator
-    return wrapper

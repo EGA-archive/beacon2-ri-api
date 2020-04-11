@@ -2,13 +2,36 @@ import logging
 
 from aiohttp import web
 
-from ..utils.validate import validate
-from ..utils.polyvalent_functions import create_prepstmt_variables
+from ..validation.request import RequestParameters
+from ..validation.fields import Field, RegexField, ChoiceField, IntegerField, ListField, DatasetIdsField
 
 LOG = logging.getLogger(__name__)
 
+class TestParameters(RequestParameters):
+    param1 = ChoiceField("1", "2", "3", required=True)
+    hello = Field(default="You")
+    int1 = IntegerField(min_value=0)
+    int2 = IntegerField(min_value=0)
+    regex = RegexField(r'^([ABCD]+)$')
+    # datasetIds = ListField(items=RegexField(r'^[^<>"/;%{}+=]*$'))
+    datasetIds = DatasetIdsField()
+    includeDatasetResponses = ChoiceField("ALL", "HIT", "MISS", "NONE", default="NONE")
+    filters = ListField(items=RegexField(r'.*:.+=?>?<?[0-9]*$'))
+
+proxy = TestParameters()
+
 async def test(request):
-    raise web.HTTPBadRequest(reason='Marta is tired now')
+
+    LOG.info('Running a test request')
+    qparams_org, qparams_db = await proxy.fetch(request)
+
+    print('{:-^50}'.format(" Query Parameters for DB "))
+    for key in proxy.__keys__:
+        val = getattr(qparams_db, key)
+        t = ' ' if val is None else str(type(val))
+        print(f"{key:>30} : {str(val):<8} {t}")
+
+    return web.Response(text=f"\nHello, {qparams_db.hello}\n")
 
 # @validate("test")
 # async def test(method, query_parameters, request):

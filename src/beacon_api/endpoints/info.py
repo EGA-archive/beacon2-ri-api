@@ -16,7 +16,7 @@ import logging
 
 from aiohttp.web import json_response
 
-from ..api.exceptions import BeaconBasicBadRequest, capture_server_error
+from ..api.exceptions import BeaconBasicBadRequest
 
 from ..api.models import GA4GH_ServiceInfo_v01, Beacon_v1, organization, sample_allele_requests
 
@@ -25,6 +25,7 @@ from ..api.access_levels import ACCESS_LEVELS_DICT
 from ..utils.translate2accesslevels import info2access
 
 from ..utils.validate import parse_request_object
+from ..utils.db import fetch_datasets_metadata
 
 LOG = logging.getLogger(__name__)
 
@@ -55,33 +56,6 @@ def _transform_metadata(response):
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-#                                         MAIN QUERY TO THE DATABASE
-# ----------------------------------------------------------------------------------------------------------------------
-
-@capture_server_error(prefix='Query metadata DB error: ')
-async def fetch_dataset_metadata(db_pool):
-    """
-    Execute query for returning dataset metadata.
-
-    Returns a list of datasets metadata dictionaries. 
-    """
-    # Take one connection from the database pool
-    async with db_pool.acquire(timeout=180) as connection:
-        query = """SELECT stable_id                as "datasetId",
-                          description              as "description",
-                          access_type                                as "accessType",
-                          reference_genome                           as "assemblyId",
-                          COALESCE(variant_cnt, 0) as "variantCount",
-                          COALESCE(call_cnt   , 0) as "callCount",
-                          COALESCE(sample_cnt , 0) as "sampleCount"
-                   FROM beacon_dataset;"""
-        db_response = await connection.fetch(query)
-        for record in db_response:
-            yield _transform_metadata(record)
-
-
-
-# ----------------------------------------------------------------------------------------------------------------------
 #                                         HANDLER FUNCTION
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -101,7 +75,7 @@ def _finalize(beacon_info, beacon_datasets):
 
 async def handler_root(request):
     LOG.info('GET request to the info endpoint.')
-    beacon_datasets = [d async for d in fetch_dataset_metadata(request.app['db_pool'])]
+    beacon_datasets = [d async for d in fetch_datasets_metadata()]
     response = _finalize(Beacon_v1, beacon_datasets)
     return json_response(response)
 
@@ -113,14 +87,14 @@ async def handler_info(request):
         return await handler_root(request)
 
     # Otherwise, it must be 'GA4GH-ServiceInfo-v0.1', by validation
-    beacon_datasets = [d async for d in fetch_dataset_metadata(request.app['db_pool'])]
+    beacon_datasets = [d async for d in fetch_datasets_metadata()]
     response = _finalize(GA4GH_ServiceInfo_v01, beacon_datasets)
     return json_response(response)
 
 
 async def handler_service_info(request):
     LOG.info('GET request to the info endpoint.')
-    beacon_datasets = [d async for d in fetch_dataset_metadata(request.app['db_pool'])]
+    beacon_datasets = [d async for d in fetch_datasets_metadata()]
     response = _finalize(GA4GH_ServiceInfo_v01, beacon_datasets)
     return json_response(response)
 

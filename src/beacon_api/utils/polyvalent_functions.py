@@ -12,7 +12,7 @@ import requests
 from pathlib import Path
 
 from .. import conf
-from ..api.exceptions import BeaconBadRequest, BeaconServerError, BeaconForbidden, BeaconUnauthorised, capture_server_error
+from ..api.exceptions import BeaconBadRequest, BeaconServerError, BeaconForbidden, BeaconUnauthorised
 
 
 LOG = logging.getLogger(__name__)
@@ -20,13 +20,6 @@ LOG = logging.getLogger(__name__)
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         BASIC FUNCTIONS
 # ----------------------------------------------------------------------------------------------------------------------
-
-def create_prepstmt_variables(value):
-    """Takes a value of how many prepared variables you want to pass a query
-    and creates a string to put it in it"""
-    return 
-
-
 
 def filter_exists(include_dataset, datasets):
     """Return those datasets responses that the `includeDatasetResponses` parameter decides.
@@ -75,7 +68,7 @@ def parse_filters_request(filters_request_list):
             yield [ontology, expression]
 
 
-@capture_server_error('Query filters DB error: ')
+#@capture_server_error('Query filters DB error: ')
 async def prepare_filter_parameter(db_pool, filters_request):
     """Parse the filters parameters given in the query to create the string that needs to be passed
     to the SQL query.
@@ -190,35 +183,6 @@ def access_resolution(request, token, host, public_data, registered_data, contro
     LOG.info(f"Accessible datasets are: {list(access)}.")
     return permissions, list(access)  # DAZ: Maybe no need to convert it
 
-
-# This method can be removed, in favor for postgres partitioning
-# https://www.postgresql.org/docs/12/ddl-partitioning.html
-# We can use the 3 access types: PUBLIC, REGISTERED and CONTROLLED
-@capture_server_error(prefix='Query available datasets DB error: ')
-async def fetch_datasets_access(db_pool, datasets):
-    """Retrieve 3 list of the available datasets depending on the access type"""
-    LOG.info('Retrieving info about the available datasets (id and access type).')
-    public = []
-    registered = []
-    controlled = []
-    async with db_pool.acquire(timeout=180) as connection:
-        async with connection.transaction():
-            datasets_query = None if datasets == "null" or not datasets else datasets
-            query = f"""SELECT access_type, id::text, stable_id FROM {conf.database_schema}.beacon_dataset
-                        WHERE coalesce(stable_id = any($1), true);
-                     """
-            LOG.debug(f"QUERY datasets access: {query}")
-            statement = await connection.prepare(query)
-            db_response = await statement.fetch(datasets_query)
-            for record in db_response:
-                access_type = record['access_type']
-                if access_type == 'PUBLIC':
-                    public.append(record['id'])
-                if access_type == 'REGISTERED':
-                    registered.append(record['id'])
-                if access_type == 'CONTROLLED':
-                    controlled.append(record['id'])
-            return public, registered, controlled
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                    FILTER RESPONSE BASED ON ACCESS LEVELS
