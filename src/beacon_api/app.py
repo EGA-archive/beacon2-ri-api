@@ -8,9 +8,8 @@ import logging
 from aiohttp import web
 import aiohttp_cors
 
-from . import conf, load_logger
-from .endpoints import endpoints
-from .utils.db import pool
+from . import conf, load_logger, endpoints
+from .api.db import pool
 
 
 LOG = logging.getLogger(__name__)
@@ -64,7 +63,7 @@ def main():
     beacon.on_cleanup.append(destroy)
 
     # Configure the endpoints
-    beacon.add_routes(endpoints)
+    beacon.add_routes(endpoints.routes)
 
     # TO DO make it HTTPS and request certificate
     # sslcontext.load_cert_chain(ssl_certfile, ssl_keyfile)

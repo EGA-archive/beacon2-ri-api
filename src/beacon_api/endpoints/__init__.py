@@ -9,7 +9,7 @@ from . import (info,
                access_levels,
                test)
 
-endpoints = [
+routes = [
     web.get('/test'        , test.test),
 
     # Info

@@ -13,7 +13,7 @@ import yaml
 
 
 from .. import conf, load_access_levels
-from ..utils.db import access_levels_datasets
+from ..api.db import access_levels_datasets
 from ..api.exceptions import BeaconAccessLevelsBadRequest
 from ..validation.request import RequestParameters, print_qparams
 from ..validation.fields import (BooleanField,
