@@ -63,7 +63,6 @@ sample_allele_requests = [ {
     "includeDatasetResponses" : None
   } ]
 
-
 Beacon_v1 = {
     'id': conf.beacon_id,
     'name': conf.beacon_name,

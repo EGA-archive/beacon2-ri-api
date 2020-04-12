@@ -49,12 +49,7 @@ class Field:
     def set_name(self, n):
         self.name = n
 
-    def validate(self, value): # converted value
-        if value in EMPTY_VALUES and self.required:
-            raise FieldError(self.name, 'required field')
-        if value in EMPTY_VALUES:
-            # LOG.debug('%s: %s is an empty value', self.name, value)
-            return
+    def run_validators(self, value):
         errors = []
         for v in self.validators:
             try:
@@ -62,10 +57,16 @@ class Field:
             except ValidationError as e:
                 errors.append(str(e))
         if errors:
-            if len(errors) == 1:
-                raise FieldError(self.name, errors[0])
-            else:
-                raise FieldError(self.name, '\n' + '\n'.join([f'* {err}' for err in errors]))
+            message = errors[0] if len(errors) == 1 else '\n' + '\n'.join([f'* {err}' for err in errors])
+            raise FieldError(self.name, message)
+
+    def validate(self, value): # converted value
+        if value in EMPTY_VALUES:
+            if self.required:
+                raise FieldError(self.name, 'required field')
+            # LOG.debug('%s: %s is an empty value', self.name, value)
+            return
+        self.run_validators(value)
 
     async def convert(self, value):
         if value in EMPTY_VALUES:
@@ -98,7 +99,7 @@ class ChoiceField(Field):
         try:
             return self.item_type(value)
         except (ValueError, TypeError):
-            raise FieldError(self.name, f'{value} is not among {self.item_type}')
+            raise FieldError(self.name, f'{value} is not of type {self.item_type}')
 
 
 class RegexField(Field):
@@ -166,11 +167,10 @@ class ListField(Field):
         super().__init__(**kwargs)
 
     async def convert(self, value: str) -> set:
-        # value = super().convert(value)
         if value in EMPTY_VALUES:
             return self.default
         values = value.split(self.separator)
-        return set(self.item_type.convert(v) for v in values)
+        return list(set(self.item_type.convert(v) for v in values)) # json.dumps doesn't like sets
 
     def validate(self, values):
         if values in EMPTY_VALUES:
@@ -187,11 +187,8 @@ class ListField(Field):
 class DatasetIdsField(ListField):
 
     async def convert(self, value: str) -> list:
-        # value = super().convert(value)
-        # if value in EMPTY_VALUES:
-        #     return self.default
         values = value.split(self.separator) if value not in EMPTY_VALUES else []
         # remove duplicates
         datasets = list(set(values)) # we know they should be strings
-        return await fetch_datasets_access(datasets=datasets)
+        return [d async for d in fetch_datasets_access(datasets=datasets)]
 

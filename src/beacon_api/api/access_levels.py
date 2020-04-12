@@ -22,7 +22,7 @@ LOG = logging.getLogger(__name__)
 # from the envvar BEACON_ACCESS_LEVELS if defined,
 # and [here]/access_levels.yml otherwise
 try:
-    filepath = Path(os.getenv('BEACON_ACCESS_LEVELS', Path(__file__).parent / "access_levels.yml"))
+    filepath = Path(os.getenv('BEACON_ACCESS_LEVELS', Path(__file__).parent.parent / "access_levels.yml"))
     if filepath.suffix not in ('.yaml', '.yml'):
       LOG.error("Unsupported format for %s", filepath)
       ACCESS_LEVELS_DICT = None

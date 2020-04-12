@@ -34,7 +34,11 @@ class EnumValidator:
         Validate that the input is in the given enumeration.
         """
         if value not in self.choices:
-            raise ValidationError(f'{value} is not in {self.enums}')
+            if len(self.enums) == 1:
+                message = f'{value} =/= {self.enums[0]}'
+            else:
+                message = f'{value} not an element of {self.enums}'
+            raise ValidationError(message)
 
 
 class MinValueValidator:
@@ -47,30 +51,13 @@ class MinValueValidator:
         if value < self.minimum:
             raise ValidationError(f'{value} < {self.minimum}')
 
+
 class MaxValueValidator:
 
     def __init__(self, maximum=None):
-        assert isinstance(maximum, int), "Why don't you use an integer"
+        assert isinstance(maximum, int), "Why don't you use an integer?"
         self.maximum = maximum
 
     def __call__(self, value):
         if value > self.maximum:
             raise ValidationError(f'{value} > {self.maximum}')
-
-# class ArrayValidator:
-#     item_validator = None
-#     message = 'Invalid item in the list.'
-
-#     def __init__(self, item=None, message=None):
-#         if item is not None:
-#             self.item_validator = item
-#         if message is not None:
-#             self.message = message
-
-#     def __call__(self, value):
-#         """
-#         Validate that the input is greater than the given minimum.
-#         """
-#         if item_validator:
-#             for item in value:
-#                 item_validator(item)

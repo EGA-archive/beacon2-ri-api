@@ -32,3 +32,15 @@ def load_logger():
     log_file =  Path(__file__).parent / "logger.yml"
     with open(log_file, 'r') as stream:
         dictConfig(yaml.safe_load(stream))
+
+
+# Try to load the access levels yaml into a dict,
+# from the envvar BEACON_ACCESS_LEVELS if defined,
+# and [here]/access_levels.yml otherwise
+def load_access_levels():
+    filepath = Path(os.getenv('BEACON_ACCESS_LEVELS', Path(__file__).parent / "access_levels.yml"))
+    if filepath.suffix not in ('.yaml', '.yml'):
+        LOG.error("Unsupported format for %s", filepath)
+        raise ValueError('Unsupported format for Access Levels')
+    with open(filepath, 'r') as stream:
+        return yaml.safe_load(stream)

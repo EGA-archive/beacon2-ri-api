@@ -130,3 +130,12 @@ class RequestParameters(metaclass=DeclarativeFieldsMetaclass):
             return qparams, values
         except ValidationError as e:
             raise BeaconBadRequest(str(e), fields=qparams)
+
+
+
+def print_qparams(qparams_db, proxy, logger):
+    logger.debug('{:-^50}'.format(" Query Parameters for DB "))
+    for key in proxy.__keys__:
+        val = getattr(qparams_db, key)
+        t = ' ' if val is None else str(type(val))
+        logger.debug(f"{key:>30} : {str(val):<8} {t}")

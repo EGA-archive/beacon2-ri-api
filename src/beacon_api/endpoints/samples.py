@@ -1,24 +1,3 @@
-"""JSON Request/Response Validation and Token authentication (not implemented yet).
-"""
-
-import json
-import re
-import os
-import logging
-from functools import wraps
-
-
-#from ..schemas import load_schema
-from ..api.exceptions import (BeaconUnauthorised,
-                              BeaconBadRequest,
-                              BeaconForbidden,
-                              BeaconServerError,
-                              BeaconServicesBadRequest,
-                              BeaconAccessLevelsBadRequest)
-
-LOG = logging.getLogger(__name__)
-
-
 # # SAMPLES
 # def further_validation_sample(request, query_params):
 #     """
@@ -51,16 +30,3 @@ LOG = logging.getLogger(__name__)
 #         bad_request("'start' is needed when using 'referenceBases' or 'alternateBases'")
      
 #     ## to be continued...?
-
-# def further_validation(endpoint, request, obj):
-#     # Further validation
-#     if endpoint == "query":
-#         further_validation_query(request, obj)
-#     elif endpoint == "genomic_region":
-#         start = obj.get("start")
-#         end = obj.get("end")
-#         if end <= start:
-#             raise BeaconBadRequest(obj, request.host, "'end' must be greater than 'start'")
-#     elif endpoint == "sample_list":
-#         further_validation_sample(request, obj)
-      

@@ -47,7 +47,6 @@ class BeaconBadRequest(web.HTTPBadRequest):
     def __init__(self, error, fields=None):
         """Return custom bad request exception."""
         data = process_exception_data(400, error, fields=fields)
-        self.message = error
         super().__init__(text=json.dumps(data),
                          content_type="application/json")
 
@@ -58,9 +57,9 @@ class BeaconUnauthorised(web.HTTPUnauthorized):
     Used in conjuction with Token authentication aiohttp middleware.
     """
 
-    def __init__(self, request, error):
+    def __init__(self, error, fields=None):
         """Return custom unauthorized exception."""
-        data = process_exception_data(request, 401, error)
+        data = process_exception_data(401, error, fields=fields)
         headers = {"WWW-Authenticate": f"Bearer realm=\"{conf.url}\"\n\
                          error=\"{error}\"\n\
                          error_description=\"{error_message}\""}
@@ -78,9 +77,9 @@ class BeaconForbidden(web.HTTPForbidden):
     but not granted the resource. Used in conjuction with Token authentication aiohttp middleware.
     """
 
-    def __init__(self, request, error):
+    def __init__(self, error, fields=None):
         """Return custom forbidden exception."""
-        data = process_exception_data(request, 403, error)
+        data = process_exception_data(403, error, fields=fields)
         super().__init__(text=json.dumps(data),
                          content_type="application/json")
 
@@ -105,12 +104,13 @@ class BeaconAccesLevelsError(web.HTTPBadRequest):
     Generates custom exception messages based on request parameters.
     """
 
-    def __init__(self, error, help_message):
+    def __init__(self, error, help_message=None):
         """Return custom forbidden exception."""
-        LOG.error('400 ERROR MESSAGE: %s', error)
+        LOG.error('Error 400: %s', error)
         data = {'errorCode': 400,
-                'errorMessage': error,
-                'help': help_message }
+                'errorMessage': error }
+        if help_message:
+            data['help'] = help_message
         super().__init__(text=json.dumps(data),
                          content_type="application/json")
 
@@ -124,7 +124,7 @@ class BeaconServicesBadRequest(web.HTTPBadRequest):
 
     def __init__(self, query_parameters, error):
         """Return request data as dictionary."""
-        LOG.error('400 ERROR MESSAGE: %s', error)
+        LOG.error('Error 400: %s', error)
         data = {'beaconId': conf.beacon_id,
                 'error': {'errorCode': 400,
                           'errorMessage': error },
@@ -144,29 +144,28 @@ class BeaconAccessLevelsBadRequest(web.HTTPBadRequest):
     Generates custom exception messages based on request parameters.
     """
 
-    def __init__(self, error):
+    def __init__(self, error, fields=None):
         """Return request data as dictionary."""
-        LOG.error('400 ERROR MESSAGE: %s', error)
+        LOG.error('Error 400: %s', error)
         data = {'beaconId': conf.beacon_id,
                 'error': {'errorCode': 400,
                           'message': error},
-                'fields': {}}
+                'fields': fields or {}}
         super().__init__(text=json.dumps(data),
                          content_type="application/json")
 
 
 
-class BeaconBasicBadRequest(web.HTTPBadRequest):
-    """BeaconBASICBadRequest Exception specific class.
-
-    Generates custom exception messages based on request parameters.
-    """
-    def __init__(self, request, error):
-        """Return request data as dictionary."""
-        LOG.error('400 ERROR MESSAGE: %s', error)
-        data = { 'beaconId': conf.beacon_id,
-                 'error': {'errorCode': 400,
-                           'errorMessage': error},
-                 'request': request if isinstance(request, dict) else dict(request) }
-        super().__init__(text=json.dumps(data),
-                         content_type="application/json")
+# class BeaconBasicBadRequest(web.HTTPBadRequest):
+#     """
+#     Generates custom exception messages based on request parameters.
+#     """
+#     def __init__(self, request, error):
+#         """Return request data as dictionary."""
+#         LOG.error('Error 400: %s', error)
+#         data = { 'beaconId': conf.beacon_id,
+#                  'error': {'errorCode': 400,
+#                            'errorMessage': error},
+#                  'request': request if isinstance(request, dict) else dict(request) }
+#         super().__init__(text=json.dumps(data),
+#                          content_type="application/json")

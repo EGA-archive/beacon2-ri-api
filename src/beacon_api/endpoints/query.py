@@ -3,7 +3,7 @@ import logging
 from aiohttp.web import json_response
 
 from ..api.exceptions import BeaconBadRequest
-from ..validation.request import RequestParameters
+from ..validation.request import RequestParameters, print_qparams
 from ..validation.fields import (RegexField,
                                  ChoiceField,
                                  IntegerField,
@@ -17,9 +17,10 @@ LOG = logging.getLogger(__name__)
 # ----------------------------------------------------------------------------------------------------------------------
 
 class QueryParameters(RequestParameters):
-    referenceName = ChoiceField("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
-                                "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "X", "Y", "MT",
-                                required=True)
+    referenceName = ChoiceField("1", "2", "3", "4", "5", "6", "7",
+                                "8", "9", "10", "11", "12", "13", "14",
+                                "15", "16", "17", "18", "19", "20",
+                                "21", "22", "X", "Y", "MT", required=True)
     start = IntegerField(min_value=0)
     end = IntegerField(min_value=0)
     startMin = IntegerField(min_value=0)
@@ -34,9 +35,11 @@ class QueryParameters(RequestParameters):
     datasetIds = DatasetIdsField()
     includeDatasetResponses = ChoiceField("ALL", "HIT", "MISS", "NONE", default="NONE")
     filters = ListField(items=RegexField(r'.*:.+=?>?<?[0-9]*$'))
-    mateName = ChoiceField("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
-                           "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "X", "Y", "MT")
-
+    mateName = ChoiceField("1", "2", "3", "4", "5", "6", "7",
+                           "8", "9", "10", "11", "12", "13", "14",
+                           "15", "16", "17", "18", "19", "20",
+                           "21", "22", "X", "Y", "MT")
+    
 
     def correlate(self, values):
         # values is a namedtuple, with the above keys
@@ -91,37 +94,6 @@ class QueryParameters(RequestParameters):
 #     # Before returning the response we need to filter it depending on the access levels
 #     return {"beaconAlleleResponse": beacon_response}
 
-# async def fetch_resulting_datasets(qparams, misses=False, accessible_missing=None):
-#     """
-#     Contact the DB to fetch the information about the datasets. 
-#     :misses: set to True for retrieving data about datasets without the queried variant
-#     :accessible_missing: list of accessible datasets without the variant.
-#     Returns list of datasets dictionaries. 
-#     """
-#     async with pool.connection() as connection:
-#         datasets = []
-#         dollars = ", ".join([ f"${i}" for i in range(1, 14)]) # 1..13
-#         query = f"""SELECT * FROM {conf.database_schema}.query_data_summary_response({dollars});"""
-#         LOG.debug(f"QUERY to fetch hits: {query}")
-#         statement = await connection.prepare(query)
-#         db_response = await statement.fetch(qparams.variantType,
-# 	                                    qparams.start,
-# 	                                    qparams.startMin,
-# 	                                    qparams.startMax,
-# 	                                    qparams.end,
-# 	                                    qparams.endMin,
-# 	                                    qparams.endMax,
-# 	                                    qparams.referenceName,
-# 	                                    qparams.referenceBases,
-# 	                                    qparams.alternateBases,
-# 	                                    qparams.assemblyId,
-# 	                                    [record[1] for record in qparams.datasetIds], # list of int
-# 	                                    qparams.filters) # filters as-is
-        
-#         for record in db_response:
-#             processed = await transform_record(db_pool, record)
-#             datasets.append(processed)
-#         return datasets
 
 # async def fetch_resulting_datasets(qparams, misses=False, accessible_missing=None):
 #     """
@@ -207,17 +179,14 @@ async def handler(request):
     It uses the '/query' path and expects some parameters.
     """
     LOG.info('Running a query request')
-    qparams_org, qparams_db = await proxy.fetch(request)
-    LOG.debug("Original Query Parameters: %s", qparams_org)
+    qparams_raw, qparams_db = await proxy.fetch(request)
+    LOG.debug("Original Query Parameters: %s", qparams_raw)
 
+    # print only for debug
     if LOG.isEnabledFor(logging.DEBUG):
-        LOG.debug('{:-^50}'.format(" Query Parameters for DB "))
-        for key in proxy.__keys__:
-            val = getattr(qparams_db, key)
-            t = ' ' if val is None else str(type(val))
-            LOG.debug(f"{key:>30} : {str(val):<8} {t}")
+        print_qparams(qparams_db, proxy, LOG)
 
-    response = dict(qparams_org)
+    response = dict(qparams_raw)
 
     # # 1. GET VALID/ACCESSIBLE DATASETS
     
@@ -225,13 +194,13 @@ async def handler(request):
     # depending on the access level (we check all of them if the user hasn't specified anything, if some
     # there were given, those are the only ones that are checked)
     public_datasets, registered_datasets, controlled_datasets = [], [], []
-    for record in qparams_db.datasetIds:
-        if record['access_type'] == 'PUBLIC':
-            public_datasets.append(record['id'])
-        elif record['access_type'] == 'REGISTERED':
-            registered_datasets.append(record['id'])
-        elif record['access_type'] == 'CONTROLLED':
-            controlled_datasets.append(record['id'])
+    for access_type, dataset_id, _ in qparams_db.datasetIds:
+        if access_type == 'PUBLIC':
+            public_datasets.append(dataset_id)
+        elif access_type == 'REGISTERED':
+            registered_datasets.append(dataset_id)
+        elif access_type == 'CONTROLLED':
+            controlled_datasets.append(dataset_id)
 
     ##### TEST CODE TO USE WHEN AAI is integrated
     # access_type, accessible_datasets = access_resolution(request, request['token'], request.host, public_datasets,

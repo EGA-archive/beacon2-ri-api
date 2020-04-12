@@ -9,8 +9,7 @@ from aiohttp import web
 import aiohttp_cors
 
 from . import conf, load_logger
-from .endpoints import (test,
-                        query)
+from .endpoints import endpoints
 from .utils.db import pool
 
 
@@ -65,13 +64,6 @@ def main():
     beacon.on_cleanup.append(destroy)
 
     # Configure the endpoints
-    endpoints = [
-        web.get('/test'        , test.test),
-        # web.get('/'            , info.handler_root),
-        # web.get('/info'        , info.handler_info),
-        # web.get('/service-info', info.handler_service_info),
-        web.get('/query'       , query.handler),
-    ]
     beacon.add_routes(endpoints)
 
     # TO DO make it HTTPS and request certificate
