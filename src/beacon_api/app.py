@@ -11,16 +11,11 @@ import aiohttp_cors
 from . import conf, load_logger, endpoints
 from .api.db import pool
 
-
 LOG = logging.getLogger(__name__)
 
+async def initialize(app):
+    """Initialize HTTP server."""
 
-# ----------------------------------------------------------------------------------------------------------------------
-#                                         SETUP FUNCTIONS
-# ----------------------------------------------------------------------------------------------------------------------
-
-def set_cors(server):
-    """Set CORS rules."""
     # Configure CORS settings
     cors = aiohttp_cors.setup(server, defaults={
         "*": aiohttp_cors.ResourceOptions(
@@ -33,20 +28,12 @@ def set_cors(server):
     for route in list(server.router.routes()):
         cors.add(route)
 
-async def initialize(app):
-    """Initialize HTTP server."""
-    set_cors(app)
     LOG.info("Initialization done.")
 
 async def destroy(app):
     """Upon server close, close the DB connection pool."""
     LOG.info("Shutting down.")
     await pool.close()
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-#                               .... and cue music
-# ----------------------------------------------------------------------------------------------------------------------
 
 def main():
     """Run the beacon API.
@@ -65,12 +52,17 @@ def main():
     # Configure the endpoints
     beacon.add_routes(endpoints.routes)
 
-    # TO DO make it HTTPS and request certificate
-    # sslcontext.load_cert_chain(ssl_certfile, ssl_keyfile)
-    # sslcontext = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    # sslcontext.check_hostname = False
+    # Configure HTTPS (or not)
+    ssl_context = None
+    if getattr(conf, 'tls_enabled', False):
+        sslcontext = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        sslcontext.load_cert_chain(conf.beacon_cert, conf.beacon_key)
+        sslcontext.check_hostname = False
+        # TODO: add the CA chain
+
+    # .... and cue music
     web.run_app(beacon,
                 host=getattr(conf, 'beacon_host', '0.0.0.0'),
-                port=getattr(conf, 'beacon_PORT', 5050),
+                port=getattr(conf, 'beacon_port', 5050),
                 shutdown_timeout=0, ssl_context=None)
 

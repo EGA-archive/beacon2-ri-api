@@ -57,3 +57,14 @@ database_user = 'user'
 database_password = 'password'
 database_name = 'beacon'
 database_schema = 'public' # comma-separated list of schemas
+
+#
+# Web server configuration
+#
+beacon_host = '0.0.0.0'
+beacon_port = 5050
+
+tls_enabled = False
+beacon_cert = '/etc/ega/server.cert'
+beacon_key = '/etc/ega/server.key'
+CA_cert = '/etc/ega/CA.cert'
