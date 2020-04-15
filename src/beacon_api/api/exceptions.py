@@ -25,7 +25,7 @@ def process_exception_data(error_code, error, fields=None):
     
     return {
         'beaconId': conf.beacon_id,
-        "apiVersion": conf.api_version,
+        'apiVersion': conf.api_version,
         'exists': None,
         'error': {'errorCode': error_code,
                   'errorMessage': error},

@@ -16,7 +16,7 @@ import logging
 
 from aiohttp.web import json_response
 
-from ..api.models import GA4GH_ServiceInfo_v01, Beacon_v1, organization, sample_allele_requests
+from ..api import models
 from ..validation.request import RequestParameters
 from ..validation.fields import ChoiceField
 
@@ -55,8 +55,7 @@ def record_to_dict(record):
         "variantCount": record["variantCount"], # already coalesced
         "callCount": record["callCount"],
         "sampleCount": record["sampleCount"],
-        # "frequency": float(record["frequency"] or 0), # is it ok with 0.0 ?
-        # # "frequency": 0 if record["frequency"] is None else float(record["frequency"])
+        "frequency": float(record["frequency"] or 0),
         # No numVariants?
         "externalURL": None,
         "info": { "accessType": record["accessType"],
@@ -84,9 +83,9 @@ def _finalize(beacon_info, beacon_datasets):
 proxy_root = RootParameters()
 async def handler_root(request):
     LOG.info('GET request to the info endpoint.')
-    qparams = await proxy_root.fetch(request) # validate
+    qparams_raw, qparams_processed = await proxy_root.fetch(request) # validate
     beacon_datasets = [r async for r in fetch_datasets_metadata(transform=record_to_dict)]
-    response = _finalize(Beacon_v1, beacon_datasets)
+    response = models.beacon_v1(beacon_datasets)
     return json_response(response)
 
 

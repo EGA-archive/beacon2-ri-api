@@ -7,7 +7,8 @@ from . import (info,
                individuals,
                filtering_terms,
                access_levels,
-               test)
+               test,
+               marta)
 
 routes = [
     web.get('/test'        , test.test),
@@ -31,5 +32,7 @@ routes = [
 
     # Filtering terms
     web.get('/access_levels', access_levels.handler),
+
+    web.get('/marta', marta.handler),
 ]
 

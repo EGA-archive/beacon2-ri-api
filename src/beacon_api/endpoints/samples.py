@@ -1,5 +1,11 @@
 # # SAMPLES
-# def further_validation_sample(request, query_params):
+
+
+class SamplesParameters(RequestParameters):
+    hello = Field()
+    
+    def correlate(self, values):
+        pass
 #     """
 #     It  takes a dictionary of the request parameters and checks the correct
 #     combination of parameters, the lack of required parameters, etc. It takes
@@ -30,3 +36,19 @@
 #         bad_request("'start' is needed when using 'referenceBases' or 'alternateBases'")
      
 #     ## to be continued...?
+
+
+
+
+
+
+def intermediate_formulation(response):
+    return response
+
+
+proxy = SamplesParameters()
+def handler(request):
+    qparams_raw, qparams_processed = await proxy.fetch(request)
+    
+    response = {}
+    return json_response(response)

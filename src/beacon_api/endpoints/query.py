@@ -30,7 +30,7 @@ class QueryParameters(RequestParameters):
     referenceBases = RegexField(r'^([ACGTN]+)$', required=True)
     alternateBases = RegexField(r'^([ACGTN]+)$')
     variantType = ChoiceField("DEL", "INS", "DUP", "INV", "CNV", "SNP", "MNP", "DUP:TANDEM", "DEL:ME", "INS:ME", "BND")
-    assemblyId = RegexField(r'^((GRCh|hg)[0-9]+([.]?p[0-9]+)?)$', required=True)
+    assemblyId = RegexField(r'^((GRCh|hg)[0-9]+([.]?p[0-9]+)?)$', required=True) # GRCh007.p9 is valid
     # datasetIds = ListField(items=RegexField(r'^[^<>"/;%{}+=]*$'))
     datasetIds = DatasetIdsField()
     includeDatasetResponses = ChoiceField("ALL", "HIT", "MISS", "NONE", default="NONE")

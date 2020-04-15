@@ -149,13 +149,13 @@ async def fetch_datasets_metadata(connection, transform=None):
     Execute query for returning dataset metadata.
     """
     LOG.info('Retrieving datasets metadata')
-    query = f"""SELECT stable_id                as "datasetId",
-                       description              as "description",
-                       access_type              as "accessType",
-                       reference_genome         as "assemblyId",
-                       COALESCE(variant_cnt, 0) as "variantCount",
-                       COALESCE(call_cnt   , 0) as "callCount",
-                       COALESCE(sample_cnt , 0) as "sampleCount"
+    query = f"""SELECT stable_id                AS "datasetId",
+                       description              AS "description",
+                       access_type              AS "accessType",
+                       reference_genome         AS "assemblyId",
+                       COALESCE(variant_cnt, 0) AS "variantCount",
+                       COALESCE(call_cnt   , 0) AS "callCount",
+                       COALESCE(sample_cnt , 0) AS "sampleCount"
                 FROM {conf.database_schema}.beacon_dataset;"""
     LOG.debug("QUERY: %s", query)
     response = await connection.fetch(query)
@@ -240,9 +240,10 @@ async def patients(connection, qparams, individual_id, process=None):
 	                                qparams.alternateBases, # _alternate_bases text,
 	                                qparams.assemblyId,     # _reference_genome text,
 	                                '', #[record[1] for record in qparams.datasetIds], # _dataset_ids int[],
+	                                #[record[2] for record in qparams.datasetIds], # _dataset_names text[],
 	                                None,                   # _biosample_stable_id text,
 	                                individual_id,          # _individual_stable_id text,
-	                                qparams.filters,        # filters as-is,  # _filters text,
+	                                qparams.filters,        # filters as-is,  # _filters text[],
 	                                qparams.skip,           # _skip integer,
 	                                qparams.limit)          # _limit integer
     

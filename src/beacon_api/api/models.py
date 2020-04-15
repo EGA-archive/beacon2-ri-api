@@ -603,3 +603,8 @@ def individual_object_rest(individual_info, alternative_schemas):
         alt_resp_list = [name2dict[alt] for alt in alternative_schemas if alt in accepted_list]
         return {"default": beacon_individual_v0_1,
                 "alternativeSchemas": alt_resp_list }
+
+
+
+def beacon_v1(datasets):
+    return {}
