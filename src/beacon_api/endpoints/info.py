@@ -98,9 +98,8 @@ proxy_info = InfoParameters()
 async def handler_info(request):
     LOG.info('GET request to the info endpoint.')
     # Parse model parameter
-    qparams_raw, qparams_processed = await proxy_info.fetch(request) # validate
-    model = qparams_processed.model
-    if model is None:
+    _, qparams_processed = await proxy_info.fetch(request) # validate
+    if qparams_processed.model is None:
         return await handler_root(request)
     # Otherwise, it must be 'GA4GH-ServiceInfo-v0.1', by validation
     # Fetch datasets info
