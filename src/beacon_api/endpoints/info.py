@@ -67,12 +67,14 @@ def _finalize(beacon_info, beacon_datasets):
     # If one sets up a beacon it is recommended to adjust these sample requests
     beacon_info['sampleAlleleRequests'] = models.sample_allele_requests
 
-    # Before returning the response we need to filter it depending on the access levels
-    beacon_response = {"beacon": beacon_info}
-    accessible_datasets = []  # NOTE we use the an empty list because in this endpoint we don't filter by dataset
-    user_levels = ["PUBLIC"]  # NOTE we hardcode it because authentication is not implemented yet
+    return beacon_info
 
-    return beacon_response
+    # Before returning the response we need to filter it depending on the access levels
+    # beacon_response = {"beacon": beacon_info}
+    # accessible_datasets = []  # NOTE we use the an empty list because in this endpoint we don't filter by dataset
+    # user_levels = ["PUBLIC"]  # NOTE we hardcode it because authentication is not implemented yet
+
+    
     # filtered_response = filter_response(beacon_response, ACCESS_LEVELS_DICT, accessible_datasets, user_levels, info2access)
     # return filtered_response["beacon"]
 
