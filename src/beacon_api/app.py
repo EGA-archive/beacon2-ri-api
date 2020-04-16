@@ -17,7 +17,7 @@ async def initialize(app):
     """Initialize HTTP server."""
 
     # Configure CORS settings
-    cors = aiohttp_cors.setup(server, defaults={
+    cors = aiohttp_cors.setup(app, defaults={
         "*": aiohttp_cors.ResourceOptions(
             allow_credentials=True,
             expose_headers="*",
@@ -25,7 +25,7 @@ async def initialize(app):
         )
     })
     # Apply CORS to endpoints
-    for route in list(server.router.routes()):
+    for route in list(app.router.routes()):
         cors.add(route)
 
     LOG.info("Initialization done.")
