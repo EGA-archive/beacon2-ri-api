@@ -32,11 +32,8 @@ LOG = logging.getLogger(__name__)
 #                                         QUERY VALIDATION
 # ----------------------------------------------------------------------------------------------------------------------
 
-class RootParameters(RequestParameters):
-    pass
-
 class InfoParameters(RequestParameters):
-    model = ChoiceField('GA4GH-ServiceInfo-v0.1', required=True)
+    model = ChoiceField('GA4GH-ServiceInfo-v0.1')
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -47,7 +44,8 @@ def record_to_dict(record):
     return {
         "id": record["datasetId"],
         "name": None,
-        "exists": True,
+        "description": record["description"],
+        "assemblyId": record["assemblyId"],
         "createDateTime": None,
         "updateDateTime": None,
         "dataUseConditions": None,
@@ -55,21 +53,19 @@ def record_to_dict(record):
         "variantCount": record["variantCount"], # already coalesced
         "callCount": record["callCount"],
         "sampleCount": record["sampleCount"],
-        "frequency": float(record["frequency"] or 0),
-        # No numVariants?
         "externalURL": None,
         "info": { "accessType": record["accessType"],
                   "authorized": 'true' if record["accessType"] == "PUBLIC" else 'false'} 
     }
 
 # ----------------------------------------------------------------------------------------------------------------------
-#                                         HANDLER FUNCTION
+#                                         MAIN FUNCTIONS
 # ----------------------------------------------------------------------------------------------------------------------
 
 def _finalize(beacon_info, beacon_datasets):
     beacon_info['datasets'] = beacon_datasets
     # If one sets up a beacon it is recommended to adjust these sample requests
-    beacon_info['sampleAlleleRequests'] = sample_allele_requests
+    beacon_info['sampleAlleleRequests'] = models.sample_allele_requests
 
     # Before returning the response we need to filter it depending on the access levels
     beacon_response = {"beacon": beacon_info}
@@ -80,33 +76,46 @@ def _finalize(beacon_info, beacon_datasets):
     # filtered_response = filter_response(beacon_response, ACCESS_LEVELS_DICT, accessible_datasets, user_levels, info2access)
     # return filtered_response["beacon"]
 
-proxy_root = RootParameters()
+
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         HANDLER FUNCTIONS
+# ----------------------------------------------------------------------------------------------------------------------
+
 async def handler_root(request):
     LOG.info('GET request to the info endpoint.')
-    qparams_raw, qparams_processed = await proxy_root.fetch(request) # validate
+    # Fetch datasets info
     beacon_datasets = [r async for r in fetch_datasets_metadata(transform=record_to_dict)]
-    response = models.beacon_v1(beacon_datasets)
+    # Fetch beacon info
+    beacon_info = models.Beacon_v1
+    # Join both
+    response = _finalize(beacon_info, beacon_datasets)
     return json_response(response)
 
 
 proxy_info = InfoParameters()
 async def handler_info(request):
     LOG.info('GET request to the info endpoint.')
-    model = request.rel_url.query.get("model")
+    # Parse model parameter
+    qparams_raw, qparams_processed = await proxy_info.fetch(request) # validate
+    model = qparams_processed.model
     if model is None:
         return await handler_root(request)
-
     # Otherwise, it must be 'GA4GH-ServiceInfo-v0.1', by validation
-    qparams = await proxy_info.fetch(request) # validate with model=GA4GH-ServiceInfo-v0.1
-
+    # Fetch datasets info
     beacon_datasets = [r async for r in fetch_datasets_metadata(transform=record_to_dict)]
-    response = _finalize(GA4GH_ServiceInfo_v01, beacon_datasets)
+    # Fetch beacon info
+    beacon_info = models.GA4GH_ServiceInfo_v01
+    # Join both
+    response = _finalize(beacon_info, beacon_datasets)
     return json_response(response)
 
 
 async def handler_service_info(request):
     LOG.info('GET request to the info endpoint.')
+    # Fetch datasets info
     beacon_datasets = [r async for r in fetch_datasets_metadata(transform=record_to_dict)]
-    response = _finalize(GA4GH_ServiceInfo_v01, beacon_datasets)
+    # Fetch beacon info
+    beacon_info = models.GA4GH_ServiceInfo_v01
+    # Join both
+    response = _finalize(beacon_info, beacon_datasets)
     return json_response(response)
-

@@ -606,5 +606,3 @@ def individual_object_rest(individual_info, alternative_schemas):
 
 
 
-def beacon_v1(datasets):
-    return {}
