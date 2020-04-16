@@ -10,6 +10,7 @@ import os
 import logging
 from pathlib import Path
 import yaml
+from aiohttp.web import json_response
 
 
 from .. import conf, load_access_levels
@@ -44,12 +45,12 @@ VALID_LEVELS = ["public", "registered", "controlled", "not_supported"]
 # ----------------------------------------------------------------------------------------------------------------------
 
 class AccessLevelsParameters(RequestParameters):
-    fields = ListField(default=[])
-    levels = ListField(default=[])
-    # datasetIds = DatasetIdsField()
-    datasetIds = ListField(default=[])
-    displayDatasetDifferences = BooleanField(default=False)
     includeFieldDetails = BooleanField(default=False)
+    displayDatasetDifferences = BooleanField(default=False)
+    levels = ListField(default=[])
+    datasetIds = ListField(default=None)
+    fields = ListField(default=[])
+    # fields = ListField(items=["public", "registered", "controlled", "not_supported"])
 
     def correlate(self, values):
         # values is a namedtuple, with the above keys
@@ -102,7 +103,7 @@ def ignore_field_details_special(dict_obj):
 
 def filter_by_field(fields, dic):
   """
-  Recursive funciton that iterates through the response dict and filters
+  Recursive function that iterates through the response dict and filters
   the fields that are specified in a list.
   """
   output = {}
@@ -120,7 +121,7 @@ def filter_by_field(fields, dic):
 
 def filter_by_access(levels, dic):
   """
-  Recursive funciton that iterates through the response dict and filters
+  Recursive function that iterates through the response dict and filters
   the access_levels that are specified in a list.
   """
   output = {}
@@ -137,7 +138,7 @@ def filter_by_access(levels, dic):
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-#                                         MAIN FUNCTIONS
+#                                         MAIN FUNCTION
 # ----------------------------------------------------------------------------------------------------------------------
 
 async def special_datasets():
@@ -171,7 +172,6 @@ async def special_datasets():
 
 
 
-
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         HANDLER FUNCTION
 # ----------------------------------------------------------------------------------------------------------------------
@@ -182,29 +182,32 @@ async def handler(request):
     """Construct the `Beacon` app access level dict.
     """
     LOG.info('Running an access_levels request')
+    
+    # Load the yml file with the access_levels defined
+    fields = ACCESS_LEVELS_DICT
 
     # Fetch the dict of the special access_levels datasets
     special_simple, special_all = await special_datasets()
 
     # Validate the query parameters
     qparams_raw, qparams_db = await proxy.fetch(request)
-    LOG.debug("Original Query Parameters: %s", qparams_raw)
 
-    # print only for debug
+    # Print only for debug
     if LOG.isEnabledFor(logging.DEBUG):
         print_qparams(qparams_db, proxy, LOG)
 
-    # further validation for datasets (using raw parameters)
-    datasets = qparams_raw.get('datasetIds','').split(',')
-    for dataset in datasets:
-        if dataset not in special_simple:
-            raise BeaconAccessLevelsBadRequest(f"{dataset} not found")
+    # Further validation for datasets (using raw parameters)
+    if qparams_db.datasetIds:
+        for dataset in qparams_db.datasetIds:
+            if dataset not in special_simple:
+                raise BeaconAccessLevelsBadRequest(f"{dataset} not found")
 
     # Handle first parameter: displayDatasetDifferences
     special = special_all if qparams_db.displayDatasetDifferences else special_simple
   
     # Handle second parameter = datasetIds
-    special = {k: v for k, v in special.items() if k in qparams_db.datasetIds}
+    if qparams_db.datasetIds: 
+        special = {k: v for k, v in special.items() if k in qparams_db.datasetIds}
 
     # Handle third parameter: includeFieldDetails
     if not qparams_db.includeFieldDetails and qparams_db.displayDatasetDifferences:
@@ -231,4 +234,4 @@ async def handler(request):
         'datasets': special
     }
 
-    return beacon_answer
+    return json_response(beacon_answer)
