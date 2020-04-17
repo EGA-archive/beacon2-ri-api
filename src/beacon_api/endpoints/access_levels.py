@@ -17,9 +17,7 @@ from .. import conf, load_access_levels
 from ..api.db import access_levels_datasets
 from ..api.exceptions import BeaconAccessLevelsBadRequest
 from ..validation.request import RequestParameters, print_qparams
-from ..validation.fields import (BooleanField,
-                                 ListField,
-                                 DatasetIdsField)
+from ..validation.fields import BooleanField, ListField
 
 LOG = logging.getLogger(__name__)
 
@@ -50,7 +48,7 @@ class AccessLevelsParameters(RequestParameters):
     levels = ListField(default=[])
     datasetIds = ListField(default=None)
     fields = ListField(default=[])
-    # fields = ListField(items=["public", "registered", "controlled", "not_supported"])
+    # fields = ChoiceField("public", "registered", "controlled", "not_supported", default="not_supported")
 
     def correlate(self, values):
         # values is a namedtuple, with the above keys
@@ -196,18 +194,20 @@ async def handler(request):
     if LOG.isEnabledFor(logging.DEBUG):
         print_qparams(qparams_db, proxy, LOG)
 
-    # Further validation for datasets (using raw parameters)
-    if qparams_db.datasetIds:
-        for dataset in qparams_db.datasetIds:
-            if dataset not in special_simple:
-                raise BeaconAccessLevelsBadRequest(f"{dataset} not found")
+    ########### Daz: Commented out, cuz needs to be updated
+    # # Further validation for datasets
+    # selected_datasets = qparams_db.datasets[0]
+    # for dataset in selected_datasets:
+    #     if dataset not in special_simple:
+    #         raise BeaconAccessLevelsBadRequest(f"{dataset} not found")
 
     # Handle first parameter: displayDatasetDifferences
     special = special_all if qparams_db.displayDatasetDifferences else special_simple
   
-    # Handle second parameter = datasetIds
-    if qparams_db.datasetIds: 
-        special = {k: v for k, v in special.items() if k in qparams_db.datasetIds}
+    ########### Daz: Commented out, cuz needs to be updated
+    # # Handle second parameter = datasetIds
+    # if qparams_db.datasetIds: 
+    #     special = {k: v for k, v in special.items() if k in qparams_db.datasetIds}
 
     # Handle third parameter: includeFieldDetails
     if not qparams_db.includeFieldDetails and qparams_db.displayDatasetDifferences:

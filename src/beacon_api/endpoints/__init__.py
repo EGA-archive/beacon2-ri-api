@@ -10,7 +10,10 @@ from . import (info,
             #    genomic_query,
                individuals,
             #    biosamples,
-            #    gvariant,
+            #   gvariant,
+               
+               # testing
+               test
                )
 
 routes = [
@@ -49,6 +52,8 @@ routes = [
     
     # gvariant
     # web.get('/gvariant'                      , gvariant.handler)
+
+    web.get('/test'                      , test.handler)
 
 ]
 

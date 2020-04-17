@@ -68,3 +68,8 @@ tls_enabled = False
 beacon_cert = '/etc/ega/server.cert'
 beacon_key = '/etc/ega/server.key'
 CA_cert = '/etc/ega/CA.cert'
+
+#
+# Permissions server configuration
+#
+permissions_url = r'https://permissions.ega-archive.org/datasets'

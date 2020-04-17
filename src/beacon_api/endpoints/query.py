@@ -8,7 +8,7 @@ from ..validation.fields import (RegexField,
                                  ChoiceField,
                                  IntegerField,
                                  ListField,
-                                 DatasetIdsField)
+                                 DatasetsField)
 
 LOG = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ class QueryParameters(RequestParameters):
     variantType = ChoiceField("DEL", "INS", "DUP", "INV", "CNV", "SNP", "MNP", "DUP:TANDEM", "DEL:ME", "INS:ME", "BND")
     assemblyId = RegexField(r'^((GRCh|hg)[0-9]+([.]?p[0-9]+)?)$', required=True) # GRCh007.p9 is valid
     # datasetIds = ListField(items=RegexField(r'^[^<>"/;%{}+=]*$'))
-    datasetIds = DatasetIdsField()
+    datasets = DatasetsField()
     includeDatasetResponses = ChoiceField("ALL", "HIT", "MISS", "NONE", default="NONE")
     filters = ListField(items=RegexField(r'.*:.+=?>?<?[0-9]*$'))
     mateName = ChoiceField("1", "2", "3", "4", "5", "6", "7",
@@ -132,7 +132,7 @@ class QueryParameters(RequestParameters):
 # 	                                        qparams.referenceBases,
 # 	                                        qparams.alternateBases,
 # 	                                        qparams.assemblyId,
-# 	                                        [record['id'] for record in qparams.datasetIds], # list of int
+# 	                                        qparams.datasets, # list of str
 # 	                                        qparams.filters) # filters as-is
 
 #         for record in list(db_response):
@@ -155,10 +155,10 @@ class QueryParameters(RequestParameters):
 #     # If the response has to include the datasets where the variant is not found, 
 #     # we want to fetch info about them and shape them to be shown
 #     if query_parameters.includeDatasetResponses in ['ALL', 'MISS']:
-#         LOG.debug("datasetIds: %s", query_parameters.datasetIds)
+#         LOG.debug("datasets: %s", query_parameters.datasets)
 #         _hits = set(d["internalId"] for d in hit_datasets)
 #         LOG.debug("list_hits: %s", _hits)
-#         accessible_missing = query_parameters.datasetIds - _hits
+#         accessible_missing = query_parameters.datasets - _hits
 #         LOG.debug("accessible_missing: %s", accessible_missing)
 #         miss_datasets = await fetch_resulting_datasets(db_pool,
 #                                                        query_parameters,
@@ -189,30 +189,40 @@ async def handler(request):
     response = dict(qparams_raw)
 
     # # 1. GET VALID/ACCESSIBLE DATASETS
-    
-    # We want to get a list of the datasets available in the database separated in three lists
-    # depending on the access level (we check all of them if the user hasn't specified anything, if some
-    # there were given, those are the only ones that are checked)
-    public_datasets, registered_datasets, controlled_datasets = [], [], []
-    for access_type, dataset_id, _ in qparams_db.datasetIds:
-        if access_type == 'PUBLIC':
-            public_datasets.append(dataset_id)
-        elif access_type == 'REGISTERED':
-            registered_datasets.append(dataset_id)
-        elif access_type == 'CONTROLLED':
-            controlled_datasets.append(dataset_id)
 
-    ##### TEST CODE TO USE WHEN AAI is integrated
-    # access_type, accessible_datasets = access_resolution(request, request['token'], request.host, public_datasets,
-    #                                                      registered_datasets, controlled_datasets)
-    # LOG.info(f"The user has this types of access: {access_type}")
-    # query_parameters[-2] = ",".join([str(id) for id in accessible_datasets])
-    ##### END TEST
+    ###########
+    ########### Daz: Commented out, cuz needs to be updated
+    ###########
+    # # We want to get a list of the datasets available in the database separated in three lists
+    # # depending on the access level (we check all of them if the user hasn't specified anything, if some
+    # # there were given, those are the only ones that are checked)
+    # public_datasets, registered_datasets, controlled_datasets = [], [], []
+    # async for access_type, dataset_id, _ in fetch_datasets_access(datasets=qparams_db.datasets[0]):
+    #     if access_type == 'PUBLIC':
+    #         public_datasets.append(dataset_id)
+    #     elif access_type == 'REGISTERED':
+    #         registered_datasets.append(dataset_id)
+    #     elif access_type == 'CONTROLLED':
+    #         controlled_datasets.append(dataset_id)
 
-    # NOTE that right now we will just focus on the PUBLIC ones to ease the process, so we get all their 
-    # ids and add them to the query
-    datasetIds = set(public_datasets) # set of int
-    LOG.debug('Dataset Ids: %s', datasetIds)
+    # ##### TEST CODE TO USE WHEN AAI is integrated
+    # # access_type, accessible_datasets = access_resolution(request, request['token'], request.host, public_datasets,
+    # #                                                      registered_datasets, controlled_datasets)
+    # # LOG.info(f"The user has this types of access: {access_type}")
+    # # query_parameters[-2] = ",".join([str(id) for id in accessible_datasets])
+    # ##### END TEST
+
+    # # NOTE that right now we will just focus on the PUBLIC ones to ease the process, so we get all their 
+    # # ids and add them to the query
+    # datasetIds = set(public_datasets) # set of int
+    # LOG.debug('Dataset Ids: %s', datasetIds)
+    ###########
+    ########### Daz: until here
+    ###########
+    ########### Reason: datasets are now resolved. qparams.datasets[0] is exactly the list of datasets
+    ###########         the user has access to. If there is no user, the dataset will deal with the public datasets
+    ###########         or intersect the public ones with the requested ones
+    ###########
 
     # 3. RETRIEVE DATA FROM THE DB (use SQL function)
 

@@ -10,7 +10,7 @@ from ..validation.fields import (Field,
                                  ChoiceField,
                                  IntegerField,
                                  ListField,
-                                 DatasetIdsField)
+                                 DatasetsField)
 
 
 LOG = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ class IndividualsParameters(RequestParameters):
     referenceBases = RegexField(r'^([ACGTN]+)$')
     alternateBases = RegexField(r'^([ACGTN]+)$')
     assemblyId = RegexField(r'^((GRCh|hg)[0-9]+([.]?p[0-9]+)?)$')
-    datasetIds = DatasetIdsField()
+    datasets = DatasetsField()
     biosampleId = Field() # just a text
     filters = ListField(items=RegexField(r'.*:.+=?>?<?[0-9]*$'))
     individualSchemas = ListField(items=ChoiceField("ga4gh-phenopacket-individual-v0.1", "beacon-individual-v0.1"))
@@ -74,7 +74,7 @@ def create_query(qparams):
             "assemblyId": qparams.get("assemblyId", "")
         },
         "datasets": {
-            "datasetIds": qparams.get("datasetIds"),
+            "datasetIds": qparams.get("datasets"),
             "includeDatasetResponses": ""
         },
         "filters": qparams.get("filters"),
@@ -175,7 +175,7 @@ async def handler(request):
     # depending on the access level (we check all of them if the user hasn't specified anything, if some
     # there were given, those are the only ones that are checked)
     public_datasets, registered_datasets, controlled_datasets = [], [], []
-    for access_type, dataset_id, _ in qparams_db.datasetIds:
+    for access_type, dataset_id, _ in qparams_db.datasets:
         if access_type == 'PUBLIC':
             public_datasets.append(dataset_id)
         elif access_type == 'REGISTERED':

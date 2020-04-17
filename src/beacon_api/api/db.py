@@ -174,7 +174,7 @@ async def data_summary(connection, qparams):
     Returns list of datasets dictionaries. 
     """
     LOG.info('Retrieving data_summary')
-    dollars = ", ".join([ f"${i}" for i in range(1, 14)]) # 1..13
+    dollars = ", ".join([ f"${i}" for i in range(1, 14)]) # 1..14
     LOG.debug("dollars: %s", dollars)
     query = f"""SELECT dataset_id   AS "_internal_id",
                        variant_cnt  AS "variantCount",
@@ -196,7 +196,8 @@ async def data_summary(connection, qparams):
 	                                qparams.referenceBases,
 	                                qparams.alternateBases,
 	                                qparams.assemblyId,
-	                                [record[1] for record in qparams.datasetIds], # list of int
+	                                qparams.datasets[0], # list of str
+	                                qparams.datasets[1], # _is_authenticated
 	                                qparams.filters) # filters as-is
         
     for record in db_response:
@@ -239,8 +240,8 @@ async def patients(connection, qparams, individual_id, process=None):
 	                                qparams.referenceBases, # _reference_bases text,
 	                                qparams.alternateBases, # _alternate_bases text,
 	                                qparams.assemblyId,     # _reference_genome text,
-	                                '', #[record[1] for record in qparams.datasetIds], # _dataset_ids int[],
-	                                #[record[2] for record in qparams.datasetIds], # _dataset_names text[],
+	                                qparams.datasets[0],    # _dataset_ids text[],
+	                                qparams.datasets[1],    # _is_authenticated bool,
 	                                None,                   # _biosample_stable_id text,
 	                                individual_id,          # _individual_stable_id text,
 	                                qparams.filters,        # filters as-is,  # _filters text[],

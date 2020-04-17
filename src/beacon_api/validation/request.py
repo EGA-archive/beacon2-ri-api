@@ -86,11 +86,12 @@ class RequestParameters(metaclass=DeclarativeFieldsMetaclass):
         if req.method == 'GET':
             return req.rel_url.query
         if req.method == 'POST':
-            post_data = await req.json()
-            return dict(flatten_dict(post_data))
+            # post_data = await req.json()
+            # return dict(flatten_dict(post_data))
+            return await req.json() # it is like dict
         return {}
 
-    async def clean_fields(self, qparams):
+    async def clean_fields(self, req, qparams):
 
         # Are there extra undesired parameters
         invalid_keys = []
@@ -106,7 +107,7 @@ class RequestParameters(metaclass=DeclarativeFieldsMetaclass):
             qval = qparams.get(key)
             field = self.__fields__[key]
             # LOG.debug('key %s | val %s | field %s', key, qval, field.__class__.__name__)
-            val = await field.clean(qval)
+            val = await field.clean(req, qval)
             # LOG.debug('\t -> %s', val)
             yield val
 
@@ -119,7 +120,7 @@ class RequestParameters(metaclass=DeclarativeFieldsMetaclass):
 
         try:
             # Collect the values and validate them
-            values = [v async for v in self.clean_fields(qparams)]
+            values = [v async for v in self.clean_fields(req, qparams)]
             values = collections.namedtuple(self.__class__.__name__, self.__keys__)(*values)
             # does not take more space than a tuple
 
@@ -130,6 +131,9 @@ class RequestParameters(metaclass=DeclarativeFieldsMetaclass):
             return qparams, values
         except ValidationError as e:
             raise BeaconBadRequest(str(e), fields=qparams)
+
+    async def get_permissions(self, token):
+        pass
 
 
 

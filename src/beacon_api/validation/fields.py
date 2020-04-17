@@ -6,7 +6,9 @@ import logging
 import os
 # from decimal import Decimal, DecimalException
 
-from ..conf import database_schema
+from aiohttp import ClientSession
+
+from ..conf import database_schema, permissions_url
 from .validators import (ValidationError,
                          EnumValidator,
                          RegexValidator,
@@ -68,17 +70,17 @@ class Field:
             return
         self.run_validators(value)
 
-    async def convert(self, value):
+    async def convert(self, value, **kwargs):
         if value in EMPTY_VALUES:
             return self.default
         return value
 
-    async def clean(self, value):
+    async def clean(self, req, value):
         """
         Validate the given value and return its "cleaned" value as an
         appropriate Python object. Raise FieldError for any errors.
         """
-        value = await self.convert(value)
+        value = await self.convert(value, request=req)
         self.validate(value)
         return value
 
@@ -93,7 +95,7 @@ class ChoiceField(Field):
         self.item_type = type(self.choices[0])
         self.validators.append(EnumValidator(self.choices))
 
-    async def convert(self, value: str):
+    async def convert(self, value: str, **kwargs):
         if value in EMPTY_VALUES:
             return self.default
         try:
@@ -120,12 +122,12 @@ class IntegerField(Field):
         if min_value is not None:
             self.validators.append(MinValueValidator(min_value))
 
-    async def convert(self, value: str) -> int:
+    async def convert(self, value: str, **kwargs) -> int:
         """
         Validate that int() can be called on the input. Return the result
         of int() or None for empty values.
         """
-        # value = super().convert(value)
+        # value = super().convert(value, **kwargs)
         if value in EMPTY_VALUES:
             return self.default
         try:
@@ -137,7 +139,7 @@ class IntegerField(Field):
 class BooleanField(Field):
     error_message = 'not a boolean value'
 
-    async def convert(self, value: str) -> bool:
+    async def convert(self, value: str, **kwargs) -> bool:
         if value in EMPTY_VALUES:
             return self.default
         if value.lower() in ('false', '0'):
@@ -148,8 +150,8 @@ class BooleanField(Field):
 class NullBooleanField(Field):
     error_message = 'not a boolean value'
 
-    async def convert(self, value: str) -> bool:
-        # value = super().convert(value)
+    async def convert(self, value: str, **kwargs) -> bool:
+        # value = super().convert(value, **kwargs)
         if value in EMPTY_VALUES:
             return self.default
         if value.lower() in ('true', '1'):
@@ -166,11 +168,11 @@ class ListField(Field):
         self.item_type = items or Field()
         super().__init__(**kwargs)
 
-    async def convert(self, value: str) -> set:
+    async def convert(self, value: str, **kwargs) -> set:
         if value in EMPTY_VALUES:
             return self.default
         values = value.split(self.separator)
-        return list(set(self.item_type.convert(v) for v in values)) # json.dumps doesn't like sets
+        return list(set(self.item_type.convert(v, **kwargs) for v in values)) # json.dumps doesn't like sets
 
     def validate(self, values):
         if values in EMPTY_VALUES:
@@ -179,16 +181,44 @@ class ListField(Field):
             self.item_type.validate(value)
         return values
 
-# class CommaSeparatedListField(ListField):
-#     def __init__(self, **kwargs):
-#         kwargs['separator'] = ','
-#         super().__init__(**kwargs)
 
-class DatasetIdsField(ListField):
+class DatasetsField(ListField):
 
-    async def convert(self, value: str) -> list:
+    async def convert(self, value: str, request=None) -> list:
+
+        # Requested datasets
         values = value.split(self.separator) if value not in EMPTY_VALUES else []
-        # remove duplicates
-        datasets = list(set(values)) # we know they should be strings
-        return [d async for d in fetch_datasets_access(datasets=datasets)]
+        datasets = list(set(values)) # remove duplicates, we know they should be strings
+
+        # Get the token.
+        # If the user is not authenticated (ie no token)
+        # we pass (datasets, False) to the database function: it will filter out the datasets list, with the public ones
+
+        header = request.headers.get('Authorization') if request else None
+        LOG.debug('Access token: %s', header)
+        if header is None:
+            return datasets, False
+            
+        token = header.split(' ', 1)
+        if len(token) < 2:
+            return datasets, False
+
+        # Otherwise, we have a token and resolve the datasets with the permissions server
+        # The permissions server will:
+        # * filter out the datasets list, with the ones the user has access to
+        # * return _all_ the datasets the user has access to, in case the datasets list is empty
+        token = token[1]
+        async with ClientSession() as session:
+            async with session.post(
+                    permissions_url,
+                    headers = { 'Authorization': header }, # only sending that header
+                    json = { 'datasets': datasets }, # will set the Content-Type to application/json
+            ) as resp:
+
+                if resp.status > 200:
+                    LOG.error('Permissions server error %d', resp.status)
+                    return [], False # behave like it's not authenticated ?
+
+                authorized_datasets = await resp.json()
+                return authorized_datasets, True
 
