@@ -57,3 +57,19 @@ database_user = 'beacon'
 database_password = 'secretpassword'
 database_name = 'beacon'
 database_schema = 'public' # comma-separated list of schemas
+
+#
+# Web server configuration
+#
+beacon_host = '0.0.0.0'
+beacon_port = 5050
+
+tls_enabled = False
+beacon_cert = '/etc/ega/server.cert'
+beacon_key = '/etc/ega/server.key'
+CA_cert = '/etc/ega/CA.cert'
+
+#
+# Permissions server configuration
+#
+permissions_url = r'https://permissions.ega-archive.org/datasets'
