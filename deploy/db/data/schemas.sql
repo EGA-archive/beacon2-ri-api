@@ -435,10 +435,10 @@ SELECT pat.id,
   CASE WHEN ot_ethnicity.id IS NOT NULL THEN ot_ethnicity.ontology || ':' || ot_ethnicity.term ELSE null::text END AS ethnicity_ontology,
   pat.geographic_origin,
   CASE WHEN ot_geo_origin.id IS NOT NULL THEN ot_geo_origin.ontology || ':' || ot_geo_origin.term ELSE null::text END AS geographic_origin_ontology
-FROM "v2.0".patient_table pat
-INNER JOIN "v2.0".ontology_term ot_sex ON ot_sex.target_table='"v2.0".patient_table' AND ot_sex.column_name='sex' AND lower(ot_sex.column_value)=lower(pat.sex)
-INNER JOIN "v2.0".ontology_term ot_ethnicity ON ot_ethnicity.target_table='"v2.0".patient_table' AND ot_ethnicity.column_name='ethnicity' AND lower(ot_ethnicity.column_value)=lower(pat.ethnicity)
-INNER JOIN "v2.0".ontology_term ot_geo_origin ON ot_geo_origin.target_table='"v2.0".patient_table' AND ot_geo_origin.column_name='geographic_origin' AND lower(ot_geo_origin.column_value)=lower(pat.geographic_origin)
+FROM public.patient_table pat
+INNER JOIN public.ontology_term ot_sex ON ot_sex.target_table='public.patient_table' AND ot_sex.column_name='sex' AND lower(ot_sex.column_value)=lower(pat.sex)
+INNER JOIN public.ontology_term ot_ethnicity ON ot_ethnicity.target_table='public.patient_table' AND ot_ethnicity.column_name='ethnicity' AND lower(ot_ethnicity.column_value)=lower(pat.ethnicity)
+INNER JOIN public.ontology_term ot_geo_origin ON ot_geo_origin.target_table='public.patient_table' AND ot_geo_origin.column_name='geographic_origin' AND lower(ot_geo_origin.column_value)=lower(pat.geographic_origin)
 ;
 
 -- DROP VIEW public.patient_pedigree_w_ontology_terms;
@@ -450,9 +450,9 @@ SELECT pat_ped.patient_id,
   pat_ped.number_of_individuals_tested, 
   pat_ped.disease,
   CASE WHEN ot_disease.id IS NOT NULL THEN ot_disease.ontology || ':' || ot_disease.term ELSE null::text END AS disease_ontology
-FROM "v2.0".patient_pedigree_table pat_ped
-INNER JOIN "v2.0".ontology_term ot_role ON ot_role.target_table='"v2.0".patient_pedigree_table' AND ot_role.column_name='pedigree_role' AND lower(ot_role.column_value)=lower(pat_ped.pedigree_role)
-INNER JOIN "v2.0".ontology_term ot_disease ON ot_disease.target_table='"v2.0".patient_pedigree_table' AND ot_disease.column_name='disease' AND lower(ot_disease.column_value)=lower(pat_ped.disease)
+FROM public.patient_pedigree_table pat_ped
+INNER JOIN public.ontology_term ot_role ON ot_role.target_table='public.patient_pedigree_table' AND ot_role.column_name='pedigree_role' AND lower(ot_role.column_value)=lower(pat_ped.pedigree_role)
+INNER JOIN public.ontology_term ot_disease ON ot_disease.target_table='public.patient_pedigree_table' AND ot_disease.column_name='disease' AND lower(ot_disease.column_value)=lower(pat_ped.disease)
 ;
 
 CREATE OR REPLACE VIEW public.patient_disease_w_ontology_terms AS
@@ -466,8 +466,8 @@ SELECT pat_dis.id,
   pat_dis.stage, 
   CASE WHEN ot_stage.id IS NOT NULL THEN ot_stage.ontology || ':' || ot_stage.term ELSE null::text END AS stage_ontology,
   pat_dis.family_history
-FROM "v2.0".patient_disease_table pat_dis
-INNER JOIN "v2.0".ontology_term ot_disease ON ot_disease.target_table='"v2.0".patient_disease_table' AND ot_disease.column_name='disease' AND lower(ot_disease.column_value)=lower(pat_dis.disease)
-INNER JOIN "v2.0".ontology_term ot_age_group ON ot_age_group.target_table='"v2.0".patient_disease_table' AND ot_age_group.column_name='age_group' AND lower(ot_age_group.column_value)=lower(pat_dis.age_group)
-INNER JOIN "v2.0".ontology_term ot_stage ON ot_stage.target_table='"v2.0".patient_disease_table' AND ot_stage.column_name='stage' AND lower(ot_stage.column_value)=lower(pat_dis.stage)
+FROM public.patient_disease_table pat_dis
+INNER JOIN public.ontology_term ot_disease ON ot_disease.target_table='public.patient_disease_table' AND ot_disease.column_name='disease' AND lower(ot_disease.column_value)=lower(pat_dis.disease)
+INNER JOIN public.ontology_term ot_age_group ON ot_age_group.target_table='public.patient_disease_table' AND ot_age_group.column_name='age_group' AND lower(ot_age_group.column_value)=lower(pat_dis.age_group)
+INNER JOIN public.ontology_term ot_stage ON ot_stage.target_table='public.patient_disease_table' AND ot_stage.column_name='stage' AND lower(ot_stage.column_value)=lower(pat_dis.stage)
 ;

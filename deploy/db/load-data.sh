@@ -19,7 +19,8 @@ docker_process_sql < data/schemas.sql
 docker_process_sql < data/function_query_data_summary_response.sql
 docker_process_sql < data/function_query_data_response.sql
 docker_process_sql < data/function_query_patients.sql
-docker_process_sql < data/function_validate_params.sql
+docker_process_sql < data/function_add_where_clause_conditions.sql
+docker_process_sql < data/function_parse_filters.sql
 
 docker_process_sql -c "GRANT EXECUTE ON FUNCTION public.query_data_summary_response(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text, text) TO ${POSTGRES_USER};"
 docker_process_sql -c "GRANT EXECUTE ON FUNCTION public.query_data_response(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text, text) TO ${POSTGRES_USER};"
