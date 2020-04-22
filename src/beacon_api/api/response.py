@@ -12,7 +12,7 @@ class BeaconEncoder(json.JSONEncoder):
     def default(self, o):
 
         if isinstance(o, Decimal):
-            return float(o)
+            return str(o) # keeps all the decimals, float would truncate them
 
         if isinstance(o, Record):
             return dict(record.items()) # temporarily
