@@ -176,7 +176,9 @@ async def data_summary(connection, qparams):
     LOG.info('Retrieving data_summary')
     dollars = ", ".join([ f"${i}" for i in range(1, 14)]) # 1..14
     LOG.debug("dollars: %s", dollars)
-    query = f"""SELECT dataset_id   AS "_internal_id",
+    query = f"""SELECT stable_id    AS "datasetName",
+                       access       AS "datasetAccessLevel",
+                       exists       AS "exists"
                        variant_cnt  AS "variantCount",
                        call_cnt     AS "callCount",
                        sample_cnt   AS "sampleCount",
@@ -196,7 +198,8 @@ async def data_summary(connection, qparams):
 	                                qparams.referenceBases,
 	                                qparams.alternateBases,
 	                                qparams.assemblyId,
-	                                qparams.datasets[0], # list of str
+                                        qparams.includeDatasetResponses,
+                                        qparams.datasets[0], # list of str
 	                                qparams.datasets[1], # _is_authenticated
 	                                qparams.filters) # filters as-is
         
