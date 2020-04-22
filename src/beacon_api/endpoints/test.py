@@ -1,7 +1,5 @@
 import logging
 
-from aiohttp.web import json_response
-
 from ..api.exceptions import BeaconBadRequest
 from ..validation.request import RequestParameters, print_qparams
 from ..validation.fields import (RegexField,
@@ -9,6 +7,7 @@ from ..validation.fields import (RegexField,
                                  IntegerField,
                                  ListField,
                                  DatasetsField)
+from ..api.response import beacon_response
 
 LOG = logging.getLogger(__name__)
 
@@ -31,8 +30,10 @@ async def handler(request):
         print_qparams(qparams_db, proxy, LOG)
 
     response = dict(qparams_raw)
-
-    return json_response(response)
+    from decimal import Decimal
+    response['decimal'] = Decimal(1) / Decimal(7)
+    # return response
+    return await beacon_response(request, response)
 
 
 
