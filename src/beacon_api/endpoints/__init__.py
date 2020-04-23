@@ -11,7 +11,9 @@ from . import (info,
                individuals,
             #    biosamples,
             #   gvariant,
-               
+
+               viral,
+
                # testing
                test
                )
@@ -53,7 +55,9 @@ routes = [
     # gvariant
     # web.get('/gvariant'                      , gvariant.handler)
 
-    web.get('/test'                      , test.handler)
+    web.get('/test'                      , test.handler),
+
+    web.get('/viral'                      , viral.handler),
 
 ]
 

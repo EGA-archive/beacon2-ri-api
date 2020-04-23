@@ -10,6 +10,11 @@ LOG = logging.getLogger(__name__)
 
 async def beacon_response(request, data):
 
+    # Running this first, in case it raises an error
+    # so we don't start the StreamResponse yet
+    content_gen = [chunk async for chunk in json_iterencode(data)]
+    
+    LOG.debug('HTTP response stream')
     headers = {
         'Content-Type': 'application/json;charset=utf-8',
         'Server': f'{conf.beacon_name} {conf.version} (based on {SERVER_SOFTWARE})'
@@ -19,7 +24,7 @@ async def beacon_response(request, data):
     # response.enable_chunked_encoding()
     await response.prepare(request)
 
-    async for chunk in json_iterencode(data):
+    for chunk in content_gen:
         # print(chunk)
         await response.write(chunk.encode()) # utf-8
 

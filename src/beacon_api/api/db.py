@@ -33,7 +33,7 @@ class DBConnection():
         if self.db_pool:
             return
 
-        LOG.info("Creating a connection pool")
+        LOG.info("Creating a connection pool to %s:%s", conf.database_url, conf.database_port)
         # Connection pool handles reconnections and keeps some expensive connections open for reuse
         self.db_pool = await asyncpg.create_pool(host=conf.database_url,
                                                  port=conf.database_port,
@@ -87,9 +87,10 @@ class DBConnection():
         try:
             yield conn
         except (asyncpg.exceptions._base.InterfaceError,
-                asyncpg.exceptions._base.PostgresError) as e:
+                asyncpg.exceptions._base.PostgresError,
+                asyncpg.exceptions.UndefinedFunctionError) as e:
             LOG.error('DB Error: %s', e)
-            traceback.print_exc()
+            # traceback.print_exc()
             raise BeaconServerError(f'DB Error: {e}')
         finally:
             LOG.debug('----------- releasing connection')
@@ -161,8 +162,6 @@ async def fetch_datasets_metadata(connection, transform=None):
     response = await connection.fetch(query)
     for record in response:
         yield transform(record) if callable(transform) else record
-    # return [collections.namedtuple('Dataset Metadata', record.keys())(*record.values())
-    #         for record in response]
 
 # Returns a generator of record, make sure to consume them before the connection is closed
 @pool.asyncgen_execute
@@ -187,37 +186,24 @@ async def data_summary(connection, qparams):
                 FROM {conf.database_schema}.query_data_summary_response({dollars});"""
     LOG.debug("QUERY: %s", query)
     statement = await connection.prepare(query)
-    db_response = await statement.fetch(qparams.variantType,
-	                                qparams.start,
-	                                qparams.startMin,
-	                                qparams.startMax,
-	                                qparams.end,
-	                                qparams.endMin,
-	                                qparams.endMax,
-	                                qparams.referenceName,
-	                                qparams.referenceBases,
-	                                qparams.alternateBases,
-	                                qparams.assemblyId,
-                                        qparams.includeDatasetResponses,
-                                        qparams.datasets[0], # list of str
-	                                qparams.datasets[1], # _is_authenticated
-	                                qparams.filters) # filters as-is
-        
-    for record in db_response:
+    response = await statement.fetch(qparams.variantType,
+	                             qparams.start,
+	                             qparams.startMin,
+	                             qparams.startMax,
+	                             qparams.end,
+	                             qparams.endMin,
+	                             qparams.endMax,
+	                             qparams.referenceName,
+	                             qparams.referenceBases,
+	                             qparams.alternateBases,
+	                             qparams.assemblyId,
+                                     qparams.includeDatasetResponses,
+                                     qparams.datasets[0], # list of str
+	                             qparams.datasets[1], # _is_authenticated
+	                             qparams.filters) # filters as-is
+    for record in response:
         yield record
-        # yield (True,
-        #        record["_internal_id"],
-        #        record["variantCount"],
-        #        record["callCount"],
-        #        record["sampleCount"],
-        #        float(record["frequency"] or 0), # is it ok with 0.0 ?
-        #        # 0 if record["frequency"] is None else float(record["frequency"])
-        #        record.get("numVariants", 0))
     
-    # keys = ("exists","_internal_id","variantCount","callCount","sampleCount","frequency","numVariants")
-    # for record in db_response:
-    #     yield collections.namedtuple('Data summary', keys)(*response)
-
 
 
 # Returns a generator of record, make sure to consume them before the connection is closed
@@ -266,8 +252,8 @@ async def fetch_filtering_terms(connection):
     """
     # async with connection.transaction():
     query = "SELECT ontology, term, label FROM ontology_term;"
-    db_response = await connection.fetch(query)
-    for record in db_response:
+    response = await connection.fetch(query)
+    for record in response:
         yield record
 
 
@@ -287,6 +273,31 @@ async def access_levels_datasets(connection):
                JOIN beacon_dataset dt
                ON al.dataset_id=dt.id;"""
     LOG.debug("QUERY: %s", query)
-    db_response = await connection.fetch(query)
-    for record in db_response:
+    response = await connection.fetch(query)
+    for record in response:
+        yield record
+
+
+# Returns a generator of record, make sure to consume them before the connection is closed
+@pool.asyncgen_execute
+async def fetch_viral(connection, qparams):
+    LOG.info('Retrieving viral information')
+
+    dollars = ", ".join([ f"${i}" for i in range(1, 14)]) # 1..14
+    LOG.debug("dollars: %s", dollars)
+    query = f"""SELECT * FROM {conf.database_schema}.query_viral({dollars});"""
+    LOG.debug("QUERY: %s", query)
+    statement = await connection.prepare(query)
+    response = await statement.fetch(qparams.variantType,
+	                             qparams.start,
+	                             qparams.startMin,
+	                             qparams.startMax,
+	                             qparams.end,
+	                             qparams.endMin,
+	                             qparams.endMax,
+	                             qparams.referenceBases,
+	                             qparams.alternateBases,
+	                             qparams.assemblyId,
+	                             qparams.filters) # filters as-is
+    for record in response:
         yield record

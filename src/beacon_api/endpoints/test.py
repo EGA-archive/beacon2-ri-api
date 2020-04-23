@@ -8,6 +8,7 @@ from ..validation.fields import (RegexField,
                                  ListField,
                                  DatasetsField)
 from ..api.response import beacon_response
+from ..api.db import fetch_filtering_terms
 
 LOG = logging.getLogger(__name__)
 
@@ -18,6 +19,7 @@ LOG = logging.getLogger(__name__)
 class Parameters(RequestParameters):
     hello = ChoiceField("hi", "salut", "hola")
     datasets = DatasetsField()
+    individualSchemas = ListField(items=ChoiceField("ga4gh-phenopacket-individual-v0.1"), default=[])
 
 proxy = Parameters()
 
@@ -32,6 +34,9 @@ async def handler(request):
     response = dict(qparams_raw)
     from decimal import Decimal
     response['decimal'] = Decimal(1) / Decimal(7)
+
+    response['filtering_terms'] = fetch_filtering_terms()
+
     # return response
     return await beacon_response(request, response)
 
