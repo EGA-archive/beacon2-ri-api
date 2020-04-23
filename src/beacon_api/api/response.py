@@ -1,30 +1,14 @@
-import json
-from decimal import Decimal
+import logging
 
 from aiohttp.http import SERVER_SOFTWARE
 from aiohttp.web import middleware, StreamResponse
-from asyncpg import Record
 
 from .. import conf
+from ..utils.json import json_iterencode
 
-class BeaconEncoder(json.JSONEncoder):
-
-    def default(self, o):
-
-        if isinstance(o, Decimal):
-            return str(o) # keeps all the decimals, float would truncate them
-
-        if isinstance(o, Record):
-            return dict(record.items()) # temporarily
-
-        # Let the base class default method raise the TypeError
-        return super().default(o)
-
+LOG = logging.getLogger(__name__)
 
 async def beacon_response(request, data):
-
-    separators = (',',':') # (item_separator, key_separator) therefore, we make it compact
-    content_gen = BeaconEncoder(separators=separators).iterencode(data)
 
     headers = {
         'Content-Type': 'application/json;charset=utf-8',
@@ -35,7 +19,7 @@ async def beacon_response(request, data):
     # response.enable_chunked_encoding()
     await response.prepare(request)
 
-    for chunk in content_gen:
+    async for chunk in json_iterencode(data):
         # print(chunk)
         await response.write(chunk.encode()) # utf-8
 
