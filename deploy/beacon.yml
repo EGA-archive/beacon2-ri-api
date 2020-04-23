@@ -31,7 +31,7 @@ services:
     volumes:
       - ../src/beacon_api:/beacon/beacon_api  # we do that to be able to modify the code and update the container "live"
       - ./beacon/conf.py:/beacon/beacon_api/conf.py
-      - ./beacon/access_levels.yml:/beacon/beacon_api/api/access_levels.yml
+      - ./beacon/access_levels.yml:/beacon/beacon_api/access_levels.yml
     ports:
       - "5057:5050"
     networks:
