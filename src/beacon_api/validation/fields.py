@@ -62,7 +62,7 @@ class Field:
             message = errors[0] if len(errors) == 1 else '\n' + '\n'.join([f'* {err}' for err in errors])
             raise FieldError(self.name, message)
 
-    def validate(self, value): # converted value
+    async def validate(self, value): # converted value
         if value in EMPTY_VALUES:
             if self.required:
                 raise FieldError(self.name, 'required field')
@@ -81,7 +81,7 @@ class Field:
         appropriate Python object. Raise FieldError for any errors.
         """
         value = await self.convert(value, request=req)
-        self.validate(value)
+        await self.validate(value)
         return value
 
 
@@ -178,12 +178,11 @@ class ListField(Field):
             res.add(converted_v)
         return list(res) # for the moment, cuz json.dumps not happy
 
-    def validate(self, values):
+    async def validate(self, values):
         if values in EMPTY_VALUES:
             return
         for value in values:
-            LOG.debug('Validating "%s" with %s running %s', value, self.item_type, self.item_type.validators)
-            self.item_type.validate(value)
+            await self.item_type.validate(value)
         return values
 
 
