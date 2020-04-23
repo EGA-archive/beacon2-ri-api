@@ -172,12 +172,17 @@ class ListField(Field):
         if value in EMPTY_VALUES:
             return self.default
         values = value.split(self.separator)
-        return list(set(self.item_type.convert(v, **kwargs) for v in values)) # json.dumps doesn't like sets
+        res = set()
+        for v in values:
+            converted_v = await self.item_type.convert(v, **kwargs)
+            res.add(converted_v)
+        return list(res) # for the moment, cuz json.dumps not happy
 
     def validate(self, values):
         if values in EMPTY_VALUES:
             return
         for value in values:
+            LOG.debug('Validating "%s" with %s running %s', value, self.item_type, self.item_type.validators)
             self.item_type.validate(value)
         return values
 
