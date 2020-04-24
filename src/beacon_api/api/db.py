@@ -213,7 +213,7 @@ async def patients(connection, qparams, individual_id, process=None):
     Contacts the DB to fetch the info.
     Returns a pd.DataFrame with the response. 
     """
-    connection.add_log_listener(simple_listener)
+    # connection.add_log_listener(simple_listener)
     dollars = ", ".join([ f"${i}" for i in range(1, 18)]) # 1..17
     query = f"""SELECT * FROM {conf.database_schema}.query_patients({dollars});"""
     LOG.debug("QUERY: %s", query)
@@ -283,21 +283,43 @@ async def access_levels_datasets(connection):
 async def fetch_viral(connection, qparams):
     LOG.info('Retrieving viral information')
 
-    dollars = ", ".join([ f"${i}" for i in range(1, 14)]) # 1..14
-    LOG.debug("dollars: %s", dollars)
-    query = f"""SELECT * FROM {conf.database_schema}.query_viral({dollars});"""
-    LOG.debug("QUERY: %s", query)
+    # connection.add_log_listener(simple_listener)
+
+    # Dummy query so far
+    query = f"""
+SELECT 
+	CONCAT(bdat.dataset_id, bdat.variant_id, bdat.reference, bdat.alternate, bdat.start, bdat.end, bdat.type) AS id,
+	CONCAT(bdat.variant_id, bdat.reference, bdat.alternate, bdat.start, bdat.end, bdat.type) AS variant_composite_id,
+	bdat.variant_id::TEXT, 
+	bdat.reference::TEXT, 
+	bdat.alternate::TEXT, 
+	bdat.start, 
+	bdat.end, 
+	bdat.type::TEXT, 
+	max(bdat.variant_cnt) as variant_cnt, 
+	max(bdat.call_cnt) as call_cnt, 
+	max(bdat.sample_cnt) as sample_cnt, 
+	max(bdat.matching_sample_cnt) as matching_sample_cnt, 
+	max(bdat.frequency) as frequency,
+	bdat.dataset_id 
+FROM public.beacon_data_table bdat 
+WHERE    bdat.reference = $3 AND
+         bdat.start = $1     AND
+         bdat.alternate=$4   AND
+         COALESCE(bdat.end=$2, true)
+GROUP BY CONCAT(bdat.dataset_id, bdat.variant_id, bdat.reference, bdat.alternate, bdat.start, bdat.end, bdat.type),
+	 bdat.variant_id, bdat.reference, bdat.alternate, bdat.start, bdat.end, bdat.type, bdat.dataset_id
+ORDER BY bdat.dataset_id 
+LIMIT $6 OFFSET $5;
+"""
+    #LOG.debug("QUERY: %s", query)
     statement = await connection.prepare(query)
-    response = await statement.fetch(qparams.variantType,
-	                             qparams.start,
-	                             qparams.startMin,
-	                             qparams.startMax,
-	                             qparams.end,
-	                             qparams.endMin,
-	                             qparams.endMax,
-	                             qparams.referenceBases,
-	                             qparams.alternateBases,
-	                             qparams.assemblyId,
-	                             qparams.filters) # filters as-is
+    response = await statement.fetch(qparams.start,          # _start integer,
+	                             qparams.end,            # _end integer,
+	                             qparams.referenceBases, # _reference_bases text,
+	                             qparams.alternateBases, # _alternate_bases text,
+	                             qparams.offset,         # _offset integer,
+	                             qparams.limit)          # _limit integer
+
     for record in response:
         yield record
