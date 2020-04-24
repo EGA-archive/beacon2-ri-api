@@ -58,6 +58,7 @@ routes = [
     web.get('/test'                      , test.handler),
 
     web.get('/viral'                      , viral.handler),
+    web.get('/viral_html'                 , viral.handler_html),
 
 ]
 
