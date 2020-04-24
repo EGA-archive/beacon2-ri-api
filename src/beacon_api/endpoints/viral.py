@@ -56,7 +56,7 @@ async def handler_html(request):
     # beacon_response knows how to loop through it
     rows = fetch_viral(qparams_db)
 
-    LOG.debug('HTTP response stream')
+    LOG.debug('----- HTTP response stream')
     headers = {
         'Content-Type': 'text/html;charset=utf-8',
         'Server': f'{conf.beacon_name} {conf.version}'
@@ -82,29 +82,30 @@ async def handler_html(request):
              "matching_sample_cnt",
              " frequency"]
 
-    await response.write(b'''<!DOCTYPE html>
+    await response.write(f'''<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <title>{conf.beacon_name} {conf.version}</title>
 
   <style>
-    body { color: #212529; }
-    table { border-collapse: collapse; width: 100%; }
-    thead { color: #212529; }
-    th { background-color: #6c7ae0; color: #fff; font-size: 18px; line-height: 1.4; padding: 1em 0.5em; }
-    tbody tr:nth-child(2n) { background-color: #f8f6ff; }
+    body {{ color: #212529; }}
+    table {{ border-collapse: collapse; width: 100%; }}
+    thead {{ color: #212529; }}
+    th {{ background-color: #6c7ae0; color: #fff; font-size: 18px; line-height: 1.4; padding: 1em 0.5em; }}
+    tbody tr:nth-child(2n) {{ background-color: #f8f6ff; }}
   </style>
 </head>
 <body>
   <table>
    <thead><tr>
-''') # utf-8
+'''.encode()) # utf-8
     for key in keys:
         await response.write(b'<th>')
         await response.write(key.encode())
         await response.write(b'</th>')
     await response.write(b'</tr></thead><tbody>') # utf-8
+    LOG.debug('----- output for rows')
     async for row in rows:
         await response.write(b'<tr>')
         for key in keys:
@@ -114,6 +115,9 @@ async def handler_html(request):
             col = '<td>{}</td>'.format(val)
             await response.write(col.encode()) # utf-8
         await response.write(b'</tr>')
+    LOG.debug('----- done with the rows')
     await response.write(b'</tr></tbody></table></body></html>')
     await response.write_eof()
+
+    LOG.debug('----- HTTP response stream done')
     return response
