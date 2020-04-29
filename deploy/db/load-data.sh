@@ -19,6 +19,7 @@ docker_process_sql < data/schemas.sql
 docker_process_sql < data/function_query_data_summary_response.sql
 docker_process_sql < data/function_query_variants.sql
 docker_process_sql < data/function_query_patients.sql
+docker_process_sql < data/function_query_samples.sql
 docker_process_sql < data/function_add_where_clause_conditions.sql
 docker_process_sql < data/function_parse_filters.sql
 docker_process_sql < data/function_manage_datasets.sql
