@@ -25,6 +25,7 @@ from .api.genomic_query import genomic_request_handler
 from .api.access_levels import access_levels_terms_handler
 from .api.services import services_handler
 from .api.samples import sample_request_handler
+from .api.datasets import datasets_handler
 
 
 
@@ -345,6 +346,21 @@ async def beacon_get(request):
 
     return web.json_response(response, content_type='application/json', dumps=json.dumps)
 
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         DATASET ENDPOINT OPERATIONS
+# ----------------------------------------------------------------------------------------------------------------------
+
+@routes.get('/datasets')  # For Beacon API Specification
+async def beacon_datasets(request):
+    """
+    Use the HTTP protocol 'GET' to return a Json object of all the Beacon datasets.
+
+    It uses the '/datasets' and only serves an information giver.
+    """
+    LOG.info('GET request to the datasets endpoint.')
+    db_pool = request.app['pool']
+    response = await datasets_handler(request.host, db_pool)
+    return web.json_response(response)
 
 
 # ----------------------------------------------------------------------------------------------------------------------
