@@ -46,6 +46,9 @@ def parse_config_file(path):
         'entryPoint': config.get('services', 'entryPoint'),
         'open': config.get('services', 'open'),
         'service_type': config.get('services', 'service_type'),
+        'type_group': config.get('services', 'type_group'),
+        'type_artifact': config.get('services', 'type_artifact'),
+        'type_version': config.get('services', 'type_version'),
         'documentationUrl': config.get('services', 'documentationUrl'),
         'environment': config.get('services', 'environment')
 
