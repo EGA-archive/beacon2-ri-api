@@ -131,7 +131,8 @@ async def info_handler(request, processed_request, pool, info_endpoint=False, se
 
     beacon_info.update({'datasets': beacon_dataset,
                         # If one sets up a beacon it is recommended to adjust these sample requests
-                        'sampleAlleleRequests': sample_allele_request}) 
+                        # 'sampleAlleleRequests': sample_allele_request
+                        }) 
 
     # Before returning the response we need to filter it depending on the access levels
     beacon_response = {"beacon": beacon_info}
