@@ -42,3 +42,4 @@ __type_artifact__ = CONFIG_INFO.type_artifact
 __type_version__ = CONFIG_INFO.type_version
 __documentationUrl__ = CONFIG_INFO.documentationUrl
 __environment__ = CONFIG_INFO.environment
+__baseUrl__ = CONFIG_INFO.baseUrl

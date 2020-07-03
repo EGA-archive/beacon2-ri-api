@@ -50,7 +50,8 @@ def parse_config_file(path):
         'type_artifact': config.get('services', 'type_artifact'),
         'type_version': config.get('services', 'type_version'),
         'documentationUrl': config.get('services', 'documentationUrl'),
-        'environment': config.get('services', 'environment')
+        'environment': config.get('services', 'environment'),
+        'baseUrl': config.get('services', 'baseUrl')
 
 
     }
