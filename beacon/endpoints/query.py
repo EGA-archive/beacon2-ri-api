@@ -2,7 +2,7 @@ import logging
 
 from aiohttp.web import json_response
 
-from ..api.exceptions import BeaconBadRequest
+from ..utils.exceptions import BeaconBadRequest
 from ..validation.request import RequestParameters, print_qparams
 from ..validation.fields import (RegexField,
                                  ChoiceField,

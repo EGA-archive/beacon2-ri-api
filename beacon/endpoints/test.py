@@ -1,13 +1,13 @@
 import logging
 
-from ..api.exceptions import BeaconBadRequest
+from ..utils.exceptions import BeaconBadRequest
 from ..validation.request import RequestParameters, print_qparams
 from ..validation.fields import (RegexField,
                                  ChoiceField,
                                  IntegerField,
                                  ListField,
                                  DatasetsField)
-from ..api.response import json_stream
+from ..utils.response import json_stream
 
 LOG = logging.getLogger(__name__)
 

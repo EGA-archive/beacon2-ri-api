@@ -1,7 +1,7 @@
 import logging
 
-from ..api.response import json_stream
-from ..api.db import fetch_viral_variants_only, fetch_viral_biosamples
+from ..utils.response import json_stream
+from ..utils.db import fetch_viral_variants_only, fetch_viral_biosamples
 from ..validation.request import print_qparams
 from ..validation.common_parameter_validation import GVariantParameters
 from ..response.response_schema import build_beacon_response, build_variant_response, build_biosample_response

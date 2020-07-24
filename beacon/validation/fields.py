@@ -14,7 +14,7 @@ from .validators import (ValidationError,
                          RegexValidator,
                          MinValueValidator,
                          MaxValueValidator)
-from ..api.db import fetch_datasets_access
+from ..utils.db import fetch_datasets_access
 
 LOG = logging.getLogger(__name__)
 

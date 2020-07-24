@@ -3,7 +3,7 @@ import logging
 from aiohttp.web import json_response
 
 from .. import conf
-from ..api.db import patients
+from ..utils.db import patients
 from ..validation.request import RequestParameters, print_qparams
 from ..validation.fields import (Field,
                                  RegexField,

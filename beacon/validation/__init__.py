@@ -2,7 +2,7 @@
 Validation module à la Django
 """
 
-from ..api.exceptions import BeaconBadRequest
+from ..utils.exceptions import BeaconBadRequest
 from .fields import RegexField, IntegerField, SchemasField, Field
 from .request import RequestParameters
 

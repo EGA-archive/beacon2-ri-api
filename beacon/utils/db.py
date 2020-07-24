@@ -12,7 +12,7 @@ import traceback
 import asyncpg
 
 from .. import conf
-from ..api.exceptions import BeaconServerError
+from .exceptions import BeaconServerError
 
 LOG = logging.getLogger(__name__)
 

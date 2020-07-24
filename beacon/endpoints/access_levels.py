@@ -14,8 +14,8 @@ from aiohttp.web import json_response
 
 
 from .. import conf, load_access_levels
-from ..api.db import access_levels_datasets
-from ..api.exceptions import BeaconAccessLevelsBadRequest
+from ..utils.db import access_levels_datasets
+from ..utils.exceptions import BeaconAccessLevelsBadRequest
 from ..validation.request import RequestParameters, print_qparams
 from ..validation.fields import BooleanField, ListField
 

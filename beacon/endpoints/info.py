@@ -17,15 +17,10 @@ import logging
 from aiohttp.web import json_response
 
 from .. import conf
-from ..api import models
+from ..utils import models
 from ..validation.request import RequestParameters
 from ..validation.fields import ChoiceField
-
-# from ..utils.polyvalent_functions import filter_response
-# from ..api.access_levels import ACCESS_LEVELS_DICT
-# from ..utils.translate2accesslevels import info2access
-
-from ..api.db import fetch_datasets_metadata
+from ..utils.db import fetch_datasets_metadata
 
 LOG = logging.getLogger(__name__)
 

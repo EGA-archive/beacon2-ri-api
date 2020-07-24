@@ -12,7 +12,7 @@ import logging
 from aiohttp.web import json_response
 
 from .. import conf
-from ..api.db import fetch_filtering_terms
+from ..utils.db import fetch_filtering_terms
 
 
 LOG = logging.getLogger(__name__)

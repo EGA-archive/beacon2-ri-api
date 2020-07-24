@@ -12,7 +12,7 @@ import requests
 from pathlib import Path
 
 from .. import conf
-from ..api.exceptions import BeaconBadRequest, BeaconServerError, BeaconForbidden, BeaconUnauthorised
+from .exceptions import BeaconBadRequest, BeaconServerError, BeaconForbidden, BeaconUnauthorised
 
 
 LOG = logging.getLogger(__name__)

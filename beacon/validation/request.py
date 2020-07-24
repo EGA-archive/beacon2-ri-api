@@ -3,7 +3,7 @@ import collections
 
 from .fields import Field, MultipleField
 from .validators import ValidationError
-from ..api.exceptions import BeaconBadRequest
+from ..utils.exceptions import BeaconBadRequest
 
 LOG = logging.getLogger(__name__)
 

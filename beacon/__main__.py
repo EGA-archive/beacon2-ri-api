@@ -9,7 +9,7 @@ import os
 from aiohttp import web
 
 from . import conf, load_logger, endpoints
-from .api import db
+from .utils import db
 
 LOG = logging.getLogger(__name__)
 
