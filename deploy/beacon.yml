@@ -15,30 +15,23 @@ services:
       - POSTGRES_DB=beacon
     hostname: beacon-db
     container_name: beacon-db
-    image: postgres:9.6-alpine
+    image: postgres:12-alpine
     volumes:
       - ./db:/docker-entrypoint-initdb.d
     ports:
-      - "5049:5432"  # to be able to connect to the db from outside the Docker container (dev reasons)
+      - "5049:5432"  # Only for development: connect to the db from outside the Docker container
     networks:
       - priv
 
   beacon:
-    build: ../src
-    image: egarchive/beacon-api:2.0
+    build: ..
+    image: egarchive/beacon:2.0
     hostname: beacon
     container_name: beacon
-    environment:
-      - DATABASE_URL=beacon-db
-      - DATABASE_PORT=5432
-      - DATABASE_USER=beacon
-      - DATABASE_PASSWORD=secretpassword
-      - DATABASE_NAME=beacon
-      - DATABASE_SCHEMA=public
     volumes:
-      - ../src/beacon_api:/beacon/beacon_api  # we do that to be able to modify the code and update the container "live"
-      - ./beacon/beacon.conf:/beacon/beacon_api/conf/config.ini
-      - ./beacon/access_levels.yml:/beacon/beacon_api/utils/access_levels.yml
+      - ../beacon:/beacon/beacon  # inject the code, so we see the modifications "live"
+      - ./conf.py:/beacon/beacon/conf.py
+      - ./access_levels.yml:/beacon/beacon/utils/access_levels.yml
     ports:
       - "5050:5050"
     networks:
@@ -46,20 +39,20 @@ services:
       - pub
     # entrypoint: ['/bin/sleep','100000000']  # we don't run the beacon just after starting, we'll do it manually 
 
-  ui:
-    build: ../ui
-    image: egarchive/beacon-ui:2.0
-    hostname: beacon-ui
-    container_name: beacon-ui
-    environment:
-      - BEACON_UI_CONF=/beacon/conf.ini
-    volumes:
-      - ./beacon/ui.conf:/beacon/conf.ini
-      - ../ui/beaconui:/beacon/beaconui   # we do that to be able to modify the code and update the container "live"
-      - ../ui/static:/beacon/static
-      - ../ui/templates:/beacon/templates
-      - ./beacon/beacon_project_small.png:/beacon/static/logo.png
-    ports:
-      - "8000:8000"
-    networks:
-      - pub
+  # ui:
+  #   build: ../ui
+  #   image: egarchive/beacon-ui:2.0
+  #   hostname: beacon-ui
+  #   container_name: beacon-ui
+  #   environment:
+  #     - BEACON_UI_CONF=/beacon/conf.ini
+  #   volumes:
+  #     - ./beacon/ui.conf:/beacon/conf.ini
+  #     - ../ui/beaconui:/beacon/beaconui   # we do that to be able to modify the code and update the container "live"
+  #     - ../ui/static:/beacon/static
+  #     - ../ui/templates:/beacon/templates
+  #     - ./logo.png:/beacon/static/logo.png
+  #   ports:
+  #     - "8000:8000"
+  #   networks:
+  #     - pub

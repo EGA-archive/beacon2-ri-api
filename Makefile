@@ -4,8 +4,8 @@
 ##
 ################################################
 SHELL := /bin/bash
-TARGET ?= egarchive/beacon
-COMMIT ?= latest
+IMG ?= egarchive/beacon
+TARGET ?= 2.0
 CONTAINER ?= beacon
 
 .PHONY: build run exec down server
@@ -13,16 +13,16 @@ CONTAINER ?= beacon
 all: build run server
 
 build:
-	docker build $(ARGS) -t $(TARGET):$(COMMIT) .
+	docker build $(ARGS) -t $(IMG):$(TARGET) .
 
 run:
 	docker run -d --rm \
                --name $(CONTAINER) \
                -p 5050:5050 \
-               -v $(shell pwd)/deploy/beacon/conf.py \
+               -v $(shell pwd)/deploy/conf.py:/beacon/beacon/conf.py \
 	       -v $(shell pwd)/beacon:/beacon/beacon \
                --entrypoint "/bin/sleep" \
-	       $(TARGET):$(COMMIT) \
+	       $(IMG):$(TARGET) \
            1000000000000
 
 exec:
