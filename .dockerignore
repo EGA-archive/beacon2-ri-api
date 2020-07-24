@@ -2,7 +2,7 @@
 .gitignore
 LICENSE
 README.md
-deploy
+deploy/db
 tests
 ui
 

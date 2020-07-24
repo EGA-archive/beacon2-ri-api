@@ -1,6 +1,0 @@
-aiohttp
-aiohttp_cors
-asyncpg
-jsonschema==3.0.2
-pyyaml
-requests
