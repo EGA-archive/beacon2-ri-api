@@ -7,3 +7,12 @@ This repository contains:
 * the (Python 3.6+) [source code for Beacon version 2.x](src),
 * instructions for a [local deployment](deploy) (using docker and docker-compose),
 * the (Python 3.6+) [source code for a Beacon UI](ui).
+
+
+# Acknowlegments
+
+We thank the [CSC Finland](https://www.csc.fi/) team for their
+contribution with a [python implementing of version
+1](https://github.com/CSCfi/beacon-python). They, in turn, got help
+from members of [NBIS](https://nbis.se/) and
+[DDBJ](https://www.ddbj.nig.ac.jp).
