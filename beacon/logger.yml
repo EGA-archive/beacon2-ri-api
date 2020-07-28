@@ -6,7 +6,7 @@ root:
   handlers: [noHandler]
 
 loggers:
-  viral_beacon:
+  beacon:
     level: DEBUG
     handlers: [console]
     propagate: True

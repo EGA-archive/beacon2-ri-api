@@ -115,3 +115,6 @@ venv.bak/
 
 # Tests tmp
 /tests/tmp/
+
+# IntelliJ
+.idea/

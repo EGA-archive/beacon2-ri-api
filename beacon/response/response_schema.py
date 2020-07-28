@@ -206,7 +206,7 @@ def build_dataset_allele_responses(row):
     return {
         'datasetId': 1,
         'exists': True,
-        'frequency': row['variant_frequency'],
+        'frequency': row['frequency'],
         'variantCount': row['variant_cnt'],
         'callCount': row['call_cnt'],
         'sampleCount': row['sample_cnt'],

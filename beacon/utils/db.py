@@ -149,6 +149,7 @@ async def fetch_datasets_access(connection, datasets=None):
     except Exception as e:
         LOG.error("DB error while retrieving datasets: %s", e)
 
+
 # Returns a generator of record, make sure to consume them before the connection is closed
 @pool.asyncgen_execute
 async def fetch_datasets_metadata(connection, transform=None):
@@ -168,7 +169,6 @@ async def fetch_datasets_metadata(connection, transform=None):
     response = await connection.fetch(query)
     for record in response:
         yield transform(record) if callable(transform) else record
-
 
 
 # Returns a generator of record, make sure to consume them before the connection is closed
@@ -207,72 +207,115 @@ async def access_levels_datasets(connection):
 
 # Returns a generator of record, make sure to consume them before the connection is closed
 @pool.asyncgen_execute
-async def fetch_viral_variants(connection, start, end, reference, alternate):
+async def fetch_variants(connection,
+                         qparams_db,
+                         variant_id=None,
+                         biosample_stable_id=None,
+                         individual_stable_id=None):
     LOG.info('Retrieving viral variant information')
 
-    dollars = ", ".join([ f"${i}" for i in range(1, 14)]) # 1..13
+    dollars = ", ".join([ f"${i}" for i in range(1, 21)]) # 1..20
     LOG.debug("dollars: %s", dollars)
-    query = f"""SELECT * FROM {conf.database_schema}.query_variants({dollars}) ORDER BY start ASC, reference ASC;"""
+    query = f"SELECT * FROM {conf.database_schema}.query_variants({dollars});"
     LOG.debug("QUERY: %s", query)
     statement = await connection.prepare(query)
-    response = await statement.fetch(None, # _variant_type text,
-                                     start, # _start integer,
-                                     None, # _start_min integer,
-                                     None, # _start_max integer,
-                                     None if end is None else end+1, # _end integer,
-                                     None, # _end_min integer,
-                                     None, # _end_max integer,
-                                     reference, # _reference_bases text,
-                                     alternate, # _alternate_bases text,
-                                     None, # _biosample_stable_id text,
-                                     None, # _filters text[],
-                                     None, # _offset integer,
-                                     None) # _limit integer
+    response = await statement.fetch(None,  # _variant_type text,
+                                     qparams_db.start,  # _start integer,
+                                     None,  # _start_min integer,
+                                     None,  # _start_max integer,
+                                     qparams_db.end,  # _end integer,
+                                     None,  # _end_min integer,
+                                     None,  # _end_max integer,
+                                     None, # qparams_db.referenceName,  # _chromosome character varying,
+                                     qparams_db.referenceBases,  # _reference_bases text,
+                                     qparams_db.alternateBases,  # _alternate_bases text,
+                                     None, #qparams_db.assemblyId,  # _reference_genome text,
+                                     None, # _include_dataset_responses
+                                     None, #qparams_db.datasets[0],  # _dataset_ids text[],
+                                     None, #qparams_db.datasets[1],  # _is_authenticated bool,
+                                     biosample_stable_id,  # _biosample_stable_id text,
+                                     individual_stable_id,  # _individual_stable_id text,
+                                     int(variant_id) if variant_id is not None else None,  # _gvariant_id
+                                     None, #qparams_db.filters,  # filters as-is,  # _filters text[],
+                                     qparams_db.skip * qparams_db.limit,  # _skip
+                                     qparams_db.limit) # _limit integer
     for record in response:
         yield record
 
 
-
-
-@pool.asyncgen_execute
-async def fetch_gene_to_region(connection, term, limit):
-    LOG.info('Retrieving viral variant information')
-
-    query = f"""SELECT t.class as cls, t.start, t.end, t.name 
-                FROM {conf.database_schema}.gene_to_region_table t
-                WHERE t.name ILIKE  '%' || $1 || '%' 
-                ORDER BY char_length(t.name) ASC, t.name ASC -- length order, then lexicographic order
-                LIMIT $2;"""
-    LOG.debug("QUERY: %s", query)
-    statement = await connection.prepare(query)
-    response = await statement.fetch(str(term), limit)
-    for record in response:
-        yield record
-        
-@pool.coroutine_execute
-async def get_nsamples(connection):
-    LOG.info('Retrieving viral number of samples')
-
-    query = f"""SELECT COUNT(*) FROM {conf.database_schema}.sample_table;"""
-    LOG.debug("QUERY: %s", query)
-    return await connection.fetchval(query)
-
-
-# SNP query endpoint
 # Returns a generator of record, make sure to consume them before the connection is closed
 @pool.asyncgen_execute
-async def fetch_snp_variants(connection, start, end, reference, alternate):
-    LOG.info('Retrieving SNP viral variant information')
-
-    query = f"""SELECT * FROM {conf.database_schema}.query_snp($1, $2, $3)
-                WHERE variant_type = 'SNP'
-                AND dataset_stable_id NOT IN ('GISAID')
-                ORDER BY start ASC, reference ASC;"""
+async def fetch_individuals(connection,
+                            qparams_db,
+                            variant_id=None,
+                            biosample_stable_id=None,
+                            individual_stable_id=None):
+    """
+    Contacts the DB to fetch the info.
+    Returns a pd.DataFrame with the response.
+    """
+    # connection.add_log_listener(simple_listener)
+    dollars = ", ".join([f"${i}" for i in range(1, 20)])  # 1..19
+    query = f"SELECT * FROM {conf.database_schema}.query_individuals({dollars});"
     LOG.debug("QUERY: %s", query)
     statement = await connection.prepare(query)
-    response = await statement.fetch(start, reference, alternate)
+    response = await statement.fetch(None, # variant_type
+                                     qparams_db.start,
+                                     None, # start_min
+                                     None, # start_max
+                                     qparams_db.end+1 if qparams_db.end is not None else None,
+                                     None, # end_min
+                                     None, # end_max
+                                     None, # reference_name
+                                     qparams_db.referenceBases,
+                                     qparams_db.alternateBases,
+                                     None, # assembly_id
+                                     None, # dataset_stable_ids
+                                     False, #is_authenticated
+                                     biosample_stable_id,
+                                     individual_stable_id, # individual_stable_id
+                                     int(variant_id) if variant_id is not None else None,
+                                     None, # filters
+                                     qparams_db.skip * qparams_db.limit,  # _skip
+                                     qparams_db.limit)  # _limit integer
+
     for record in response:
         yield record
 
 
+# Returns a generator of record, make sure to consume them before the connection is closed
+@pool.asyncgen_execute
+async def fetch_biosamples(connection,
+                           qparams_db,
+                           variant_id=None,
+                           biosample_stable_id=None,
+                           individual_stable_id=None):
+    LOG.info('Retrieving viral biosample information')
 
+    dollars = ", ".join([ f"${i}" for i in range(1, 20)]) # 1..19
+    # LOG.debug("dollars: %s", dollars)
+    query = f"SELECT * FROM {conf.database_schema}.query_samples({dollars});"
+    LOG.debug("QUERY: %s", query)
+    statement = await connection.prepare(query)
+    response = await statement.fetch(None, # variant_type
+                                     qparams_db.start,
+                                     None, # start_min
+                                     None, # start_max
+                                     qparams_db.end+1 if qparams_db.end is not None else None,
+                                     None, # end_min
+                                     None, # end_max
+                                     None, # reference_name
+                                     qparams_db.referenceBases,
+                                     qparams_db.alternateBases,
+                                     None, # assembly_id
+                                     None, # dataset_stable_ids
+                                     False, #is_authenticated
+                                     biosample_stable_id,
+                                     individual_stable_id, # individual_stable_id
+                                     int(variant_id) if variant_id is not None else None,
+                                     None, # filters
+                                     qparams_db.skip * qparams_db.limit,  # _skip
+                                     qparams_db.limit) # limit
+
+    for record in response:
+        yield record
