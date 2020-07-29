@@ -111,6 +111,8 @@ class DBConnection():
 # Instantiate the global connection
 pool = DBConnection()
 
+async def close():
+    await pool.close()
 
 # Get the latest modification data of a DB dataset 
 @pool.coroutine_execute
