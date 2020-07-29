@@ -68,18 +68,20 @@ def build_g_variant_params(qparams, variant_id=None):
     """Fills the `gVariant` part with the request data"""
 
     g_variant_params = {}
-    if qparams.start is not None:
+    if qparams.start:
         g_variant_params['start'] = qparams.start
-    if qparams.end is not None:
+    if qparams.end:
         g_variant_params['end'] = qparams.end
-    if qparams.referenceBases is not None:
+    if qparams.referenceBases:
         g_variant_params['referenceBases'] = qparams.referenceBases
-    if qparams.alternateBases is not None:
+    if qparams.alternateBases:
         g_variant_params['alternateBases'] = qparams.alternateBases
-    if qparams.assemblyId is not None:
+    if qparams.assemblyId:
         g_variant_params['assemblyId'] = qparams.assemblyId
-    if qparams.referenceName is not None:
+    if qparams.referenceName:
         g_variant_params['referenceName'] = qparams.referenceName
+    if qparams.includeDatasetResponses:
+        g_variant_params['includeDatasetResponses'] = qparams.includeDatasetResponses
 
     if variant_id is not None:
         g_variant_params['id'] = variant_id
