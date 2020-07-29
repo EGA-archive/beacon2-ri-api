@@ -25,8 +25,9 @@ up run:
 	       -v $(shell pwd)/beacon:/beacon/beacon \
                $(ENTRYPOINT) $(IMG):$(TARGET) $(CMD)
 
-exec:
-	docker exec -it $(CONTAINER) bash
+exec-root: D_USER=--user root
+exec-root exec:
+	docker exec -it $(D_USER) $(CONTAINER) bash
 server:
 	docker exec -it $(CONTAINER) python -m beacon
 
