@@ -15,12 +15,14 @@ all: build run server
 build:
 	docker build $(ARGS) -t $(IMG):$(TARGET) .
 
+run: PORTS=-p 5050:5050
+up: PORTS=-p 5050:8080
 run: ENTRYPOINT=--entrypoint "/bin/sleep"
 run: CMD=1000000000000
 up run:
 	docker run -d --rm \
                --name $(CONTAINER) \
-               -p 5050:5050 \
+               $(PORTS) \
                -v $(shell pwd)/deploy/conf.py:/beacon/beacon/conf.py \
 	       -v $(shell pwd)/beacon:/beacon/beacon \
                $(ENTRYPOINT) $(IMG):$(TARGET) $(CMD)
