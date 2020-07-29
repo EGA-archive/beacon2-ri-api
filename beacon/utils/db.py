@@ -229,13 +229,13 @@ async def fetch_variants(connection,
                                      qparams_db.referenceName, # qparams_db.referenceName,  # _chromosome character varying,
                                      qparams_db.referenceBases,  # _reference_bases text,
                                      qparams_db.alternateBases,  # _alternate_bases text,
-                                     qparams_db.assemblyId, #qparams_db.assemblyId,  # _reference_genome text,
+                                     qparams_db.assemblyId.lower() if qparams_db.assemblyId else None, #qparams_db.assemblyId,  # _reference_genome text,
                                      qparams_db.includeDatasetResponses, # _include_dataset_responses
                                      None, #qparams_db.datasets[0],  # _dataset_ids text[],
                                      None, #qparams_db.datasets[1],  # _is_authenticated bool,
                                      biosample_stable_id,  # _biosample_stable_id text,
                                      individual_stable_id,  # _individual_stable_id text,
-                                     int(variant_id) if variant_id is not None else None,  # _gvariant_id
+                                     int(variant_id) if variant_id else None,  # _gvariant_id
                                      None, #qparams_db.filters,  # filters as-is,  # _filters text[],
                                      qparams_db.skip * qparams_db.limit,  # _skip
                                      qparams_db.limit) # _limit integer
@@ -263,18 +263,18 @@ async def fetch_individuals(connection,
                                      qparams_db.start,
                                      None, # start_min
                                      None, # start_max
-                                     qparams_db.end+1 if qparams_db.end is not None else None,
+                                     qparams_db.end+1 if qparams_db.end else None,
                                      None, # end_min
                                      None, # end_max
-                                     None, # reference_name
+                                     qparams_db.referenceName, # reference_name
                                      qparams_db.referenceBases,
                                      qparams_db.alternateBases,
-                                     None, # assembly_id
+                                     qparams_db.assemblyId.lower() if qparams_db.assemblyId else None, # assembly_id
                                      None, # dataset_stable_ids
                                      False, #is_authenticated
                                      biosample_stable_id,
                                      individual_stable_id, # individual_stable_id
-                                     int(variant_id) if variant_id is not None else None,
+                                     int(variant_id) if variant_id else None,
                                      None, # filters
                                      qparams_db.skip * qparams_db.limit,  # _skip
                                      qparams_db.limit)  # _limit integer
@@ -301,18 +301,18 @@ async def fetch_biosamples(connection,
                                      qparams_db.start,
                                      None, # start_min
                                      None, # start_max
-                                     qparams_db.end+1 if qparams_db.end is not None else None,
+                                     qparams_db.end+1 if qparams_db.end else None,
                                      None, # end_min
                                      None, # end_max
-                                     None, # reference_name
+                                     qparams_db.referenceName,  # reference_name
                                      qparams_db.referenceBases,
                                      qparams_db.alternateBases,
-                                     None, # assembly_id
+                                     qparams_db.assemblyId.lower() if qparams_db.assemblyId else None, # assembly_id
                                      None, # dataset_stable_ids
                                      False, #is_authenticated
                                      biosample_stable_id,
                                      individual_stable_id, # individual_stable_id
-                                     int(variant_id) if variant_id is not None else None,
+                                     int(variant_id) if variant_id else None,
                                      None, # filters
                                      qparams_db.skip * qparams_db.limit,  # _skip
                                      qparams_db.limit) # limit

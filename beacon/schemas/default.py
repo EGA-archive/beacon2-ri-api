@@ -89,7 +89,7 @@ def beacon_biosample_v20(row):
         'individualId': row['individual_stable_id'],
         'description': row['description'],
         'biosampleStatus': row['biosample_status'],
-        'collectionDAte':  str(row['collection_date']),
+        'collectionDate':  str(row['collection_date']) if row['collection_date'] else None,
         'subjectAgeAtCollection': row['individual_age_at_collection'],
         'sampleOrigins': row['sample_origins'],
         'obtentionProcedure': row['obtention_procedure'],
