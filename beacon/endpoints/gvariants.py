@@ -23,54 +23,18 @@ gvariant_proxy = GVariantParameters()
 async def handler_individuals(request):
     LOG.info('Running an individuals by gvariant request')
     await generic_gvariant_handler(request, fetch_individuals, build_individual_response)
-    # _, qparams_db = await gvariant_proxy.fetch(request)
-    #
-    # if LOG.isEnabledFor(logging.DEBUG):
-    #     print_qparams(qparams_db, gvariant_proxy, LOG)
-    #
-    # response = fetch_individuals(qparams_db, variant_id=qparams_db.targetIdReq)
-    #
-    # return await prepare_response(qparams_db, request, response, build_biosample_response,
-    #                               int(qparams_db.targetIdReq) if qparams_db.targetIdReq is not None else None)
 
 
 async def handler_biosamples(request):
 
     LOG.info('Running a viral biosamples by gvariant request')
     await generic_gvariant_handler(request, fetch_biosamples, build_biosample_response)
-    # _, qparams_db = await gvariant_proxy.fetch(request)
-    #
-    # if LOG.isEnabledFor(logging.DEBUG):
-    #     print_qparams(qparams_db, gvariant_proxy, LOG)
-    #
-    # response = fetch_biosamples(qparams_db, variant_id=qparams_db.targetIdReq)
-    #
-    # return await prepare_response(qparams_db, request, response, build_biosample_response,
-    #                               int(qparams_db.targetIdReq) if qparams_db.targetIdReq is not None else None)
 
 
 async def handler_gvariants(request):
 
     LOG.info('Running a viral gvariant request')
     await generic_gvariant_handler(request, fetch_variants, build_variant_response)
-    # _, qparams_db = await gvariant_proxy.fetch(request)
-    #
-    # # print only for debug
-    # if LOG.isEnabledFor(logging.DEBUG):
-    #     print_qparams(qparams_db, gvariant_proxy, LOG)
-
-    # if qparams_db.targetIdReq is not None: # by ID
-    #     response = fetch_variants(variant_id=qparams_db.targetIdReq)
-    # elif qparams_db.end is None: # SNP query
-    #     response = fetch_variants(start=qparams_db.start,
-    #                               reference_bases=qparams_db.referenceBases,
-    #                               alternate_bases=qparams_db.alternateBases)
-    # else: # Region query
-    #     response = fetch_variants(start=qparams_db.start,
-    #                               end=qparams_db.end)
-
-    # return await prepare_response(qparams_db, request, response, build_variant_response,
-    #                               int(qparams_db.targetIdReq) if qparams_db.targetIdReq is not None else None)
 
 
 async def generic_gvariant_handler(request, fetch_function, build_response_type):
