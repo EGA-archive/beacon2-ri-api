@@ -91,7 +91,7 @@ def beacon_biosample_v20(row):
         'biosampleStatus': row['biosample_status'],
         'collectionDate':  str(row['collection_date']) if row['collection_date'] else None,
         'subjectAgeAtCollection': row['individual_age_at_collection'],
-        'sampleOrigins': row['sample_origins'],
+        'sampleOriginDescriptors': row['sample_origins'],
         'obtentionProcedure': row['obtention_procedure'],
         'cancerFeatures': {
             'tumorProgression': row['tumor_progression'],
