@@ -1,10 +1,66 @@
+from .. import conf
+
 """It will raise an exception if the fields are not found in the record."""
 
-def beacon_variant_v01(row):
+
+def beacon_info_v20(datasets):
     return {
-            'chromosome': None,
-            'referenceBases': row['reference'],
-            'alternateBases': row['alternate'],
+        'id': conf.beacon_id,
+        'name': conf.beacon_name,
+        'apiVersion': conf.api_version,
+        'environment': conf.environment,
+        'organization': {
+            'id': conf.org_id,
+            'name': conf.org_name,
+            'description': conf.org_description,
+            'address': conf.org_adress,
+            'welcomeUrl': conf.org_welcome_url,
+            'contactUrl': conf.org_contact_url,
+            'logoUrl': conf.org_logo_url,
+            'info': conf.org_info,
+        },
+        'description': conf.description,
+        'version': conf.version,
+        'welcomeUrl': conf.welcome_url,
+        'alternativeUrl': conf.alternative_url,
+        'createDateTime': conf.create_datetime,
+        'updateDateTime': conf.update_datetime, # to be updated and fetched from the request['app']['update_time']
+        'serviceType': conf.service_type,
+        'serviceUrl': conf.service_url,
+        'entryPoint': conf.entry_point,
+        'open': conf.is_open,
+        'datasets': [beacon_dataset_info_v20(row) for row in datasets],
+        'info': None,
+    }
+
+
+def beacon_dataset_info_v20(row):
+    return {
+        "id": row["datasetId"],
+        "name": None,
+        "description": row["description"],
+        "assemblyId": row["assemblyId"],
+        "createDateTime": None,
+        "updateDateTime": None,
+        "dataUseConditions": None,
+        "version": None,
+        "variantCount": row["variantCount"],  # already coalesced
+        "callCount": row["callCount"],
+        "sampleCount": row["sampleCount"],
+        "externalURL": None,
+        "info": {
+            "accessType": row["accessType"],
+            "authorized": True if row["accessType"] == "PUBLIC" else False
+        }
+    }
+
+
+def beacon_variant_v20(row):
+    return {
+            'variantId': row['variant_id'],
+            'refseqId': row['refseq'],
+            'ref': row['reference'],
+            'alt': row['alternate'],
             'variantType': row['variant_type'],
             'start': row['start'],
             'end': row['end'],
@@ -13,71 +69,47 @@ def beacon_variant_v01(row):
         }
 
 
-def beacon_variant_annotation_v01(row):
+def beacon_variant_annotation_v20(row):
     return {
-            'genomicHGVSId': None,
-            'proteinHGVSIds': None,
-            'molecularConsequence': row['effect'],
-            'geneIds': [row['gene_name']] if row['gene_name'] is not None else None,
-            'transcriptIds': [row['transcript_id']] if row['transcript_id'] is not None else None,
-            'variantGeneRelationship': None,
-            'clinicalRelevance': None,
-            'alternativeIds': None,
-            'info': {
-                'effect': row['effect'],
-                'effectImpact': row['effect_impact'],
-                'functionalClass': row['functional_class'],
-                'codonChange': row['codon_change'],
-                'aminoacidChange': row['aminoacid_change'],
-                'aminoacidLength': row['aminoacid_length'],
-                'geneName': row['gene_name'],
-                'transcriptBiotype': row['transcript_biotype'],
-                'geneCoding': row['gene_coding'],
-                'transcriptId': row['transcript_id'],
-                'exonRank': row['exon_rank'],
-                'genotype': row['genotype'],
-            }
+            'variantId': row['variant_id'],
+            'variantAlternativeIds': [row['variant_name']],
+            'genomicHGVSId': row['genomic_hgvs_id'],
+            'transcriptHGVSIds': row['transcript_hgvs_ids'],
+            'proteinHGVSIds': row['protein_hgvs_ids'],
+            'genomicRegions': row['genomic_regions'],
+            'genomicFeatures': row['genomic_features'],
+            'molecularEffects': row['molecular_effects'],
+            'aminoacidChanges': row['aminoacid_changes'],
+            'info': None
         }
 
-def beacon_biosample_v01(row):
+def beacon_biosample_v20(row):
     return {
-        'biosampleId': row['biosample_id'],
-        'individualId': row['individual_id'],
-        'description': None,
-        'biosampleStatus': None,
-        'obtentionProcedure': row['procedure'],
-        'info': {
-            'collectionDate': str(row['collection_date']),
-            'biosampleType': row['biosample_type'],
-        }
+        'biosampleId': row['biosample_stable_id'],
+        'individualId': row['individual_stable_id'],
+        'description': row['description'],
+        'biosampleStatus': row['biosample_status'],
+        'collectionDate':  str(row['collection_date']) if row['collection_date'] else None,
+        'subjectAgeAtCollection': row['individual_age_at_collection'],
+        'sampleOriginDescriptors': row['sample_origins'],
+        'obtentionProcedure': row['obtention_procedure'],
+        'cancerFeatures': {
+            'tumorProgression': row['tumor_progression'],
+            'tumorGrade': row['tumor_grade'],
+        },
+        'info': None
     }
 
 
-def beacon_individual_v01(row):
+def beacon_individual_v20(row):
     return {
-        'individualId': row['individual_id'],
-        'sex': row['individual_sex'],
-        'ethnicity': None,
-        'geographicOrigin': row['geo_origin'],
-        'diseases': [ # TODO: This needs to gather info from different rows
-            {
-                'diseaseId': row['disease'],
-                'ageOfOnset': {
-                    'age': row['individual_age'],
-                    'ageGroup': None,
-                },
-                'stage': row['disease_stage'],
-                'familyHistory': False,
-            }
-        ],
-        'pedigrees': [ # TODO: This needs to gather info from different rows
-            {
-                'pedigreeId': None,
-                'pedigreeRole': None,
-                'numberOfIndividualsTested': None,
-                'diseaseId': None,
-            }
-        ],
+        'individualId': row['individual_stable_id'],
+        'sex': row['sex'],
+        'ethnicity': row['ethnicity'],
+        'geographicOrigin': row['geographic_origin'],
+        'phenotypicFeatures': row['phenotypic_features'],
+        'diseases': row['diseases'],
+        'pedigrees': row['pedigrees'],
         'info': None,
     }
 

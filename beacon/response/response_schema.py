@@ -26,9 +26,9 @@ def build_meta(qparams, func_response_type, variant_id=None, individual_id=None,
     """
 
     meta = {
-        'beaconId' : conf.beacon_id,
+        'beaconId': conf.beacon_id,
         'apiVersion': conf.api_version,
-        'receivedRequest' : build_received_request(qparams, variant_id, individual_id, biosample_id),
+        'receivedRequest': build_received_request(qparams, variant_id, individual_id, biosample_id),
         'returnedSchemas': build_returned_schemas(qparams, func_response_type)
     }
     return meta
@@ -37,40 +37,51 @@ def build_meta(qparams, func_response_type, variant_id=None, individual_id=None,
 def build_received_request(qparams, variant_id=None, individual_id=None, biosample_id=None):
     """"Fills the `receivedRequest` part with the request data"""
 
+    request = {
+        'meta': {
+            'requestedSchemas' : build_requested_schemas(qparams),
+            'apiVersion' : qparams.apiVersion,
+        },
+        'query': build_received_query(qparams, variant_id, individual_id, biosample_id),
+    }
+
+    return request
+
+
+def build_received_query(qparams, variant_id=None, individual_id=None, biosample_id=None):
     g_variant = build_g_variant_params(qparams, variant_id)
     individual = build_individual_params(qparams, individual_id)
     biosample = build_biosample_params(qparams, biosample_id)
 
     query_part = {}
     if g_variant:
-        query_part['gVariant'] = g_variant
+        query_part['g_variant'] = g_variant
     if individual:
         query_part['individual'] = individual
     if biosample:
         query_part['biosample'] = biosample
 
-    request = {
-        'meta': {
-            'requestedSchemas' : build_requested_schemas(qparams),
-            'apiVersion' : qparams.apiVersion,
-        },
-        'query': query_part
-    }
-    return request
+    return query_part
 
 
 def build_g_variant_params(qparams, variant_id=None):
     """Fills the `gVariant` part with the request data"""
 
     g_variant_params = {}
-    if qparams.start is not None:
+    if qparams.start:
         g_variant_params['start'] = qparams.start
-    if qparams.end is not None:
+    if qparams.end:
         g_variant_params['end'] = qparams.end
-    if qparams.referenceBases is not None:
+    if qparams.referenceBases:
         g_variant_params['referenceBases'] = qparams.referenceBases
-    if qparams.alternateBases is not None:
+    if qparams.alternateBases:
         g_variant_params['alternateBases'] = qparams.alternateBases
+    if qparams.assemblyId:
+        g_variant_params['assemblyId'] = qparams.assemblyId
+    if qparams.referenceName:
+        g_variant_params['referenceName'] = qparams.referenceName
+    if qparams.includeDatasetResponses:
+        g_variant_params['includeDatasetResponses'] = qparams.includeDatasetResponses
 
     if variant_id is not None:
         g_variant_params['id'] = variant_id
@@ -142,7 +153,7 @@ def build_returned_schemas(qparams, func_response_type):
             'Individual': [DEFAULT_SCHEMAS['Individual']] + [s for s, f in qparams.requestedSchemasIndividual[0]],
         }, 'build_biosample_response': {
             'Biosample': [DEFAULT_SCHEMAS['Biosample']] + [s for s, f in qparams.requestedSchemasBiosample[0]],
-        }
+        },
     }
 
     return returned_schemas_by_response_type[func_response_type.__name__] # We let it throw a KeyError
@@ -199,26 +210,6 @@ def build_response(data, qparams, func):
     return response
 
 
-def build_dataset_allele_responses(row):
-    """"Transforms the data into the correct format required in the response"""
-
-    # TODO This object gathers information from different lines
-    return {
-        'datasetId': 1,
-        'exists': True,
-        'frequency': row['variant_frequency'],
-        'variantCount': row['variant_cnt'],
-        'callCount': row['call_cnt'],
-        'sampleCount': row['sample_cnt'],
-        'note': None,
-        'externalUrl': None,
-        'info': {
-            'matchingSampleCount': row['matching_sample_cnt'],
-        },
-        'datasetHandover': None, # build_dataset_handover
-    }
-
-
 def build_variant_response(data, qparams):
     """"Fills the `results` part with the format for variant data"""
 
@@ -234,7 +225,7 @@ def build_variant_response(data, qparams):
             'variantAnnotations': transform_data_into_schema(row, 'VariantAnnotation',
                                                              variant_annotation_requested_schemas),
             'variantHandover': None, # build_variant_handover
-            'datasetAlleleResponses': [build_dataset_allele_responses(row)],
+            'datasetAlleleResponses': row['dataset_response'] #[build_dataset_allele_responses(row)],
         }
 
 
