@@ -1,0 +1,5 @@
+{
+    "john": ["dataset1", "dataset2"],
+    "jane": ["dataset2"],
+    "taylor": ["dataset1"]
+}

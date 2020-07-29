@@ -1,0 +1,28 @@
+---
+version: 1
+#disable_existing_loggers: True
+root:
+  level: NOTSET
+  handlers: [noHandler]
+
+loggers:
+  __main__:
+    level: DEBUG
+    handlers: [console]
+  aiohttp:
+    level: INFO
+    handlers: [console]
+
+handlers:
+  noHandler:
+    class: logging.NullHandler
+    level: NOTSET
+  console:
+    class: logging.StreamHandler
+    formatter: simple
+    stream: ext://sys.stderr
+
+formatters:
+  simple:
+    format: '[{name:^10}][{levelname:^6}] (L{lineno}) {message}'
+    style: '{'
