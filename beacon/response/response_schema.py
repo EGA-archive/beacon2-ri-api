@@ -76,6 +76,10 @@ def build_g_variant_params(qparams, variant_id=None):
         g_variant_params['referenceBases'] = qparams.referenceBases
     if qparams.alternateBases is not None:
         g_variant_params['alternateBases'] = qparams.alternateBases
+    if qparams.assemblyId is not None:
+        g_variant_params['assemblyId'] = qparams.assemblyId
+    if qparams.referenceName is not None:
+        g_variant_params['referenceName'] = qparams.referenceName
 
     if variant_id is not None:
         g_variant_params['id'] = variant_id
@@ -204,26 +208,6 @@ def build_response(data, qparams, func):
     return response
 
 
-def build_dataset_allele_responses(row):
-    """"Transforms the data into the correct format required in the response"""
-
-    # TODO This object gathers information from different lines
-    return {
-        'datasetId': 1,
-        'exists': True,
-        'frequency': row['frequency'],
-        'variantCount': row['variant_cnt'],
-        'callCount': row['call_cnt'],
-        'sampleCount': row['sample_cnt'],
-        'note': None,
-        'externalUrl': None,
-        'info': {
-            'matchingSampleCount': row['matching_sample_cnt'],
-        },
-        'datasetHandover': None, # build_dataset_handover
-    }
-
-
 def build_variant_response(data, qparams):
     """"Fills the `results` part with the format for variant data"""
 
@@ -239,7 +223,7 @@ def build_variant_response(data, qparams):
             'variantAnnotations': transform_data_into_schema(row, 'VariantAnnotation',
                                                              variant_annotation_requested_schemas),
             'variantHandover': None, # build_variant_handover
-            'datasetAlleleResponses': [build_dataset_allele_responses(row)],
+            'datasetAlleleResponses': row['dataset_response'] #[build_dataset_allele_responses(row)],
         }
 
 

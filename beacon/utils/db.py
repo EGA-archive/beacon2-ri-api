@@ -216,7 +216,7 @@ async def fetch_variants(connection,
 
     dollars = ", ".join([ f"${i}" for i in range(1, 21)]) # 1..20
     LOG.debug("dollars: %s", dollars)
-    query = f"SELECT * FROM {conf.database_schema}.query_variants({dollars});"
+    query = f"SELECT * FROM {conf.database_schema}.query_gvariants({dollars});"
     LOG.debug("QUERY: %s", query)
     statement = await connection.prepare(query)
     response = await statement.fetch(None,  # _variant_type text,
@@ -226,11 +226,11 @@ async def fetch_variants(connection,
                                      qparams_db.end,  # _end integer,
                                      None,  # _end_min integer,
                                      None,  # _end_max integer,
-                                     None, # qparams_db.referenceName,  # _chromosome character varying,
+                                     qparams_db.referenceName, # qparams_db.referenceName,  # _chromosome character varying,
                                      qparams_db.referenceBases,  # _reference_bases text,
                                      qparams_db.alternateBases,  # _alternate_bases text,
-                                     None, #qparams_db.assemblyId,  # _reference_genome text,
-                                     None, # _include_dataset_responses
+                                     qparams_db.assemblyId, #qparams_db.assemblyId,  # _reference_genome text,
+                                     qparams_db.includeDatasetResponses, # _include_dataset_responses
                                      None, #qparams_db.datasets[0],  # _dataset_ids text[],
                                      None, #qparams_db.datasets[1],  # _is_authenticated bool,
                                      biosample_stable_id,  # _biosample_stable_id text,

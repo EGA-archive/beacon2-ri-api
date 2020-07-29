@@ -57,7 +57,7 @@ def beacon_dataset_info_v20(row):
 
 def beacon_variant_v20(row):
     return {
-            'variantId': row['id'],
+            'variantId': row['variant_id'],
             'refseqId': row['refseq'],
             'ref': row['reference'],
             'alt': row['alternate'],
@@ -71,8 +71,8 @@ def beacon_variant_v20(row):
 
 def beacon_variant_annotation_v20(row):
     return {
-            'variantId': row['id'],
-            'variantAlternativeIds': row['variant_name'],
+            'variantId': row['variant_id'],
+            'variantAlternativeIds': [row['variant_name']],
             'genomicHGVSId': row['genomic_hgvs_id'],
             'transcriptHGVSIds': row['transcript_hgvs_ids'],
             'proteinHGVSIds': row['protein_hgvs_ids'],

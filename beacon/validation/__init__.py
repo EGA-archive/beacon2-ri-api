@@ -23,6 +23,7 @@ class GVariantParameters(RequestParameters):
     # startMax = IntegerField(min_value=0)
     # endMin = IntegerField(min_value=0)
     # endMax = IntegerField(min_value=0)
+    includeDatasetResponses = ChoiceField("NONE", "ALL", "HIT", "MISS", default="NONE")
     assemblyId = RegexField(r'^((GRCh|hg)[0-9]+([.]?p[0-9]+)?)$', ignore_case=True, default=None)
     variantType = ChoiceField("DEL", "INS", "DUP", "INV", "CNV", "SNP", "MNP", "DUP:TANDEM", "DEL:ME", "INS:ME", "BND")
     # datasets = DatasetsField()
