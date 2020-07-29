@@ -26,9 +26,9 @@ def build_meta(qparams, func_response_type, variant_id=None, individual_id=None,
     """
 
     meta = {
-        'beaconId' : conf.beacon_id,
+        'beaconId': conf.beacon_id,
         'apiVersion': conf.api_version,
-        'receivedRequest' : build_received_request(qparams, variant_id, individual_id, biosample_id),
+        'receivedRequest': build_received_request(qparams, variant_id, individual_id, biosample_id),
         'returnedSchemas': build_returned_schemas(qparams, func_response_type)
     }
     return meta
@@ -37,26 +37,31 @@ def build_meta(qparams, func_response_type, variant_id=None, individual_id=None,
 def build_received_request(qparams, variant_id=None, individual_id=None, biosample_id=None):
     """"Fills the `receivedRequest` part with the request data"""
 
+    request = {
+        'meta': {
+            'requestedSchemas' : build_requested_schemas(qparams),
+            'apiVersion' : qparams.apiVersion,
+        },
+        'query': build_received_query(qparams, variant_id, individual_id, biosample_id),
+    }
+
+    return request
+
+
+def build_received_query(qparams, variant_id=None, individual_id=None, biosample_id=None):
     g_variant = build_g_variant_params(qparams, variant_id)
     individual = build_individual_params(qparams, individual_id)
     biosample = build_biosample_params(qparams, biosample_id)
 
     query_part = {}
     if g_variant:
-        query_part['gVariant'] = g_variant
+        query_part['g_variant'] = g_variant
     if individual:
         query_part['individual'] = individual
     if biosample:
         query_part['biosample'] = biosample
 
-    request = {
-        'meta': {
-            'requestedSchemas' : build_requested_schemas(qparams),
-            'apiVersion' : qparams.apiVersion,
-        },
-        'query': query_part
-    }
-    return request
+    return query_part
 
 
 def build_g_variant_params(qparams, variant_id=None):
@@ -142,7 +147,7 @@ def build_returned_schemas(qparams, func_response_type):
             'Individual': [DEFAULT_SCHEMAS['Individual']] + [s for s, f in qparams.requestedSchemasIndividual[0]],
         }, 'build_biosample_response': {
             'Biosample': [DEFAULT_SCHEMAS['Biosample']] + [s for s, f in qparams.requestedSchemasBiosample[0]],
-        }
+        },
     }
 
     return returned_schemas_by_response_type[func_response_type.__name__] # We let it throw a KeyError

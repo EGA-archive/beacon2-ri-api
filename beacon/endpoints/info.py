@@ -14,13 +14,13 @@ and their associated metadata.
 
 import logging
 
-from aiohttp.web import json_response
-
-from .. import conf
-from ..utils import models
-from ..validation.request import RequestParameters
-from ..validation.fields import ChoiceField
+from ..validation.request import RequestParameters, print_qparams
+from ..validation.fields import ChoiceField, SchemasField, RegexField
 from ..utils.db import fetch_datasets_metadata
+from ..utils.response import json_stream
+from ..response.info_response_schema import build_beacon_response, build_service_info_response
+from ..schemas import alternative
+
 
 LOG = logging.getLogger(__name__)
 
@@ -29,90 +29,46 @@ LOG = logging.getLogger(__name__)
 # ----------------------------------------------------------------------------------------------------------------------
 
 class InfoParameters(RequestParameters):
-    model = ChoiceField('GA4GH-ServiceInfo-v0.1')
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-#                                         FORMATTING
-# ----------------------------------------------------------------------------------------------------------------------
-
-def record_to_dict(record):
-    return {
-        "id": record["datasetId"],
-        "name": None,
-        "description": record["description"],
-        "assemblyId": record["assemblyId"],
-        "createDateTime": None,
-        "updateDateTime": None,
-        "dataUseConditions": None,
-        "version": None,
-        "variantCount": record["variantCount"], # already coalesced
-        "callCount": record["callCount"],
-        "sampleCount": record["sampleCount"],
-        "externalURL": None,
-        "info": { "accessType": record["accessType"],
-                  "authorized": 'true' if record["accessType"] == "PUBLIC" else 'false'} 
-    }
-
-# ----------------------------------------------------------------------------------------------------------------------
-#                                         MAIN FUNCTIONS
-# ----------------------------------------------------------------------------------------------------------------------
-
-def _finalize(beacon_info, beacon_datasets):
-    beacon_info['datasets'] = beacon_datasets
-    # If one sets up a beacon it is recommended to adjust these sample requests
-    beacon_info['sampleAlleleRequests'] = conf.sample_allele_requests
-
-    return beacon_info
-
-    # Before returning the response we need to filter it depending on the access levels
-    # beacon_response = {"beacon": beacon_info}
-    # accessible_datasets = []  # NOTE we use the an empty list because in this endpoint we don't filter by dataset
-    # user_levels = ["PUBLIC"]  # NOTE we hardcode it because authentication is not implemented yet
-
-    
-    # filtered_response = filter_response(beacon_response, ACCESS_LEVELS_DICT, accessible_datasets, user_levels, info2access)
-    # return filtered_response["beacon"]
+    model = ChoiceField('ga4gh-service-info-v1.0', default=None)
+    # requested schemas
+    requestedSchemasServiceInfo = SchemasField()
+    apiVersion = RegexField(r'^v[0-9]+(\.[0-9]+)*$')
 
 
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         HANDLER FUNCTIONS
 # ----------------------------------------------------------------------------------------------------------------------
 
-async def handler_root(request):
-    LOG.info('GET request to the info endpoint.')
-    # Fetch datasets info
-    beacon_datasets = [r async for r in fetch_datasets_metadata(transform=record_to_dict)]
-    # Fetch beacon info
-    beacon_info = models.Beacon_v1
-    # Join both
-    response = _finalize(beacon_info, beacon_datasets)
-    return json_response(response)
-
-
 proxy_info = InfoParameters()
-async def handler_info(request):
-    LOG.info('GET request to the info endpoint.')
-    # Parse model parameter
-    _, qparams_processed = await proxy_info.fetch(request) # validate
-    if qparams_processed.model is None:
-        return await handler_root(request)
-    # Otherwise, it must be 'GA4GH-ServiceInfo-v0.1', by validation
-    # Fetch datasets info
-    beacon_datasets = [r async for r in fetch_datasets_metadata(transform=record_to_dict)]
-    # Fetch beacon info
-    beacon_info = models.GA4GH_ServiceInfo_v01
-    # Join both
-    response = _finalize(beacon_info, beacon_datasets)
-    return json_response(response)
 
 
-async def handler_service_info(request):
-    LOG.info('GET request to the info endpoint.')
+async def handler(request):
+    LOG.info('Running a GET info request')
+    _, qparams_db = await proxy_info.fetch(request)
+
+    if LOG.isEnabledFor(logging.DEBUG):
+        print_qparams(qparams_db, proxy_info, LOG)
+
+    LOG.debug('model %s', qparams_db.model)
+    if qparams_db.model is not None:
+        return await handler_ga4gh_service_info(request)
+
     # Fetch datasets info
-    beacon_datasets = [r async for r in fetch_datasets_metadata(transform=record_to_dict)]
-    # Fetch beacon info
-    beacon_info = models.GA4GH_ServiceInfo_v01
-    # Join both
-    response = _finalize(beacon_info, beacon_datasets)
-    return json_response(response)
+    beacon_datasets = [r async for r in fetch_datasets_metadata()]
+
+    response_converted = build_beacon_response(beacon_datasets, qparams_db, build_service_info_response)
+    return await json_stream(request, response_converted)
+
+
+async def handler_ga4gh_service_info(request):
+    LOG.info('Running a GET service-info request')
+
+    return await json_stream(request, alternative.ga4gh_service_info_v10(None))
+
+
+async def prepare_response(qparams_db, request, response, response_type):
+
+    rows = [row async for row in response]
+    # build_beacon_response knows how to loop through it
+    response_converted = build_beacon_response(rows, qparams_db, response_type)
+    return await json_stream(request, response_converted)

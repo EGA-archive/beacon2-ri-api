@@ -18,7 +18,9 @@ org_description = ('The European Genome-phenome Archive (EGA) '
                    'is a service for permanent archiving and sharing '
                    'of all types of personally identifiable genetic '
                    'and phenotypic data resulting from biomedical research projects.')
-org_adress      = ''
+org_adress      = ('C/ Dr. Aiguader, 88'
+                    'PRBB Building'
+                    '08003 Barcelona, Spain')
 org_welcome_url = 'https://ega-archive.org/'
 org_contact_url = 'mailto:beacon.ega@crg.eu'
 org_logo_url    = 'https://ega-archive.org/images/logo.png'
@@ -40,25 +42,29 @@ update_datetime = '%Y-%m-%d %H:%M'  # format to convert the datetime python obje
 #
 # Service
 #
-service           = 'GA4GHBeacon' # service type
+service_type      = 'org.ga4gh:beacon:1.0.0' # service type
 service_url       = 'https://testv2-beacon-api.ega-archive.org/services'
 entry_point       = False
 is_open           = True
-service_type      = 'org.ga4gh:beacon:1.0.0' # Service type in 'group:artifact:version' format
 documentation_url = 'https://github.com/EGA-archive/beacon-2.x/' # Documentation of the service
 environment       = 'test' # Environment (production, development or testing/staging deployments)
+
+# GA4GH
+ga4gh_service_type_group = 'org.ga4gh'
+ga4gh_service_type_artifact = 'beacon'
+ga4gh_service_type_version = '1.0'
 
 #
 # SampleAlleleRequests
 #
-sample_allele_requests = [{
-    "alternateBases" : "A",
-    "referenceBases" : "G",
-    "start" : 272,
-  }, {
-    "start" : 272,
-    "end" : 273,
-  }]
+# sample_allele_requests = [{
+#     "alternateBases" : "A",
+#     "referenceBases" : "G",
+#     "start" : 272,
+#   }, {
+#     "start" : 272,
+#     "end" : 273,
+#   }]
 
 #
 # Database connection

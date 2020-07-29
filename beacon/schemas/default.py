@@ -1,4 +1,59 @@
+from .. import conf
+
 """It will raise an exception if the fields are not found in the record."""
+
+
+def beacon_info_v20(datasets):
+    return {
+        'id': conf.beacon_id,
+        'name': conf.beacon_name,
+        'apiVersion': conf.api_version,
+        'environment': conf.environment,
+        'organization': {
+            'id': conf.org_id,
+            'name': conf.org_name,
+            'description': conf.org_description,
+            'address': conf.org_adress,
+            'welcomeUrl': conf.org_welcome_url,
+            'contactUrl': conf.org_contact_url,
+            'logoUrl': conf.org_logo_url,
+            'info': conf.org_info,
+        },
+        'description': conf.description,
+        'version': conf.version,
+        'welcomeUrl': conf.welcome_url,
+        'alternativeUrl': conf.alternative_url,
+        'createDateTime': conf.create_datetime,
+        'updateDateTime': conf.update_datetime, # to be updated and fetched from the request['app']['update_time']
+        'serviceType': conf.service_type,
+        'serviceUrl': conf.service_url,
+        'entryPoint': conf.entry_point,
+        'open': conf.is_open,
+        'datasets': [beacon_dataset_info_v20(row) for row in datasets],
+        'info': None,
+    }
+
+
+def beacon_dataset_info_v20(row):
+    return {
+        "id": row["datasetId"],
+        "name": None,
+        "description": row["description"],
+        "assemblyId": row["assemblyId"],
+        "createDateTime": None,
+        "updateDateTime": None,
+        "dataUseConditions": None,
+        "version": None,
+        "variantCount": row["variantCount"],  # already coalesced
+        "callCount": row["callCount"],
+        "sampleCount": row["sampleCount"],
+        "externalURL": None,
+        "info": {
+            "accessType": row["accessType"],
+            "authorized": True if row["accessType"] == "PUBLIC" else False
+        }
+    }
+
 
 def beacon_variant_v20(row):
     return {
@@ -52,40 +107,9 @@ def beacon_individual_v20(row):
         'sex': row['sex'],
         'ethnicity': row['ethnicity'],
         'geographicOrigin': row['geographic_origin'],
-        'phenotypicFeatures': [
-            {
-                'phenotypeId': row['phf_phenotype_id'],
-                'dateOfOnset': row['phf_date_of_onset'],
-                'onsetType': row['phf_onset_type'],
-                'ageOfOnset': {
-                    'age': row['phf_age_of_onset_age'],
-                    'ageGroup': row['phf_age_of_onset_age_group'],
-                },
-                'severity': row['phf_severity']
-        }],
-        'diseases': [ # TODO: This needs to gather info from different rows
-            {
-                'diseaseId': row['dis_disease_id'],
-                'dateOfOnset': row['dis_date_of_onset'],
-                'onsetType': row['dis_onset_type'],
-                'ageOfOnset': {
-                    'age': row['dis_age_of_onset_age'],
-                    'ageGroup': row['dis_age_of_onset_age_group'],
-                },
-                'stage': row['dis_stage'],
-                'severity': row['dis_severity'],
-                'familyHistory': row['dis_family_history'],
-            }
-        ],
-        'pedigrees': [ # TODO: This needs to gather info from different rows
-            {
-                'pedigreeId': row['ped_pedigree_stable_id'],
-                'pedigreeDisease': row['ped_disease_id'],
-                'pedigreeRole': row['ped_role'],
-                'affectedStatus': row['ped_affected_status'],
-                'numberOfIndividualsTested': row['ped_no_individuals_tested'],
-            }
-        ],
+        'phenotypicFeatures': row['phenotypic_features'],
+        'diseases': row['diseases'],
+        'pedigrees': row['pedigrees'],
         'info': None,
     }
 

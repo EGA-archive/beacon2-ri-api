@@ -34,9 +34,9 @@ from . import (info,
 
 routes = [
     # Info
-    web.get('/'                 , info.handler_root),
-    web.get('/info'             , info.handler_info),
-    web.get('/service-info'     , info.handler_service_info),
+    web.get('/'                 , info.handler),
+    web.get('/info'             , info.handler),
+    web.get('/service-info'     , info.handler_ga4gh_service_info),
 
     # Filtering terms
     web.get('/filtering_terms'  , filtering_terms.handler),
