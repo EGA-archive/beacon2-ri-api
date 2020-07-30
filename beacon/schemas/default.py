@@ -88,14 +88,14 @@ def beacon_biosample_v20(row):
         'biosampleId': row['biosample_stable_id'],
         'individualId': row['individual_stable_id'],
         'description': row['description'],
-        'biosampleStatus': row['biosample_status'],
+        'biosampleStatus': row['biosample_status_ontology'],
         'collectionDate':  str(row['collection_date']) if row['collection_date'] else None,
         'subjectAgeAtCollection': row['individual_age_at_collection'],
-        'sampleOriginDescriptors': jsonb(row['sample_origins']),
-        'obtentionProcedure': row['obtention_procedure'],
+        'sampleOriginDescriptors': jsonb(row['sample_origins_ontology']),
+        'obtentionProcedure': row['obtention_procedure_ontology'],
         'cancerFeatures': {
-            'tumorProgression': row['tumor_progression'],
-            'tumorGrade': row['tumor_grade'],
+            'tumorProgression': row['tumor_progression_ontology'],
+            'tumorGrade': row['tumor_grade_ontology'],
         },
         'info': None
     }
@@ -104,9 +104,9 @@ def beacon_biosample_v20(row):
 def beacon_individual_v20(row):
     return {
         'individualId': row['individual_stable_id'],
-        'sex': row['sex'],
-        'ethnicity': row['ethnicity'],
-        'geographicOrigin': row['geographic_origin'],
+        'sex': row['sex_ontology'],
+        'ethnicity': row['ethnicity_ontology'],
+        'geographicOrigin': row['geographic_origin_ontology'],
         'phenotypicFeatures': jsonb(row['phenotypic_features']),
         'diseases': jsonb(row['diseases']),
         'pedigrees': jsonb(row['pedigrees']),
