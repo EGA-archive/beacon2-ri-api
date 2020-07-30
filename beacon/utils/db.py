@@ -238,7 +238,7 @@ async def fetch_variants(connection,
                                      biosample_stable_id,  # _biosample_stable_id text,
                                      individual_stable_id,  # _individual_stable_id text,
                                      int(variant_id) if variant_id else None,  # _gvariant_id
-                                     None, #qparams_db.filters,  # filters as-is,  # _filters text[],
+                                     qparams_db.filters,   # filters as-is,  # _filters text[],
                                      qparams_db.skip * qparams_db.limit,  # _skip
                                      qparams_db.limit) # _limit integer
     for record in response:
@@ -277,7 +277,7 @@ async def fetch_individuals(connection,
                                      biosample_stable_id,
                                      individual_stable_id, # individual_stable_id
                                      int(variant_id) if variant_id else None,
-                                     None, # filters
+                                     qparams_db.filters, # filters
                                      qparams_db.skip * qparams_db.limit,  # _skip
                                      qparams_db.limit)  # _limit integer
 
@@ -315,7 +315,7 @@ async def fetch_biosamples(connection,
                                      biosample_stable_id,
                                      individual_stable_id, # individual_stable_id
                                      int(variant_id) if variant_id else None,
-                                     None, # filters
+                                     qparams_db.filters, # filters
                                      qparams_db.skip * qparams_db.limit,  # _skip
                                      qparams_db.limit) # limit
 
