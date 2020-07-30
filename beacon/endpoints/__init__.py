@@ -22,14 +22,15 @@ Endpoints:
 from aiohttp import web
 
 from . import (info,
-               filtering_terms,
-               access_levels,
-               # query,
-               # genomic_query,
-               individuals,
-               biosamples,
-               gvariants,
-               test, # only useful when testing
+                datasets,
+                filtering_terms,
+                access_levels,
+                # query,
+                # genomic_query,
+                individuals,
+                biosamples,
+                gvariants,
+                test, # only useful when testing
                )
 
 routes = [
@@ -37,6 +38,9 @@ routes = [
     web.get('/'                 , info.handler),
     web.get('/info'             , info.handler),
     web.get('/service-info'     , info.handler_ga4gh_service_info),
+
+    # Datasets
+    web.get('/datasets'          , datasets.handler),
 
     # Filtering terms
     web.get('/filtering_terms'  , filtering_terms.handler),

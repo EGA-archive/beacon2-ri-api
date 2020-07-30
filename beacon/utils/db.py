@@ -174,8 +174,10 @@ async def fetch_datasets_metadata(connection, transform=None):
                 FROM {conf.database_schema}.dataset;"""
     LOG.debug("QUERY: %s", query)
     response = await connection.fetch(query)
+    # for record in response:
+    #     yield transform(record) if callable(transform) else record
     for record in response:
-        yield transform(record) if callable(transform) else record
+        yield record
 
 
 # Returns a generator of record, make sure to consume them before the connection is closed

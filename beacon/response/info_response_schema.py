@@ -59,6 +59,10 @@ def build_requested_schemas(qparams):
         requested_schemas['ServiceInfo'] = [s for s, f in qparams.requestedSchemasServiceInfo[0]] + list(
             qparams.requestedSchemasServiceInfo[1])
 
+    if qparams.requestedSchemasDataset[0] or qparams.requestedSchemasDataset[1]:
+        requested_schemas['Dataset'] = [s for s, f in qparams.requestedSchemasDataset[0]] + list(
+            qparams.requestedSchemasDataset[1])
+
     return requested_schemas
 
 
@@ -74,6 +78,9 @@ def build_returned_schemas(qparams, func_response_type):
         'build_service_info_response': {
             'ServiceInfo': [DEFAULT_SCHEMAS['ServiceInfo']] + [s for s, f in qparams.requestedSchemasServiceInfo[0]],
         },
+        'build_dataset_info_response': {
+            'Dataset': [DEFAULT_SCHEMAS['Dataset']] + [s for s, f in qparams.requestedSchemasDataset[0]],
+        },
     }
 
     return returned_schemas_by_response_type[func_response_type.__name__] # We let it throw a KeyError
@@ -85,7 +92,7 @@ def build_error(qparams):
     This error only applies to partial errors which do not prevent the Beacon from answering.
     """
 
-    if not qparams.requestedSchemasServiceInfo[1]:
+    if not qparams.requestedSchemasServiceInfo[1] and not qparams.requestedSchemasDataset[1]:
          # Do nothing
          return
 
@@ -93,6 +100,9 @@ def build_error(qparams):
 
     if len(qparams.requestedSchemasServiceInfo[1]) > 0:
         message += f' ServiceInfo: {qparams.requestedSchemasServiceInfo[1]}'
+
+    if len(qparams.requestedSchemasDataset[1]) > 0:
+        message += f' Dataset: {qparams.requestedSchemasDataset[1]}'
 
     return {
         'error': {
@@ -127,6 +137,15 @@ def build_service_info_response(datasets, qparams):
     #     service_info_requested_schemas.append('')
 
     yield transform_data_into_schema(datasets, 'ServiceInfo', service_info_requested_schemas)
+
+
+def build_dataset_info_response(data, qparams):
+    """"Fills the `results` part with the format for ServiceInfo"""
+
+    dataset_info_requested_schemas = qparams.requestedSchemasDataset[0]
+
+    for row in data:
+        yield transform_data_into_schema(row, 'Dataset', dataset_info_requested_schemas)
 
 
 def transform_data_into_schema(row, field_name, requested_schemas):
