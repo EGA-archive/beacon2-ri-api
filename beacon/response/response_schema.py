@@ -2,6 +2,7 @@ import logging
 
 from .. import conf
 from ..schemas import SUPPORTED_SCHEMAS, DEFAULT_SCHEMAS
+from ..utils.json import jsonb
 
 LOG = logging.getLogger(__name__)
 
@@ -225,7 +226,7 @@ def build_variant_response(data, qparams):
             'variantAnnotations': transform_data_into_schema(row, 'VariantAnnotation',
                                                              variant_annotation_requested_schemas),
             'variantHandover': None, # build_variant_handover
-            'datasetAlleleResponses': row['dataset_response'] #[build_dataset_allele_responses(row)],
+            'datasetAlleleResponses': jsonb(row['dataset_response'])
         }
 
 

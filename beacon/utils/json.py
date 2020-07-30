@@ -23,13 +23,17 @@ def is_asyncgen(o):
     return (inspect.isasyncgen(o) or
             inspect.isasyncgenfunction(o))
 
+class jsonb(str):
+    pass
 
 # we make it compact
 _ITEM_SEPARATOR = ','
 _KEY_SEPARATOR = ':'
 
 def _atom(o):
-    if isinstance(o, str):
+    if isinstance(o, jsonb):
+        return o
+    elif isinstance(o, str):
         return encode_basestring_ascii(o)
     elif o is None:
         return 'null'

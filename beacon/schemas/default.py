@@ -1,7 +1,7 @@
 from .. import conf
+from ..utils.json import jsonb
 
-"""It will raise an exception if the fields are not found in the record."""
-
+# It will raise an exception if the fields are not found in the record
 
 def beacon_info_v20(datasets):
     return {
@@ -91,7 +91,7 @@ def beacon_biosample_v20(row):
         'biosampleStatus': row['biosample_status'],
         'collectionDate':  str(row['collection_date']) if row['collection_date'] else None,
         'subjectAgeAtCollection': row['individual_age_at_collection'],
-        'sampleOriginDescriptors': row['sample_origins'],
+        'sampleOriginDescriptors': jsonb(row['sample_origins']),
         'obtentionProcedure': row['obtention_procedure'],
         'cancerFeatures': {
             'tumorProgression': row['tumor_progression'],
@@ -107,9 +107,9 @@ def beacon_individual_v20(row):
         'sex': row['sex'],
         'ethnicity': row['ethnicity'],
         'geographicOrigin': row['geographic_origin'],
-        'phenotypicFeatures': row['phenotypic_features'],
-        'diseases': row['diseases'],
-        'pedigrees': row['pedigrees'],
+        'phenotypicFeatures': jsonb(row['phenotypic_features']),
+        'diseases': jsonb(row['diseases']),
+        'pedigrees': jsonb(row['pedigrees']),
         'info': None,
     }
 
