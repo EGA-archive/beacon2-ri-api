@@ -35,7 +35,7 @@ description     = (r"This <a href='https://beacon-project.io/'>Beacon</a> "
 version         = 'v2.0'
 welcome_url     = 'https://beacon.ega-archive.org/'
 alternative_url = 'https://beacon-api.ega-archive.org/'
-create_datetime = '2019-08-15T12:00.000Z' # fixed
+create_datetime = '2020-07-30 12:00'
 update_datetime = '%Y-%m-%d %H:%M'  # format to convert the datetime python object (returned by the DB) to a string
 
 
@@ -49,22 +49,12 @@ is_open           = True
 documentation_url = 'https://github.com/EGA-archive/beacon-2.x/' # Documentation of the service
 environment       = 'test' # Environment (production, development or testing/staging deployments)
 
+
 # GA4GH
 ga4gh_service_type_group = 'org.ga4gh'
 ga4gh_service_type_artifact = 'beacon'
 ga4gh_service_type_version = '1.0'
 
-#
-# SampleAlleleRequests
-#
-# sample_allele_requests = [{
-#     "alternateBases" : "A",
-#     "referenceBases" : "G",
-#     "start" : 272,
-#   }, {
-#     "start" : 272,
-#     "end" : 273,
-#   }]
 
 #
 # Database connection
@@ -77,6 +67,7 @@ database_name = 'beacon'
 database_schema = 'public' # comma-separated list of schemas
 database_app_name = 'beacon-appname' # Useful to track connections
 
+
 #
 # Web server configuration
 # Note: a Unix Socket path is used when behind a server, not host:port
@@ -88,6 +79,7 @@ beacon_tls_client = False
 beacon_cert = '/etc/ega/server.cert'
 beacon_key = '/etc/ega/server.key'
 CA_cert = '/etc/ega/CA.cert'
+
 
 #
 # Permissions server configuration

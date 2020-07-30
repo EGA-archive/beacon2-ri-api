@@ -115,13 +115,13 @@ async def close():
     await pool.close()
 
 # Get the latest modification data of a DB dataset 
-# @pool.coroutine_execute
-# async def get_last_modified_date(connection):
-#     LOG.info('Retrieving last modified date')
-#
-#     query = f"""SELECT MAX(last_uploaded) FROM {conf.database_schema}.dataset;"""
-#     LOG.debug("QUERY: %s", query)
-#     return await connection.fetchval(query)
+@pool.coroutine_execute
+async def get_last_modified_date(connection):
+    LOG.info('Retrieving last modified date')
+
+    query = f"""SELECT MAX(updated_at) FROM {conf.database_schema}.dataset;"""
+    LOG.debug("QUERY: %s", query)
+    return await connection.fetchval(query)
 
 
 # We might be able to use postgres partitioning
@@ -160,12 +160,17 @@ async def fetch_datasets_metadata(connection, transform=None):
     """
     LOG.info('Retrieving datasets metadata')
     query = f"""SELECT stable_id                AS "datasetId",
-                       description              AS "description",
-                       access_type              AS "accessType",
-                       reference_genome         AS "assemblyId",
-                       COALESCE(variant_cnt, 0) AS "variantCount",
-                       COALESCE(call_cnt   , 0) AS "callCount",
-                       COALESCE(sample_cnt , 0) AS "sampleCount"
+                        name                    AS "name",
+                        description              AS "description",
+                        access_type              AS "accessType",
+                        reference_genome         AS "assemblyId",
+                        COALESCE(variant_cnt, 0) AS "variantCount",
+                        COALESCE(call_cnt   , 0) AS "callCount",
+                        COALESCE(sample_cnt , 0) AS "sampleCount",
+                        dataset_source          AS "datasetSource",
+                        dataset_type            AS "datasetType",
+                        created_at               AS "createdAt",
+                        updated_at               AS "updatedAt"
                 FROM {conf.database_schema}.dataset;"""
     LOG.debug("QUERY: %s", query)
     response = await connection.fetch(query)

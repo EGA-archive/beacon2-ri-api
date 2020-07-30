@@ -1,3 +1,4 @@
+import os
 from .. import conf
 from ..utils.json import jsonb
 
@@ -24,7 +25,7 @@ def beacon_info_v20(datasets):
         'welcomeUrl': conf.welcome_url,
         'alternativeUrl': conf.alternative_url,
         'createDateTime': conf.create_datetime,
-        'updateDateTime': conf.update_datetime, # to be updated and fetched from the request['app']['update_time']
+        'updateDateTime': os.environ.get('beacon_update_datetime'),#conf.update_datetime, # to be updated and fetched from the request['app']['update_time']
         'serviceType': conf.service_type,
         'serviceUrl': conf.service_url,
         'entryPoint': conf.entry_point,
@@ -36,21 +37,23 @@ def beacon_info_v20(datasets):
 
 def beacon_dataset_info_v20(row):
     return {
-        "id": row["datasetId"],
-        "name": None,
-        "description": row["description"],
-        "assemblyId": row["assemblyId"],
-        "createDateTime": None,
-        "updateDateTime": None,
-        "dataUseConditions": None,
-        "version": None,
-        "variantCount": row["variantCount"],  # already coalesced
-        "callCount": row["callCount"],
-        "sampleCount": row["sampleCount"],
-        "externalURL": None,
-        "info": {
-            "accessType": row["accessType"],
-            "authorized": True if row["accessType"] == "PUBLIC" else False
+        'id': row['datasetId'],
+        'name': row['name'],
+        'description': row['description'],
+        'assemblyId': row['assemblyId'],
+        'createDateTime': row['createdAt'].strftime(conf.update_datetime) if row['createdAt'] else None,
+        'updateDateTime': row['updatedAt'].strftime(conf.update_datetime) if row['updatedAt'] else None,
+        'dataUseConditions': None,
+        'version': None,
+        'variantCount': row['variantCount'],  # already coalesced
+        'callCount': row['callCount'],
+        'sampleCount': row['sampleCount'],
+        'externalURL': None,
+        'info': {
+            'accessType': row['accessType'],
+            'authorized': True if row['accessType'] == 'PUBLIC' else False,
+            'datasetSource': row['datasetSource'],
+            'datasetType': row['datasetType']
         }
     }
 

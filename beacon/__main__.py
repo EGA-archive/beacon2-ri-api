@@ -16,7 +16,7 @@ LOG = logging.getLogger(__name__)
 async def initialize(app):
     """Initialize server."""
     # Get when the data was last modified (This will also check if DB is up)
-    # app['update_datetime'] = (await db.get_last_modified_date()).strftime(conf.update_datetime)
+    os.environ['beacon_update_datetime'] = (await db.get_last_modified_date()).strftime(conf.update_datetime)
     LOG.info("Initialization done.")
 
 async def destroy(app):
