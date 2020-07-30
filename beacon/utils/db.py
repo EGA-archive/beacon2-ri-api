@@ -115,13 +115,13 @@ async def close():
     await pool.close()
 
 # Get the latest modification data of a DB dataset 
-@pool.coroutine_execute
-async def get_last_modified_date(connection):
-    LOG.info('Retrieving last modified date')
-
-    query = f"""SELECT MAX(last_uploaded) FROM {conf.database_schema}.beacon_dataset;"""
-    LOG.debug("QUERY: %s", query)
-    return await connection.fetchval(query)
+# @pool.coroutine_execute
+# async def get_last_modified_date(connection):
+#     LOG.info('Retrieving last modified date')
+#
+#     query = f"""SELECT MAX(last_uploaded) FROM {conf.database_schema}.dataset;"""
+#     LOG.debug("QUERY: %s", query)
+#     return await connection.fetchval(query)
 
 
 # We might be able to use postgres partitioning
@@ -140,7 +140,7 @@ async def fetch_datasets_access(connection, datasets=None):
     LOG.debug('Originally selecting datasets: %s', datasets)
     #async with connection.transaction():
     where_clause = ' WHERE stable_id = ANY($1)' if datasets else ''
-    query = f"""SELECT access_type, id, stable_id FROM {conf.database_schema}.beacon_dataset{where_clause};"""
+    query = f"""SELECT access_type, id, stable_id FROM {conf.database_schema}.dataset{where_clause};"""
     LOG.debug("QUERY datasets access: %s", query)
     try:
         statement = await connection.prepare(query)
@@ -166,7 +166,7 @@ async def fetch_datasets_metadata(connection, transform=None):
                        COALESCE(variant_cnt, 0) AS "variantCount",
                        COALESCE(call_cnt   , 0) AS "callCount",
                        COALESCE(sample_cnt , 0) AS "sampleCount"
-                FROM {conf.database_schema}.beacon_dataset;"""
+                FROM {conf.database_schema}.dataset;"""
     LOG.debug("QUERY: %s", query)
     response = await connection.fetch(query)
     for record in response:
@@ -199,7 +199,7 @@ async def access_levels_datasets(connection):
                       al.field        AS field,
                       al.access_level AS access_level
                FROM dataset_access_level_table al
-               JOIN beacon_dataset dt
+               JOIN dataset dt
                ON al.dataset_id=dt.id;"""
     LOG.debug("QUERY: %s", query)
     response = await connection.fetch(query)
