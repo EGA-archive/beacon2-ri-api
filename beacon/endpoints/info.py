@@ -31,6 +31,7 @@ class InfoParameters(RequestParameters):
     model = ChoiceField('ga4gh-service-info-v1.0', default=None)
     # requested schemas
     requestedSchemasServiceInfo = SchemasField()
+    requestedSchemasDataset = SchemasField()
     apiVersion = RegexField(r'^v[0-9]+(\.[0-9]+)*$')
 
 
