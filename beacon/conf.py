@@ -7,7 +7,7 @@ import datetime
 #
 beacon_id   = 'eu.crg.beacon' # or org.ega-archive.beacon ?
 beacon_name = 'Beacon Test Instance' # Name of the Beacon service
-api_version = 'v2.0.0-draft.1' # Version of the Beacon implementation
+api_version = 'v2.0.0-draft.2' # Version of the Beacon implementation
 
 #
 #  Organization info
