@@ -1,5 +1,4 @@
-{% if not request.COOKIES.beacon %}
-{% load static %}
+{% if not cookies.beacon %}
 <div id="beacon-cookies">
   <div>
     <h6>Cookies &amp; Privacy</h6>
@@ -10,7 +9,7 @@
       DAC.
     </p>
     <p>We use cookies to enhance your experience on this website.</p>
-    <a href="{% url 'privacy' %}">More information</a>
+    <a href="{{ url('privacy') }}">More information</a>
   </div>
   <button>Accept</button>
 </div>

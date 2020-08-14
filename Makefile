@@ -25,6 +25,8 @@ up run:
                $(PORTS) \
                -v $(shell pwd)/deploy/conf.py:/beacon/beacon/conf.py \
 	       -v $(shell pwd)/beacon:/beacon/beacon \
+	       -v $(shell pwd)/ui/static:/beacon/static \
+	       -v $(shell pwd)/ui/templates:/beacon/templates \
                $(ENTRYPOINT) $(IMG):$(TARGET) $(CMD)
 
 exec-root: D_USER=--user root

@@ -63,7 +63,7 @@ sample_allele_requests = [{
 #
 # Database connection
 #
-database_url = 'localhost'
+database_url = 'beacon-db'
 database_port = 5432
 database_user = 'beacon'
 database_password = 'secretpassword'
@@ -105,3 +105,20 @@ idp_end_session_endpoint   = "http://localhost:8080/auth/realms/Beacon/protocol/
 redirect_uri = http://localhost:5050/login
 
 
+
+#
+# IdP configuration (Oauth2)
+#
+# or use Elixir AAI (see https://elixir-europe.org/services/compute/aai)
+#
+# OAuth / AAI / IdP endpoints
+idp_authorize     = 'https://idp.ega-archive.org/authorize?'
+idp_access_token  = 'https://idp.ega-archive.org/token'
+idp_user_info     = 'https://idp.ega-archive.org/userinfo'
+idp_logout        = 'https://idp.ega-archive.org/logout'
+# Credentials
+idp_client_id     = 'your-client-id'
+idp_client_secret = 'your-super-secret'
+idp_scope = 'profile email openid'
+
+idp_redirect_uri = 'https://beacon.ega-archive.org/login'

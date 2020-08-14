@@ -2,3 +2,7 @@ aiohttp
 asyncpg
 pyyaml
 supervisor
+cryptography
+aiohttp_session
+jinja2
+aiohttp_jinja2

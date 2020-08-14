@@ -18,7 +18,8 @@ services:
     container_name: beacon-db
     image: postgres:12-alpine
     volumes:
-      - ./db:/docker-entrypoint-initdb.d
+      - ./db/schema.sql.gz:/docker-entrypoint-initdb.d/1.sql.gz
+      - ./db/data.sql.gz:/docker-entrypoint-initdb.d/2.sql.gz
     ports:
       - "5049:5432"  # Only for development: connect to the db from outside the Docker container
     networks:
@@ -33,12 +34,14 @@ services:
       - ../beacon:/beacon/beacon  # inject the code, so we see the modifications "live"
       - ./conf.py:/beacon/beacon/conf.py
       - ./access_levels.yml:/beacon/beacon/utils/access_levels.yml
+      - ../ui/static:/beacon/static
+      - ../ui/templates:/beacon/templates
     ports:
       - "5050:5050"
     networks:
       - beacon-priv
       - pub
-    # entrypoint: ['/bin/sleep','100000000']  # we don't run the beacon just after starting, we'll do it manually 
+    # entrypoint: ['/bin/sleep','100000000']
 
     
   ###########################################

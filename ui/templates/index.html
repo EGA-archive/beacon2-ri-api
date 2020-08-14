@@ -1,17 +1,16 @@
-{% load static %}
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1.0, width=device-width, shrink-to-fit=no"/>
-    <title>{{ BEACON.name|default:'Beacon' }}</title>
+    <title>{{ conf.beacon_name }}</title>
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
 	  integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg"
 	  crossorigin="anonymous" />
 
     <link rel="stylesheet" href="//necolas.github.io/normalize.css/latest/normalize.css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{{ static('css/style.css') }}">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/cupertino/jquery-ui.css" />
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet"> <!-- font-family: 'Open Sans', sans-serif; -->
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap" rel="stylesheet"> <!-- font-family: 'Roboto Mono', monospace; -->
@@ -22,7 +21,10 @@
   <body id="{% if beacon_response %}response{% else %}info{% endif %}">
 	
     {% include 'header.html' %}
+
+{#
     {% include 'query.html' %}
+#}
 
     {% if beacon_response %}
 
@@ -34,7 +36,7 @@
 	  {% else %}
 		{% if request.path == '/snp' or request.path == '/region' %}
 			<main class="per-variant">
-				{% with beacon_response.value.variantsFound as variantsFound %}
+				{% with variantsFound=beacon_response.value.variantsFound %}
 					{% include 'result_pervariant.html' %}
 				{% endwith %}
 			</main>
@@ -48,18 +50,6 @@
 			</main>
 		{% endif %}
       {% endif %}
-
-      <section id="response-history">
-		<h2 class="response-{{ beacon_query.exists }}">
-		[{{ request.POST.assemblyId|stringformat:'s'|escape }}] {{ request.POST.query|stringformat:'s'|escape }}
-		<i class="fas fa-redo-alt"></i>
-		</h2>
-		<ul>
-			{% for k,v in beacon_query.params.items %}
-				<li><span>{{ k }}:</span><span>{{ v }}</span></li>
-			{% endfor %}
-		</ul>
-      </section>
 
     {% else %}
 
@@ -76,7 +66,7 @@
 			"Who controls access to this dataset".
 			</p>
 			
-			{% for dataset in BEACON.datasets %}
+			{% for dataset, authorized, description in datasets %}
 				<section>
 					<a href="//ega-archive.org/datasets/{{ dataset.id }}">
 						<span class="label label-{{ dataset.info.accessType|lower }}">
@@ -89,25 +79,8 @@
 						<span class="label-not_authorized" title="You are not authorized to access dataset {{ dataset.id }}"><i class="fas fa-times"></i></span>
 					{% endif %}
 				
-					<p>{{ dataset.description|default:'-' }}</p>
+					<p>{{ dataset.description|default('-') }}</p>
 				</section>
-{% comment %}
-			<section>
-				<a href="//ega-archive.org/datasets/{{ dataset.id }}">
-					<span class="label label-{{ dataset.info.accessType|lower }}">
-					{{ dataset.id }}
-					</span>
-				</a>
-
-				{% if dataset.info.authorized == 'true' %}
-					<span class="label-authorized" title="Authorized access">✔</span>
-				{% else %}
-					<span class="label-not_authorized" title="You are not authorized to access dataset {{ dataset.id }}">x</span>
-				{% endif %}
-				
-				<p>{{ dataset.description|default:'-' }}</p>
-			</section>
-{% endcomment %}
 
 			{% endfor %}
 		</main>
@@ -116,17 +89,18 @@
 
 	{% include 'footer.html' %}
 	
-	{% comment %}
-		<script src="{% static 'js/history.js' %}"></script>
-		<script src="{% static 'js/variants_panel.js' %}"></script>
-		<script src="{% static 'js/samples_panel.js' %}"></script>
-	{% endcomment %}
+	{#
+		<script src="{{ static('js/history.js') }}"></script>
+		<script src="{{ static('js/variants_panel.js') }}"></script>
+		<script src="{{ static('js/samples_panel.js') }}"></script>
 
-	{% if request.path == '/snp' or request.path == '/region' %}
-		<script src="{% static 'js/variants_panel.js' %}"></script>
+	{% if request.path == '/snp' or request.path == '/region') }}
+		<script src="{{ static('js/variants_panel.js') }}"></script>
 	{% elif request.path == '/samples'%}
-		<script src="{% static 'js/samples_panel.js' %}"></script>
+		<script src="{{ static('js/samples_panel.js') }}"></script>
 	{% endif %}
+
+	#}
 
   </body>
 </html>
