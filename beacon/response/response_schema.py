@@ -147,13 +147,16 @@ def build_returned_schemas(qparams, func_response_type):
 
     returned_schemas_by_response_type = {
         'build_variant_response': {
-            'Variant': [DEFAULT_SCHEMAS['Variant']] + [s for s, f in qparams.requestedSchemasVariant[0]],
-            'VariantAnnotation': [DEFAULT_SCHEMAS['VariantAnnotation']]
+            'Variant': [DEFAULT_SCHEMAS['Variant']] if not qparams.requestedSchemasVariant[0] else []
+                       + [s for s, f in qparams.requestedSchemasVariant[0]],
+            'VariantAnnotation': [DEFAULT_SCHEMAS['VariantAnnotation']] if not qparams.requestedSchemasVariantAnnotation[0] else []
                                  + [s for s, f in qparams.requestedSchemasVariantAnnotation[0]],
         }, 'build_individual_response': {
-            'Individual': [DEFAULT_SCHEMAS['Individual']] + [s for s, f in qparams.requestedSchemasIndividual[0]],
+            'Individual': [DEFAULT_SCHEMAS['Individual']] if not qparams.requestedSchemasIndividual[0] else []
+                          + [s for s, f in qparams.requestedSchemasIndividual[0]],
         }, 'build_biosample_response': {
-            'Biosample': [DEFAULT_SCHEMAS['Biosample']] + [s for s, f in qparams.requestedSchemasBiosample[0]],
+            'Biosample': [DEFAULT_SCHEMAS['Biosample']] if not qparams.requestedSchemasBiosample[0] else []
+                         + [s for s, f in qparams.requestedSchemasBiosample[0]],
         },
     }
 

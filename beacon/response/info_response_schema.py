@@ -76,10 +76,12 @@ def build_returned_schemas(qparams, func_response_type):
 
     returned_schemas_by_response_type = {
         'build_service_info_response': {
-            'ServiceInfo': [DEFAULT_SCHEMAS['ServiceInfo']] + [s for s, f in qparams.requestedSchemasServiceInfo[0]],
+            'ServiceInfo': [DEFAULT_SCHEMAS['ServiceInfo']] if not qparams.requestedSchemasServiceInfo[0] else []
+                           + [s for s, f in qparams.requestedSchemasServiceInfo[0]],
         },
         'build_dataset_info_response': {
-            'Dataset': [DEFAULT_SCHEMAS['Dataset']] + [s for s, f in qparams.requestedSchemasDataset[0]],
+            'Dataset': [DEFAULT_SCHEMAS['Dataset']] if not qparams.requestedSchemasDataset[0] else []
+                       + [s for s, f in qparams.requestedSchemasDataset[0]],
         },
     }
 
