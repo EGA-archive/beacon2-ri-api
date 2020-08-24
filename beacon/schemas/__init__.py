@@ -11,6 +11,7 @@ SUPPORTED_SCHEMAS = {
     # alternative
     'ga4gh-service-info-v1.0': alternative.ga4gh_service_info_v10,
     # TODO add phenopackets format
+    'ga4gh-phenopacket-individual-v1.0': alternative.ga4gh_phenopackets_individual_v10,
 }
 
 
