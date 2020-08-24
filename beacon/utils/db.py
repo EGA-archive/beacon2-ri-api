@@ -83,6 +83,7 @@ class DBConnection():
         LOG.debug('----------- acquiring connection')
         conn = await self.db_pool.acquire()
         try:
+            await conn.set_builtin_type_codec('hstore', codec_name='pg_contrib.hstore', schema='addons')
             yield conn
         except (asyncpg.exceptions._base.InterfaceError,
                 asyncpg.exceptions._base.PostgresError,
@@ -327,5 +328,20 @@ async def fetch_biosamples(connection,
                                      qparams_db.skip * qparams_db.limit,  # _skip
                                      qparams_db.limit) # limit
 
+    for record in response:
+        yield record
+
+
+
+# Returns a generator of record, make sure to consume them before the connection is closed
+@pool.asyncgen_execute
+async def test(connection):
+    LOG.info('Testing')
+
+    query = f"SELECT * FROM public.test_hstore();"
+    LOG.debug("QUERY: %s", query)
+    #await connection.set_builtin_type_codec('hstore', codec_name='pg_contrib.hstore', schema='addons')
+    statement = await connection.prepare(query)
+    response = await statement.fetch()
     for record in response:
         yield record
