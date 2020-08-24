@@ -2,17 +2,15 @@
 
 """Database Connection."""
 
-import sys
+
 import logging
 from contextlib import asynccontextmanager
-from functools import wraps
-import traceback
-# import inspect
 
 import asyncpg
 
 from .. import conf
 from .exceptions import BeaconServerError
+from ..schemas import DEFAULT_SCHEMAS
 
 LOG = logging.getLogger(__name__)
 
@@ -264,7 +262,7 @@ async def fetch_individuals(connection,
     Returns a pd.DataFrame with the response.
     """
     # connection.add_log_listener(simple_listener)
-    dollars = ", ".join([f"${i}" for i in range(1, 20)])  # 1..19
+    dollars = ", ".join([f"${i}" for i in range(1, 21)])  # 1..20
     query = f"SELECT * FROM {conf.database_schema}.query_individuals({dollars});"
     LOG.debug("QUERY: %s", query)
     statement = await connection.prepare(query)
@@ -286,7 +284,10 @@ async def fetch_individuals(connection,
                                      int(variant_id) if variant_id else None,
                                      qparams_db.filters, # filters
                                      qparams_db.skip * qparams_db.limit,  # _skip
-                                     qparams_db.limit)  # _limit integer
+                                     qparams_db.limit, # _limit integer
+                                     [DEFAULT_SCHEMAS['Individual']] if not qparams_db.requestedSchemasIndividual[
+                                         0] else []
+                                                 + [s for s, f in qparams_db.requestedSchemasIndividual[0]]) # requestedSchemas
 
     for record in response:
         yield record

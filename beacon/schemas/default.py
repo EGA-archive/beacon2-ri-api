@@ -1,8 +1,12 @@
 import os
+import logging
 from .. import conf
 from ..utils.json import jsonb
 
 # It will raise an exception if the fields are not found in the record
+
+LOG = logging.getLogger(__name__)
+
 
 def beacon_info_v20(datasets):
     return {
@@ -89,7 +93,7 @@ def beacon_variant_annotation_v20(row):
 def beacon_biosample_v20(row):
     return {
         'biosampleId': row['biosample_stable_id'],
-        'individualId': row['individual_stable_id'],
+        'subjectId': row['individual_stable_id'],
         'description': row['description'],
         'biosampleStatus': row['biosample_status_ontology'],
         'collectionDate':  str(row['collection_date']) if row['collection_date'] else None,
@@ -106,7 +110,9 @@ def beacon_biosample_v20(row):
 
 def beacon_individual_v20(row):
     return {
-        'individualId': row['individual_stable_id'],
+        'subjectId': row['individual_stable_id'],
+        'datasetId': None, # TODO
+        'taxonId': row['taxon_id'],
         'sex': row['sex_ontology'],
         'ethnicity': row['ethnicity_ontology'],
         'geographicOrigin': row['geographic_origin_ontology'],
