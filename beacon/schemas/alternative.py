@@ -18,7 +18,7 @@ def ga4gh_service_info_v10(row):
         'contactUrl': conf.org_contact_url,
         'documentationUrl': conf.documentation_url,
         'createDateTime': conf.create_datetime,
-        'updateDateTime': conf.update_datetime,  # to be updated and fetched from the request['app']['update_time']
+        'updateDateTime': conf.update_datetime,
         'environment': conf.environment,
         'version': conf.version,
         'url': conf.service_url,
