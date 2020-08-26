@@ -62,3 +62,17 @@ We import a [pre-configured realm](beacon-realm.json), with a beacon client and 
 | jane     | jane        | jane.smith@beacon.ga4gh |
 | sabela   | ihatefred   | sabela.delatorre@crg.eu |
 | fred     | ihatesabela | frederic.haziza@crg.eu  |
+
+Exporting the settings can be done with:
+
+	docker-compose exec idp /opt/jboss/keycloak/bin/standalone.sh \
+	-Djboss.socket.binding.port-offset=100 \
+	-Dkeycloak.migration.action=export \
+	-Dkeycloak.migration.provider=singleFile \
+	-Dkeycloak.migration.realmName=Beacon \
+	-Dkeycloak.migration.usersExportStrategy=REALM_FILE \
+	-Dkeycloak.migration.file=/tmp/export-beacon-realm.json
+	
+Once it has run, you can stop the above command and copy out the file from the container
+
+	docker cp idp:/tmp/export-beacon-realm.json <destination-path>

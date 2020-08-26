@@ -90,35 +90,18 @@ permissions_url = 'http://beacon-permissions'
 
 
 #
-# OpenID Connect settings
-#
-idp_client_id = 'beacon'
-idp_client_secret = '9e4bfb5c-c1e2-4c6c-aed1-8f83384f94b0' # same as in the test IdP
-idp_scope = profile
-
-idp_authorization_endpoint = "http://localhost:8080/auth/realms/Beacon/protocol/openid-connect/auth"
-idp_token_endpoint         = "http://localhost:8080/auth/realms/Beacon/protocol/openid-connect/token"
-idp_introspection_endpoint = "http://localhost:8080/auth/realms/Beacon/protocol/openid-connect/token/introspect"
-idp_userinfo_endpoint      = "http://localhost:8080/auth/realms/Beacon/protocol/openid-connect/userinfo"
-idp_end_session_endpoint   = "http://localhost:8080/auth/realms/Beacon/protocol/openid-connect/logout"
-
-redirect_uri = http://localhost:5050/login
-
-
-
-#
-# IdP configuration (Oauth2)
+# IdP endpoints (OpenID Connect/Oauth2)
 #
 # or use Elixir AAI (see https://elixir-europe.org/services/compute/aai)
 #
-# OAuth / AAI / IdP endpoints
-idp_authorize     = 'https://idp.ega-archive.org/authorize?'
-idp_access_token  = 'https://idp.ega-archive.org/token'
-idp_user_info     = 'https://idp.ega-archive.org/userinfo'
-idp_logout        = 'https://idp.ega-archive.org/logout'
-# Credentials
-idp_client_id     = 'your-client-id'
-idp_client_secret = 'your-super-secret'
-idp_scope = 'profile email openid'
+idp_client_id = 'beacon'
+idp_client_secret = 'b26ca0f9-1137-4bee-b453-ee51eefbe7ba' # same as in the test IdP
+idp_scope = 'profile'
 
-idp_redirect_uri = 'https://beacon.ega-archive.org/login'
+idp_authorize     = 'http://localhost:8080/auth/realms/Beacon/protocol/openid-connect/auth?'
+idp_access_token  = 'http://localhost:8080/auth/realms/Beacon/protocol/openid-connect/token'
+idp_introspection = 'http://localhost:8080/auth/realms/Beacon/protocol/openid-connect/token/introspect'
+idp_user_info     = 'http://localhost:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
+idp_logout        = 'http://localhost:8080/auth/realms/Beacon/protocol/openid-connect/logout'
+
+idp_redirect_uri = 'http://localhost:5050/login'

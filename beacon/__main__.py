@@ -64,7 +64,7 @@ def main(path=None):
     # Prepare for the UI
     main_dir = Path(__file__).parent.parent.resolve()
     # Where the templates are
-    template_loader = jinja2.FileSystemLoader(str(main_dir / 'templates'))
+    template_loader = jinja2.FileSystemLoader(str(main_dir / 'ui' / 'templates'))
     aiohttp_jinja2.setup(beacon, loader=template_loader)
 
     # Session middleware
@@ -92,7 +92,7 @@ def main(path=None):
         # will create the UDS socket and bind to it
         web.run_app(beacon, path=path, shutdown_timeout=0, ssl_context=ssl_context)
     else:
-        static_files = Path(__file__).parent.parent.resolve() / 'static'
+        static_files = Path(__file__).parent.parent.resolve() / 'ui' / 'static'
         beacon.add_routes([web.static('/static', str(static_files))])
         web.run_app(beacon,
                     host=getattr(conf, 'beacon_host', '0.0.0.0'),

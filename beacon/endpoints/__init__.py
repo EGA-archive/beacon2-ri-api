@@ -106,8 +106,8 @@ routes = [
     # web.get('/terms/', BeaconFilteringTermsView.as_view(), name='filters/'),
     # web.get('/terms/<term>', BeaconFilteringTermsView.as_view(), name='filters-term'),
 
-    # # Login endpoints
-    # web.get('/privacy', TemplateView.as_view(template_name='privacy.html'), name='privacy'),
+    # # Auth endpoints
+    web.get('/', index, name='privacy'),
     web.get('/login', login, name='login'),
     web.get('/logout', logout, name='logout'),
 
