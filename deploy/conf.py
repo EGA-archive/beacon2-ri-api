@@ -86,5 +86,22 @@ CA_cert = '/etc/ega/CA.cert'
 #
 # Permissions server configuration
 #
-permissions_url = r'https://permissions.ega-archive.org/datasets'
+permissions_url = 'http://beacon-permissions'
+
+
+#
+# OpenID Connect settings
+#
+idp_client_id = 'beacon'
+idp_client_secret = '9e4bfb5c-c1e2-4c6c-aed1-8f83384f94b0' # same as in the test IdP
+idp_scope = profile
+
+idp_authorization_endpoint = "http://localhost:8080/auth/realms/Beacon/protocol/openid-connect/auth"
+idp_token_endpoint         = "http://localhost:8080/auth/realms/Beacon/protocol/openid-connect/token"
+idp_introspection_endpoint = "http://localhost:8080/auth/realms/Beacon/protocol/openid-connect/token/introspect"
+idp_userinfo_endpoint      = "http://localhost:8080/auth/realms/Beacon/protocol/openid-connect/userinfo"
+idp_end_session_endpoint   = "http://localhost:8080/auth/realms/Beacon/protocol/openid-connect/logout"
+
+redirect_uri = http://localhost:5050/login
+
 
