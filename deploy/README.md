@@ -48,3 +48,17 @@ The `-d` flag runs the containers _detached_, ie we get the prompt back. You can
 Tear down the system and remove the database volume, with:
 
 	docker-compose down -v
+
+
+## Identity Provider
+
+We use [Keycloak in a container](https://registry.hub.docker.com/r/jboss/keycloak), connected to a Postgres database.
+We import a [pre-configured realm](beacon-realm.json), with a beacon client and 4 users:
+
+| Username | Password    | Email                   |
+|----------|-------------|-------------------------|
+| admin    | secret      |                         |
+| john     | john        | john.smith@beacon.ga4gh |
+| jane     | jane        | jane.smith@beacon.ga4gh |
+| sabela   | ihatefred   | sabela.delatorre@crg.eu |
+| fred     | ihatesabela | frederic.haziza@crg.eu  |

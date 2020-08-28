@@ -25,7 +25,7 @@ def beacon_info_v20(datasets):
         'welcomeUrl': conf.welcome_url,
         'alternativeUrl': conf.alternative_url,
         'createDateTime': conf.create_datetime,
-        'updateDateTime': os.environ.get('beacon_update_datetime'),#conf.update_datetime, # to be updated and fetched from the request['app']['update_time']
+        'updateDateTime': conf.update_datetime,
         'serviceType': conf.service_type,
         'serviceUrl': conf.service_url,
         'entryPoint': conf.entry_point,
@@ -41,8 +41,8 @@ def beacon_dataset_info_v20(row):
         'name': row['name'],
         'description': row['description'],
         'assemblyId': row['assemblyId'],
-        'createDateTime': row['createdAt'].strftime(conf.update_datetime) if row['createdAt'] else None,
-        'updateDateTime': row['updatedAt'].strftime(conf.update_datetime) if row['updatedAt'] else None,
+        'createDateTime': row['createdAt'].strftime(conf.datetime_format) if row['createdAt'] else None,
+        'updateDateTime': row['updatedAt'].strftime(conf.datetime_format) if row['updatedAt'] else None,
         'dataUseConditions': None,
         'version': None,
         'variantCount': row['variantCount'],  # already coalesced

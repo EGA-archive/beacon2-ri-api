@@ -36,8 +36,8 @@ version         = 'v2.0'
 welcome_url     = 'https://beacon.ega-archive.org/'
 alternative_url = 'https://beacon-api.ega-archive.org/'
 create_datetime = '2020-07-30 12:00'
-update_datetime = '%Y-%m-%d %H:%M'  # format to convert the datetime python object (returned by the DB) to a string
-
+datetime_format = '%Y-%m-%d %H:%M'  # convert datetime python object to string
+#update_datetime will be created when initializing the beacon, using the above format
 
 #
 # Service

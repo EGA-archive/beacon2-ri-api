@@ -2,7 +2,8 @@ version: '3.2'
 
 # Use the default driver (here bridge)
 networks:
-  priv:
+  beacon-priv:
+  idp-priv:
   pub:
 
 services:
@@ -21,7 +22,7 @@ services:
     ports:
       - "5049:5432"  # Only for development: connect to the db from outside the Docker container
     networks:
-      - priv
+      - beacon-priv
 
   beacon:
     build: ..
@@ -35,24 +36,49 @@ services:
     ports:
       - "5050:5050"
     networks:
-      - priv
+      - beacon-priv
       - pub
     # entrypoint: ['/bin/sleep','100000000']  # we don't run the beacon just after starting, we'll do it manually 
 
-  # ui:
-  #   build: ../ui
-  #   image: egarchive/beacon-ui:2.0
-  #   hostname: beacon-ui
-  #   container_name: beacon-ui
-  #   environment:
-  #     - BEACON_UI_CONF=/beacon/conf.ini
-  #   volumes:
-  #     - ./beacon/ui.conf:/beacon/conf.ini
-  #     - ../ui/beaconui:/beacon/beaconui   # we do that to be able to modify the code and update the container "live"
-  #     - ../ui/static:/beacon/static
-  #     - ../ui/templates:/beacon/templates
-  #     - ./logo.png:/beacon/static/logo.png
-  #   ports:
-  #     - "8000:8000"
-  #   networks:
-  #     - pub
+    
+  ###########################################
+  # Local Identity Provider
+  ###########################################
+  # Keycloak is so slow to boot that the DB goes faster
+  # and we don't need a delay in-between. We can rely on the depends_on only.
+  idp:
+    image: jboss/keycloak
+    hostname: idp
+    container_name: idp
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=secret
+      - DB_USER=admin
+      - DB_PASSWORD=secret
+      - DB_VENDOR=postgres
+      - DB_ADDR=idp-db
+      - DB_PORT=5432
+      - DB_DATABASE=keycloak
+      #- DB_SCHEMA=public
+      - KEYCLOAK_IMPORT=/tmp/beacon-realm.json -Dkeycloak.profile.feature.upload_scripts=enabled
+    volumes:
+      - ./beacon-realm.json:/tmp/beacon-realm.json
+    ports:
+      - "8080:8080"
+    networks:
+      - pub
+      - idp-priv
+    depends_on:
+      - idp-db
+
+  idp-db:
+    image: postgres
+    hostname: idp-db
+    container_name: idp-db
+    environment:
+      - POSTGRES_DB=keycloak
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=secret
+    networks:
+      - idp-priv
+
