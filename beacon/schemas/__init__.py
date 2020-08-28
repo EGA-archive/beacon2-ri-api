@@ -10,8 +10,11 @@ SUPPORTED_SCHEMAS = {
     'beacon-individual-v2.0.0-draft.2': default.beacon_individual_v20,
     # alternative
     'ga4gh-service-info-v1.0': alternative.ga4gh_service_info_v10,
-    # TODO add phenopackets format
+    # phenopackets format
     'ga4gh-phenopacket-individual-v1.0': alternative.ga4gh_phenopackets_individual_v10,
+    'ga4gh-phenopacket-biosample-v1.0': alternative.ga4gh_phenopackets_biosamples_v10,
+    'ga4gh-phenopacket-variant-v1.0': alternative.ga4gh_phenopackets_variant_v10,
+    'ga4gh-phenopacket-variant-annotation-v1.0': alternative.ga4gh_phenopackets_variant_annotation_v10,
 }
 
 
