@@ -1,6 +1,7 @@
 from .. import conf
 from ..utils import filter_hstore
 
+
 def ga4gh_service_info_v10(row):
     return {
         'id': conf.beacon_id,
