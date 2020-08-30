@@ -76,3 +76,29 @@ Exporting the settings can be done with:
 Once it has run, you can stop the above command and copy out the file from the container
 
 	docker cp idp:/tmp/export-beacon-realm.json <destination-path>
+
+# Dealing with the network for a local deployment
+
+We can make our web browser point to `localhost`, on some given port,
+which docker will redirect to the relevant container. That part is
+fine, but when a docker container A needs to call another container B
+using a URL pointing to `localhost`, it will look at itself (ie,
+packets don't get out of A), and won't find the service running on the
+chosen port.
+
+We cannot circumvent this issue by _adding_ DNS entries, to point to
+the other containers. This issue is to change an already existing one
+inside the container, namely `localhost`.
+
+A simple solution is to update your local machine's DNS resolution by
+adding to `/etc/hosts`, the following entries:
+
+	127.0.0.1      idp
+	127.0.0.1      beacon
+	127.0.0.1      beacon-permissions
+
+That way, you can make your browser point to `http://idp:8080` and
+`http://beacon:5050`, and they'll redirect to the right container. The
+same is true from _within_ those containers (because they either
+already have a DNS entry, or they don't, would get out of the
+container and then use the above newly added entries).

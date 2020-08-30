@@ -7,17 +7,16 @@ import logging
 import os
 from pathlib import Path
 from time import strftime
+import base64
 
 from aiohttp import web
 import aiohttp_jinja2
 import jinja2
-from cryptography import fernet
-from aiohttp_session import setup as session_setup
-from aiohttp_session.cookie_storage import EncryptedCookieStorage
-import base64
+from jinja2_pluralize import pluralize_dj
 
 from . import conf, load_logger, endpoints
 from .utils import db
+from .ui.middlewares import setup_middlewares
 
 LOG = logging.getLogger(__name__)
 
@@ -42,7 +41,13 @@ async def initialize(app):
         #nsamples=await get_nsamples(),
         #update_datetime=update_datetime_formatted,
     )
+    env.filters['pluralize'] = pluralize_dj
 
+    # Fetch the Assembly IDs in advance
+    assemblyIDs = await db.fetch_assemblyids()
+    setattr(conf, 'assemblyIDs', assemblyIDs)
+    #app['assemblyIDs'] = assemblyIDs
+    
     LOG.info("Initialization done.")
 
 async def destroy(app):
@@ -68,9 +73,7 @@ def main(path=None):
     aiohttp_jinja2.setup(beacon, loader=template_loader)
 
     # Session middleware
-    fernet_key = fernet.Fernet.generate_key()
-    secret_key = base64.urlsafe_b64decode(fernet_key) # 32 url-safe base64-encoded bytes
-    session_setup(beacon, EncryptedCookieStorage(secret_key))
+    setup_middlewares(beacon)
 
     # Configure the endpoints
     beacon.add_routes(endpoints.routes)

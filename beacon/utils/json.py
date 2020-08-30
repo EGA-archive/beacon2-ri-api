@@ -12,7 +12,7 @@ LOG = logging.getLogger(__name__)
 _INFINITY = float('inf')
 
 def is_list(o):
-    return (isinstance(o, (list, tuple)) or
+    return (isinstance(o, (list, set, tuple)) or
             inspect.isgenerator(o) or
             inspect.isgeneratorfunction(o))
 

@@ -20,8 +20,6 @@ services:
     volumes:
       - ./db/schema.sql.gz:/docker-entrypoint-initdb.d/1.sql.gz
       - ./db/data.sql.gz:/docker-entrypoint-initdb.d/2.sql.gz
-    ports:
-      - "5049:5432"  # Only for development: connect to the db from outside the Docker container
     networks:
       - beacon-priv
 
@@ -33,9 +31,10 @@ services:
     volumes:
       - ../beacon:/beacon/beacon  # inject the code, so we see the modifications "live"
       - ./conf.py:/beacon/beacon/conf.py
+      - ./logger.yml:/beacon/beacon/logger.yml
       - ./access_levels.yml:/beacon/beacon/utils/access_levels.yml
-      - ../ui/static:/beacon/static
-      - ../ui/templates:/beacon/templates
+      - ../ui/static:/beacon/ui/static
+      - ../ui/templates:/beacon/ui/templates
     ports:
       - "5050:5050"
     networks:
@@ -43,6 +42,24 @@ services:
       - pub
     # entrypoint: ['/bin/sleep','100000000']
 
+  ###########################################
+  # Dummy Permissions server
+  ###########################################
+  permissions:
+    image: egarchive/beacon:2.0
+    hostname: beacon-permissions
+    container_name: beacon-permissions
+    volumes:
+      - ./permissions.py:/beacon/permissions.py  # inject the code, so we see the modifications "live"
+      - ./logger.yml:/beacon/logger.yml
+    ports:
+      - "5051:5051"
+    networks:
+      - beacon-priv
+      - pub
+    entrypoint: ['/bin/sleep','100000000']
+    working_dir: '/beacon'
+    #entrypoint: ['python','permissions.py']
     
   ###########################################
   # Local Identity Provider
@@ -54,6 +71,9 @@ services:
     hostname: idp
     container_name: idp
     environment:
+      #- KEYCLOAK_FRONTEND_URL=http://idp:8080/auth
+      #- KEYCLOAK_LOGLEVEL=DEBUG
+      #- ROOT_LOGLEVEL=DEBUG
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=secret
       - DB_USER=admin

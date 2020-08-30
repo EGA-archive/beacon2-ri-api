@@ -2,21 +2,17 @@
 Field classes.
 """
 
-import logging
 import os
 
-from aiohttp import ClientSession
 from datetime import datetime
 
-from ..conf import database_schema, permissions_url
+from ..conf import database_schema
 from .validators import (ValidationError,
                          EnumValidator,
                          RegexValidator,
                          MinValueValidator,
                          MaxValueValidator)
 from ..utils.db import fetch_datasets_access
-
-LOG = logging.getLogger(__name__)
 
 __all__ = (
     'Field', 'StringField', 'IntegerField', 'FloatField', 'DecimalField',
@@ -66,7 +62,6 @@ class Field:
         if value in EMPTY_VALUES:
             if self.required:
                 raise FieldError(self.name, 'required field')
-            # LOG.debug('%s: %s is an empty value', self.name, value)
             return
         self.run_validators(value)
 
@@ -188,7 +183,6 @@ class DateField(Field):
         super().__init__(**kwargs)
 
     async def convert(self, value: str, **kwargs) -> datetime:
-        #LOG.debug('Converting date value: %s', value)
         if value in EMPTY_VALUES:
             return self.default
         try:
@@ -204,9 +198,9 @@ class NullBooleanField(Field):
         # value = super().convert(value, **kwargs)
         if value in EMPTY_VALUES:
             return self.default
-        if value.lower() in ('true', '1'):
+        if value.lower() in ('true', '1', 'on'):
             return True
-        if value.lower() in ('false', '0'):
+        if value.lower() in ('false', '0', 'off'):
             return False
         return self.default
 
@@ -229,7 +223,7 @@ class ListField(Field):
                 v = v.strip()
             converted_v = await self.item_type.convert(v, **kwargs)
             res.add(converted_v)
-        return list(res) # for the moment, cuz json.dumps not happy
+        return res
 
     async def validate(self, values):
         if values in EMPTY_VALUES:
@@ -254,49 +248,12 @@ class RangeField(Filter, ListField):
         if value in EMPTY_VALUES:
             return self.default
         values = await super().convert(value)
-        LOG.debug('---------------- Range Field values: %s', values)
         if len(values) == 1:
             val = values[0]
             return [val,val] # repeat it
         if len(values) != 2:
             raise FieldError(self.name, "must contain exactly two values")
         return sorted(values, key=self.sort_key, reverse=self.reverse)
-
-class DatasetsField(ListField):
-
-    async def convert(self, value: str, request=None) -> (list,bool):
-
-        # Requested datasets
-        values = value.split(self.separator) if value not in EMPTY_VALUES else []
-        datasets = list(set(values)) # remove duplicates, we know they should be strings
-
-        # Get the token.
-        # If the user is not authenticated (ie no token)
-        # we pass (datasets, False) to the database function: it will filter out the datasets list, with the public ones
-
-        header = request.headers.get('Authorization') if request else None
-        LOG.debug('Access token: %s', header)
-        if header is None:
-            return datasets, False
-            
-        # Otherwise, we have a token and resolve the datasets with the permissions server
-        # The permissions server will:
-        # * filter out the datasets list, with the ones the user has access to
-        # * return _all_ the datasets the user has access to, in case the datasets list is empty
-        async with ClientSession() as session:
-            async with session.post(
-                    permissions_url,
-                    headers = { 'Authorization': header }, # only sending that header
-                    json = { 'datasets': datasets }, # will set the Content-Type to application/json
-            ) as resp:
-
-                if resp.status > 200:
-                    LOG.error('Permissions server error %d', resp.status)
-                    return [], False # behave like it's not authenticated ?
-
-                authorized_datasets = await resp.json()
-                return authorized_datasets, True
-
 
 class SchemasField(ListField):
 

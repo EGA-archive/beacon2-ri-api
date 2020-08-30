@@ -10,9 +10,9 @@ from logging.config import dictConfig
 from pathlib import Path
 
 
+import yaml
 from aiohttp import web
 from aiohttp import ClientSession
-
 
 LOG = logging.getLogger(__name__)
 
@@ -27,8 +27,7 @@ PERMISSIONS = {
 
 idp_client_id     = 'permissions'
 idp_client_secret = 'c0285717-1bfb-4b32-b01d-d663470ce7c4'
-idp_user_info     = 'http://localhost:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
-
+idp_user_info     = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
 
 async def permission(request):
 
@@ -40,7 +39,8 @@ async def permission(request):
 
     user = None
     async with ClientSession() as session:
-        headers['Authorization'] = 'Bearer ' + access_token
+        headers = { 'Authorization': 'Bearer ' + access_token } # Sending just that header
+        LOG.debug('Contacting %s', idp_user_info)
         async with session.post(idp_user_info, headers=headers) as resp:
             if resp.status == 200:
                 user = await resp.json()

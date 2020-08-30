@@ -122,6 +122,31 @@ async def get_last_modified_date(connection):
     LOG.debug("QUERY: %s", query)
     return await connection.fetchval(query)
 
+@pool.coroutine_execute
+async def _fetch_assemblyids(connection):
+    """
+    Return Assembly IDs from the dataset.
+    """
+    LOG.info('Retrieving assembly IDs (once)')
+    query = f"""SELECT DISTINCT reference_genome FROM {conf.database_schema}.dataset;"""
+    LOG.debug("QUERY: %s", query)
+    response = await connection.fetch(query)
+    return [r['reference_genome'] for r in response]
+
+async def fetch_assemblyids():
+    """
+    Return Assembly IDs from the dataset.
+    We cache the result in the conf module.
+    """
+    assemblyIDs = getattr(conf, 'assemblyIDs', None)
+    if assemblyIDs is None:
+        assemblyIDs = await _fetch_assemblyids()
+        setattr(conf, 'assemblyIDs', assemblyIDs)
+    else:
+        LOG.debug('Using cached assemblyIDs: %s', assemblyIDs)
+    return assemblyIDs
+
+
 
 # We might be able to use postgres partitioning
 # https://www.postgresql.org/docs/12/ddl-partitioning.html

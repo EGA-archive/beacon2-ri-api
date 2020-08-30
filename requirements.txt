@@ -6,3 +6,5 @@ cryptography
 aiohttp_session
 jinja2
 aiohttp_jinja2
+aiohttp_csrf
+jinja2_pluralize

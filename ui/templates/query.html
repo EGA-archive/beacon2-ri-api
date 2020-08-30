@@ -1,51 +1,36 @@
-{% load beacon %}
 <form id="query"
-      action="{{ request.get_full_path }}"
-      method="post"
+      action="{{ request.path_qs }}"
+      method="POST"
       accept-charset="UTF-8"
       autocomplete="off"
       enctype="multipart/form-data"
       data-cache-key="form"
       novalidate="">
 
-      {% csrf_token %}
+  {{ csrf_token|safe }}
       
   <div class="form-container">
 
-      {% if results.error or form.errors %}
-        <section id="query-errors">
-        {% if results.error %}
-          <div class="error-{{ error.errorCode }}">
-          {{ results.error.message }}
-          </div>
-        {% endif %}
-
-        {% for field in form %}
-          {% for error in field.errors %}
-            <div class="error-wrapper">
-              <i class="fas fa-exclamation-circle"></i>
-              <div>
-                {{ error|safe }}
-              </div>
-            </div>
-            <!-- <div class="error-wrapper">
-
-              <h3>{{ field.name }}</h3>
-              <div>
-                {{ error|safe }}
-              </div>
-            </div> -->
-          {% endfor %}
-        {% endfor %}
-
-        </section>
-      {% endif %}
-
       <fieldset id="query-search">
-        {{ form.assemblyId }}
+	{% if assemblyIDs|length == 1 %}
+	{# <!-- When there is only one --> #}
+	<input type="hidden" name="assemblyId" value="{{ assemblyIDs[0] }}" />
+	{% else %}
+	{# <!-- When there are many (or none) --> #}
+	<select name="assemblyId">
+          {% for assemblyID in assemblyIDs %}
+	  <option value="{{ assemblyID }}">{{ assemblyID }}</option>
+	  {% endfor %}
+	</select>
+	{% endif %}
         <section>
-          {{ form.query }}
-          {{ form.query.label_tag }}
+	  <input type="text"
+		 name="query"
+		 required 
+		 data-lpignore="true"
+		 placeholder="For example  10 : 12345 A > T"
+		 value="" />
+	  Chromosome : Position ReferenceBase &gt; (AlternateBase|VariantType)
         </section>
         {{ form.includeDatasetResponses }}
         <button>
@@ -54,9 +39,13 @@
         </button>
       </fieldset>
 
-      <!-- <section>
-          {{ form.includeDatasetResponses.label_tag }} {{ form.includeDatasetResponses }} 
-      </section> -->
+
+
+{# <!-- ========================= -->
+
+
+
+
 
 
       <fieldset id="query-datasets">
@@ -65,16 +54,16 @@
             <p><span>All</span>  <span>None</span></p>
         </div>
         <section>
-          {% for d in BEACON.datasets %}
-            {% if d.info.authorized == 'true' %}
+          {% for dataset_id, authorized, variantCount in datasets %}
+            {% if authorized %}
               <label>
-                <input type="checkbox" name="datasetIds" value="{{ d.id }}" {% if d.id in selected_datasets %}checked{% endif %}/>
-                {{ d.id }}{% if d.variantCount %} ({{ d.variantCount }} variant{{ d.variantCount|pluralize }}){% endif %}
+                <input type="checkbox" name="datasetIds" value="{{ dataset_id }}" {% if dataset_id in selected_datasets %}checked{% endif %}/>
+                {{ dataset_id }}{% if variantCount %} ({{ variantCount }} variant{{ variantCount|pluralize }}){% endif %}
               </label>
             {% else %}
               <label class="dataset-not-authorized">
-                <input type="checkbox" disabled name="datasetIds" value="{{ d.id }}" />
-                {{ d.id }}
+                <input type="checkbox" disabled name="datasetIds" value="{{ dataset_id }}" />
+                {{ dataset_id }}
               </label>
             {% endif %}
           {% endfor %}
@@ -100,5 +89,12 @@
         {% endfor %}
       </fieldset>
 
+
+
+
+
+
+
+      <!-- ========================= --> #}
   </div>
 </form>

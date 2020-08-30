@@ -87,7 +87,8 @@ routes = [
 
 
     # Just for test
-    web.get('/api/test'                      , test.handler),
+    web.get('/api/test'                  , test.handler),
+    web.get('/test'                      , test.handler),
 
 
     ## HTML UI

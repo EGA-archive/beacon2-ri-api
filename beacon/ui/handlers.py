@@ -3,23 +3,28 @@ import logging
 from aiohttp.web import json_response
 from aiohttp_jinja2 import template
 from aiohttp_session import get_session
+from aiohttp_csrf import generate_token
 
 from .. import conf
+from ..utils import db
+from .middlewares import CSRF_FIELD_NAME
 
 LOG = logging.getLogger(__name__)
 
-
 @template('index.html')
 async def index(request):
+    csrf_token = await generate_token(request)
     return {
         'request': request,
         'session': await get_session(request),
+        'assemblyIDs': await db.fetch_assemblyids(),
         'datasets': [],
-        #'form': getattr(forms, self.formbase)(),
+        'form': {},
         'selected_datasets': set(),
         'filters': set(),
         'beacon_response': None,
         'cookies': request.cookies,
+        'csrf_token': f'<input type="hidden" name="{CSRF_FIELD_NAME}" value="{csrf_token}" />',
     }
 
 # class BaseView(TemplateView):

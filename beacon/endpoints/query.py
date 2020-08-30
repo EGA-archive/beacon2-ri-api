@@ -7,8 +7,7 @@ from ..validation.request import RequestParameters, print_qparams
 from ..validation.fields import (RegexField,
                                  ChoiceField,
                                  IntegerField,
-                                 ListField,
-                                 DatasetsField)
+                                 ListField)
 
 LOG = logging.getLogger(__name__)
 
@@ -31,8 +30,7 @@ class QueryParameters(RequestParameters):
     alternateBases = RegexField(r'^([ACGTN]+)$')
     variantType = ChoiceField("DEL", "INS", "DUP", "INV", "CNV", "SNP", "MNP", "DUP:TANDEM", "DEL:ME", "INS:ME", "BND")
     assemblyId = RegexField(r'^((GRCh|hg)[0-9]+([.]?p[0-9]+)?)$', required=True) # GRCh007.p9 is valid
-    # datasetIds = ListField(items=RegexField(r'^[^<>"/;%{}+=]*$'))
-    datasets = DatasetsField()
+    datasets = ListField(items=RegexField(r'^[^<>"/;%{}+=]*$'))
     includeDatasetResponses = ChoiceField("ALL", "HIT", "MISS", "NONE", default="NONE")
     filters = ListField(items=RegexField(r'.*:.+=?>?<?[0-9]*$'))
     mateName = ChoiceField("1", "2", "3", "4", "5", "6", "7",
