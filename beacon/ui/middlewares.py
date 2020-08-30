@@ -12,10 +12,15 @@ SESSION_STORAGE = 'beacon'
 
 @aiohttp_jinja2.template('404.html')
 async def handle_404(request):
-    return {}
+    return {
+        'cookies': request.cookies
+    }
+
 @aiohttp_jinja2.template('500.html')
 async def handle_500(request):
-    return {}
+    return {
+        'cookies': request.cookies
+    }
 
 
 @web.middleware

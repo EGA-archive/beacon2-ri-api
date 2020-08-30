@@ -19,6 +19,7 @@ async def get_user_info_and_redirect(access_token, next_url, request_session):
     On failure (ie an invalid token), we remove the info from the request_session,
     try to get an explanation, and do _not_ redirect anywhere.
     '''
+    LOG.debug('Token: %s', access_token)
 
     async with ClientSession() as session:
         headers = { 'Accept': 'application/json', 'Authorization': 'Bearer ' + access_token }

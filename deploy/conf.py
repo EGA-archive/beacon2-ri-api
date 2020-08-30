@@ -82,7 +82,7 @@ CA_cert = '/etc/ega/CA.cert'
 #
 # Permissions server configuration
 #
-permissions_url = 'http://beacon-permissions'
+permissions_url = 'http://beacon-permissions:5051'
 
 
 #

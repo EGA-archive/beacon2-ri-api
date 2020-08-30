@@ -40,33 +40,15 @@
       </fieldset>
 
 
-
-{# <!-- ========================= -->
-
-
-
-
-
-
       <fieldset id="query-datasets">
         <div id="datasets-header">
             <p>Datasets</p>
             <p><span>All</span>  <span>None</span></p>
         </div>
         <section>
-          {% for dataset_id, authorized, variantCount in datasets %}
-            {% if authorized %}
-              <label>
-                <input type="checkbox" name="datasetIds" value="{{ dataset_id }}" {% if dataset_id in selected_datasets %}checked{% endif %}/>
-                {{ dataset_id }}{% if variantCount %} ({{ variantCount }} variant{{ variantCount|pluralize }}){% endif %}
-              </label>
-            {% else %}
-              <label class="dataset-not-authorized">
-                <input type="checkbox" disabled name="datasetIds" value="{{ dataset_id }}" />
-                {{ dataset_id }}
-              </label>
-            {% endif %}
-          {% endfor %}
+          {% for dataset in datasets %}
+	  <div>{{ dataset }}</div>
+	  {% endfor %}
         </section>
         </fieldset>
 
@@ -75,26 +57,22 @@
           <p>Filters <i class="filter-add fas fa-plus-circle"></i></p>
         </div>
 
-        {% for f in filters %}
+        {% if filters %}
+          {% for f in filters %}
           <section>
-            <span>{{ f|convert2label }}</span>
+            <span>{{ f }}</span>
             <input type="text" value="{{ f }}" {% if not f %}placeholder="HP:0011007>=49 or PATO:0000383 or EFO:0009656" {% endif %}name="filters" data-lpignore="true" />
             <i class="filter-remove fas fa-minus-circle"></i>
           </section>
-          {% empty %}
+          {% endfor %}
+        {% else %}
           <section>
-            <input type="text" value="" placeholder="HP:0011007>=49 or PATO:0000383 or EFO:0009656" name="filters" data-lpignore="true" />
+            <input type="text" value=""
+		   placeholder="HP:0011007>=49 or PATO:0000383 or EFO:0009656" name="filters" data-lpignore="true" />
             <i class="filter-remove fas fa-minus-circle"></i>
           </section>
-        {% endfor %}
+        {% endif %}
       </fieldset>
 
-
-
-
-
-
-
-      <!-- ========================= --> #}
   </div>
 </form>

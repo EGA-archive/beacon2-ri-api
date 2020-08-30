@@ -71,9 +71,9 @@ services:
     hostname: idp
     container_name: idp
     environment:
-      #- KEYCLOAK_FRONTEND_URL=http://idp:8080/auth
-      #- KEYCLOAK_LOGLEVEL=DEBUG
-      #- ROOT_LOGLEVEL=DEBUG
+      # - KEYCLOAK_FRONTEND_URL=http://idp:8080/auth
+      # - KEYCLOAK_LOGLEVEL=DEBUG
+      # - ROOT_LOGLEVEL=DEBUG
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=secret
       - DB_USER=admin

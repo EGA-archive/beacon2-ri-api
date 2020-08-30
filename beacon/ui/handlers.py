@@ -6,19 +6,31 @@ from aiohttp_session import get_session
 from aiohttp_csrf import generate_token
 
 from .. import conf
-from ..utils import db
+from ..utils import db, resolve_token
 from .middlewares import CSRF_FIELD_NAME
+
+# from ..utils.exceptions import BeaconBadRequest
+# from ..validation.request import RequestParameters, print_qparams
+# from ..validation.fields import (RegexField,
+#                                  ChoiceField,
+#                                  IntegerField,
+#                                  ListField)
 
 LOG = logging.getLogger(__name__)
 
 @template('index.html')
 async def index(request):
     csrf_token = await generate_token(request)
+
+    session = await get_session(request)
+    access_token = session.get('access_token')
+    datasets, authenticated = await resolve_token(access_token, [])
+    LOG.debug('Datasets: %s', datasets)
     return {
         'request': request,
-        'session': await get_session(request),
+        'session': session,
         'assemblyIDs': await db.fetch_assemblyids(),
-        'datasets': [],
+        'datasets': datasets, #db.fetch_datasets_access(datasets=datasets),
         'form': {},
         'selected_datasets': set(),
         'filters': set(),
@@ -26,6 +38,17 @@ async def index(request):
         'cookies': request.cookies,
         'csrf_token': f'<input type="hidden" name="{CSRF_FIELD_NAME}" value="{csrf_token}" />',
     }
+
+# ----------------------------------------------------------------------------------------------------------------------
+#                                         QUERY VALIDATION
+# ----------------------------------------------------------------------------------------------------------------------
+
+# class QueryParameters(RequestParameters):
+#     query = Field(required=True)
+#     assemblyId = RegexField(r'^((GRCh|hg)[0-9]+([.]?p[0-9]+)?)$', required=True) # GRCh007.p9 is valid
+#     datasets = ListField(items=RegexField(r'^[^<>"/;%{}+=]*$'))
+#     includeDatasetResponses = ChoiceField("ALL", "HIT", "MISS", "NONE", default="NONE")
+#     filters = ListField(items=RegexField(r'.*:.+=?>?<?[0-9]*$'))
 
 # class BaseView(TemplateView):
 
