@@ -12,7 +12,7 @@ from pathlib import Path
 
 import yaml
 from aiohttp import web
-from aiohttp import ClientSession
+from aiohttp import ClientSession, BasicAuth, FormData
 
 LOG = logging.getLogger(__name__)
 
@@ -28,6 +28,41 @@ PERMISSIONS = {
 idp_client_id     = 'permissions'
 idp_client_secret = 'c0285717-1bfb-4b32-b01d-d663470ce7c4'
 idp_user_info     = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
+idp_introspection = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/token/introspect'
+
+
+async def get_user_info(access_token):
+    '''
+    We use the access_token to get the user info.
+    On failure (ie an invalid token), we try to get an explanation.
+    '''
+    LOG.debug('Token: %s', access_token)
+
+    user = None
+    async with ClientSession() as session:
+        headers = { 'Accept': 'application/json', 'Authorization': 'Bearer ' + access_token }
+        LOG.debug('Contacting %s', idp_user_info)
+        async with session.get(idp_user_info, headers=headers) as resp:
+            # LOG.debug('Response %s', resp)
+            if resp.status == 200:
+                user = await resp.json()
+                return user
+            else:
+                content = await resp.text()
+                LOG.error('Content: %s', content)
+
+    # Invalid access token
+    LOG.error('Invalid token')
+    async with ClientSession() as session:
+        async with session.post(idp_introspection,
+                                auth=BasicAuth(idp_client_id, password=idp_client_secret),
+                                data=FormData({ 'token': access_token, 'token_type_hint': 'access_token' }, charset='UTF-8')
+        ) as resp:
+            LOG.debug('Response %s', resp.status)
+            #LOG.debug('Response %s', resp)
+            content = await resp.text()
+            LOG.debug('Content: %s', content)
+    raise web.HTTPUnauthorized()
 
 async def permission(request):
 
@@ -37,14 +72,7 @@ async def permission(request):
 
     access_token = auth[7:].strip() # 7 = len('Bearer ')
 
-    user = None
-    async with ClientSession() as session:
-        headers = { 'Authorization': 'Bearer ' + access_token } # Sending just that header
-        LOG.debug('Contacting %s', idp_user_info)
-        async with session.post(idp_user_info, headers=headers) as resp:
-            if resp.status == 200:
-                user = await resp.json()
-
+    user = await get_user_info(access_token)
     LOG.info('The user is: %r', user)
     if user is None:
         raise web.HTTPUnauthorized()
@@ -55,15 +83,16 @@ async def permission(request):
     datasets = PERMISSIONS.get(username)
     if request.headers.get('Content-Type') == 'application/json':
         post_data = await request.json()
+        requested_datasets = post_data.get('datasets') # already a list
     else:
         post_data = await request.post() # request.json() crashes on empty data
         LOG.debug('POST DATA: %s', post_data)
+        requested_datasets = post_data.get('datasets').split(',')
 
-    requested_datasets = post_data.get('datasets') # not a list
     LOG.debug('requested datasets: %s', requested_datasets)
 
     if requested_datasets:
-        selected_datasets = set(requested_datasets.split(',')).intersection(datasets)
+        selected_datasets = set(requested_datasets).intersection(datasets)
     else:
         selected_datasets = datasets
     LOG.debug('selected datasets: %s', selected_datasets)
