@@ -29,18 +29,20 @@ services:
     hostname: beacon
     container_name: beacon
     volumes:
-      - ../beacon:/beacon/beacon  # inject the code, so we see the modifications "live"
+      # - ../beacon:/beacon/beacon  # inject the code, so we see the modifications "live"
+      # - ../ui/static:/beacon/ui/static
+      # - ../ui/templates:/beacon/ui/templates
       - ./conf.py:/beacon/beacon/conf.py
       - ./logger.yml:/beacon/beacon/logger.yml
       - ./access_levels.yml:/beacon/beacon/utils/access_levels.yml
-      - ../ui/static:/beacon/ui/static
-      - ../ui/templates:/beacon/ui/templates
     ports:
       - "5050:5050"
     networks:
       - beacon-priv
       - pub
     # entrypoint: ['/bin/sleep','100000000']
+    working_dir: '/beacon'
+    entrypoint: ['python','-m','beacon']
 
   ###########################################
   # Dummy Permissions server
@@ -57,9 +59,9 @@ services:
     networks:
       - beacon-priv
       - pub
-    entrypoint: ['/bin/sleep','100000000']
+    #entrypoint: ['/bin/sleep','100000000']
     working_dir: '/beacon'
-    #entrypoint: ['python','permissions.py']
+    entrypoint: ['python','permissions.py']
     
   ###########################################
   # Local Identity Provider
