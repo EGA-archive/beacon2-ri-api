@@ -5,11 +5,18 @@ Designed with async/await programming model.
 """
 import logging
 import os
+from pathlib import Path
+from time import strftime
+import base64
 
 from aiohttp import web
+import aiohttp_jinja2
+import jinja2
+from jinja2_pluralize import pluralize_dj
 
 from . import conf, load_logger, endpoints
 from .utils import db
+from .ui.middlewares import setup_middlewares
 
 LOG = logging.getLogger(__name__)
 
@@ -19,6 +26,28 @@ async def initialize(app):
     update_datetime = (await db.get_last_modified_date()).strftime(conf.datetime_format)
     LOG.info("Update datetime: %s", update_datetime)
     setattr(conf, 'update_datetime', update_datetime)
+
+    app['static_root_url'] = '/static'
+
+    env = aiohttp_jinja2.get_env(app)
+    #update_datetime_formatted = (await get_last_modified_date()).strftime(conf.update_datetime)
+    env.globals.update(
+        len=len,
+        max=max,
+        enumerate=enumerate,
+        range=range,
+        conf=conf,
+        now=strftime("%Y"),
+        #nsamples=await get_nsamples(),
+        #update_datetime=update_datetime_formatted,
+    )
+    env.filters['pluralize'] = pluralize_dj
+
+    # Fetch the Assembly IDs in advance
+    assemblyIDs = await db.fetch_assemblyids()
+    setattr(conf, 'assemblyIDs', assemblyIDs)
+    #app['assemblyIDs'] = assemblyIDs
+    
     LOG.info("Initialization done.")
 
 async def destroy(app):
@@ -36,6 +65,15 @@ def main(path=None):
     beacon = web.Application()
     beacon.on_startup.append(initialize)
     beacon.on_cleanup.append(destroy)
+
+    # Prepare for the UI
+    main_dir = Path(__file__).parent.parent.resolve()
+    # Where the templates are
+    template_loader = jinja2.FileSystemLoader(str(main_dir / 'ui' / 'templates'))
+    aiohttp_jinja2.setup(beacon, loader=template_loader)
+
+    # Session middleware
+    setup_middlewares(beacon)
 
     # Configure the endpoints
     beacon.add_routes(endpoints.routes)
@@ -57,6 +95,8 @@ def main(path=None):
         # will create the UDS socket and bind to it
         web.run_app(beacon, path=path, shutdown_timeout=0, ssl_context=ssl_context)
     else:
+        static_files = Path(__file__).parent.parent.resolve() / 'ui' / 'static'
+        beacon.add_routes([web.static('/static', str(static_files))])
         web.run_app(beacon,
                     host=getattr(conf, 'beacon_host', '0.0.0.0'),
                     port=getattr(conf, 'beacon_port', 5050),

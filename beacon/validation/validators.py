@@ -42,6 +42,10 @@ class EnumValidator:
             raise ValidationError(message)
 
 
+# We limit the min-value and max-value validators
+# to using the < and > comparator.
+# We also just int or float, although we don't need to.
+
 class MinValueValidator:
 
     def __init__(self, minimum=None):

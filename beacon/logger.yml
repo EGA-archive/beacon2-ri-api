@@ -11,10 +11,10 @@ loggers:
     handlers: [console]
     propagate: True
   asynpg:
-    level: INFO
+    level: CRITICAL
     handlers: [console]
   aiohttp:
-    level: INFO
+    level: CRITICAL
     handlers: [console]
 
 handlers:

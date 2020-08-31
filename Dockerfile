@@ -40,6 +40,7 @@ RUN apt-get update && \
     apt-get purge -y --auto-remove
 
 COPY beacon                   /beacon/beacon
+COPY ui                       /beacon/ui
 COPY deploy/nginx.conf        /beacon/nginx.conf
 COPY deploy/supervisord.conf  /beacon/supervisord.conf
 COPY deploy/entrypoint.sh     /usr/local/bin/entrypoint.sh

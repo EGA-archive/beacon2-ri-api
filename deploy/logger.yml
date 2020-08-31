@@ -9,6 +9,10 @@ loggers:
   __main__:
     level: DEBUG
     handlers: [console]
+  beacon:
+    level: DEBUG
+    handlers: [console]
+    propagate: True
   aiohttp:
     level: INFO
     handlers: [console]
