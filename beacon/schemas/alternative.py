@@ -74,11 +74,12 @@ def ga4gh_phenopackets_biosamples_v10(row):
 
 def get_sampled_tissue(hstore, schema_name):
     """
-    Retunrs the first element of the list.
+    Returns the first element of the list.
     This is because this field might have many values but phenopackets only accepts one.
     """
-    sample_origins = list(filter_hstore(hstore, schema_name))
-    return sample_origins[0] if sample_origins is not None else None
+    sample_origins = filter_hstore(hstore, schema_name)
+    sample_origins_list = list(sample_origins) if sample_origins is not None else []
+    return sample_origins_list[0] if len(sample_origins_list) > 0 else None
 
 
 def ga4gh_phenopackets_individual_v10(row):
@@ -135,15 +136,13 @@ def ga4gh_phenopackets_variant_v10(row):
 def ga4gh_phenopackets_variant_annotation_v10(row):
     schema_name = 'ga4gh-phenopacket-variant-annotation-v1.0'
 
-    transcripts_hgvs_ids = []
-    for hgvs_id in row['transcript_hgvs_ids'] or []:
-        transcripts_hgvs_ids.append({
-            'hgvsAllele': {
-                'id': None,
-                'hgvs': hgvs_id
-            },
-            'zygosity': None,
-        })
+    transcripts_hgvs_ids = [{
+        'hgvsAllele': {
+            'id': None,
+            'hgvs': hgvs_id
+        },
+        'zygosity': None,
+    } for hgvs_id in row['transcript_hgvs_ids'] or []]
 
     return {
         'id': None, # required
