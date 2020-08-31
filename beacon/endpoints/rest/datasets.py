@@ -1,10 +1,10 @@
 import logging
 
-from ..validation.request import RequestParameters, print_qparams
-from ..validation.fields import SchemasField, RegexField
-from ..utils.db import fetch_datasets_metadata
-from ..utils.response import json_stream
-from ..response.info_response_schema import build_beacon_response, build_dataset_info_response
+from ...validation.request import RequestParameters, print_qparams
+from ...validation.fields import SchemasField, RegexField
+from ...utils.db import fetch_datasets_metadata
+from ...utils.response import json_stream
+from ...response.info_response_schema import build_beacon_response, build_dataset_info_response
 
 
 LOG = logging.getLogger(__name__)
@@ -38,12 +38,4 @@ async def handler(request):
     beacon_datasets = [r async for r in fetch_datasets_metadata()]
 
     response_converted = build_beacon_response(beacon_datasets, qparams_db, build_dataset_info_response)
-    return await json_stream(request, response_converted)
-
-
-async def prepare_response(qparams_db, request, response, response_type):
-
-    rows = [row async for row in response]
-    # build_beacon_response knows how to loop through it
-    response_converted = build_beacon_response(rows, qparams_db, response_type)
     return await json_stream(request, response_converted)

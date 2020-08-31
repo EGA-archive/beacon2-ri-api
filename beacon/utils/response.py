@@ -1,7 +1,7 @@
 import logging
 
 from aiohttp.http import SERVER_SOFTWARE
-from aiohttp.web import middleware, StreamResponse
+from aiohttp.web import StreamResponse
 
 from .. import conf
 from ..utils.json import json_iterencode
@@ -30,7 +30,7 @@ async def json_stream(request, data):
     # response.enable_chunked_encoding()
     await response.prepare(request)
 
-    LOG.debug('HTTP response stream for rows')
+    # LOG.debug('HTTP response stream for rows')
     buf = []
     for chunk in content_gen:
         if len(buf) < _BUF_SIZE:
@@ -45,14 +45,6 @@ async def json_stream(request, data):
         chunk = ''.join(buf)
         await response.write(chunk.encode()) # utf-8
 
-    LOG.debug('HTTP response stream closing')
+    # LOG.debug('HTTP response stream closing')
     await response.write_eof()
     return response
-
-
-# For later, in case all the endpoints do the same thing,
-# then we put it in the middleware.
-@middleware
-async def middleware(request, handler):
-    data = await handler(request)
-    return await json_stream(request, data)

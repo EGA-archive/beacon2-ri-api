@@ -14,10 +14,6 @@ from .. import conf
 
 LOG = logging.getLogger(__name__)
 
-# Only one of `alternateBases` or `variantType` is required, validated by schema
-_fields = ['referenceName', 'referenceBases', 'assemblyId',
-           'alternateBases', 'variantType', 'start', 'end', 'startMin', 'startMax',
-           'endMin', 'endMax', 'ids']
 
 def process_exception_data(error_code, error, fields=None):
     """Return request data as dictionary."""
@@ -35,7 +31,6 @@ def process_exception_data(error_code, error, fields=None):
         # none found or error and corresponds with exists null/None
         'datasetAlleleResponses': [],
     }
-
 
 class BeaconBadRequest(web.HTTPBadRequest):
     """Exception returns with 400 code and a custom error message.
@@ -153,19 +148,3 @@ class BeaconAccessLevelsBadRequest(web.HTTPBadRequest):
                 'fields': fields or {}}
         super().__init__(text=json.dumps(data),
                          content_type="application/json")
-
-
-
-# class BeaconBasicBadRequest(web.HTTPBadRequest):
-#     """
-#     Generates custom exception messages based on request parameters.
-#     """
-#     def __init__(self, request, error):
-#         """Return request data as dictionary."""
-#         LOG.error('Error 400: %s', error)
-#         data = { 'beaconId': conf.beacon_id,
-#                  'error': {'errorCode': 400,
-#                            'errorMessage': error},
-#                  'request': request if isinstance(request, dict) else dict(request) }
-#         super().__init__(text=json.dumps(data),
-#                          content_type="application/json")

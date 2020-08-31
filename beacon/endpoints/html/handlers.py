@@ -1,20 +1,12 @@
 import logging
 
-from aiohttp.web import json_response
 from aiohttp_jinja2 import template
 from aiohttp_session import get_session
 from aiohttp_csrf import generate_token
 
-from .. import conf
-from ..utils import db, resolve_token
-from .middlewares import CSRF_FIELD_NAME
-
-# from ..utils.exceptions import BeaconBadRequest
-# from ..validation.request import RequestParameters, print_qparams
-# from ..validation.fields import (RegexField,
-#                                  ChoiceField,
-#                                  IntegerField,
-#                                  ListField)
+from ... import conf
+from ...utils import db, resolve_token
+from ...middlewares import CSRF_FIELD_NAME
 
 LOG = logging.getLogger(__name__)
 
@@ -176,31 +168,4 @@ async def index(request):
 #         return render(request, 'access_levels.html', ctx)
 
 
-autocomplete_limit = getattr(conf, 'autocomplete_limit', 16)
-autocomplete_ellipsis = getattr(conf, 'autocomplete_ellipsis', '...')
-
-def get_filters(word):
-    count = 0
-    for k,v in dict().items(): #conf.FILTERING_TERMS.items():
-        if not word or word.lower() in v.lower():
-            count+=1
-            
-            if count > autocomplete_limit: # last word in the list
-                yield (autocomplete_ellipsis, autocomplete_ellipsis)
-                break
-            
-            yield (k,v)
-
-
-async def filtering_terms(request):
-    
-    term = request.match_info.get('term')
-    #print(f'chosen word: "{term}"')
-    if term is None:
-        return json_response([])
-
-    terms = [ {'value': k, 'label': v }
-              for k,v in get_filters(term) ]
-
-    return json_response(terms)
 

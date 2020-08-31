@@ -7,7 +7,7 @@ from aiohttp.web import HTTPFound, HTTPBadRequest, HTTPUnauthorized
 from aiohttp import ClientSession, BasicAuth, FormData
 from aiohttp_session import get_session
 
-from .. import conf
+from ... import conf
 
 LOG = logging.getLogger(__name__)
 

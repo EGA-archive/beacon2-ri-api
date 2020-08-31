@@ -34,6 +34,11 @@ async def error_middleware(request, handler):
             return await handle_404(request)
         raise
 
+# @web.middleware
+# async def json_middleware(request, handler):
+#     data = await handler(request)
+#     return await json_stream(request, data)
+
 
 def setup_middlewares(app):
     # Session middleware

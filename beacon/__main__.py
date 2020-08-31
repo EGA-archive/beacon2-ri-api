@@ -16,7 +16,7 @@ from jinja2_pluralize import pluralize_dj
 
 from . import conf, load_logger, endpoints
 from .utils import db
-from .ui.middlewares import setup_middlewares
+from .middlewares import setup_middlewares
 
 LOG = logging.getLogger(__name__)
 
