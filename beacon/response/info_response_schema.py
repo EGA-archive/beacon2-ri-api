@@ -76,10 +76,12 @@ def build_returned_schemas(qparams, func_response_type):
 
     returned_schemas_by_response_type = {
         'build_service_info_response': {
-            'ServiceInfo': [DEFAULT_SCHEMAS['ServiceInfo']] + [s for s, f in qparams.requestedSchemasServiceInfo[0]],
+            'ServiceInfo': [DEFAULT_SCHEMAS['ServiceInfo']] if not qparams.requestedSchemasServiceInfo[0] else []
+                           + [s for s, f in qparams.requestedSchemasServiceInfo[0]],
         },
         'build_dataset_info_response': {
-            'Dataset': [DEFAULT_SCHEMAS['Dataset']] + [s for s, f in qparams.requestedSchemasDataset[0]],
+            'Dataset': [DEFAULT_SCHEMAS['Dataset']] if not qparams.requestedSchemasDataset[0] else []
+                       + [s for s, f in qparams.requestedSchemasDataset[0]],
         },
     }
 
@@ -135,8 +137,7 @@ def build_service_info_response(datasets, qparams):
     service_info_requested_schemas = qparams.requestedSchemasServiceInfo[0]
     # if qparams.listFormat is not None:
     #     service_info_requested_schemas.append('')
-
-    yield transform_data_into_schema(datasets, 'ServiceInfo', service_info_requested_schemas)
+    yield find_schemas(datasets, 'ServiceInfo', (service_info_requested_schemas or []))
 
 
 def build_dataset_info_response(data, qparams):
@@ -145,23 +146,14 @@ def build_dataset_info_response(data, qparams):
     dataset_info_requested_schemas = qparams.requestedSchemasDataset[0]
 
     for row in data:
-        yield transform_data_into_schema(row, 'Dataset', dataset_info_requested_schemas)
-
-
-def transform_data_into_schema(row, field_name, requested_schemas):
-    """"Fills the content with the 2 types of schemas"""
-
-    return {
-        'defaultSchema': next(find_schemas(row, field_name)),
-        'alternativeSchemas': find_schemas(row, field_name, (requested_schemas or []))
-    }
+        yield find_schemas(row, 'Dataset', (dataset_info_requested_schemas or []))
 
 
 def find_schemas(row, field_name, schemas=None):
     """"Returns the data transformed into the specified schema(s)"""
     # LOG.debug('schemas: %s', schemas)
 
-    if schemas is None:
+    if not schemas:
         default_schema = DEFAULT_SCHEMAS[field_name] # We let it throw a KeyError
         schemas = [(default_schema, SUPPORTED_SCHEMAS[default_schema])]
 

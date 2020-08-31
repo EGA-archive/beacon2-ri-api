@@ -147,13 +147,16 @@ def build_returned_schemas(qparams, func_response_type):
 
     returned_schemas_by_response_type = {
         'build_variant_response': {
-            'Variant': [DEFAULT_SCHEMAS['Variant']] + [s for s, f in qparams.requestedSchemasVariant[0]],
-            'VariantAnnotation': [DEFAULT_SCHEMAS['VariantAnnotation']]
+            'Variant': [DEFAULT_SCHEMAS['Variant']] if not qparams.requestedSchemasVariant[0] else []
+                       + [s for s, f in qparams.requestedSchemasVariant[0]],
+            'VariantAnnotation': [DEFAULT_SCHEMAS['VariantAnnotation']] if not qparams.requestedSchemasVariantAnnotation[0] else []
                                  + [s for s, f in qparams.requestedSchemasVariantAnnotation[0]],
         }, 'build_individual_response': {
-            'Individual': [DEFAULT_SCHEMAS['Individual']] + [s for s, f in qparams.requestedSchemasIndividual[0]],
+            'Individual': [DEFAULT_SCHEMAS['Individual']] if not qparams.requestedSchemasIndividual[0] else []
+                          + [s for s, f in qparams.requestedSchemasIndividual[0]],
         }, 'build_biosample_response': {
-            'Biosample': [DEFAULT_SCHEMAS['Biosample']] + [s for s, f in qparams.requestedSchemasBiosample[0]],
+            'Biosample': [DEFAULT_SCHEMAS['Biosample']] if not qparams.requestedSchemasBiosample[0] else []
+                         + [s for s, f in qparams.requestedSchemasBiosample[0]],
         },
     }
 
@@ -222,9 +225,8 @@ def build_variant_response(data, qparams):
 
     for row in data:
         yield {
-            'variant': transform_data_into_schema(row, 'Variant', variant_requested_schemas),
-            'variantAnnotations': transform_data_into_schema(row, 'VariantAnnotation',
-                                                             variant_annotation_requested_schemas),
+            'variant': find_schemas(row, 'Variant', (variant_requested_schemas or [])),
+            'variantAnnotations': find_schemas(row, 'VariantAnnotation', (variant_annotation_requested_schemas or [])),
             'variantHandover': None, # build_variant_handover
             'datasetAlleleResponses': jsonb(row['dataset_response'])
         }
@@ -238,7 +240,7 @@ def build_individual_response(data, qparams):
     LOG.debug('individual_requested_schemas= %s', individual_requested_schemas)
 
     for row in data:
-        yield transform_data_into_schema(row, 'Individual', individual_requested_schemas)
+        yield find_schemas(row, 'Individual', (individual_requested_schemas or []))
 
 
 def build_biosample_response(data, qparams):
@@ -249,23 +251,14 @@ def build_biosample_response(data, qparams):
     LOG.debug('biosample_requested_schemas= %s', biosample_requested_schemas)
 
     for row in data:
-        yield transform_data_into_schema(row, 'Biosample', biosample_requested_schemas)
-
-
-def transform_data_into_schema(row, field_name, requested_schemas):
-    """"Fills the content with the 2 types of schemas"""
-
-    return {
-        'defaultSchema': next(find_schemas(row, field_name)),
-        'alternativeSchemas': find_schemas(row, field_name, (requested_schemas or []))
-    }
+        yield find_schemas(row, 'Biosample', (biosample_requested_schemas or []))
 
 
 def find_schemas(row, field_name, schemas=None):
     """"Returns the data transformed into the specified schema(s)"""
     # LOG.debug('schemas: %s', schemas)
 
-    if schemas is None:
+    if not schemas:
         default_schema = DEFAULT_SCHEMAS[field_name] # We let it throw a KeyError
         schemas = [(default_schema, SUPPORTED_SCHEMAS[default_schema])]
 

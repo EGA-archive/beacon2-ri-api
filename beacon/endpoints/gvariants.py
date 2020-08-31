@@ -22,19 +22,19 @@ gvariant_proxy = GVariantParameters()
 
 async def handler_individuals(request):
     LOG.info('Running an individuals by gvariant request')
-    await generic_gvariant_handler(request, fetch_individuals, build_individual_response)
+    return await generic_gvariant_handler(request, fetch_individuals, build_individual_response)
 
 
 async def handler_biosamples(request):
 
     LOG.info('Running a viral biosamples by gvariant request')
-    await generic_gvariant_handler(request, fetch_biosamples, build_biosample_response)
+    return await generic_gvariant_handler(request, fetch_biosamples, build_biosample_response)
 
 
 async def handler_gvariants(request):
 
     LOG.info('Running a viral gvariant request')
-    await generic_gvariant_handler(request, fetch_variants, build_variant_response)
+    return await generic_gvariant_handler(request, fetch_variants, build_variant_response)
 
 
 async def generic_gvariant_handler(request, fetch_function, build_response_type):
