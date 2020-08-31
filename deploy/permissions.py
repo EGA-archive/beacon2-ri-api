@@ -18,10 +18,8 @@ LOG = logging.getLogger(__name__)
 
 # Dummy permission database
 PERMISSIONS = {
-    "john": ["dataset1", "dataset2"],
-    "jane": ["dataset2"],
-    "sabela": ["dataset1"],
-    "fred": ["dataset1"],
+    "john": ["GiaB", "dataset-registered", "dataset-controlled"],
+    "jane": ["GiaB", "dataset-registered"],
 }
 
 
@@ -80,7 +78,6 @@ async def permission(request):
     username = user.get('preferred_username')
     LOG.debug('username: %s', username)
 
-    datasets = PERMISSIONS.get(username)
     if request.headers.get('Content-Type') == 'application/json':
         post_data = await request.json()
         requested_datasets = post_data.get('datasets') # already a list
@@ -91,6 +88,7 @@ async def permission(request):
 
     LOG.debug('requested datasets: %s', requested_datasets)
 
+    datasets = PERMISSIONS.get(username)
     if requested_datasets:
         selected_datasets = set(requested_datasets).intersection(datasets)
     else:
