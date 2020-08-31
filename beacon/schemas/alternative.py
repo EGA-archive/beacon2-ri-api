@@ -77,9 +77,8 @@ def get_sampled_tissue(hstore, schema_name):
     Returns the first element of the list.
     This is because this field might have many values but phenopackets only accepts one.
     """
-    sample_origins = filter_hstore(hstore, schema_name)
-    sample_origins_list = list(sample_origins) if sample_origins is not None else []
-    return sample_origins_list[0] if len(sample_origins_list) > 0 else None
+    sample_origins = list(filter_hstore(hstore, schema_name) or [])
+    return sample_origins[0] if sample_origins else None
 
 
 def ga4gh_phenopackets_individual_v10(row):
