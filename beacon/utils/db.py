@@ -12,6 +12,7 @@ import asyncpg
 
 from .. import conf
 from .exceptions import BeaconServerError
+from ..schemas import DEFAULT_SCHEMAS
 
 LOG = logging.getLogger(__name__)
 
@@ -84,6 +85,7 @@ class DBConnection():
         LOG.debug('----------- acquiring connection')
         conn = await self.db_pool.acquire()
         try:
+            await conn.set_builtin_type_codec('hstore', codec_name='pg_contrib.hstore', schema='addons')
             yield conn
         except (asyncpg.exceptions._base.InterfaceError,
                 asyncpg.exceptions._base.PostgresError,
@@ -238,18 +240,26 @@ async def access_levels_datasets(connection):
         yield record
 
 
+async def find_requested_schemas(default_type, requested_schema):
+    """
+    Returns the default schema for this type if none has been requested.
+    Otherwise, returns the requested schemas.
+    """
+    return [DEFAULT_SCHEMAS[default_type]] if not requested_schema[0] else [] + [s for s,_ in requested_schema[0]]
+
+
 # Returns a generator of record, make sure to consume them before the connection is closed
 @pool.asyncgen_execute
 async def fetch_variants(connection,
                          qparams_db,
-                         datasets,
-                         authenticated,
+                         datasets=[],
+                         authenticated=False,
                          variant_id=None,
                          biosample_stable_id=None,
                          individual_stable_id=None):
     LOG.info('Retrieving viral variant information')
 
-    dollars = ", ".join([ f"${i}" for i in range(1, 21)]) # 1..20
+    dollars = ", ".join([ f"${i}" for i in range(1, 22)]) # 1..21
     LOG.debug("dollars: %s", dollars)
     query = f"SELECT * FROM {conf.database_schema}.query_gvariants({dollars});"
     LOG.debug("QUERY: %s", query)
@@ -266,14 +276,16 @@ async def fetch_variants(connection,
                                      qparams_db.alternateBases,  # _alternate_bases text,
                                      qparams_db.assemblyId.lower() if qparams_db.assemblyId else None, #qparams_db.assemblyId,  # _reference_genome text,
                                      qparams_db.includeDatasetResponses, # _include_dataset_responses
-                                     None, #qparams_db.datasets[0],  # _dataset_ids text[],
-                                     None, #qparams_db.datasets[1],  # _is_authenticated bool,
+                                     datasets, #qparams_db.datasets[0],  # _dataset_ids text[],
+                                     authenticated, #qparams_db.datasets[1],  # _is_authenticated bool,
                                      biosample_stable_id,  # _biosample_stable_id text,
                                      individual_stable_id,  # _individual_stable_id text,
                                      int(variant_id) if variant_id else None,  # _gvariant_id
                                      qparams_db.filters,   # filters as-is,  # _filters text[],
                                      qparams_db.skip * qparams_db.limit,  # _skip
-                                     qparams_db.limit) # _limit integer
+                                     qparams_db.limit, # _limit integer
+                                     await find_requested_schemas('Variant', qparams_db.requestedSchemasVariant)
+                                        + await find_requested_schemas('VariantAnnotation', qparams_db.requestedSchemasVariantAnnotation))  # requestedSchemas
     for record in response:
         yield record
 
@@ -282,6 +294,8 @@ async def fetch_variants(connection,
 @pool.asyncgen_execute
 async def fetch_individuals(connection,
                             qparams_db,
+                            datasets=[],
+                            authenticated=False,
                             variant_id=None,
                             biosample_stable_id=None,
                             individual_stable_id=None):
@@ -290,7 +304,7 @@ async def fetch_individuals(connection,
     Returns a pd.DataFrame with the response.
     """
     # connection.add_log_listener(simple_listener)
-    dollars = ", ".join([f"${i}" for i in range(1, 20)])  # 1..19
+    dollars = ", ".join([f"${i}" for i in range(1, 21)])  # 1..20
     query = f"SELECT * FROM {conf.database_schema}.query_individuals({dollars});"
     LOG.debug("QUERY: %s", query)
     statement = await connection.prepare(query)
@@ -305,14 +319,15 @@ async def fetch_individuals(connection,
                                      qparams_db.referenceBases,
                                      qparams_db.alternateBases,
                                      qparams_db.assemblyId.lower() if qparams_db.assemblyId else None, # assembly_id
-                                     None, # dataset_stable_ids
-                                     False, #is_authenticated
+                                     datasets, # dataset_stable_ids
+                                     authenticated, #is_authenticated
                                      biosample_stable_id,
                                      individual_stable_id, # individual_stable_id
                                      int(variant_id) if variant_id else None,
                                      qparams_db.filters, # filters
                                      qparams_db.skip * qparams_db.limit,  # _skip
-                                     qparams_db.limit)  # _limit integer
+                                     qparams_db.limit,  # _limit integer
+                                     await find_requested_schemas('Individual', qparams_db.requestedSchemasIndividual))  # requestedSchemas
 
     for record in response:
         yield record
@@ -322,12 +337,14 @@ async def fetch_individuals(connection,
 @pool.asyncgen_execute
 async def fetch_biosamples(connection,
                            qparams_db,
+                           datasets=[],
+                           authenticated=False,
                            variant_id=None,
                            biosample_stable_id=None,
                            individual_stable_id=None):
     LOG.info('Retrieving viral biosample information')
 
-    dollars = ", ".join([ f"${i}" for i in range(1, 20)]) # 1..19
+    dollars = ", ".join([ f"${i}" for i in range(1, 21)]) # 1..20
     # LOG.debug("dollars: %s", dollars)
     query = f"SELECT * FROM {conf.database_schema}.query_samples({dollars});"
     LOG.debug("QUERY: %s", query)
@@ -343,14 +360,15 @@ async def fetch_biosamples(connection,
                                      qparams_db.referenceBases,
                                      qparams_db.alternateBases,
                                      qparams_db.assemblyId.lower() if qparams_db.assemblyId else None, # assembly_id
-                                     None, # dataset_stable_ids
-                                     False, #is_authenticated
+                                     datasets, # dataset_stable_ids
+                                     authenticated, #is_authenticated
                                      biosample_stable_id,
                                      individual_stable_id, # individual_stable_id
                                      int(variant_id) if variant_id else None,
                                      qparams_db.filters, # filters
                                      qparams_db.skip * qparams_db.limit,  # _skip
-                                     qparams_db.limit) # limit
+                                     qparams_db.limit, # limit
+                                     await find_requested_schemas('Biosample', qparams_db.requestedSchemasBiosample))  # requestedSchemas
 
     for record in response:
         yield record
