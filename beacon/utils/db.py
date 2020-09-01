@@ -6,13 +6,14 @@ import logging
 from contextlib import asynccontextmanager
 from functools import wraps
 import traceback
+from itertools import chain
 # import inspect
 
 import asyncpg
 
 from .. import conf
 from .exceptions import BeaconServerError
-from ..schemas import DEFAULT_SCHEMAS
+from ..endpoints.rest.schemas import find_requested_schemas
 
 LOG = logging.getLogger(__name__)
 
@@ -240,24 +241,19 @@ async def access_levels_datasets(connection):
         yield record
 
 
-async def find_requested_schemas(default_type, requested_schema):
-    """
-    Returns the default schema for this type if none has been requested.
-    Otherwise, returns the requested schemas.
-    """
-    return [DEFAULT_SCHEMAS[default_type]] if not requested_schema[0] else [] + [s for s,_ in requested_schema[0]]
-
-
 # Returns a generator of record, make sure to consume them before the connection is closed
 @pool.asyncgen_execute
 async def fetch_variants(connection,
                          qparams_db,
-                         datasets=[],
-                         authenticated=False,
+                         datasets,
+                         authenticated,
                          variant_id=None,
                          biosample_stable_id=None,
                          individual_stable_id=None):
     LOG.info('Retrieving viral variant information')
+
+    requested_schemas = [s for s in chain(find_requested_schemas('Variant', qparams_db.requestedSchemasVariant),
+                                          find_requested_schemas('VariantAnnotation', qparams_db.requestedSchemasVariantAnnotation))]
 
     dollars = ", ".join([ f"${i}" for i in range(1, 22)]) # 1..21
     LOG.debug("dollars: %s", dollars)
@@ -284,8 +280,7 @@ async def fetch_variants(connection,
                                      qparams_db.filters,   # filters as-is,  # _filters text[],
                                      qparams_db.skip * qparams_db.limit,  # _skip
                                      qparams_db.limit, # _limit integer
-                                     await find_requested_schemas('Variant', qparams_db.requestedSchemasVariant)
-                                        + await find_requested_schemas('VariantAnnotation', qparams_db.requestedSchemasVariantAnnotation))  # requestedSchemas
+                                     requested_schemas)  # requestedSchemas
     for record in response:
         yield record
 
@@ -294,8 +289,8 @@ async def fetch_variants(connection,
 @pool.asyncgen_execute
 async def fetch_individuals(connection,
                             qparams_db,
-                            datasets=[],
-                            authenticated=False,
+                            datasets,
+                            authenticated,
                             variant_id=None,
                             biosample_stable_id=None,
                             individual_stable_id=None):
@@ -327,7 +322,7 @@ async def fetch_individuals(connection,
                                      qparams_db.filters, # filters
                                      qparams_db.skip * qparams_db.limit,  # _skip
                                      qparams_db.limit,  # _limit integer
-                                     await find_requested_schemas('Individual', qparams_db.requestedSchemasIndividual))  # requestedSchemas
+                                     find_requested_schemas('Individual', qparams_db.requestedSchemasIndividual))  # requestedSchemas
 
     for record in response:
         yield record
@@ -337,8 +332,8 @@ async def fetch_individuals(connection,
 @pool.asyncgen_execute
 async def fetch_biosamples(connection,
                            qparams_db,
-                           datasets=[],
-                           authenticated=False,
+                           datasets,
+                           authenticated,
                            variant_id=None,
                            biosample_stable_id=None,
                            individual_stable_id=None):
@@ -368,7 +363,7 @@ async def fetch_biosamples(connection,
                                      qparams_db.filters, # filters
                                      qparams_db.skip * qparams_db.limit,  # _skip
                                      qparams_db.limit, # limit
-                                     await find_requested_schemas('Biosample', qparams_db.requestedSchemasBiosample))  # requestedSchemas
+                                     find_requested_schemas('Biosample', qparams_db.requestedSchemasBiosample))  # requestedSchemas
 
     for record in response:
         yield record

@@ -1,5 +1,6 @@
 import logging
 
+from ...utils import resolve_token
 from ...utils.stream import json_stream
 from ...utils.db import fetch_variants, fetch_biosamples, fetch_individuals
 from ...validation.request import print_qparams
@@ -26,7 +27,13 @@ async def generic_biosample_handler(request, fetch_function, build_response_type
 
     LOG.debug('qparams_db.targetIdReq= %s', qparams_db.targetIdReq)
 
-    response = fetch_function(qparams_db, biosample_stable_id=qparams_db.targetIdReq)
+    access_token = request.headers.get('Authorization')
+    if access_token:
+        access_token = access_token[7:] # cut out 7 characters: len('Bearer ')
+
+    datasets, authenticated = await resolve_token(access_token, qparams_db.datasetIds)
+
+    response = fetch_function(qparams_db, datasets, authenticated, biosample_stable_id=qparams_db.targetIdReq)
 
     rows = [row async for row in response]
 

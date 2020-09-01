@@ -1,5 +1,6 @@
 import logging
 
+from ...utils import resolve_token
 from ...utils.stream import json_stream
 from ...utils.db import fetch_variants, fetch_individuals, fetch_biosamples
 from ...validation.request import print_qparams
@@ -31,7 +32,13 @@ async def generic_individual_handler(request, fetch_function, build_response_typ
 
     LOG.debug('qparams_db.targetIdReq= %s', qparams_db.targetIdReq)
 
-    response = fetch_function(qparams_db, individual_stable_id=qparams_db.targetIdReq)
+    access_token = request.headers.get('Authorization')
+    if access_token:
+        access_token = access_token[7:] # cut out 7 characters: len('Bearer ')
+
+    datasets, authenticated = await resolve_token(access_token, qparams_db.datasetIds)
+
+    response = fetch_function(qparams_db, datasets, authenticated, individual_stable_id=qparams_db.targetIdReq)
 
     rows = [row async for row in response]
     # build_beacon_response knows how to loop through it

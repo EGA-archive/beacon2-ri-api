@@ -27,6 +27,7 @@ class GVariantParameters(RequestParameters):
     assemblyId = RegexField(r'^((GRCh|hg)[0-9]+([.]?p[0-9]+)?)$', ignore_case=True, default=None)
     variantType = ChoiceField("DEL", "INS", "DUP", "INV", "CNV", "SNP", "MNP", "DUP:TANDEM", "DEL:ME", "INS:ME", "BND")
     filters = ListField(items=RegexField(r'.*:.+=?>?<?[0-9]*$'), default=None)
+    datasetIds = ListField(default=[])
     # TODO implement fusions
     mateName = ChoiceField("1", "2", "3", "4", "5", "6", "7",
                                 "8", "9", "10", "11", "12", "13", "14",

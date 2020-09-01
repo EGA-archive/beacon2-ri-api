@@ -37,3 +37,15 @@ def partition(schemas):
         else:
             valid.add((schema,func))
     return (valid, invalid)
+
+
+def find_requested_schemas(default_type, requested_schema):
+    """
+    Returns the default schema for this type if none has been requested.
+    Otherwise, returns the requested schemas.
+    """
+    if not requested_schema:
+        return [DEFAULT_SCHEMAS[default_type]]
+
+    valid_schemas = requested_schema[0]
+    return [s for s,_ in valid_schemas]
