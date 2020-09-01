@@ -1,8 +1,8 @@
 import logging
 
-from .. import conf
+from .... import conf
 from ..schemas import SUPPORTED_SCHEMAS, DEFAULT_SCHEMAS
-from ..utils.json import jsonb
+from ....utils.json import jsonb
 
 LOG = logging.getLogger(__name__)
 

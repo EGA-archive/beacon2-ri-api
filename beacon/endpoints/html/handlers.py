@@ -5,8 +5,7 @@ from aiohttp_session import get_session
 from aiohttp_csrf import generate_token
 
 from ... import conf
-from ...utils import db, resolve_token
-from ...middlewares import CSRF_FIELD_NAME
+from ...utils import db, resolve_token, middlewares
 
 LOG = logging.getLogger(__name__)
 
@@ -28,7 +27,7 @@ async def index(request):
         'filters': set(),
         'beacon_response': None,
         'cookies': request.cookies,
-        'csrf_token': f'<input type="hidden" name="{CSRF_FIELD_NAME}" value="{csrf_token}" />',
+        'csrf_token': f'<input type="hidden" name="{middlewares.CSRF_FIELD_NAME}" value="{csrf_token}" />',
     }
 
 # ----------------------------------------------------------------------------------------------------------------------

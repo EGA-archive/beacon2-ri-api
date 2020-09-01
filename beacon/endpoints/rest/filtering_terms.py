@@ -10,7 +10,7 @@ These are stored in the DB inside the table named 'ontology_terms'.
 
 from ... import conf
 from ...utils.db import fetch_filtering_terms
-from ...utils.response import json_stream
+from ...utils.stream import json_stream
 
 # LOG = logging.getLogger(__name__)
 

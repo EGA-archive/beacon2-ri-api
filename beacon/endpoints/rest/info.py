@@ -16,9 +16,9 @@ import logging
 from ...validation.request import RequestParameters, print_qparams
 from ...validation.fields import ChoiceField, SchemasField, RegexField
 from ...utils.db import fetch_datasets_metadata
-from ...utils.response import json_stream
-from ...response.info_response_schema import build_beacon_response, build_service_info_response
-from ...schemas import alternative
+from ...utils.stream import json_stream
+from .response.info_response_schema import build_beacon_response, build_service_info_response
+from .schemas import alternative
 
 
 LOG = logging.getLogger(__name__)

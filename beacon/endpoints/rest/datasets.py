@@ -3,8 +3,8 @@ import logging
 from ...validation.request import RequestParameters, print_qparams
 from ...validation.fields import SchemasField, RegexField
 from ...utils.db import fetch_datasets_metadata
-from ...utils.response import json_stream
-from ...response.info_response_schema import build_beacon_response, build_dataset_info_response
+from ...utils.stream import json_stream
+from .response.info_response_schema import build_beacon_response, build_dataset_info_response
 
 
 LOG = logging.getLogger(__name__)

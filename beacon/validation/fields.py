@@ -259,6 +259,6 @@ class SchemasField(ListField):
 
     async def convert(self, value: str, **kwargs) -> (set, set):
         values = value.split(self.separator) if value not in EMPTY_VALUES else []
-        from ..schemas import partition
+        from ..endpoints.rest.schemas import partition
         return partition(values)
 

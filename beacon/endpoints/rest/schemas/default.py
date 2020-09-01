@@ -1,7 +1,7 @@
-import os
 import logging
-from .. import conf
-from ..utils import filter_hstore
+
+from .... import conf
+from ....utils import filter_hstore
 
 # It will raise an exception if the fields are not found in the record
 

@@ -15,8 +15,7 @@ import jinja2
 from jinja2_pluralize import pluralize_dj
 
 from . import conf, load_logger, endpoints
-from .utils import db
-from .middlewares import setup_middlewares
+from .utils import db, middlewares
 
 LOG = logging.getLogger(__name__)
 
@@ -73,7 +72,7 @@ def main(path=None):
     aiohttp_jinja2.setup(beacon, loader=template_loader)
 
     # Session middleware
-    setup_middlewares(beacon)
+    middlewares.setup(beacon)
 
     # Configure the endpoints
     beacon.add_routes(endpoints.routes)

@@ -1,13 +1,13 @@
 import logging
 
-from ...utils.response import json_stream
+from ...utils.stream import json_stream
 from ...utils.db import fetch_variants, fetch_biosamples, fetch_individuals
 from ...validation.request import print_qparams
 from ...validation import GVariantParameters
-from ...response.response_schema import (build_beacon_response,
-                                         build_variant_response,
-                                         build_biosample_response, 
-                                         build_individual_response)
+from .response.response_schema import (build_beacon_response,
+                                       build_variant_response,
+                                       build_biosample_response, 
+                                       build_individual_response)
 
 LOG = logging.getLogger(__name__)
 

@@ -4,7 +4,7 @@ from aiohttp.web import json_response
 
 from ... import conf
 from ...utils.db import fetch_filtering_terms
-from ...utils.response import json_stream
+from ...utils.stream import json_stream
 
 LOG = logging.getLogger(__name__)
 

@@ -1,6 +1,6 @@
 import logging
 
-from .. import conf
+from .... import conf
 from ..schemas import SUPPORTED_SCHEMAS, DEFAULT_SCHEMAS
 
 LOG = logging.getLogger(__name__)

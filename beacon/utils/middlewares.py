@@ -40,7 +40,7 @@ async def error_middleware(request, handler):
 #     return await json_stream(request, data)
 
 
-def setup_middlewares(app):
+def setup(app):
     # Session middleware
     fernet_key = fernet.Fernet.generate_key()
     secret_key = base64.urlsafe_b64decode(fernet_key) # 32 url-safe base64-encoded bytes
