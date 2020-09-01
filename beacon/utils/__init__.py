@@ -1,6 +1,6 @@
 import logging
 
-from aiohttp import ClientSession
+from aiohttp import ClientSession, web
 
 from ..conf import permissions_url
 from ..utils.json import jsonb
@@ -33,7 +33,7 @@ async def resolve_token(token, requested_datasets):
             
             if resp.status > 200:
                 LOG.error('Permissions server error %d', resp.status)
-                return [], False # behave like it's not authenticated ?
+                raise web.HTTPUnauthorized(reason=await resp.text())
             
             authorized_datasets = await resp.json()
             return authorized_datasets, True

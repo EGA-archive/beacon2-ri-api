@@ -8,7 +8,6 @@ from aiohttp import web
 from cryptography import fernet
 from aiohttp_session import setup as session_setup
 from aiohttp_session.cookie_storage import EncryptedCookieStorage
-from aiohttp.web import json_response
 
 LOG = logging.getLogger(__name__)
 
@@ -61,6 +60,8 @@ async def error_middleware(request, handler):
                                     headers = { 'Content-Type': 'application/json' }) from ex
 
         # Else, we are a regular HTML response
+        if ex.status == 401:
+            raise web.HTTPFound('/login')
         return handle_error(request, ex)
 
 # @web.middleware

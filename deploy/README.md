@@ -8,7 +8,7 @@ If you instantiate directly the containers, the images will be automatically dow
 
 If you prefer to (re-)create the images for the Beacon and Beacon UI locally, run the following command in the current directory:
 
-	docker-compose build beacon ui
+	docker-compose build beacon
 	
 
 ## Instanciating the containers
@@ -60,8 +60,6 @@ We import a [pre-configured realm](beacon-realm.json), with a beacon client and 
 | admin    | secret      |                         |
 | john     | john        | john.smith@beacon.ga4gh |
 | jane     | jane        | jane.smith@beacon.ga4gh |
-| sabela   | ihatefred   | sabela.delatorre@crg.eu |
-| fred     | ihatesabela | frederic.haziza@crg.eu  |
 
 Exporting the settings can be done with:
 
