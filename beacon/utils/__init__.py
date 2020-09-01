@@ -27,10 +27,10 @@ async def resolve_token(token, requested_datasets):
     async with ClientSession() as session:
         async with session.post(
                 permissions_url,
-                headers = { 'Authorization': 'Bearer ' + token }, # only sending that header
+                headers = { 'Authorization': 'Bearer ' + token,
+                            'Accept': 'application/json'},
                 json = { 'datasets': requested_datasets }, # will set the Content-Type to application/json
         ) as resp:
-            
             if resp.status > 200:
                 LOG.error('Permissions server error %d', resp.status)
                 raise web.HTTPUnauthorized(reason=await resp.text())

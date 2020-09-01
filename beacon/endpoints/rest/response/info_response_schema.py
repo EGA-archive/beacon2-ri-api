@@ -6,20 +6,19 @@ from ..schemas import SUPPORTED_SCHEMAS, DEFAULT_SCHEMAS
 LOG = logging.getLogger(__name__)
 
 
-def build_beacon_response(data, qparams_converted, func_response_type, variant_id=None, individual_id=None,
-                          biosample_id=None,):
+def build_beacon_response(data, qparams_converted, func_response_type, authorized_datasets=[]):
     """"
     Transform data into the Beacon response format.
     """
 
     beacon_response = {
-        'meta': build_meta(qparams_converted, func_response_type, variant_id, individual_id, biosample_id),
-        'response': build_response(data, qparams_converted, func_response_type)
+        'meta': build_meta(qparams_converted, func_response_type),
+        'response': build_response(data, qparams_converted, func_response_type, authorized_datasets)
     }
     return beacon_response
 
 
-def build_meta(qparams, func_response_type, variant_id=None, individual_id=None, biosample_id=None):
+def build_meta(qparams, func_response_type):
     """"Builds the `meta` part of the response
 
     We assume that receivedRequest is the evaluated request (qparams) sent by the user.
@@ -114,11 +113,11 @@ def build_error(qparams):
     }
 
 
-def build_response(data, qparams, func):
+def build_response(data, qparams, func, authorized_datasets=[]):
     """"Fills the `response` part with the correct format in `results`"""
 
     response = {
-            'results': func(data, qparams),
+            'results': func(data, qparams, authorized_datasets),
             'info': None,
             # 'resultsHandover': None, # build_results_handover
             # 'beaconHandover': None, # build_beacon_handover
@@ -131,25 +130,25 @@ def build_response(data, qparams, func):
     return response
 
 
-def build_service_info_response(datasets, qparams):
+def build_service_info_response(datasets, qparams, authorized_datasets=[]):
     """"Fills the `results` part with the format for ServiceInfo"""
 
     service_info_requested_schemas = qparams.requestedSchemasServiceInfo[0]
     # if qparams.listFormat is not None:
     #     service_info_requested_schemas.append('')
-    yield find_schemas(datasets, 'ServiceInfo', (service_info_requested_schemas or []))
+    yield find_schemas(datasets, 'ServiceInfo', (service_info_requested_schemas or []), authorized_datasets)
 
 
-def build_dataset_info_response(data, qparams):
+def build_dataset_info_response(data, qparams, authorized_datasets=[]):
     """"Fills the `results` part with the format for ServiceInfo"""
 
     dataset_info_requested_schemas = qparams.requestedSchemasDataset[0]
 
     for row in data:
-        yield find_schemas(row, 'Dataset', (dataset_info_requested_schemas or []))
+        yield find_schemas(row, 'Dataset', (dataset_info_requested_schemas or []), authorized_datasets)
 
 
-def find_schemas(row, field_name, schemas=None):
+def find_schemas(row, field_name, schemas=None, authorized_datasets=[]):
     """"Returns the data transformed into the specified schema(s)"""
     # LOG.debug('schemas: %s', schemas)
 
@@ -160,6 +159,6 @@ def find_schemas(row, field_name, schemas=None):
     for schema, func in schemas:
         yield {
             'version': schema,
-            'value': func(row)
+            'value': func(row, authorized_datasets)
         }
 
