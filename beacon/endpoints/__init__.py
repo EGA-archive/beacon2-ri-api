@@ -18,14 +18,8 @@ routes = [
     # Filtering terms
     web.get('/api/filtering_terms'   , rest.filtering_terms.handler),
 
-    # Access levels
-    # web.get('/api/access_levels'    , access_levels.handler),
-
     # Schemas
     # web.get('/api/schemas'          , schemas.handler),
-
-    # Query
-    # web.get('/api/query'                            , query.handler),
 
     # Genomic query
     # web.get('/api/genomic_snp'                      , genomic_query.handler),

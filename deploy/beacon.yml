@@ -34,7 +34,6 @@ services:
       - ../ui/templates:/beacon/ui/templates
       - ./conf.py:/beacon/beacon/conf.py
       - ./logger.yml:/beacon/beacon/logger.yml
-      - ./access_levels.yml:/beacon/beacon/utils/access_levels.yml
     ports:
       - "5050:5050"
     networks:
