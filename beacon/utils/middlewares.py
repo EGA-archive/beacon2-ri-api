@@ -1,6 +1,8 @@
 import logging
 import base64
 import json
+import traceback
+import sys
 
 import aiohttp_csrf
 import aiohttp_jinja2
@@ -43,26 +45,32 @@ def handle_error(request, exc):
 @web.middleware
 async def error_middleware(request, handler):
     try:
-        return await handler(request)
-    except web.HTTPException as ex:
+        try:
+            return await handler(request)
+        except web.HTTPException as ex:
 
-        # if the request comes from /api/*, we output the json version
-        LOG.info('Error on page: %s', request.path)
-        if request.path.startswith('/api'):
-            # if it has a _beacon_response field, it's raised by the beacon
-            beacon_response = getattr(ex, '_beacon_response', None)
-            if not beacon_response:
-                beacon_response = {
-                    'error': ex.status,
-                    'errorMessage': default_errors.get(ex.status)
-                }
-            raise web.HTTPException(text=json.dumps(beacon_response),
-                                    headers = { 'Content-Type': 'application/json' }) from ex
+            # if the request comes from /api/*, we output the json version
+            LOG.error('Error on page: %s', request.path)
+            LOG.debug('Error: %s', ex)
+            if request.path.startswith('/api'):
+                # if it has a _beacon_response field, it's raised by the beacon
+                beacon_response = getattr(ex, '_beacon_response', None)
+                if not beacon_response:
+                    beacon_response = {
+                        'error': ex.status,
+                        'errorMessage': default_errors.get(ex.status)
+                    }
+                raise web.HTTPException(text=json.dumps(beacon_response),
+                                        headers = { 'Content-Type': 'application/json' }) from ex
 
-        # Else, we are a regular HTML response
-        if ex.status == 401:
-            raise web.HTTPFound('/login')
-        return handle_error(request, ex)
+            # Else, we are a regular HTML response
+            if ex.status == 401:
+                raise web.HTTPFound('/login')
+            return handle_error(request, ex)
+    except Exception as ex:
+        LOG.error('Error caught: %s', ex)
+        traceback.print_stack(file=sys.stderr)
+        raise
 
 # @web.middleware
 # async def json_middleware(request, handler):
