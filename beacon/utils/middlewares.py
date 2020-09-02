@@ -45,32 +45,31 @@ def handle_error(request, exc):
 @web.middleware
 async def error_middleware(request, handler):
     try:
-        try:
-            return await handler(request)
-        except web.HTTPException as ex:
+        return await handler(request)
+    except web.HTTPError as ex: # Just the 400's and 500's
 
-            # if the request comes from /api/*, we output the json version
-            LOG.error('Error on page: %s', request.path)
-            LOG.debug('Error: %s', ex)
-            if request.path.startswith('/api'):
-                # if it has a _beacon_response field, it's raised by the beacon
-                beacon_response = getattr(ex, '_beacon_response', None)
-                if not beacon_response:
-                    beacon_response = {
-                        'error': ex.status,
-                        'errorMessage': default_errors.get(ex.status)
-                    }
-                raise web.HTTPException(text=json.dumps(beacon_response),
-                                        headers = { 'Content-Type': 'application/json' }) from ex
+        # if the request comes from /api/*, we output the json version
+        LOG.error('Error on page %s: %s', request.path, ex)
+        if request.path.startswith('/api'):
+            # if it has a _beacon_response field, it's raised by the beacon
+            beacon_response = getattr(ex, '_beacon_response', None)
+            if not beacon_response:
+                beacon_response = {
+                    'error': ex.status,
+                    'errorMessage': default_errors.get(ex.status)
+                }
+            raise ex.__class__(text=json.dumps(beacon_response),
+                               headers={ 'Content-Type': 'application/json' }) from ex
 
-            # Else, we are a regular HTML response
-            if ex.status == 401:
-                raise web.HTTPFound('/login')
-            return handle_error(request, ex)
-    except Exception as ex:
-        LOG.error('Error caught: %s', ex)
-        traceback.print_stack(file=sys.stderr)
-        raise
+        # Else, we are a regular HTML response
+        if ex.status == 401: # Unauthorized
+            raise web.HTTPFound('/login')
+
+        if ex.status >= 500:
+            LOG.error('Error caught: %s', ex)
+            traceback.print_stack(file=sys.stderr)
+
+        return handle_error(request, ex)
 
 # @web.middleware
 # async def json_middleware(request, handler):
