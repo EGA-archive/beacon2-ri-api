@@ -20,16 +20,22 @@ def make_response(error_code, error, fields=None):
     LOG.error('Error %s: %s', error_code, error)
     
     return {
-        'beaconId': conf.beacon_id,
-        'apiVersion': conf.api_version,
-        'exists': None,
-        'error': {'errorCode': error_code,
-                  'errorMessage': error},
-        'alleleRequest': dict(fields or []),
-        # showing empty datasetsAlleRsponse as no datasets found
-        # A null/None would represent no data while empty array represents
-        # none found or error and corresponds with exists null/None
-        'datasetAlleleResponses': [],
+        'meta': {
+            'beaconId': conf.beacon_id,
+            'apiVersion': conf.api_version,
+            'receivedRequest': {
+                'meta': {
+                    'requestedSchemas': dict(fields or []),
+                },
+                'query': None,
+            },
+            'returnedSchemas': None,
+        },
+        'response': {
+            'exists': None,
+            'error': {'errorCode': error_code,
+                      'errorMessage': error},
+        },
     }
 
 class BeaconBadRequest(web.HTTPBadRequest):
