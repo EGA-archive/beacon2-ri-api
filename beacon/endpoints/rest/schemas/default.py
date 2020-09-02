@@ -8,7 +8,7 @@ from ....utils import filter_hstore
 LOG = logging.getLogger(__name__)
 
 
-def beacon_info_v20(datasets):
+def beacon_info_v20(datasets, authorized_datasets=[]):
     return {
         'id': conf.beacon_id,
         'name': conf.beacon_name,
@@ -34,14 +34,17 @@ def beacon_info_v20(datasets):
         'serviceUrl': conf.service_url,
         'entryPoint': conf.entry_point,
         'open': conf.is_open,
-        'datasets': [beacon_dataset_info_v20(row) for row in datasets],
+        'datasets': [beacon_dataset_info_v20(row, authorized_datasets) for row in datasets],
         'info': None,
     }
 
 
-def beacon_dataset_info_v20(row):
+def beacon_dataset_info_v20(row, authorized_datasets=[]):
+    dataset_id = row['datasetId']
+    is_authorized = dataset_id in authorized_datasets
+
     return {
-        'id': row['datasetId'],
+        'id': dataset_id,
         'name': row['name'],
         'description': row['description'],
         'assemblyId': row['assemblyId'],
@@ -55,7 +58,7 @@ def beacon_dataset_info_v20(row):
         'externalURL': None,
         'info': {
             'accessType': row['accessType'],
-            'authorized': True if row['accessType'] == 'PUBLIC' else False,
+            'authorized': True if row['accessType'] == 'PUBLIC' else is_authorized,
             'datasetSource': row['datasetSource'],
             'datasetType': row['datasetType']
         }

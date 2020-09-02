@@ -13,6 +13,7 @@ and their associated metadata.
 
 import logging
 
+from ...utils import resolve_token
 from ...validation.request import RequestParameters, print_qparams
 from ...validation.fields import ChoiceField, SchemasField, RegexField
 from ...utils.db import fetch_datasets_metadata
@@ -56,7 +57,21 @@ async def handler(request):
     # Fetch datasets info
     beacon_datasets = [r async for r in fetch_datasets_metadata()]
 
-    response_converted = build_beacon_response(beacon_datasets, qparams_db, build_service_info_response)
+    all_datasets = [r['datasetId'] for r in beacon_datasets]
+
+    access_token = request.headers.get('Authorization')
+    if access_token:
+        access_token = access_token[7:] # cut out 7 characters: len('Bearer ')
+
+    authorized_datasets, authenticated = await resolve_token(access_token, all_datasets)
+    if authenticated:
+        LOG.debug('all datasets:  %s', all_datasets)
+        LOG.info('resolved datasets:  %s', authorized_datasets)
+
+    response_converted = build_beacon_response(beacon_datasets,
+                                               qparams_db,
+                                               build_service_info_response,
+                                               authorized_datasets if authenticated else [])
     return await json_stream(request, response_converted)
 
 

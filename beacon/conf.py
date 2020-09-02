@@ -93,11 +93,11 @@ idp_client_id = 'beacon'
 idp_client_secret = 'b26ca0f9-1137-4bee-b453-ee51eefbe7ba' # same as in the test IdP
 idp_scope = 'profile openid'
 
-idp_authorize     = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/auth'
-idp_access_token  = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/token'
-idp_introspection = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/token/introspect'
-idp_user_info     = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
-idp_logout        = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/logout'
+idp_authorize     = 'http://idp/auth/realms/Beacon/protocol/openid-connect/auth'
+idp_access_token  = 'http://idp/auth/realms/Beacon/protocol/openid-connect/token'
+idp_introspection = 'http://idp/auth/realms/Beacon/protocol/openid-connect/token/introspect'
+idp_user_info     = 'http://idp/auth/realms/Beacon/protocol/openid-connect/userinfo'
+idp_logout        = 'http://idp/auth/realms/Beacon/protocol/openid-connect/logout'
 
 idp_redirect_uri = 'http://beacon:5050/login'
 
