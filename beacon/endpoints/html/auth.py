@@ -143,8 +143,8 @@ async def logout(request):
     try:
         # Calling the logout endpoint on the IdP
         access_token = request_session['access_token']
-        # LOG.debug('Access token: %s', access_token)
-        if not access_token:
+        LOG.debug('Access token: %s', access_token)
+        if access_token:
             async with ClientSession() as session:
                 headers = { 'Accept': 'application/json',
                             #'Authorization': 'Bearer ' + access_token,
@@ -156,16 +156,16 @@ async def logout(request):
                                        auth=BasicAuth(conf.idp_client_id, password=conf.idp_client_secret),
                                        data=FormData({ 'token': access_token,
                                                        'token_type_hint': 'access_token',
-                                                       'redirect_uri': urlencode('http://beacon:5050'),
+                                                       'redirect_uri': 'http://beacon:5050',
                                        }, charset='UTF-8')
                 ) as resp:
                     if resp.status == 200:
                         LOG.info('User successfully logged out')
                     else:
                         LOG.error('Logout error: %s', resp)
-                    LOG.debug(await resp.text())
+                    LOG.debug('Logout response: %s', await resp.text())
     except Exception as e:
-        LOG.error('Error calling the IdP logout endpoint: %s', e)
+        LOG.error('Error calling the IdP logout endpoint: %r', e)
 
     # Cleaning the session
     request_session.invalidate()
