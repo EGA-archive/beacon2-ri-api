@@ -1,5 +1,7 @@
 import logging
 
+import itertools
+
 from .... import conf
 from ..schemas import SUPPORTED_SCHEMAS, DEFAULT_SCHEMAS
 from ....utils.json import jsonb
@@ -223,11 +225,15 @@ def build_variant_response(data, qparams):
     LOG.debug('variant_requested_schemas= %s', variant_requested_schemas)
     LOG.debug('variant_annotation_requested_schemas= %s', variant_annotation_requested_schemas)
 
-    for row in data:
+    variants = get_formatted_content(data, 'Variant', (variant_requested_schemas or []))
+    variant_annotations = get_formatted_content(data, 'VariantAnnotation', (variant_annotation_requested_schemas or []))
+
+    for (v, v_a, row) in itertools.zip_longest(variants, variant_annotations, data):
+        # LOG.debug('v= %s', v)
         yield {
-            'variant': find_schemas(row, 'Variant', (variant_requested_schemas or [])),
-            'variantAnnotations': find_schemas(row, 'VariantAnnotation', (variant_annotation_requested_schemas or [])),
-            'variantHandover': None, # build_variant_handover
+            'variant': v,
+            'variantAnnotations': v_a,
+            'variantHandover': None,  # build_variant_handover
             'datasetAlleleResponses': jsonb(row['dataset_response'])
         }
 
@@ -239,8 +245,7 @@ def build_individual_response(data, qparams):
 
     LOG.debug('individual_requested_schemas= %s', individual_requested_schemas)
 
-    for row in data:
-        yield find_schemas(row, 'Individual', (individual_requested_schemas or []))
+    return get_formatted_content(data, 'Individual', (individual_requested_schemas or []))
 
 
 def build_biosample_response(data, qparams):
@@ -250,21 +255,15 @@ def build_biosample_response(data, qparams):
 
     LOG.debug('biosample_requested_schemas= %s', biosample_requested_schemas)
 
-    for row in data:
-        yield find_schemas(row, 'Biosample', (biosample_requested_schemas or []))
+    return get_formatted_content(data, 'Biosample', (biosample_requested_schemas or []))
 
 
-def find_schemas(row, field_name, schemas=None):
-    """"Returns the data transformed into the specified schema(s)"""
+def get_formatted_content(data, field_name, schemas):
     # LOG.debug('schemas: %s', schemas)
 
     if not schemas:
         default_schema = DEFAULT_SCHEMAS[field_name] # We let it throw a KeyError
         schemas = [(default_schema, SUPPORTED_SCHEMAS[default_schema])]
 
-    for schema, func in schemas:
-        yield {
-            'version': schema,
-            'value': func(row)
-        }
-
+    schema, func = schemas.pop()
+    return [func(row) for row in data]
