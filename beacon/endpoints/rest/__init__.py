@@ -61,7 +61,7 @@ class GVariantParameters(RequestParameters):
     apiVersion = RegexField(r'^v[0-9]+(\.[0-9]+)*$')
     # pagination
     skip = IntegerField(min_value=0, default=0)
-    limit = IntegerField(min_value=0, default=10)
+    limit = IntegerField(min_value=1, default=10)
     targetIdReq = Field(default=None)
 
     def correlate(self, req, values):

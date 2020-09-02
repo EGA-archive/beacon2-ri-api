@@ -55,6 +55,8 @@ def build_received_query(qparams, variant_id=None, individual_id=None, biosample
     g_variant = build_g_variant_params(qparams, variant_id)
     individual = build_individual_params(qparams, individual_id)
     biosample = build_biosample_params(qparams, biosample_id)
+    datasets = build_datasets_params(qparams)
+    pagination = build_pagination_params(qparams)
 
     query_part = {}
     if g_variant:
@@ -63,6 +65,12 @@ def build_received_query(qparams, variant_id=None, individual_id=None, biosample
         query_part['individual'] = individual
     if biosample:
         query_part['biosample'] = biosample
+    if datasets:
+        query_part['datasets'] = datasets
+    if qparams.filters:
+        query_part['filters'] = qparams.filters
+    if pagination:
+        query_part['pagination'] = pagination
 
     return query_part
 
@@ -83,8 +91,6 @@ def build_g_variant_params(qparams, variant_id=None):
         g_variant_params['assemblyId'] = qparams.assemblyId
     if qparams.referenceName:
         g_variant_params['referenceName'] = qparams.referenceName
-    if qparams.includeDatasetResponses:
-        g_variant_params['includeDatasetResponses'] = qparams.includeDatasetResponses
 
     if variant_id is not None:
         g_variant_params['id'] = variant_id
@@ -110,6 +116,29 @@ def build_biosample_params(qparams, biosample_id=None):
         biosample_params['id'] = biosample_id
 
     return biosample_params
+
+
+def build_datasets_params(qparams):
+    """Fills the `datasets` part with the request data"""
+
+    datasets_params = {}
+    if qparams.datasetIds:
+        datasets_params['datasets'] = qparams.datasetIds
+
+    if qparams.includeDatasetResponses:
+        datasets_params['includeDatasetResponses'] = qparams.includeDatasetResponses
+
+    return datasets_params
+
+
+def build_pagination_params(qparams):
+    pagination_params = {}
+    if qparams.limit:
+        pagination_params['limit'] = qparams.limit
+    if qparams.skip:
+        pagination_params['skip'] = qparams.skip
+
+    return pagination_params
 
 
 def build_requested_schemas(qparams):
