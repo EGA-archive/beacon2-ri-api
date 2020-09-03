@@ -41,6 +41,7 @@ jobs:
         popd
         rm -rf bats-core
         sudo apt-get install curl jq
+        sudo echo '127.0.0.1    idp beacon beacon-permissions' >> /etc/hosts
     - name: Bootstrap a Beacon
       run: |
         pushd deploy

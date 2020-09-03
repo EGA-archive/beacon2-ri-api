@@ -1,15 +1,1 @@
-{'contactUrl': 'mailto:beacon.ega@crg.eu',
- 'createDateTime': '2020-07-30 12:00',
- 'description': "This <a href='https://beacon-project.io/'>Beacon</a> is based "
-                'on the GA4GH Beacon <a '
-                "href='https://github.com/ga4gh-beacon/specification-v2/blob/master/beacon.yaml'>v2.0</a>",
- 'documentationUrl': 'https://github.com/EGA-archive/beacon-2.x/',
- 'environment': 'test',
- 'id': 'org.ega-archive.beacon',
- 'name': 'Beacon Test Instance',
- 'organization': {'name': 'European Genome-Phenome Archive (EGA)',
-                  'url': 'https://ega-archive.org/'},
- 'type': {'artifact': 'beacon', 'group': 'org.ga4gh', 'version': '1.0'},
- 'updateDateTime': '2020-07-31 10:10',
- 'url': 'https://beacon.ega-archive.org/api/services',
- 'version': 'v2.0'}
+{"id":"org.ega-archive.beacon","name":"Beacon Test Instance","type":{"group":"org.ga4gh","artifact":"beacon","version":"1.0"},"description":"This <a href='https://beacon-project.io/'>Beacon</a> is based on the GA4GH Beacon <a href='https://github.com/ga4gh-beacon/specification-v2/blob/master/beacon.yaml'>v2.0</a>","organization":{"name":"European Genome-Phenome Archive (EGA)","url":"https://ega-archive.org/"},"contactUrl":"mailto:beacon.ega@crg.eu","documentationUrl":"https://github.com/EGA-archive/beacon-2.x/","createDateTime":"2020-07-30 12:00","updateDateTime":"2020-07-31 10:10","environment":"test","version":"v2.0","url":"https://beacon.ega-archive.org/api/services"}

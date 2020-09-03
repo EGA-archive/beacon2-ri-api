@@ -1,6 +1,5 @@
 import sys
 import os
-import pprint
 
 from aiohttp import ClientSession, BasicAuth, FormData
 
@@ -80,10 +79,10 @@ async def collect(dir_output):
                     print('Error', resp.status, ':', error, file=sys.stderr)
                     continue
             
-                content = await resp.json()
+                content = await resp.text()
                 with open(os.path.join(dir_output, output + '.json'), 'w') as f:
-                    if content:
-                        pprint.pprint(content, stream=f)
+                    if content: # handle empty responses
+                        f.write(content)
 
 async def collect_with_permissions(dir_output):
 
@@ -121,10 +120,10 @@ async def collect_with_permissions(dir_output):
                     print('Error', resp.status, ':', error, file=sys.stderr)
                     continue
             
-                content = await resp.json()
+                content = await resp.text()
                 with open(os.path.join(dir_output, output + '.json'), 'w') as f:
                     if content:
-                        pprint.pprint(content, stream=f)
+                        f.write(content)
 
 
 # curl -u 'beacon:b26ca0f9-1137-4bee-b453-ee51eefbe7ba' http://idp:8080/auth/realms/Beacon/protoc
