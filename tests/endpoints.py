@@ -42,7 +42,7 @@ endpoints = [
     ('filters-2', 'http://beacon:5050/api/individuals?filters=NCIT:C27083,PATO:0000384'), # 1 result
     ('filters-3', 'http://beacon:5050/api/individuals?filters=PATO:0000384'), # 2 results
     ('filters-4', 'http://beacon:5050/api/biosamples?filters=BTO:0000089'), # 3 results
-    ('filters-15', 'http://beacon:5050/api/biosamples?filters=BTO:0000089,NCIT:C37967'), # 1 result
+    ('filters-5', 'http://beacon:5050/api/biosamples?filters=BTO:0000089,NCIT:C37967'), # 1 result
 
     # Other endpoints
     ('datasets', 'http://beacon:5050/api/datasets'),
@@ -59,11 +59,11 @@ endpoints_with_permissions = [
     #  unauthenticated user returns 2 rows, user john 8 rows, jane 4 rows
 
     # Filter by registered dataset
-    ('datasets-registered', None, None,
+    ('datasets-registered-anonymous', None, None,
      'http://beacon:5050/api/g_variants?start=9411318&end=9411338&assemblyId=grch37.p1&referenceName=21&datasetIds=dataset-registered'),
-    ('datasets-registered', 'john', 'john',
+    ('datasets-registered-john', 'john', 'john',
      'http://beacon:5050/api/g_variants?start=9411318&end=9411338&assemblyId=grch37.p1&referenceName=21&datasetIds=dataset-registered'),
-    ('datasets-registered', 'jane', 'jane',
+    ('datasets-registered-jane', 'jane', 'jane',
      'http://beacon:5050/api/g_variants?start=9411318&end=9411338&assemblyId=grch37.p1&referenceName=21&datasetIds=dataset-registered'),
 ]
 
