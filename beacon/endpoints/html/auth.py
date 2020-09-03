@@ -108,14 +108,6 @@ async def do_login(request, request_session, next_url):
     # LOG.debug('Token: %s', access_token)
     request_session['access_token'] = access_token
 
-    id_token = data.get('id_token')
-    if id_token:
-        LOG.debug('And an ID token? %s', id_token)
-        #LOG.debug('And an ID token? %s...', id_token[:30])
-        request_session['id_token'] = id_token
-        # decoded_id_token = jwt.decode(id_token)
-        # user = decoded_id_token # or just some fields
-
     # Finally, save userinfo and redirect
     await get_user_info_and_redirect(access_token, next_url, request_session)
 
@@ -138,39 +130,17 @@ async def login(request):
 
 async def logout(request):
 
-    request_session = await get_session(request)
-
-    try:
-        # Calling the logout endpoint on the IdP
-        token = request_session['id_token']
-        LOG.debug('ID token: %s', token)
-        if token:
-            async with ClientSession() as session:
-                headers = { 'Accept': 'application/json',
-                            #'Authorization': 'Bearer ' + access_token,
-                            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-                }
-                LOG.debug('Contacting %s', conf.idp_logout)
-                async with session.get(conf.idp_logout,
-                                       headers=headers,
-                                       auth=BasicAuth(conf.idp_client_id, password=conf.idp_client_secret),
-                                       data=FormData({
-                                           'id_type_hint': token,
-                                           'redirect_uri': 'http://beacon:5050',
-                                           'post_logout_redirect_uri':'http://beacon:5050',
-                                           # 'initiating_idp':
-                                       }, charset='UTF-8')
-                ) as resp:
-                    if resp.status == 200:
-                        LOG.info('User successfully logged out')
-                    else:
-                        LOG.error('Logout error: %s', resp)
-                    LOG.debug('Logout response: %s', await resp.text())
-    except Exception as e:
-        LOG.error('Error calling the IdP logout endpoint: %r', e)
-
-    # Cleaning the session
-    request_session.invalidate()
     next_url = request.rel_url.query.get('next', '/')
     LOG.debug('next URL: %s', next_url)
-    raise HTTPFound(next_url)
+
+    # Cleaning the session
+    request_session = await get_session(request)
+    token = request_session.get('access_token')
+    request_session.invalidate()
+
+    if not token:
+        raise HTTPFound(next_url)
+
+    redirect_uri = conf.welcome_url + next_url
+    raise HTTPFound(conf.idp_logout + '?'+ urlencode({ 'redirect_uri': redirect_uri }))
+

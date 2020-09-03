@@ -31,7 +31,7 @@ description     = (r"This <a href='https://beacon-project.io/'>Beacon</a> "
                    r"is based on the GA4GH Beacon "
                    r"<a href='https://github.com/ga4gh-beacon/specification-v2/blob/master/beacon.yaml'>v2.0</a>")
 version         = 'v2.0'
-welcome_url     = 'https://beacon.ega-archive.org/'
+welcome_url     = 'http://beacon:5050'
 alternative_url = 'https://beacon.ega-archive.org/api'
 create_datetime = '2020-07-30 12:00'
 datetime_format = '%Y-%m-%d %H:%M'  # convert datetime python object to string
