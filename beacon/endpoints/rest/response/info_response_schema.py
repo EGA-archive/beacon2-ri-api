@@ -133,32 +133,33 @@ def build_response(data, qparams, func, authorized_datasets=[]):
 def build_service_info_response(datasets, qparams, authorized_datasets=[]):
     """"Fills the `results` part with the format for ServiceInfo"""
 
-    service_info_requested_schemas = qparams.requestedSchemasServiceInfo[0]
-    # if qparams.listFormat is not None:
-    #     service_info_requested_schemas.append('')
-    yield find_schemas(datasets, 'ServiceInfo', (service_info_requested_schemas or []), authorized_datasets)
+    schemas = qparams.requestedSchemasServiceInfo[0]
+
+    if not (schemas or []):
+        default_schema = DEFAULT_SCHEMAS['ServiceInfo'] # We let it throw a KeyError
+        schemas = [(default_schema, SUPPORTED_SCHEMAS[default_schema])]
+
+    schema, func = schemas.pop()
+    return func(datasets, authorized_datasets)
 
 
 def build_dataset_info_response(data, qparams, authorized_datasets=[]):
     """"Fills the `results` part with the format for ServiceInfo"""
 
     dataset_info_requested_schemas = qparams.requestedSchemasDataset[0]
-
-    for row in data:
-        yield find_schemas(row, 'Dataset', (dataset_info_requested_schemas or []), authorized_datasets)
+    return get_formatted_content(data, 'Dataset', (dataset_info_requested_schemas or []), authorized_datasets)
 
 
-def find_schemas(row, field_name, schemas=None, authorized_datasets=[]):
-    """"Returns the data transformed into the specified schema(s)"""
+def get_formatted_content(data, field_name, schemas, authorized_datasets=[]):
+    """
+    Formats the data according to the first requested schema
+    It also passes the authorized datasets to the function.
+    """
     # LOG.debug('schemas: %s', schemas)
 
     if not schemas:
         default_schema = DEFAULT_SCHEMAS[field_name] # We let it throw a KeyError
         schemas = [(default_schema, SUPPORTED_SCHEMAS[default_schema])]
 
-    for schema, func in schemas:
-        yield {
-            'version': schema,
-            'value': func(row, authorized_datasets)
-        }
-
+    schema, func = schemas.pop()
+    return [func(row, authorized_datasets) for row in data]

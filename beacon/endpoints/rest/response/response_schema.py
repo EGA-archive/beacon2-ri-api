@@ -250,9 +250,8 @@ def build_variant_response(data, qparams):
 
     variant_requested_schemas = qparams.requestedSchemasVariant[0]
     variant_annotation_requested_schemas = qparams.requestedSchemasVariantAnnotation[0]
-
-    LOG.debug('variant_requested_schemas= %s', variant_requested_schemas)
-    LOG.debug('variant_annotation_requested_schemas= %s', variant_annotation_requested_schemas)
+    # LOG.debug('variant_requested_schemas= %s', variant_requested_schemas)
+    # LOG.debug('variant_annotation_requested_schemas= %s', variant_annotation_requested_schemas)
 
     variants = get_formatted_content(data, 'Variant', (variant_requested_schemas or []))
     variant_annotations = get_formatted_content(data, 'VariantAnnotation', (variant_annotation_requested_schemas or []))
@@ -271,8 +270,7 @@ def build_individual_response(data, qparams):
     """"Fills the `results` part with the format for individual data"""
 
     individual_requested_schemas = qparams.requestedSchemasIndividual[0]
-
-    LOG.debug('individual_requested_schemas= %s', individual_requested_schemas)
+    # LOG.debug('individual_requested_schemas= %s', individual_requested_schemas)
 
     return get_formatted_content(data, 'Individual', (individual_requested_schemas or []))
 
@@ -281,13 +279,13 @@ def build_biosample_response(data, qparams):
     """"Fills the `results` part with the format for sample data"""
 
     biosample_requested_schemas = qparams.requestedSchemasBiosample[0]
-
-    LOG.debug('biosample_requested_schemas= %s', biosample_requested_schemas)
+    # LOG.debug('biosample_requested_schemas= %s', biosample_requested_schemas)
 
     return get_formatted_content(data, 'Biosample', (biosample_requested_schemas or []))
 
 
 def get_formatted_content(data, field_name, schemas):
+    """Formats the data according to the first requested schema"""
     # LOG.debug('schemas: %s', schemas)
 
     if not schemas:
