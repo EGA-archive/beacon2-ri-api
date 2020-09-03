@@ -108,13 +108,13 @@ async def do_login(request, request_session, next_url):
     # LOG.debug('Token: %s', access_token)
     request_session['access_token'] = access_token
 
-    # id_token = data.get('id_token')
-    # if id_token:
-    #     LOG.debug('And an ID token? %s', id_token)
-    #     #LOG.debug('And an ID token? %s...', id_token[:30])
-    #     request_session['id_token'] = id_token
-    #     # decoded_id_token = jwt.decode(id_token)
-    #     # user = decoded_id_token # or just some fields
+    id_token = data.get('id_token')
+    if id_token:
+        LOG.debug('And an ID token? %s', id_token)
+        #LOG.debug('And an ID token? %s...', id_token[:30])
+        request_session['id_token'] = id_token
+        # decoded_id_token = jwt.decode(id_token)
+        # user = decoded_id_token # or just some fields
 
     # Finally, save userinfo and redirect
     await get_user_info_and_redirect(access_token, next_url, request_session)
@@ -142,9 +142,9 @@ async def logout(request):
 
     try:
         # Calling the logout endpoint on the IdP
-        access_token = request_session['access_token']
-        LOG.debug('Access token: %s', access_token)
-        if access_token:
+        token = request_session['id_token']
+        LOG.debug('ID token: %s', token)
+        if token:
             async with ClientSession() as session:
                 headers = { 'Accept': 'application/json',
                             #'Authorization': 'Bearer ' + access_token,
@@ -154,9 +154,11 @@ async def logout(request):
                 async with session.get(conf.idp_logout,
                                        headers=headers,
                                        auth=BasicAuth(conf.idp_client_id, password=conf.idp_client_secret),
-                                       data=FormData({ 'token': access_token,
-                                                       'token_type_hint': 'access_token',
-                                                       'redirect_uri': 'http://beacon:5050',
+                                       data=FormData({
+                                           'id_type_hint': token,
+                                           'redirect_uri': 'http://beacon:5050',
+                                           'post_logout_redirect_uri':'http://beacon:5050',
+                                           # 'initiating_idp':
                                        }, charset='UTF-8')
                 ) as resp:
                     if resp.status == 200:
