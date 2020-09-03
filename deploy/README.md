@@ -56,7 +56,7 @@ We have already adjusted the [settings](beacon.yml) for the network and the diff
 
 The beacon is now ready. You can query it on `beacon` (port 5050). For example:  
 
-* [/api](http://beacon:5050/api/)
+* [/api](http://beacon:5050/api)
 * [/api/g_variants?assemblyId=GRCh37.p1&referenceName=MT&referenceBases=T&alternateBases=C&start=150&includeDatasetResponses=ALL](http://beacon:5050/api/g_variants?assemblyId=GRCh37.p1&referenceName=MT&referenceBases=T&alternateBases=C&start=150&includeDatasetResponses=ALL)
 * [/api/g_variants?assemblyId=GRCh37.p1&referenceName=MT&start=1&end=200](http://beacon:5050/api/g_variants?assemblyId=GRCh37.p1&referenceName=MT&start=1&end=200)
 * [/api/biosamples](http://beacon:5050/api/biosamples)
