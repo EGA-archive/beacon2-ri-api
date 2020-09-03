@@ -1,1 +1,98 @@
-{"id": "demo-beacon", "name": "Demo Beacon", "serviceType": "GA4GHBeacon", "apiVersion": "2.0.0", "serviceUrl": "https://testv2-beacon-api.ega-archive.org/services", "entryPoint": "False", "organization": {"id": "demo-beacon", "name": "Demo Beacon", "description": "Demo Description", "address": "", "welcomeUrl": "http://localhost:8000/", "contactUrl": "mailto:beacon.ega@crg.eu", "logoUrl": "http://localhost:8000/static/logo.png", "info": ""}, "description": "This <a href=\\\"https://beacon-project.io/\\\">Beacon</a> is based on the GA4GH Beacon <a href=\\\"https://github.com/ga4gh-beacon/specification/blob/develop/beacon.yaml\\\">v2.0+</a>", "version": "v2", "open": "True", "welcomeUrl": "https://ega-archive.org/beacon_web/", "alternativeUrl": "https://ega-archive.org/beacon_web/", "createDateTime": "2015-06-15T00:00.000Z", "updateDateTime": "2019-12-18T11:11:44Z", "datasets": [{"variantCount": 3119, "callCount": 8513330, "sampleCount": 2504, "id": "1000genomes", "name": null, "description": "Subset of variants of chromosomes 22 and Y from the 1000 genomes project", "assemblyId": "GRCh37", "createDateTime": null, "updateDateTime": null, "dataUseConditions": null, "version": null, "externalURL": null, "info": {"accessType": "PUBLIC", "authorized": "true"}}, {"variantCount": 3119, "callCount": 8513330, "sampleCount": 2504, "id": "urn:hg:example-registered", "name": null, "description": "Registered Dataset 1 with fake data (for Bona Fide researchers)", "assemblyId": "GRCh37", "createDateTime": null, "updateDateTime": null, "dataUseConditions": null, "version": null, "externalURL": null, "info": {"accessType": "REGISTERED", "authorized": "false"}}, {"variantCount": 3119, "callCount": 8513330, "sampleCount": 2504, "id": "urn:hg:example-controlled", "name": null, "description": "Controlled Dataset 2 with fake data", "assemblyId": "GRCh37", "createDateTime": null, "updateDateTime": null, "dataUseConditions": null, "version": null, "externalURL": null, "info": {"accessType": "CONTROLLED", "authorized": "false"}}], "sampleAlleleRequests": [{"alternateBases": "A", "referenceBases": "G", "referenceName": "Y", "start": 2655179, "startMin": null, "startMax": null, "end": null, "endMin": null, "endMax": null, "variantType": null, "assemblyId": "GRCh37", "datasetIds": null, "includeDatasetResponses": null}, {"alternateBases": null, "referenceBases": "T", "referenceName": "21", "start": null, "startMin": 45039444, "startMax": 45039445, "end": null, "endMin": 45084561, "endMax": 45084562, "variantType": null, "assemblyId": "GRCh37", "datasetIds": ["1000genomes"], "includeDatasetResponses": null}, {"alternateBases": null, "referenceBases": "G", "referenceName": "21", "start": 15399042, "startMin": null, "startMax": null, "end": 15419114, "endMin": null, "endMax": null, "variantType": null, "assemblyId": "GRCh37", "datasetIds": ["1000genomes"], "includeDatasetResponses": null}]}
+{'meta': {'apiVersion': 'v2.0.0-draft.2',
+          'beaconId': 'org.ega-archive.beacon',
+          'receivedRequest': {'meta': {'apiVersion': None,
+                                       'requestedSchemas': {}}},
+          'returnedSchemas': {'ServiceInfo': ['beacon-info-v2.0.0-draft.2']}},
+ 'response': {'info': None,
+              'results': {'alternativeUrl': 'https://beacon.ega-archive.org/api',
+                          'apiVersion': 'v2.0.0-draft.2',
+                          'createDateTime': '2020-07-30 12:00',
+                          'datasets': [{'assemblyId': 'GRCh37.p1',
+                                        'callCount': 1562761,
+                                        'createDateTime': '2020-07-30 14:12',
+                                        'dataUseConditions': None,
+                                        'description': None,
+                                        'externalURL': None,
+                                        'id': 'GiaB',
+                                        'info': {'accessType': 'PUBLIC',
+                                                 'authorized': True,
+                                                 'datasetSource': 'NIGMS Human '
+                                                                  'Genetic '
+                                                                  'Cell '
+                                                                  'Repository',
+                                                 'datasetType': 'variant-level'},
+                                        'name': 'Genome in a Bottle dataset',
+                                        'sampleCount': 3,
+                                        'updateDateTime': '2020-07-30 14:12',
+                                        'variantCount': 352672,
+                                        'version': None},
+                                       {'assemblyId': 'GRCh37.p1',
+                                        'callCount': 498,
+                                        'createDateTime': '2020-07-31 10:10',
+                                        'dataUseConditions': None,
+                                        'description': None,
+                                        'externalURL': None,
+                                        'id': 'dataset-registered',
+                                        'info': {'accessType': 'REGISTERED',
+                                                 'authorized': False,
+                                                 'datasetSource': None,
+                                                 'datasetType': None},
+                                        'name': None,
+                                        'sampleCount': 3,
+                                        'updateDateTime': '2020-07-31 10:10',
+                                        'variantCount': 100,
+                                        'version': None},
+                                       {'assemblyId': 'GRCh37.p1',
+                                        'callCount': 498,
+                                        'createDateTime': '2020-07-31 10:10',
+                                        'dataUseConditions': None,
+                                        'description': None,
+                                        'externalURL': None,
+                                        'id': 'dataset-controlled',
+                                        'info': {'accessType': 'CONTROLLED',
+                                                 'authorized': False,
+                                                 'datasetSource': None,
+                                                 'datasetType': None},
+                                        'name': None,
+                                        'sampleCount': 3,
+                                        'updateDateTime': '2020-07-31 10:10',
+                                        'variantCount': 100,
+                                        'version': None}],
+                          'description': 'This <a '
+                                         "href='https://beacon-project.io/'>Beacon</a> "
+                                         'is based on the GA4GH Beacon <a '
+                                         "href='https://github.com/ga4gh-beacon/specification-v2/blob/master/beacon.yaml'>v2.0</a>",
+                          'entryPoint': False,
+                          'environment': 'test',
+                          'id': 'org.ega-archive.beacon',
+                          'info': None,
+                          'name': 'Beacon Test Instance',
+                          'open': True,
+                          'organization': {'address': 'C/ Dr. Aiguader, 88PRBB '
+                                                      'Building08003 '
+                                                      'Barcelona, Spain',
+                                           'contactUrl': 'mailto:beacon.ega@crg.eu',
+                                           'description': 'The European '
+                                                          'Genome-phenome '
+                                                          'Archive (EGA) is a '
+                                                          'service for '
+                                                          'permanent archiving '
+                                                          'and sharing of all '
+                                                          'types of personally '
+                                                          'identifiable '
+                                                          'genetic and '
+                                                          'phenotypic data '
+                                                          'resulting from '
+                                                          'biomedical research '
+                                                          'projects.',
+                                           'id': 'EGA',
+                                           'info': '',
+                                           'logoUrl': 'https://ega-archive.org/images/logo.png',
+                                           'name': 'European Genome-Phenome '
+                                                   'Archive (EGA)',
+                                           'welcomeUrl': 'https://ega-archive.org/'},
+                          'serviceType': 'org.ga4gh:beacon:1.0.0',
+                          'serviceUrl': 'https://beacon.ega-archive.org/api/services',
+                          'updateDateTime': '2020-07-31 10:10',
+                          'version': 'v2.0',
+                          'welcomeUrl': 'https://beacon.ega-archive.org/'}}}
