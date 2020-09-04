@@ -54,25 +54,11 @@ routes = [
 
 
     ## HTML UI
-    web.get('/', html.handlers.index, name='query'),
-    web.get('/', html.handlers.index, name='snp'),
-    web.get('/', html.handlers.index, name='region'),
-    web.get('/', html.handlers.index, name='samples'),
 
     # # Auth endpoints
-    web.get('/', html.handlers.index, name='privacy'),
+    web.get('/', html.handlers.index),
     web.get('/login', html.auth.login, name='login'),
     web.get('/logout', html.auth.logout, name='logout'),
-
-    # web.get('/snp', BeaconSNPView.as_view(), name='snp'),
-    # web.get('/region', BeaconRegionView.as_view(), name='region'),
-    # web.get('/samples', BeaconSamplesView.as_view(), name='samples'),
-    # # Access Levels
-    # web.get('/access-levels', BeaconAccessLevelsView.as_view(), name='levels'),
-    # # Filtering terms
-    # web.get('/terms', BeaconFilteringTermsView.as_view(), name='filters'),
-    # web.get('/terms/', BeaconFilteringTermsView.as_view(), name='filters/'),
-    # web.get('/terms/<term>', BeaconFilteringTermsView.as_view(), name='filters-term'),
 
     # AJAX
     web.get('/filtering_terms/{term}', html.filtering_terms.handler),

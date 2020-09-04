@@ -32,7 +32,7 @@
 {% endif %}{{ letter }}{% endfor %}</pre>
       <p>Keep it safe, it is just a temporary page to test the API</p>
       <p>Use it like:</p>
-      <code>curl -H 'Authorization: Bearer {{ session.access_token}}' {{request.url}}api</code>
+      <code>curl {{request.url}}api -H 'Authorization: Bearer {{ session.access_token}}'</code>
 
       {% else %}
 
