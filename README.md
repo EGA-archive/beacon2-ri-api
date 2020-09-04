@@ -9,14 +9,14 @@ This repository is an implementation of the [Beacon v2.0 specification](https://
 * a set of [templates for a beacon UI](ui).
 
 
-# Version notes
+### Version notes
 
 * Structural variants (`variantType`) are not supported.
 * Fuzzy matches (`startMin`, `startMax`, `endMin`, `endMax`) are not supported.
 * Fusions (`mateName`) are not supported.
 
 
-# Acknowlegments
+### Acknowlegments
 
 We thank the [CSC Finland](https://www.csc.fi/) team for their
 contribution with a [python implementing of version

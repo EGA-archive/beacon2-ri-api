@@ -28,7 +28,7 @@ This takes only a few seconds. Instantiate a container with
 
 You can look at what is happening in the container with `docker-compose logs -f db`.
 
-# Dealing with the network for a local deployment
+## Dealing with the network for a local deployment
 
 We can point the web browser to `localhost`, on some given port,
 which docker will redirect to the relevant container. That part is
@@ -56,7 +56,7 @@ container and then use the above newly added entries).
 
 > The pre-configured settings assume the above.
 
-# Instantiating the other containers 
+## Instantiating the other containers 
 
 We have already adjusted the [settings](beacon.yml) for the network and the different connection parameters.
 
