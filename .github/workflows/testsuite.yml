@@ -52,6 +52,7 @@ jobs:
         sleep 30
         docker-compose up -d
         docker-compose ps
+        docker-compose logs
         popd
     - name: Running testsuite
       run: bats tests
