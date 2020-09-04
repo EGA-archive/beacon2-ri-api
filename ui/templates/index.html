@@ -21,23 +21,29 @@
   <body id="{% if beacon_response %}response{% else %}info{% endif %}">
 	
     {% include 'header.html' %}
-    {% include 'query.html' %}
-
 
     <main>
-      <p>The EGA archives a large number of datasets, some of which
-	are <span class="label label-public">PUBLICLY</span>
-	available.  If you have an account on this website, you can
-	access to <span class="label
-			       label-registered">REGISTERED</span> datasets.  To
-	access <span class="label
-			    label-controlled">CONTROLLED</span> datasets can be done by
-	contacting the relevant Data Access Committee (DAC), whose
-	details are displayed on the Dataset description page under
-	"Who controls access to this dataset".
-      </p>
+      {% if session.user %}
+
+      <h1>Beacon v2</h1>
+      <h2>Hi, {{ session.user.name }}</h2>
+      <p>Here is your access token:</p>
+      <pre>{% for i, letter in enumerate(session.access_token, start=1) %}{% if i % 80 == 0 %}
+{% endif %}{{ letter }}{% endfor %}</pre>
+      <p>Keep it safe, it is just a temporary page to test the API</p>
+      <p>Use it like:</p>
+      <code>curl -H 'Authorization: Bearer {{ session.access_token}}' {{request.url}}api</code>
+
+      {% else %}
+
+      <h1>Beacon v2</h1>
+      <p>This is just a temporary page, to test the login mechanism</p>
+      <p>This page will disappear when the new UI is in place</p>
+      
+      {% endif %}
+
     </main>
-    
+
     {% include 'footer.html' %}
 
   </body>
