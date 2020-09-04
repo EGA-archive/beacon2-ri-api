@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from .... import conf
 from ....utils import filter_hstore
 
@@ -29,12 +31,13 @@ def ga4gh_service_info_v10(row, authorized_datasets=None):
 def ga4gh_phenopackets_biosamples_v10(row):
     schema_name = 'ga4gh-phenopacket-biosample-v1.0'
     abnormal_sample_ontology = 'EFO:0009655'
+    biosample_id = row['biosample_stable_id']
     return {
-        'id': None, # required
+        'id': conf.beacon_id + '_' + biosample_id, # required
         # 'subject': None,
         # 'phenotypic_features': None,
         'biosamples': [{
-            'id': row['biosample_stable_id'],
+            'id': biosample_id,
             'individual_id': row['individual_stable_id'],
             'description': row['description'],
             'sampled_tissue': get_sampled_tissue(row['sample_origins_ontology'], schema_name),
@@ -68,7 +71,20 @@ def ga4gh_phenopackets_biosamples_v10(row):
         # 'variants': None,
         # 'diseases': None,
         # 'hts_files': None,
-        'meta_data': None, # required
+        'meta_data': build_phenopackets_meta_data_block(filter_hstore(row['ontologies_used'], schema_name)), # required
+    }
+
+
+def build_phenopackets_meta_data_block(ontologies_used):
+    now = datetime.now()
+    return {
+        'created': now.strftime(conf.datetime_format),  # required
+        'created_by': conf.beacon_name,  # required
+        # 'submitted_by': None,
+        'resources': ontologies_used,  # required
+        # 'updates': None,
+        # 'phenopacket_schema_version': None,
+        # 'external_references': None,
     }
 
 
@@ -83,10 +99,11 @@ def get_sampled_tissue(hstore, schema_name):
 
 def ga4gh_phenopackets_individual_v10(row):
     schema_name = 'ga4gh-phenopacket-individual-v1.0'
+    individual_id = row['individual_stable_id']
     return {
-        'id': None, # required
+        'id': conf.beacon_id + '_' + individual_id, # required
         'subject': {
-            'id': row['individual_stable_id'], # required
+            'id': individual_id, # required
             'alternate_ids': None,
             'date_of_birth': None,
             'age': None,
@@ -103,13 +120,14 @@ def ga4gh_phenopackets_individual_v10(row):
         # 'variants': None,
         'diseases': filter_hstore(row['diseases'], schema_name),
         # 'hts_files': None,
-        'meta_data': None, # required
+        'meta_data': build_phenopackets_meta_data_block(filter_hstore(row['ontologies_used'], schema_name)), # required
     }
 
 
 def ga4gh_phenopackets_variant_v10(row):
+    variant_id = row['variant_id']
     return {
-        'id': None, # required
+        'id': conf.beacon_id + '_' + str(variant_id), # required
         # 'subject': None,
         # 'phenotypic_features': None,
         # 'biosamples': None,
@@ -117,7 +135,7 @@ def ga4gh_phenopackets_variant_v10(row):
         'variants': [{
             'vcfAllele': {
                 'genome_assembly': row['assembly_id'],  # required
-                'id': row['variant_id'],
+                'id': variant_id,
                 'chr': row['refseq'],  # required
                 'pos': row['start'],  # required
                 'ref': row['reference'],  # required
@@ -152,5 +170,5 @@ def ga4gh_phenopackets_variant_annotation_v10(row):
         'variants': transcripts_hgvs_ids,
         # 'diseases': None,
         # 'hts_files': None,
-        'meta_data': None, # required
+        'meta_data': build_phenopackets_meta_data_block(filter_hstore(row['ontologies_used'], schema_name)), # required
     }
