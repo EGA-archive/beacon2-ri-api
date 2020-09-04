@@ -102,12 +102,12 @@ async def collect_with_permissions(dir_output):
                 ) as resp:
                     if resp.status > 200:
                         error = await resp.text()
-                        print('Error getting a token for', john, ':', error, file=sys.stderr)
+                        print('Error getting a token for', username, ':', error, file=sys.stderr)
                         continue # next endpoint
                     content = await resp.json()
                     access_token = content.get('access_token')
                     if not access_token:
-                        print('Error getting a token for', john, ':', error, file=sys.stderr)
+                        print('Error getting a token for', username, ':', error, file=sys.stderr)
                         continue # next endpoint
 
             headers['Authorization'] = 'Bearer ' + access_token
