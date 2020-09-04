@@ -1,5 +1,13 @@
 # Deploy with Docker and Docker-Compose
 
+## Getting the code
+
+We have a database file in [LFS](https://git-lfs.github.com/) (Large File Storage), so you first need to [install git-lfs](https://git-lfs.github.com/). After that, you can run the following commands, to get the repository's content, and install the LFS hooks.
+
+	git clone https://github.com/EGA-archive/beacon-2.x.git beacon
+	cd beacon
+	git lfs install
+
 ## Docker Images
 
 We use a [postgres image](https://github.com/docker-library/postgres/blob/34df4665bfdccf28deac2ed2924127b94489a576/9.6/alpine/Dockerfile), for the database, and separate images for the Beacon, the (fake) permissions server and the identity provider.
