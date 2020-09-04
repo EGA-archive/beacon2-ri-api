@@ -56,5 +56,10 @@ jobs:
         popd
     - name: Running testsuite
       run: bats tests
+    - name: Cleanup
+      run: |
+        pushd deploy
+        docker-compose down -v
+        popd
 
 
