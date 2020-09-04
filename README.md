@@ -6,7 +6,7 @@ This repository contains:
 
 * the (Python 3.7+) [source code for Beacon version 2.x](beacon),
 * instructions for a [local deployment](deploy) (using docker and docker-compose),
-* the (Python 3.7+) [source code for a Beacon UI](ui).
+* a set of [templates for a Beacon UI](ui).
 
 
 # Acknowlegments

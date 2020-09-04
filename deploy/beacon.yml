@@ -29,9 +29,9 @@ services:
     hostname: beacon
     container_name: beacon
     volumes:
-      - ../beacon:/beacon/beacon  # inject the code, so we see the modifications "live"
-      - ../ui/static:/beacon/ui/static
-      - ../ui/templates:/beacon/ui/templates
+      # - ../beacon:/beacon/beacon  # inject the code, so we see the modifications "live"
+      # - ../ui/static:/beacon/ui/static
+      # - ../ui/templates:/beacon/ui/templates
       - ./conf.py:/beacon/beacon/conf.py
       - ./logger.yml:/beacon/beacon/logger.yml
     ports:
@@ -39,9 +39,9 @@ services:
     networks:
       - beacon-priv
       - pub
-    entrypoint: ['/bin/sleep','100000000']
-    # working_dir: '/beacon'
-    # entrypoint: ['python','-m','beacon']
+    # entrypoint: ['/bin/sleep','100000000']
+    working_dir: '/beacon'
+    entrypoint: ['python','-m','beacon']
 
   ###########################################
   # Dummy Permissions server
