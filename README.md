@@ -11,8 +11,6 @@ This repository is an implementation of the [Beacon v2.0 specification](https://
 
 ### Version notes
 
-* Structural variants (`variantType`) are not supported.
-* Fuzzy matches (`startMin`, `startMax`, `endMin`, `endMax`) are not supported.
 * Fusions (`mateName`) are not supported.
 
 
