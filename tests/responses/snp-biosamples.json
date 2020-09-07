@@ -1,0 +1,19 @@
+{"meta":{"beaconId":"org.ega-archive.beacon","apiVersion":"v2.0.0-draft.2","receivedRequest":{"meta":{"requestedSchemas":{},"apiVersion":null},"query":{"g_variant":{"start":150,"referenceBases":"T","alternateBases":"C","assemblyId":"GRCh37.p1","referenceName":"MT"},"datasets":{"includeDatasetResponses":"NONE"},"pagination":{"limit":10}}},"returnedSchemas":{"Biosample":["beacon-biosample-v2.0.0-draft.2"]}},"response":{"exists":true,"results":[{"biosampleId":"SAMEA4806673","subjectId":"NA24631","description":null,"biosampleStatus":null,"collectionDate":null,"subjectAgeAtCollection":"P33Y","sampleOriginDescriptors":[{
+    "sampleOriginType": "OBI:0001468",
+    "sampleOriginDetail": "CL:0000236"
+},{
+    "sampleOriginType": "OBI:0001479",
+    "sampleOriginDetail": "BTO:0000089"
+}],"obtentionProcedure":null,"cancerFeatures":{"tumorProgression":null,"tumorGrade":null},"info":null},{"biosampleId":"SAMN03283348","subjectId":"NA24694","description":null,"biosampleStatus":null,"collectionDate":null,"subjectAgeAtCollection":"P64Y","sampleOriginDescriptors":[{
+    "sampleOriginType": "OBI:0001468",
+    "sampleOriginDetail": "CL:0000236"
+},{
+    "sampleOriginType": "OBI:0001479",
+    "sampleOriginDetail": "BTO:0000089"
+}],"obtentionProcedure":null,"cancerFeatures":{"tumorProgression":null,"tumorGrade":null},"info":null},{"biosampleId":"SAMN03283349","subjectId":"NA24695","description":null,"biosampleStatus":null,"collectionDate":null,"subjectAgeAtCollection":"P63Y","sampleOriginDescriptors":[{
+    "sampleOriginType": "OBI:0001468",
+    "sampleOriginDetail": "CL:0000236"
+},{
+    "sampleOriginType": "OBI:0001479",
+    "sampleOriginDetail": "BTO:0000089"
+}],"obtentionProcedure":null,"cancerFeatures":{"tumorProgression":null,"tumorGrade":null},"info":null}],"info":null,"resultsHandover":null,"beaconHandover":null}}

@@ -1,20 +1,15 @@
 <header>
-  <a href="{{ BEACON.organization.welcomeUrl }}"><img src="{{ BEACON.organization.logoUrl }}" alt="{{ BEACON.organization.name }}" /></a>
+  <a href="{{ conf.org_welcome_url }}"><img src="{{ conf.org_logo_url }}" alt="{{ conf.org_name }}" /></a>
   
-  <h1><a href="{% url 'query' %}">{{ BEACON.name|default:'Beacon' }}</a></h1>
-  <h2>{{ BEACON.description|safe }}</h2>
+  <h1><a href="/">{{ conf.beacon_name }}</a></h1>
+  <h2>{{ conf.description|safe }}</h2>
 
   <nav>
-    <a href="{% url 'query' %}" class="endpoint-button {% if request.path == '/' %} selected{% endif %}">Query</a>
-    <a href="{% url 'snp' %}" class="endpoint-button {% if request.path == '/snp' %} selected{% endif %}">SNP</a>
-    <a href="{% url 'region' %}" class="endpoint-button {% if request.path == '/region' %} selected{% endif %}">Region</a>
-    <a href="{% url 'samples' %}" class="endpoint-button {% if request.path == '/samples' %} selected{% endif %}">Samples</a>
-    <a href="{% url 'levels' %}" class="access-button {% if request.path == '/access-levels' %} selected{% endif %}">Access Levels</a>
-    {% if request.session.user %}
-      <span>Hi, {{ request.session.user.nickname }}</span>
-      <a href="{% url 'logout' %}?next={{ request.path }}" class="login-button">Logout</a>
+    {% if session.user %}
+      <!-- <span>Hi, {{ session.user.preferred_username }}</span> -->
+      <a href="{{ url('logout') }}?next={{ request.path }}" class="login-button">Logout</a>
     {% else %} 
-      <a href="{% url 'login' %}?next={{ request.path }}" class="login-button">Login</a>
+      <a href="{{ url('login') }}?next={{ request.path }}" class="login-button">Login</a>
     {% endif %}
   </nav>
 </header>

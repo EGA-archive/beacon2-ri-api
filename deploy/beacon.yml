@@ -2,7 +2,8 @@ version: '3.2'
 
 # Use the default driver (here bridge)
 networks:
-  priv:
+  beacon-priv:
+  idp-priv:
   pub:
 
 services:
@@ -15,51 +16,93 @@ services:
       - POSTGRES_DB=beacon
     hostname: beacon-db
     container_name: beacon-db
-    image: postgres:9.6-alpine
+    image: postgres:12-alpine
     volumes:
-      - ./db:/docker-entrypoint-initdb.d
-    ports:
-      - "5049:5432"  # to be able to connect to the db from outside the Docker container (dev reasons)
+      - ./db/schema.sql.gz:/docker-entrypoint-initdb.d/1.sql.gz
+      - ./db/data.sql.gz:/docker-entrypoint-initdb.d/2.sql.gz
     networks:
-      - priv
+      - beacon-priv
 
   beacon:
-    build: ../src
-    image: egarchive/beacon-api:2.0
+    build: ..
+    image: egarchive/beacon:2.0
     hostname: beacon
     container_name: beacon
-    environment:
-      - DATABASE_URL=beacon-db
-      - DATABASE_PORT=5432
-      - DATABASE_USER=beacon
-      - DATABASE_PASSWORD=secretpassword
-      - DATABASE_NAME=beacon
-      - DATABASE_SCHEMA=public
     volumes:
-      - ../src/beacon_api:/beacon/beacon_api  # we do that to be able to modify the code and update the container "live"
-      - ./beacon/beacon.conf:/beacon/beacon_api/conf/config.ini
-      - ./beacon/access_levels.yml:/beacon/beacon_api/utils/access_levels.yml
+      # - ../beacon:/beacon/beacon  # inject the code, so we see the modifications "live"
+      # - ../ui/static:/beacon/ui/static
+      # - ../ui/templates:/beacon/ui/templates
+      - ./conf.py:/beacon/beacon/conf.py
+      - ./logger.yml:/beacon/beacon/logger.yml
     ports:
       - "5050:5050"
     networks:
-      - priv
+      - beacon-priv
       - pub
-    # entrypoint: ['/bin/sleep','100000000']  # we don't run the beacon just after starting, we'll do it manually 
+    # entrypoint: ['/bin/sleep','100000000']
+    working_dir: '/beacon'
+    entrypoint: ['python','-m','beacon']
 
-  ui:
-    build: ../ui
-    image: egarchive/beacon-ui:2.0
-    hostname: beacon-ui
-    container_name: beacon-ui
-    environment:
-      - BEACON_UI_CONF=/beacon/conf.ini
+  ###########################################
+  # Dummy Permissions server
+  ###########################################
+  permissions:
+    image: egarchive/beacon:2.0
+    hostname: beacon-permissions
+    container_name: beacon-permissions
     volumes:
-      - ./beacon/ui.conf:/beacon/conf.ini
-      - ../ui/beaconui:/beacon/beaconui   # we do that to be able to modify the code and update the container "live"
-      - ../ui/static:/beacon/static
-      - ../ui/templates:/beacon/templates
-      - ./beacon/beacon_project_small.png:/beacon/static/logo.png
+      - ./permissions.py:/beacon/permissions.py  # inject the code, so we see the modifications "live"
+      - ./logger.yml:/beacon/logger.yml
     ports:
-      - "8000:8000"
+      - "5051:5051"
+    networks:
+      - beacon-priv
+      - pub
+    #entrypoint: ['/bin/sleep','100000000']
+    working_dir: '/beacon'
+    entrypoint: ['python','permissions.py']
+    
+  ###########################################
+  # Local Identity Provider
+  ###########################################
+  # Keycloak is so slow to boot that the DB goes faster
+  # and we don't need a delay in-between. We can rely on the depends_on only.
+  idp:
+    image: jboss/keycloak
+    hostname: idp
+    container_name: idp
+    environment:
+      # - KEYCLOAK_FRONTEND_URL=http://idp:8080/auth
+      # - KEYCLOAK_LOGLEVEL=DEBUG
+      # - ROOT_LOGLEVEL=DEBUG
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=secret
+      - DB_USER=admin
+      - DB_PASSWORD=secret
+      - DB_VENDOR=postgres
+      - DB_ADDR=idp-db
+      - DB_PORT=5432
+      - DB_DATABASE=keycloak
+      #- DB_SCHEMA=public
+      - KEYCLOAK_IMPORT=/tmp/beacon-realm.json -Dkeycloak.profile.feature.upload_scripts=enabled
+    volumes:
+      - ./beacon-realm.json:/tmp/beacon-realm.json
+    ports:
+      - "8080:8080"
     networks:
       - pub
+      - idp-priv
+    depends_on:
+      - idp-db
+
+  idp-db:
+    image: postgres
+    hostname: idp-db
+    container_name: idp-db
+    environment:
+      - POSTGRES_DB=keycloak
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=secret
+    networks:
+      - idp-priv
+

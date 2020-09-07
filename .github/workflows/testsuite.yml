@@ -8,6 +8,7 @@ on:
     branches:
       - 'tests'
       - 'tests/*'
+      - 'refactoring'
 
 jobs:
   testsuite:
@@ -22,16 +23,6 @@ jobs:
     name: Beacon (v2.x) API tests
 
     steps:
-    - uses: actions/checkout@master
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@master
-      with:
-        python-version: 3.6
-    - name: (re)Build docker images
-      run: |
-        pushd deploy
-        docker-compose build beacon
-        popd
     - name: Install required tools
       run: |
         git clone https://github.com/bats-core/bats-core.git
@@ -40,16 +31,29 @@ jobs:
         sudo ./install.sh /usr/local
         popd
         rm -rf bats-core
-        sudo apt-get install curl jq
+        sudo apt-get install curl jq git-lfs
+        sudo -- bash -c -e "echo '127.0.0.1    idp beacon beacon-permissions' >> /etc/hosts"
+    - uses: actions/checkout@master
+    - name: (re)Build docker images
+      run: |
+        pushd deploy
+        docker-compose build beacon
+        popd
     - name: Bootstrap a Beacon
       run: |
         pushd deploy
         docker-compose up -d db
-        sleep 20
-        docker-compose up -d beacon
+        sleep 30
+        docker-compose up -d
         docker-compose ps
+        sleep 60
         popd
     - name: Running testsuite
       run: bats tests
+    - name: Cleanup
+      run: |
+        pushd deploy
+        docker-compose down -v
+        popd
 
 
