@@ -2,7 +2,7 @@
 Field classes.
 """
 
-import os
+import logging
 
 from datetime import datetime
 
@@ -16,8 +16,10 @@ from ..utils.db import fetch_datasets_access
 
 __all__ = (
     'Field', 'StringField', 'IntegerField', 'FloatField', 'DecimalField',
-    'RegexField', 'BooleanField', 'NullBooleanField', 'ChoiceField', 
+    'RegexField', 'BooleanField', 'NullBooleanField', 'ChoiceField', 'BoundedListField'
 )
+
+LOG = logging.getLogger(__name__)
 
 # These values, if given to validate(), will trigger the self.required check.
 EMPTY_VALUES = (None, '', [], (), {}, set())
@@ -223,6 +225,7 @@ class ListField(Field):
                 v = v.strip()
             converted_v = await self.item_type.convert(v, **kwargs)
             res.add(converted_v)
+
         return res
 
     async def validate(self, values):
@@ -254,6 +257,40 @@ class RangeField(Filter, ListField):
         if len(values) != 2:
             raise FieldError(self.name, "must contain exactly two values")
         return sorted(values, key=self.sort_key, reverse=self.reverse)
+
+class BoundedListField(ListField):
+
+    def __init__(self, name, *args, min_items=1, max_items=1, **kwargs):
+        super().__init__(**kwargs)
+        #ListField.__init__(self, *args, **kwargs)
+        self.name = name
+        self.min_items = min_items
+        self.max_items = max_items
+
+    async def convert(self, value: str, **kwargs) -> list:
+        LOG.debug('field=%s', self.name)
+
+        if value in EMPTY_VALUES:
+            return list()
+
+        values = value.split(self.separator)
+        res = list()
+
+        for v in values:
+            if self.trim:
+                v = v.strip()
+            if v:
+                converted_v = await self.item_type.convert(v, **kwargs)
+                res.append(converted_v)
+
+        if len(res) < self.min_items:
+            raise FieldError(self.name, f'must contain {self.min_items} value(s) at least')
+
+        if len(res) > self.max_items:
+            raise FieldError(self.name, f'must contain {self.max_items} value(s) at most')
+
+        LOG.debug('field %s, res=%s, len(res)=%s', self.name, res, len(res))
+        return res
 
 class SchemasField(ListField):
 

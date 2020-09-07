@@ -260,13 +260,13 @@ async def fetch_variants(connection,
     query = f"SELECT * FROM {conf.database_schema}.query_gvariants({dollars});"
     LOG.debug("QUERY: %s", query)
     statement = await connection.prepare(query)
-    response = await statement.fetch(None,  # _variant_type text,
-                                     qparams_db.start,  # _start integer,
-                                     None,  # _start_min integer,
-                                     None,  # _start_max integer,
-                                     qparams_db.end,  # _end integer,
-                                     None,  # _end_min integer,
-                                     None,  # _end_max integer,
+    response = await statement.fetch(qparams_db.variantType,  # _variant_type text,
+                                     qparams_db.start[0] if len(qparams_db.start) == 1 else None,  # _start integer,
+                                     qparams_db.start[0] if len(qparams_db.start) > 1 else None,  # _start_min integer,
+                                     qparams_db.start[1] if len(qparams_db.start) > 1 else None,  # _start_max integer,
+                                     qparams_db.end[0] if len(qparams_db.end) == 1 else None,  # _end integer,
+                                     qparams_db.end[0] if len(qparams_db.end) > 1 else None,  # _end_min integer,
+                                     qparams_db.end[1] if len(qparams_db.end) > 1 else None,  # _end_max integer,
                                      qparams_db.referenceName, # qparams_db.referenceName,  # _chromosome character varying,
                                      qparams_db.referenceBases,  # _reference_bases text,
                                      qparams_db.alternateBases,  # _alternate_bases text,
@@ -303,13 +303,13 @@ async def fetch_individuals(connection,
     query = f"SELECT * FROM {conf.database_schema}.query_individuals({dollars});"
     LOG.debug("QUERY: %s", query)
     statement = await connection.prepare(query)
-    response = await statement.fetch(None, # variant_type
-                                     qparams_db.start,
-                                     None, # start_min
-                                     None, # start_max
-                                     qparams_db.end+1 if qparams_db.end else None,
-                                     None, # end_min
-                                     None, # end_max
+    response = await statement.fetch(qparams_db.variantType,  # _variant_type text,
+                                     qparams_db.start[0] if len(qparams_db.start) == 1 else None,  # _start integer,
+                                     qparams_db.start[0] if len(qparams_db.start) > 1 else None,  # _start_min integer,
+                                     qparams_db.start[1] if len(qparams_db.start) > 1 else None,  # _start_max integer,
+                                     qparams_db.end[0] if len(qparams_db.end) == 1 else None,  # _end integer,
+                                     qparams_db.end[0] if len(qparams_db.end) > 1 else None,  # _end_min integer,
+                                     qparams_db.end[1] if len(qparams_db.end) > 1 else None,  # _end_max integer,
                                      qparams_db.referenceName, # reference_name
                                      qparams_db.referenceBases,
                                      qparams_db.alternateBases,
@@ -344,13 +344,13 @@ async def fetch_biosamples(connection,
     query = f"SELECT * FROM {conf.database_schema}.query_samples({dollars});"
     LOG.debug("QUERY: %s", query)
     statement = await connection.prepare(query)
-    response = await statement.fetch(None, # variant_type
-                                     qparams_db.start,
-                                     None, # start_min
-                                     None, # start_max
-                                     qparams_db.end+1 if qparams_db.end else None,
-                                     None, # end_min
-                                     None, # end_max
+    response = await statement.fetch(qparams_db.variantType,  # _variant_type text,
+                                     qparams_db.start[0] if len(qparams_db.start) == 1 else None,  # _start integer,
+                                     qparams_db.start[0] if len(qparams_db.start) > 1 else None,  # _start_min integer,
+                                     qparams_db.start[1] if len(qparams_db.start) > 1 else None,  # _start_max integer,
+                                     qparams_db.end[0] if len(qparams_db.end) == 1 else None,  # _end integer,
+                                     qparams_db.end[0] if len(qparams_db.end) > 1 else None,  # _end_min integer,
+                                     qparams_db.end[1] if len(qparams_db.end) > 1 else None,  # _end_max integer,
                                      qparams_db.referenceName,  # reference_name
                                      qparams_db.referenceBases,
                                      qparams_db.alternateBases,

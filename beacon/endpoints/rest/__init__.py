@@ -26,23 +26,25 @@ The others are HTML endpoints (ie the UI)
 # Common parameters
 # ====================================
 
+import logging
+
 from ...utils.exceptions import BeaconBadRequest
-from ...validation.fields import RegexField, IntegerField, SchemasField, Field, ChoiceField, ListField
+from ...validation.fields import RegexField, IntegerField, SchemasField, Field, ChoiceField, ListField, BoundedListField
 from ...validation.request import RequestParameters
 
+
+LOG = logging.getLogger(__name__)
+
+
 class GVariantParameters(RequestParameters):
-    start = IntegerField(min_value=0, default=None) # TODO must accept 1 or 2 values
-    end = IntegerField(min_value=0, default=None) # TODO must accept 1 or 2 values
+    start = BoundedListField(name='start', items=IntegerField(min_value=0, default=None), min_items=1, max_items=2)
+    end = BoundedListField(name='end', items=IntegerField(min_value=0, default=None), min_items=1, max_items=2)
     referenceBases = RegexField(r'^([ACGT]+)$', ignore_case=True, default=None)
     alternateBases = RegexField(r'^([ACGT]+)$', ignore_case=True, default=None)
     referenceName = ChoiceField("1", "2", "3", "4", "5", "6", "7",
                                 "8", "9", "10", "11", "12", "13", "14",
                                 "15", "16", "17", "18", "19", "20",
                                 "21", "22", "X", "Y", "MT")
-    # startMin = IntegerField(min_value=0)
-    # startMax = IntegerField(min_value=0)
-    # endMin = IntegerField(min_value=0)
-    # endMax = IntegerField(min_value=0)
     includeDatasetResponses = ChoiceField("NONE", "ALL", "HIT", "MISS", default="NONE")
     assemblyId = RegexField(r'^((GRCh|hg)[0-9]+([.]?p[0-9]+)?)$', ignore_case=True, default=None)
     variantType = ChoiceField("DEL", "INS", "DUP", "INV", "CNV", "SNP", "MNP", "DUP:TANDEM", "DEL:ME", "INS:ME", "BND")
@@ -67,32 +69,42 @@ class GVariantParameters(RequestParameters):
     def correlate(self, req, values):
 
         if values.targetIdReq is not None and (
-                values.start is not None
-                or values.end is not None
+                len(values.start) > 0
+                or len(values.end) > 0
                 or values.referenceBases is not None
                 or values.alternateBases is not None
                 or values.assemblyId is not None
                 or values.referenceName is not None):
             raise BeaconBadRequest("No other parameters are accepted when querying by Id")
 
-
-        if values.variantType and values.alternateBases != "N":
+        if values.variantType and values.alternateBases and values.alternateBases != "N":
             raise BeaconBadRequest("If 'variantType' is provided then 'alternateBases' must be empty or equal to 'N'")
 
-        if values.start is not None and values.end is not None and values.start > values.end:
-            raise BeaconBadRequest("'start' must be less than 'end'")
+        if values.end is not None and len(values.end) == 1 and values.start is None:
+            raise BeaconBadRequest("'start' is required if 'end' is provided")
 
         if values.referenceBases is not None and (values.alternateBases is None or values.start is None):
             raise BeaconBadRequest("If 'referenceBases' is provided then 'alternateBases' and ' start' are required")
 
-        if (values.referenceBases is not None or values.alternateBases is not None) and values.end is not None:
+        if (values.referenceBases is not None or values.alternateBases is not None) and len(values.end) > 0:
             raise BeaconBadRequest("'referenceBases' cannot be combined with 'end'")
 
         if (values.start or values.referenceName or values.alternateBases or values.variantType or values.end ) \
                 and (values.referenceName is None or values.assemblyId is None):
             raise BeaconBadRequest("'assemblyId' and 'referenceName' are mandatory")
 
-        # TODO validation of start[0], start[1], end[0] and end[1]
+        if len(values.start) == 2 and (values.end is None or len(values.end) == 1) \
+                or len(values.end) == 2 and (values.start is None or len(values.start) == 1):
+            raise BeaconBadRequest("All 'start[0]', 'start[1]', 'end[0]', 'end[1]' are required")
+
+        if len(values.end) > 0 and values.end[0] < values.start[0]:
+            raise BeaconBadRequest("'end[0]' must be greater than 'start[0]'")
+
+        if len(values.start) > 1 and values.start[0] > values.start[1]:
+            raise BeaconBadRequest("'start[0]' must be smaller than 'start[1]'")
+
+        if len(values.end) > 1 and values.end[0] > values.end[1]:
+            raise BeaconBadRequest("'end[0]' must be smaller than 'end[1]'")
 
         if values.mateName:
             raise BeaconBadRequest("Queries using 'mateName' are not implemented (yet)")
