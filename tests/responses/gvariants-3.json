@@ -1,0 +1,71 @@
+{"meta":{"beaconId":"org.ega-archive.beacon","apiVersion":"v2.0.0-draft.2","receivedRequest":{"meta":{"requestedSchemas":{},"apiVersion":null},"query":{"g_variant":{"id":"1"},"datasets":{"includeDatasetResponses":"NONE"},"pagination":{"limit":10}}},"returnedSchemas":{"Individual":["beacon-individual-v2.0.0-draft.2"]}},"response":{"exists":true,"results":[{"subjectId":"NA24631","datasetId":null,"taxonId":"9606","sex":"PATO:0000384","ethnicity":"HANCESTRO:0021","geographicOrigin":"GAZ:00002459","phenotypicFeatures":[{
+    "severity": null,
+    "onsetType": null,
+    "ageOfOnset": null,
+    "dateOfOnset": null,
+    "phenotypeId": "NCIT:C3001"
+}],"diseases":[{
+    "stage": null,
+    "severity": null,
+    "diseaseId": "HP:0000545",
+    "onsetType": null,
+    "ageOfOnset": null,
+    "dateOfOnset": null,
+    "familyHistory": null
+},{
+    "stage": null,
+    "severity": null,
+    "diseaseId": "HP:0004789",
+    "onsetType": null,
+    "ageOfOnset": null,
+    "dateOfOnset": null,
+    "familyHistory": null
+}],"pedigrees":[{
+    "pedigreeId": "ped1",
+    "numSubjects": null,
+    "pedigreeRole": "NCIT:C64435",
+    "affectedStatus": null,
+    "pedigreeDisease": null
+}],"info":null},{"subjectId":"NA24694","datasetId":null,"taxonId":"9606","sex":"PATO:0000384","ethnicity":"HANCESTRO:0021","geographicOrigin":"GAZ:00002459","phenotypicFeatures":[{
+    "severity": null,
+    "onsetType": null,
+    "ageOfOnset": null,
+    "dateOfOnset": null,
+    "phenotypeId": "NCIT:C27083"
+},{
+    "severity": null,
+    "onsetType": null,
+    "ageOfOnset": null,
+    "dateOfOnset": null,
+    "phenotypeId": "NCIT:C37967"
+}],"diseases":[{
+    "stage": null,
+    "severity": null,
+    "diseaseId": "HP:0008711",
+    "onsetType": null,
+    "ageOfOnset": null,
+    "dateOfOnset": null,
+    "familyHistory": null
+},{
+    "stage": null,
+    "severity": null,
+    "diseaseId": "ICD10CM:B18.1",
+    "onsetType": null,
+    "ageOfOnset": null,
+    "dateOfOnset": null,
+    "familyHistory": null
+},{
+    "stage": null,
+    "severity": null,
+    "diseaseId": "ICD10CM:B55",
+    "onsetType": null,
+    "ageOfOnset": null,
+    "dateOfOnset": null,
+    "familyHistory": null
+}],"pedigrees":[{
+    "pedigreeId": "ped1",
+    "numSubjects": null,
+    "pedigreeRole": "NCIT:C25174",
+    "affectedStatus": null,
+    "pedigreeDisease": null
+}],"info":null}],"info":null,"resultsHandover":null,"beaconHandover":null}}

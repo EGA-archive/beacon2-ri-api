@@ -1,4 +1,3 @@
-{% load static %}
 <!DOCTYPE html>
 <html>
   <head>
@@ -8,7 +7,7 @@
     <link rel="icon" href="//ega-archive.org/favicon.ico">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i"  />
     <link rel="stylesheet" href="//necolas.github.io/normalize.css/latest/normalize.css" />
-    <link rel="stylesheet" href="{% static 'css/error.css' %}" />
+    <link rel="stylesheet" href="{{ static('css/error.css') }}" />
     </head>
   <body>
     <h1>Ouch! Server Error.<span>500</span></h1>

@@ -1,0 +1,7 @@
+{"meta":{"beaconId":"org.ega-archive.beacon","apiVersion":"v2.0.0-draft.2","receivedRequest":{"meta":{"requestedSchemas":{},"apiVersion":null},"query":{"individual":{"id":"NA24631"},"datasets":{"includeDatasetResponses":"NONE"},"pagination":{"limit":10}}},"returnedSchemas":{"Biosample":["beacon-biosample-v2.0.0-draft.2"]}},"response":{"exists":true,"results":[{"biosampleId":"SAMEA4806673","subjectId":"NA24631","description":null,"biosampleStatus":null,"collectionDate":null,"subjectAgeAtCollection":"P33Y","sampleOriginDescriptors":[{
+    "sampleOriginType": "OBI:0001468",
+    "sampleOriginDetail": "CL:0000236"
+},{
+    "sampleOriginType": "OBI:0001479",
+    "sampleOriginDetail": "BTO:0000089"
+}],"obtentionProcedure":null,"cancerFeatures":{"tumorProgression":null,"tumorGrade":null},"info":null}],"info":null,"resultsHandover":null,"beaconHandover":null}}

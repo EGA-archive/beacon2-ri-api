@@ -1,17 +1,16 @@
-{% load static %}
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1.0, width=device-width, shrink-to-fit=no"/>
-    <title>{{ BEACON.name|default:'Beacon' }}</title>
+    <title>{{ conf.beacon_name }}</title>
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
 	  integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg"
 	  crossorigin="anonymous" />
 
     <link rel="stylesheet" href="//necolas.github.io/normalize.css/latest/normalize.css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{{ static('css/style.css') }}">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/cupertino/jquery-ui.css" />
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet"> <!-- font-family: 'Open Sans', sans-serif; -->
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap" rel="stylesheet"> <!-- font-family: 'Roboto Mono', monospace; -->
@@ -22,111 +21,30 @@
   <body id="{% if beacon_response %}response{% else %}info{% endif %}">
 	
     {% include 'header.html' %}
-    {% include 'query.html' %}
 
-    {% if beacon_response %}
+    <main>
+      {% if session.user %}
 
-      {% if beacon_response.error %}
-		<section id="results-errors">
-			<p>{{ beacon_response.error.errorCode }}</p>
-			<p>{{ beacon_response.error.errorMessage }}</p>
-		</section>
-	  {% else %}
-		{% if request.path == '/snp' or request.path == '/region' %}
-			<main class="per-variant">
-				{% with beacon_response.value.variantsFound as variantsFound %}
-					{% include 'result_pervariant.html' %}
-				{% endwith %}
-			</main>
-		{% elif request.path == '/samples'%}
-			<main class="per-sample">
-				{% include 'result_persamples.html' %}
-			</main>
-		{% else %}
-			<main class="datasetAlleleResponses">
-				{% include 'result.html' %}
-			</main>
-		{% endif %}
+      <h1>Beacon v2</h1>
+      <h2>Hi, {{ session.user.name }}</h2>
+      <p>Here is your access token:</p>
+      <pre>{% for i, letter in enumerate(session.access_token, start=1) %}{% if i % 80 == 0 %}
+{% endif %}{{ letter }}{% endfor %}</pre>
+      <p>Keep it safe, it is just a temporary page to test the API</p>
+      <p>Use it like:</p>
+      <code>curl {{request.url}}api -H 'Authorization: Bearer {{ session.access_token}}'</code>
+
+      {% else %}
+
+      <h1>Beacon v2</h1>
+      <p>This is just a temporary page, to test the login mechanism</p>
+      <p>This page will disappear when the new UI is in place</p>
+      
       {% endif %}
 
-      <section id="response-history">
-		<h2 class="response-{{ beacon_query.exists }}">
-		[{{ request.POST.assemblyId|stringformat:'s'|escape }}] {{ request.POST.query|stringformat:'s'|escape }}
-		<i class="fas fa-redo-alt"></i>
-		</h2>
-		<ul>
-			{% for k,v in beacon_query.params.items %}
-				<li><span>{{ k }}:</span><span>{{ v }}</span></li>
-			{% endfor %}
-		</ul>
-      </section>
+    </main>
 
-    {% else %}
-
-		<main>
-			<p>The EGA archives a large number of datasets, some of which
-			are <span class="label label-public">PUBLICLY</span>
-			available.  If you have an account on this website, you can
-			access to <span class="label
-			label-registered">REGISTERED</span> datasets.  To
-			access <span class="label
-			label-controlled">CONTROLLED</span> datasets can be done by
-			contacting the relevant Data Access Committee (DAC), whose
-			details are displayed on the Dataset description page under
-			"Who controls access to this dataset".
-			</p>
-			
-			{% for dataset in BEACON.datasets %}
-				<section>
-					<a href="//ega-archive.org/datasets/{{ dataset.id }}">
-						<span class="label label-{{ dataset.info.accessType|lower }}">
-						{{ dataset.id }}
-						</span>
-					</a>
-					{% if dataset.info.authorized == 'true' %}
-						<span class="label-authorized" title="Authorized access"><i class="fas fa-check"></i></span>
-					{% else %}
-						<span class="label-not_authorized" title="You are not authorized to access dataset {{ dataset.id }}"><i class="fas fa-times"></i></span>
-					{% endif %}
-				
-					<p>{{ dataset.description|default:'-' }}</p>
-				</section>
-{% comment %}
-			<section>
-				<a href="//ega-archive.org/datasets/{{ dataset.id }}">
-					<span class="label label-{{ dataset.info.accessType|lower }}">
-					{{ dataset.id }}
-					</span>
-				</a>
-
-				{% if dataset.info.authorized == 'true' %}
-					<span class="label-authorized" title="Authorized access">✔</span>
-				{% else %}
-					<span class="label-not_authorized" title="You are not authorized to access dataset {{ dataset.id }}">x</span>
-				{% endif %}
-				
-				<p>{{ dataset.description|default:'-' }}</p>
-			</section>
-{% endcomment %}
-
-			{% endfor %}
-		</main>
-
-    {% endif %}
-
-	{% include 'footer.html' %}
-	
-	{% comment %}
-		<script src="{% static 'js/history.js' %}"></script>
-		<script src="{% static 'js/variants_panel.js' %}"></script>
-		<script src="{% static 'js/samples_panel.js' %}"></script>
-	{% endcomment %}
-
-	{% if request.path == '/snp' or request.path == '/region' %}
-		<script src="{% static 'js/variants_panel.js' %}"></script>
-	{% elif request.path == '/samples'%}
-		<script src="{% static 'js/samples_panel.js' %}"></script>
-	{% endif %}
+    {% include 'footer.html' %}
 
   </body>
 </html>
