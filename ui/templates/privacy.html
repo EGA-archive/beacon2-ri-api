@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, width=device-width, shrink-to-fit=no"/>
+    <title>{{ conf.beacon_name }} | Privacy</title>
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
+	  integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg"
+	  crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="//necolas.github.io/normalize.css/latest/normalize.css">
+    <link rel="stylesheet" href="{{ static('css/style.css') }}">
+
+    <link rel="icon" href="//ega-archive.org/favicon.ico">
+
+  </head>
+  <body>
+
+    {% include 'header.html' %}
+
+    <main id="privacy">
+      <p>
+	<em>{{ request.host }}:{{ request.port }}</em> does not identify users on this site.
+	It does use cookies, though.
+      </p>
+
+      <h2>What is a cookie?</h2>
+
+      <p>
+	Cookies are text files containing small amounts of information
+	which are downloaded to your device when you visit a website.
+	<br />
+	They allow a website to remember your preferences and are
+	therefore useful to improve your online experience.
+	<br />
+	Find out <a href="http://www.aboutcookies.org.uk/cookies">more
+	information about cookies</a>.
+      </p>
+
+      <h2>Types of cookies we use</h2>
+      
+      <h3>Functional</h3>
+      
+      <p>These cookies record the columns you wish to display or hide in the results page.</      
+      <h3>Performance</h3>
+      
+      <p>
+	These cookies are used to analyse trends, administer the
+	website, track visitor movements and gather broad demographic
+	information for aggregate use.
+	<br />
+	We use the information to compile reports and to help us
+	improve our websites.
+	<br /> 
+	These cookies are not linked to personally identifiable
+	information.
+      </p>
+      
+      <h3>Session cookie</h3>
+      
+      <p>
+	A session cookie for a website only exists whilst the user is reading
+	or navigating the website. When the user closes their web browser
+	these cookies are usually removed.
+      </p>
+    </main>
+
+    {% include "footer.html" %}
+  </body>
+</html>

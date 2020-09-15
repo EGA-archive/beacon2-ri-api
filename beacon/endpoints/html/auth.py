@@ -55,7 +55,7 @@ async def get_user_info_and_redirect(access_token, next_url, request_session):
 
 async def do_login(request, request_session, next_url):
 
-    code = request.rel_url.query.get('code')
+    code = request.query.get('code')
     if code is None:
         LOG.debug('We must have a code')
         state = str(uuid.uuid4())
@@ -71,7 +71,7 @@ async def do_login(request, request_session, next_url):
         raise HTTPFound(url)
 
     stored_state = request_session.get('oidc_state')
-    state = request.rel_url.query.get('state')
+    state = request.query.get('state')
     if not state or stored_state != state:
         LOG.debug('invalid state')
         raise HTTPBadRequest(reason="Invalid state")
@@ -113,7 +113,7 @@ async def do_login(request, request_session, next_url):
 
 async def login(request):
 
-    next_url = request.rel_url.query.get('next', '/')
+    next_url = request.query.get('next', '/')
     LOG.debug('next URL: %s', next_url)
 
     request_session = await get_session(request)
@@ -130,7 +130,7 @@ async def login(request):
 
 async def logout(request):
 
-    next_url = request.rel_url.query.get('next', '/')
+    next_url = request.query.get('next', '/')
     LOG.debug('next URL: %s', next_url)
 
     # Cleaning the session

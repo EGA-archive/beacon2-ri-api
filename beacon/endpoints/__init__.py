@@ -54,11 +54,12 @@ routes = [
 
 
     ## HTML UI
+    web.get('/'       , html.handlers.index  , name='home'   ),
+    web.get('/privacy', html.handlers.privacy, name='privacy'),
 
-    # # Auth endpoints
-    web.get('/', html.handlers.index),
-    web.get('/login', html.auth.login, name='login'),
-    web.get('/logout', html.auth.logout, name='logout'),
+    # Auth endpoints
+    web.get('/login'  , html.auth.login      , name='login'  ),
+    web.get('/logout' , html.auth.logout     , name='logout' ),
 
     # AJAX
     web.get('/filtering_terms/{term}', html.filtering_terms.handler),

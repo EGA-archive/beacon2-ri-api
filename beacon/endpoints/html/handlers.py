@@ -30,6 +30,16 @@ async def index(request):
         'csrf_token': f'<input type="hidden" name="{middlewares.CSRF_FIELD_NAME}" value="{csrf_token}" />',
     }
 
+@template('privacy.html')
+async def privacy(request):
+    session = await get_session(request)
+    access_token = session.get('access_token')
+    return {
+        'request': request,
+        'session': session,
+        'cookies': request.cookies,
+    }
+
 # ----------------------------------------------------------------------------------------------------------------------
 #                                         QUERY VALIDATION
 # ----------------------------------------------------------------------------------------------------------------------
