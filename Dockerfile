@@ -39,11 +39,11 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/nginx.list && \
     apt-get purge -y --auto-remove
 
-COPY beacon                   /beacon/beacon
-COPY ui                       /beacon/ui
 COPY deploy/nginx.conf        /beacon/nginx.conf
 COPY deploy/supervisord.conf  /beacon/supervisord.conf
 COPY deploy/entrypoint.sh     /usr/local/bin/entrypoint.sh
+COPY beacon                   /beacon/beacon
+COPY ui                       /beacon/ui
 
 RUN groupadd beacon                              && \
     useradd -M -g beacon beacon                  && \
