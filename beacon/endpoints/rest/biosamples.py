@@ -4,11 +4,8 @@ from ...utils import resolve_token
 from ...utils.stream import json_stream
 from ...utils.db import fetch_variants, fetch_biosamples, fetch_individuals
 from ...validation.request import print_qparams
-from . import GVariantParameters
-from .response.response_schema import (build_beacon_response,
-                                       build_variant_response,
-                                       build_biosample_response, 
-                                       build_individual_response)
+from ...validation.fields import SchemaField
+from . import GVariantParametersBase
 
 LOG = logging.getLogger(__name__)
 
@@ -16,50 +13,80 @@ LOG = logging.getLogger(__name__)
 #                                         HANDLER
 # ----------------------------------------------------------------------------------------------------------------------
 
-biosample_gvariant_proxy = GVariantParameters()
+class BiosamplesParameters(GVariantParametersBase):
+    requestedSchema = SchemaField('ga4gh-phenopacket-biosample-v1.0',
+                                  'beacon-biosample-v2.0.0-draft.2',
+                                  default='beacon-biosample-v2.0.0-draft.2')
 
-async def generic_biosample_handler(request, fetch_function, build_response_type):
+class IndividualsParameters(GVariantParametersBase):
+    requestedSchema = SchemaField('ga4gh-phenopacket-individual-v1.0',
+                                  'beacon-individual-v2.0.0-draft.2',
+                                  default='beacon-individual-v2.0.0-draft.2')
 
-    _, qparams_db = await biosample_gvariant_proxy.fetch(request)
+class GVariantsParameters(GVariantParametersBase):
+    requestedSchema = SchemaField('beacon-variant-v2.0.0-draft.2',
+                                  'ga4gh-phenopacket-variant-v1.0',
+                                  default='beacon-variant-v2.0.0-draft.2')
+    requestedAnnotationSchema = SchemaField('beacon-variant-annotation-v2.0.0-draft.2',
+                                            'ga4gh-phenopacket-variant-annotation-v1.0',
+                                  default='beacon-variant-annotation-v2.0.0-draft.2')
 
-    if LOG.isEnabledFor(logging.DEBUG):
-        print_qparams(qparams_db, biosample_gvariant_proxy, LOG)
+biosamples_proxy = BiosamplesParameters()
+gvariants_proxy = GVariantsParameters()
+individuals_proxy = IndividualsParameters()
 
-    LOG.debug('qparams_db.targetIdReq= %s', qparams_db.targetIdReq)
+def generic_handler(proxy, fetch_func):
+    def decorator(func):
+        async def wrapper(request):
+            LOG.info('Running a request for %s', func)
+            _, qparams_db = await proxy.fetch(request)
+            if LOG.isEnabledFor(logging.DEBUG):
+                print_qparams(qparams_db, proxy, LOG)
 
-    access_token = request.headers.get('Authorization')
-    if access_token:
-        access_token = access_token[7:] # cut out 7 characters: len('Bearer ')
+            access_token = request.headers.get('Authorization')
+            if access_token:
+                access_token = access_token[7:] # cut out 7 characters: len('Bearer ')
 
-    datasets, authenticated = await resolve_token(access_token, qparams_db.datasetIds)
-    if authenticated:
-        LOG.debug('requested datasets:  %s', qparams_db.datasetIds)
-        LOG.info('resolved datasets:  %s', datasets)
+            datasets, authenticated = await resolve_token(access_token, qparams_db.datasetIds)
+            non_accessible_datasets = qparams_db.datasetIds - set(datasets)
+            LOG.error('------------ non_accessible_datasets: %s', non_accessible_datasets)
+            if authenticated:
+                LOG.debug('requested datasets:  %s', qparams_db.datasetIds)
+                LOG.info('resolved datasets:  %s', datasets)
 
-    response = fetch_function(qparams_db, datasets, authenticated, biosample_stable_id=qparams_db.targetIdReq)
+            response = fetch_func(qparams_db, datasets, authenticated, biosample_stable_id=qparams_db.targetIdReq)
+            return await func(request, response, non_accessible_datasets)
+        return wrapper
+    return decorator
 
+@generic_handler(individuals_proxy, fetch_individuals)
+async def handler_individuals(request, response, non_accessible_datasets):
+    LOG.info('Formatting the response for the individuals')
     rows = [row async for row in response]
-
-    # build_beacon_response knows how to loop through it
-    response_converted = build_beacon_response(rows, qparams_db, build_response_type, biosample_id=qparams_db.targetIdReq)
-    return await json_stream(request, response_converted)
-
-
-async def handler_gvariants(request):
-
-    LOG.info('Running a gvariant by biosample request')
-    return await generic_biosample_handler(request, fetch_variants, build_variant_response)
+    # For Sabela to update
+    response_converted = { 'rows': rows }
+    return await json_stream(request, response_converted, partial=bool(non_accessible_datasets))
 
 
-async def handler_individuals(request):
-
-    LOG.info('Running an individual by biosample request')
-    return await generic_biosample_handler(request, fetch_individuals, build_individual_response)
-
-
-async def handler_biosamples(request):
-
-    LOG.info('Running a biosample request')
-    return await generic_biosample_handler(request, fetch_biosamples, build_biosample_response)
+@generic_handler(biosamples_proxy, fetch_biosamples)
+async def handler_biosamples(request, response, non_accessible_datasets):
+    LOG.info('Formatting the response for the biosamples')
+    rows = [row async for row in response]
+    response_converted = { 'rows': rows }
+    return await json_stream(request, response_converted, partial=bool(non_accessible_datasets))
 
 
+@generic_handler(gvariants_proxy, fetch_variants)
+async def handler_gvariants(request, response, non_accessible_datasets):
+    LOG.info('Formatting the response for the variants')
+    rows = [row async for row in response]
+    # For Sabela to update
+    response_converted = { 'rows': rows }
+    # # build_beacon_response knows how to loop through it
+    # build_beacon_response = qparams_db.requestedSchema[1]
+    # response_converted = build_beacon_response(rows,
+    #                                            qparams_db,
+    #                                            non_accessible_datasets,
+    #                                            build_response_type,
+    #                                            biosample_id=qparams_db.targetIdReq) #, invalid_datasets=invalid_datasets)
+    return await json_stream(request, response_converted, partial=bool(non_accessible_datasets))

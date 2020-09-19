@@ -3,21 +3,26 @@ import logging
 import itertools
 
 from .... import conf
-from ..schemas import SUPPORTED_SCHEMAS, DEFAULT_SCHEMAS
+from ..schemas import supported_schemas
 from ....utils.json import jsonb
 
 LOG = logging.getLogger(__name__)
 
 
-def build_beacon_response(data, qparams_converted, func_response_type, variant_id=None, individual_id=None,
-                          biosample_id=None,):
+def build_beacon_response(data,
+                          qparams_converted,
+                          non_accessible_datasets,
+                          func_response_type,
+                          variant_id=None,
+                          individual_id=None,
+                          biosample_id=None):
     """"
     Transform data into the Beacon response format.
     """
 
     beacon_response = {
         'meta': build_meta(qparams_converted, func_response_type, variant_id, individual_id, biosample_id),
-        'response': build_response(data, qparams_converted, func_response_type)
+        'response': build_response(data, qparams_converted, non_accessible_datasets, func_response_type)
     }
     return beacon_response
 
@@ -178,15 +183,15 @@ def build_returned_schemas(qparams, func_response_type):
 
     returned_schemas_by_response_type = {
         'build_variant_response': {
-            'Variant': [DEFAULT_SCHEMAS['Variant']] if not qparams.requestedSchemasVariant[0] else []
+            'Variant': ['beacon-variant-v2.0.0-draft.2'] if not qparams.requestedSchemasVariant[0] else []
                        + [s for s, f in qparams.requestedSchemasVariant[0]],
-            'VariantAnnotation': [DEFAULT_SCHEMAS['VariantAnnotation']] if not qparams.requestedSchemasVariantAnnotation[0] else []
+            'VariantAnnotation': ['beacon-variant-annotation-v2.0.0-draft.2'] if not qparams.requestedSchemasVariantAnnotation[0] else []
                                  + [s for s, f in qparams.requestedSchemasVariantAnnotation[0]],
         }, 'build_individual_response': {
-            'Individual': [DEFAULT_SCHEMAS['Individual']] if not qparams.requestedSchemasIndividual[0] else []
+            'Individual': ['beacon-individual-v2.0.0-draft.2'] if not qparams.requestedSchemasIndividual[0] else []
                           + [s for s, f in qparams.requestedSchemasIndividual[0]],
         }, 'build_biosample_response': {
-            'Biosample': [DEFAULT_SCHEMAS['Biosample']] if not qparams.requestedSchemasBiosample[0] else []
+            'Biosample': ['beacon-biosample-v2.0.0-draft.2'] if not qparams.requestedSchemasBiosample[0] else []
                          + [s for s, f in qparams.requestedSchemasBiosample[0]],
         },
     }
@@ -194,16 +199,11 @@ def build_returned_schemas(qparams, func_response_type):
     return returned_schemas_by_response_type[func_response_type.__name__] # We let it throw a KeyError
 
 
-def build_error(qparams):
+def build_error(qparams, non_accessible_datasets):
     """"
     Fills the `error` part in the response.
     This error only applies to partial errors which do not prevent the Beacon from answering.
     """
-
-    if not qparams.requestedSchemasVariant[1] and not qparams.requestedSchemasVariantAnnotation[1] \
-            and not qparams.requestedSchemasIndividual[1] and not qparams.requestedSchemasBiosample[1]:
-         # Do nothing
-         return
 
     message = 'Some requested schemas are not supported.'
 
@@ -227,7 +227,7 @@ def build_error(qparams):
     }
 
 
-def build_response(data, qparams, func):
+def build_response(data, qparams, non_accessible_datasets, func):
     """"Fills the `response` part with the correct format in `results`"""
 
     response = {
@@ -238,9 +238,16 @@ def build_response(data, qparams, func):
             'beaconHandover': None, # build_beacon_handover
         }
 
-    error = build_error(qparams)
-    if error is not None:
-        response['error'] = error
+    if (qparams.requestedSchemasVariant[1]
+        or
+        qparams.requestedSchemasVariantAnnotation[1]
+        or
+        qparams.requestedSchemasIndividual[1]
+        or
+        qparams.requestedSchemasBiosample[1]
+        or
+        non_accessible_datasets):
+        response['error'] = build_error(qparams, non_accessible_datasets)
 
     return response
 
@@ -248,49 +255,20 @@ def build_response(data, qparams, func):
 def build_variant_response(data, qparams):
     """"Fills the `results` part with the format for variant data"""
 
-    variant_requested_schemas = qparams.requestedSchemasVariant[0]
-    variant_annotation_requested_schemas = qparams.requestedSchemasVariantAnnotation[0]
-    # LOG.debug('variant_requested_schemas= %s', variant_requested_schemas)
-    # LOG.debug('variant_annotation_requested_schemas= %s', variant_annotation_requested_schemas)
+    variant_func = qparams.requestedSchema[1]
+    variant_annotation_func = qparams.requestedAnnotationSchema[1]
 
-    variants = get_formatted_content(data, 'Variant', (variant_requested_schemas or []))
-    variant_annotations = get_formatted_content(data, 'VariantAnnotation', (variant_annotation_requested_schemas or []))
-
-    for (v, v_a, row) in itertools.zip_longest(variants, variant_annotations, data):
-        # LOG.debug('v= %s', v)
+    for row in data:
         yield {
-            'variant': v,
-            'variantAnnotations': v_a,
+            'variant': variant_func(row),
+            'variantAnnotations': variant_annotation_func(row),
             'variantHandover': None,  # build_variant_handover
             'datasetAlleleResponses': jsonb(row['dataset_response'])
         }
 
 
-def build_individual_response(data, qparams):
+def build_formatted_response(data, func):
     """"Fills the `results` part with the format for individual data"""
-
-    individual_requested_schemas = qparams.requestedSchemasIndividual[0]
-    # LOG.debug('individual_requested_schemas= %s', individual_requested_schemas)
-
-    return get_formatted_content(data, 'Individual', (individual_requested_schemas or []))
-
-
-def build_biosample_response(data, qparams):
-    """"Fills the `results` part with the format for sample data"""
-
-    biosample_requested_schemas = qparams.requestedSchemasBiosample[0]
-    # LOG.debug('biosample_requested_schemas= %s', biosample_requested_schemas)
-
-    return get_formatted_content(data, 'Biosample', (biosample_requested_schemas or []))
-
-
-def get_formatted_content(data, field_name, schemas):
-    """Formats the data according to the first requested schema"""
-    # LOG.debug('schemas: %s', schemas)
-
-    if not schemas:
-        default_schema = DEFAULT_SCHEMAS[field_name] # We let it throw a KeyError
-        schemas = [(default_schema, SUPPORTED_SCHEMAS[default_schema])]
-
-    schema, func = schemas.pop()
     return [func(row) for row in data]
+
+

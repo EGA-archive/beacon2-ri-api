@@ -20,54 +20,65 @@ class DeclarativeFieldsMetaclass(type):
 
         # Collect fields from current class.
         current_fields = []
-        current_names = []
+        # print('------------- ATTRS: ', attrs)
+        # print('------------- BASES: ', bases)
+
         for key, value in list(attrs.items()):
             if isinstance(value, Field):
                 if value.name is None:
                     value.set_name(key)
                 current_fields.append((key, value))
-                current_names.append(value.name)
                 attrs.pop(key)
         d = dict(current_fields)
         attrs['__fields__'] = d
         #keys = tuple([key for key, value in current_fields])
-        keys = d.keys()
+        keys = [k for k,v in current_fields]
+        current_names = [v.name for k,v in current_fields]
         attrs['__keys__'] = keys
         attrs['__names__'] = collections.namedtuple(name, keys)(*current_names)
 
         new_class = super().__new__(mcs, name, bases, attrs)
 
-        # We do not walk through the MRO with "for base in reversed(new_class.__mro__)"
-        # to update the fields from parent classes.
-        # Reason: not using it and simpler that way
-        # fields = {}
-        # for base in reversed(new_class.__mro__):
-        #     # Collect fields from base class.
-        #     if hasattr(base, '__fields__'):
-        #         fields.update(base.__fields__)
-        #
-        #     # Field shadowing.
-        #     for attr, value in base.__dict__.items():
-        #         if value is None and attr in fields:
-        #             fields.pop(attr)
-        #
-        # new_class.__fields__ = fields
+        # We walk through the MRO with "for base in reversed(new_class.__mro__)"
+        # to fetch the fields from parent classes.
+        fields = {}
+        # print('----- MRO for', name, ':', new_class.__mro__)
+        for base in reversed(new_class.__mro__):
+            # Collect fields from base class.
+            if hasattr(base, '__fields__'):
+                fields.update(base.__fields__)
+        
+            # Field shadowing.
+            for attr, value in base.__dict__.items():
+                if value is None and attr in fields:
+                    fields.pop(attr)
+        
+        new_class.__fields__ = fields
+        # Dict are ordered since python 3.6
+        keys = [k for k in fields.keys()]
+        names = [v.name for v in fields.values()]
+        new_class.__keys__ = keys
+        new_class.__names__ = collections.namedtuple(name, keys)(*names)
+
+        # print('------------- FIELDS for',name,':', fields)
+        # print('-------------   KEYS for',name,':', keys)
+        # print('-------------  NAMES for',name,':', names)
 
         return new_class
 
 
-def flatten_dict(d):
-    """
-    Iterates through the post dictionary and
-    it flattens it to mimic the get request. 
+# def flatten_dict(d):
+#     """
+#     Iterates through the post dictionary and
+#     it flattens it to mimic the get request. 
 
-    We expect keys of the dictionary (and all sub-dict) to be unique
-    """
-    for key, val in d.items():
-        if isinstance(val, dict):
-            yield from flatten_dict(val) # recursion. Hopefully not too deep.
-        else:
-            yield (key, val)
+#     We expect keys of the dictionary (and all sub-dict) to be unique
+#     """
+#     for key, val in d.items():
+#         if isinstance(val, dict):
+#             yield from flatten_dict(val) # recursion. Hopefully not too deep.
+#         else:
+#             yield (key, val)
 
 class RequestParameters(metaclass=DeclarativeFieldsMetaclass):
     """
@@ -147,10 +158,6 @@ class RequestParameters(metaclass=DeclarativeFieldsMetaclass):
             return qparams, values # or qparams?
         except ValidationError as e:
             raise BeaconBadRequest(str(e), fields=qparams)
-
-    async def get_permissions(self, token):
-        pass
-
 
 
 def print_qparams(qparams_db, proxy, logger):

@@ -29,14 +29,18 @@ The others are HTML endpoints (ie the UI)
 import logging
 
 from ...utils.exceptions import BeaconBadRequest
-from ...validation.fields import RegexField, IntegerField, SchemasField, Field, ChoiceField, ListField, BoundedListField
+from ...validation.fields import (RegexField,
+                                  IntegerField,
+                                  Field,
+                                  ChoiceField,
+                                  ListField,
+                                  BoundedListField,
+                                  DatasetsField)
 from ...validation.request import RequestParameters
-
 
 LOG = logging.getLogger(__name__)
 
-
-class GVariantParameters(RequestParameters):
+class GVariantParametersBase(RequestParameters):
     start = BoundedListField(name='start', items=IntegerField(min_value=0, default=None), min_items=1, max_items=2)
     end = BoundedListField(name='end', items=IntegerField(min_value=0, default=None), min_items=1, max_items=2)
     referenceBases = RegexField(r'^([ACGT]+)$', ignore_case=True, default=None)
@@ -49,17 +53,17 @@ class GVariantParameters(RequestParameters):
     assemblyId = RegexField(r'^((GRCh|hg)[0-9]+([.]?p[0-9]+)?)$', ignore_case=True, default=None)
     variantType = ChoiceField("DEL", "INS", "DUP", "INV", "CNV", "SNP", "MNP", "DUP:TANDEM", "DEL:ME", "INS:ME", "BND")
     filters = ListField(items=RegexField(r'.*:.+=?>?<?[0-9]*$'), default=None)
-    datasetIds = ListField(default=[])
+    datasetIds = DatasetsField()
     # TODO implement fusions
     mateName = ChoiceField("1", "2", "3", "4", "5", "6", "7",
                                 "8", "9", "10", "11", "12", "13", "14",
                                 "15", "16", "17", "18", "19", "20",
                                 "21", "22", "X", "Y", "MT")
-    # requested schemas
-    requestedSchemasVariant = SchemasField()
-    requestedSchemasVariantAnnotation = SchemasField()
-    requestedSchemasBiosample = SchemasField()
-    requestedSchemasIndividual = SchemasField()
+
+    # requestedSchemasVariant = SchemasField()
+    # requestedSchemasVariantAnnotation = SchemasField()
+    # requestedSchemasBiosample = SchemasField()
+    # requestedSchemasIndividual = SchemasField()
     apiVersion = RegexField(r'^v[0-9]+(\.[0-9]+)*$')
     # pagination
     skip = IntegerField(min_value=0, default=0)

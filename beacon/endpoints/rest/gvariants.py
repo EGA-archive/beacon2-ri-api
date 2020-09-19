@@ -4,7 +4,7 @@ from ...utils import resolve_token
 from ...utils.stream import json_stream
 from ...utils.db import fetch_variants, fetch_biosamples, fetch_individuals
 from ...validation.request import print_qparams
-from . import GVariantParameters
+from . import GVariantParametersBase
 from .response.response_schema import (build_beacon_response,
                                        build_variant_response,
                                        build_biosample_response,
@@ -21,7 +21,7 @@ LOG = logging.getLogger(__name__)
 #                                         HANDLER
 # ----------------------------------------------------------------------------------------------------------------------
 
-gvariant_proxy = GVariantParameters()
+gvariant_proxy = GVariantParametersBase()
 
 async def generic_gvariant_handler(request, fetch_function, build_response_type):
 

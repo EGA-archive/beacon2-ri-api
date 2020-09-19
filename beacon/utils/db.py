@@ -13,7 +13,6 @@ import asyncpg
 
 from .. import conf
 from .exceptions import BeaconServerError
-from ..endpoints.rest.schemas import find_requested_schemas
 
 LOG = logging.getLogger(__name__)
 
@@ -149,6 +148,38 @@ async def fetch_assemblyids():
         LOG.debug('Using cached assemblyIDs: %s', assemblyIDs)
     return assemblyIDs
 
+# @pool.coroutine_execute
+# async def _fetch_dataset_partitions(connection):
+#     """
+#     Return Assembly IDs from the dataset.
+#     """
+#     LOG.info('Retrieving assembly IDs (once)')
+#     query = f"""SELECT access_type,
+#                        array_agg(stable_id) AS datasets
+#                 FROM {conf.database_schema}.dataset
+#                 GROUP BY access_type;"""
+#     LOG.debug("QUERY: %s", query)
+#     response = await connection.fetch(query)
+#     partitions = {}
+#     datasets = set()
+#     for r in response:
+#         d = set(r['datasets']) # list/array -> set
+#         partitions[r['access_type']] = d
+#         datasets.update(d)
+#     return (partitions, datasets)
+
+# async def fetch_dataset_partitions():
+#     """
+#     Return the Datasets.
+#     We cache the result in the conf module.
+#     """
+#     datasets = getattr(conf, 'datasets', None)
+#     if datasets is None:
+#         datasets = await _fetch_datasets()
+#         setattr(conf, 'datasets', datasets)
+#     else:
+#         LOG.debug('Using cached datasets: %s', datasets)
+#     return datasets
 
 
 # We might be able to use postgres partitioning
@@ -177,6 +208,29 @@ async def fetch_datasets_access(connection, datasets=None):
             yield (record['access_type'], record['id'], record['stable_id']) # not using record: copy
     except Exception as e:
         LOG.error("DB error while retrieving datasets: %s", e)
+
+@pool.asyncgen_execute
+async def filter_out_non_public_datasets(connection, datasets):
+    """
+    Retrieve available datasets as triples (access_type::str, id::int, datasetId::str)
+
+    In this case, any error executing the database request is captured and an empty list is returned.
+    """
+    LOG.info('Retrieving info about the available datasets (id and access type).')
+    LOG.debug('Originally selecting datasets: %s', datasets)
+
+    if not datasets:
+        return
+
+    query = f"""SELECT stable_id 
+                FROM {conf.database_schema}.dataset 
+                WHERE stable_id = ANY($1)
+                   AND access_type = 'PUBLIC';"""
+    LOG.debug("QUERY datasets access: %s", query)
+    statement = await connection.prepare(query)
+    response = await statement.fetch(datasets)
+    for record in response:
+        yield record['stable_id']
 
 
 # Returns a generator of record, make sure to consume them before the connection is closed
@@ -252,8 +306,8 @@ async def fetch_variants(connection,
                          individual_stable_id=None):
     LOG.info('Retrieving viral variant information')
 
-    requested_schemas = [s for s in chain(find_requested_schemas('Variant', qparams_db.requestedSchemasVariant),
-                                          find_requested_schemas('VariantAnnotation', qparams_db.requestedSchemasVariantAnnotation))]
+    # We want just the names, not the formatting functions
+    requested_schemas = [qparams_db.requestedSchema[0], qparams_db.requestedAnnotationSchema[0]]
 
     dollars = ", ".join([ f"${i}" for i in range(1, 22)]) # 1..21
     LOG.debug("dollars: %s", dollars)
@@ -322,7 +376,9 @@ async def fetch_individuals(connection,
                                      qparams_db.filters, # filters
                                      qparams_db.skip * qparams_db.limit,  # _skip
                                      qparams_db.limit,  # _limit integer
-                                     find_requested_schemas('Individual', qparams_db.requestedSchemasIndividual))  # requestedSchemas
+                                     # we keep a list for the moment
+                                     [qparams_db.requestedSchema[0]])  # requestedSchemas
+    
 
     for record in response:
         yield record
@@ -363,7 +419,8 @@ async def fetch_biosamples(connection,
                                      qparams_db.filters, # filters
                                      qparams_db.skip * qparams_db.limit,  # _skip
                                      qparams_db.limit, # limit
-                                     find_requested_schemas('Biosample', qparams_db.requestedSchemasBiosample))  # requestedSchemas
+                                     # we keep a list for the moment
+                                     [qparams_db.requestedSchema[0]])  # requestedSchemas
 
     for record in response:
         yield record

@@ -1,7 +1,7 @@
 import logging
 
 from .... import conf
-from ..schemas import SUPPORTED_SCHEMAS, DEFAULT_SCHEMAS
+from ..schemas import supported_schemas
 
 LOG = logging.getLogger(__name__)
 
@@ -75,11 +75,11 @@ def build_returned_schemas(qparams, func_response_type):
 
     returned_schemas_by_response_type = {
         'build_service_info_response': {
-            'ServiceInfo': [DEFAULT_SCHEMAS['ServiceInfo']] if not qparams.requestedSchemasServiceInfo[0] else []
+            'ServiceInfo': ['beacon-info-v2.0.0-draft.2'] if not qparams.requestedSchemasServiceInfo[0] else []
                            + [s for s, f in qparams.requestedSchemasServiceInfo[0]],
         },
         'build_dataset_info_response': {
-            'Dataset': [DEFAULT_SCHEMAS['Dataset']] if not qparams.requestedSchemasDataset[0] else []
+            'Dataset': ['beacon-dataset-v2.0.0-draft.2'] if not qparams.requestedSchemasDataset[0] else []
                        + [s for s, f in qparams.requestedSchemasDataset[0]],
         },
     }
@@ -136,8 +136,8 @@ def build_service_info_response(datasets, qparams, authorized_datasets=[]):
     schemas = qparams.requestedSchemasServiceInfo[0]
 
     if not (schemas or []):
-        default_schema = DEFAULT_SCHEMAS['ServiceInfo'] # We let it throw a KeyError
-        schemas = [(default_schema, SUPPORTED_SCHEMAS[default_schema])]
+        default_schema = 'beacon-info-v2.0.0-draft.2'
+        schemas = [(default_schema, supported_schemas[default_schema])]
 
     schema, func = schemas.pop()
     return func(datasets, authorized_datasets)
@@ -147,18 +147,9 @@ def build_dataset_info_response(data, qparams, authorized_datasets=[]):
     """"Fills the `results` part with the format for ServiceInfo"""
 
     dataset_info_requested_schemas = qparams.requestedSchemasDataset[0]
-    return get_formatted_content(data, 'Dataset', (dataset_info_requested_schemas or []), authorized_datasets)
-
-
-def get_formatted_content(data, field_name, schemas, authorized_datasets=[]):
-    """
-    Formats the data according to the first requested schema
-    It also passes the authorized datasets to the function.
-    """
-    # LOG.debug('schemas: %s', schemas)
 
     if not schemas:
-        default_schema = DEFAULT_SCHEMAS[field_name] # We let it throw a KeyError
+        default_schema = 'beacon-dataset-v2.0.0-draft.2'
         schemas = [(default_schema, SUPPORTED_SCHEMAS[default_schema])]
 
     schema, func = schemas.pop()

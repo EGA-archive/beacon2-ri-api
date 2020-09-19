@@ -15,7 +15,7 @@ import logging
 
 from ...utils import resolve_token
 from ...validation.request import RequestParameters, print_qparams
-from ...validation.fields import ChoiceField, SchemasField, RegexField
+from ...validation.fields import ChoiceField, RegexField # , SchemasField
 from ...utils.db import fetch_datasets_metadata
 from ...utils.stream import json_stream
 from .response.info_response_schema import build_beacon_response, build_service_info_response
@@ -31,8 +31,8 @@ LOG = logging.getLogger(__name__)
 class InfoParameters(RequestParameters):
     model = ChoiceField('ga4gh-service-info-v1.0', default=None)
     # requested schemas
-    requestedSchemasServiceInfo = SchemasField()
-    requestedSchemasDataset = SchemasField()
+    # requestedSchemasServiceInfo = SchemasField()
+    # requestedSchemasDataset = SchemasField()
     apiVersion = RegexField(r'^v[0-9]+(\.[0-9]+)*$')
 
 

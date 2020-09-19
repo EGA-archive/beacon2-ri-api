@@ -2,7 +2,7 @@ import logging
 
 from ...utils import resolve_token
 from ...validation.request import RequestParameters, print_qparams
-from ...validation.fields import SchemasField, RegexField
+from ...validation.fields import RegexField #, SchemasField
 from ...utils.db import fetch_datasets_metadata
 from ...utils.stream import json_stream
 from .response.info_response_schema import build_beacon_response, build_dataset_info_response
@@ -16,8 +16,8 @@ LOG = logging.getLogger(__name__)
 
 class DatasetParameters(RequestParameters):
     # requested schemas
-    requestedSchemasServiceInfo = SchemasField()
-    requestedSchemasDataset = SchemasField()
+    # requestedSchemasServiceInfo = SchemasField()
+    # requestedSchemasDataset = SchemasField()
     apiVersion = RegexField(r'^v[0-9]+(\.[0-9]+)*$')
 
 
