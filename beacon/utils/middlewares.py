@@ -17,11 +17,13 @@ CSRF_FIELD_NAME = 'csrf_token'
 SESSION_STORAGE = 'beacon'
 
 error_templates = {
+    400: '400.html',
     404: '404.html',
     500: '500.html',
 }
 
 default_errors = {
+    400: 'Bad request',
     404: 'This URL does not exist',
     500: 'Server Error',
 }
@@ -58,8 +60,9 @@ async def error_middleware(request, handler):
                     'error': ex.status,
                     'errorMessage': default_errors.get(ex.status)
                 }
-            raise ex.__class__(text=json.dumps(beacon_response),
-                               headers={ 'Content-Type': 'application/json' }) from ex
+            #LOG.debug('Exception class type: %s', ex.__class__.__bases__[0])
+            raise ex.__class__.__bases__[0](text=json.dumps(beacon_response),
+                                            headers={ 'Content-Type': 'application/json' }) from ex
 
         # Else, we are a regular HTML response
         if ex.status == 401: # Unauthorized
