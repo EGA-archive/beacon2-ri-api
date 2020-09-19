@@ -49,10 +49,12 @@ def generic_handler(proxy, fetch_func):
 
             datasets, authenticated = await resolve_token(access_token, qparams_db.datasetIds)
             non_accessible_datasets = qparams_db.datasetIds - set(datasets)
-            LOG.error('------------ non_accessible_datasets: %s', non_accessible_datasets)
-            if authenticated:
-                LOG.debug('requested datasets:  %s', qparams_db.datasetIds)
-                LOG.info('resolved datasets:  %s', datasets)
+
+            LOG.debug('requested datasets:  %s', qparams_db.datasetIds)
+            LOG.debug('non_accessible_datasets: %s', non_accessible_datasets)
+            LOG.debug('resolved datasets:  %s', datasets)
+
+            # Should we raise HTTPUnauthorized or BadRequest here ?
 
             response = fetch_func(qparams_db, datasets, authenticated, biosample_stable_id=qparams_db.targetIdReq)
             return await func(request, response, non_accessible_datasets)
