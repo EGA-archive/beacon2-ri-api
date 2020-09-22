@@ -1,16 +1,14 @@
 import logging
 
-from aiohttp import web
-
 from ...utils import resolve_token
+from ...utils.exceptions import BeaconUnauthorised
 from ...utils.stream import json_stream
 from ...utils.db import fetch_variants, fetch_biosamples, fetch_individuals
 from ...validation.request import print_qparams
-from ...validation.fields import SchemaField
 from .response.response_schema import (build_beacon_response,
                                        build_variant_response,
                                        build_biosample_or_individual_response)
-from . import GVariantParametersBase
+from . import BiosamplesParameters, GVariantsParameters, IndividualsParameters
 
 LOG = logging.getLogger(__name__)
 
@@ -18,23 +16,6 @@ LOG = logging.getLogger(__name__)
 #                                         HANDLER
 # ----------------------------------------------------------------------------------------------------------------------
 
-class BiosamplesParameters(GVariantParametersBase):
-    requestedSchema = SchemaField('ga4gh-phenopacket-biosample-v1.0',
-                                  'beacon-biosample-v2.0.0-draft.2',
-                                  default='beacon-biosample-v2.0.0-draft.2')
-
-class IndividualsParameters(GVariantParametersBase):
-    requestedSchema = SchemaField('ga4gh-phenopacket-individual-v1.0',
-                                  'beacon-individual-v2.0.0-draft.2',
-                                  default='beacon-individual-v2.0.0-draft.2')
-
-class GVariantsParameters(GVariantParametersBase):
-    requestedSchema = SchemaField('beacon-variant-v2.0.0-draft.2',
-                                  'ga4gh-phenopacket-variant-v1.0',
-                                  default='beacon-variant-v2.0.0-draft.2')
-    requestedAnnotationSchema = SchemaField('beacon-variant-annotation-v2.0.0-draft.2',
-                                            'ga4gh-phenopacket-variant-annotation-v1.0',
-                                  default='beacon-variant-annotation-v2.0.0-draft.2')
 
 biosamples_proxy = BiosamplesParameters()
 gvariants_proxy = GVariantsParameters()
@@ -61,7 +42,7 @@ def generic_handler(proxy, fetch_func, func_response_type):
 
             if not datasets and non_accessible_datasets:
                 error = f'You are not authorized to access any of these datasets: {non_accessible_datasets}'
-                raise web.HTTPUnauthorized(reason=error)
+                raise BeaconUnauthorised(error)
 
             response = fetch_func(qparams_db, datasets, authenticated, biosample_stable_id=qparams_db.targetIdReq)
             rows = [row async for row in response]

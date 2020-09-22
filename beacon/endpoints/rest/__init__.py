@@ -35,7 +35,8 @@ from ...validation.fields import (RegexField,
                                   ChoiceField,
                                   ListField,
                                   BoundedListField,
-                                  DatasetsField)
+                                  DatasetsField,
+                                  SchemaField)
 from ...validation.request import RequestParameters
 
 LOG = logging.getLogger(__name__)
@@ -112,3 +113,22 @@ class GVariantParametersBase(RequestParameters):
 
         if values.mateName:
             raise BeaconBadRequest("Queries using 'mateName' are not implemented (yet)")
+
+
+class BiosamplesParameters(GVariantParametersBase):
+    requestedSchema = SchemaField('ga4gh-phenopacket-biosample-v1.0',
+                                  'beacon-biosample-v2.0.0-draft.2',
+                                  default='beacon-biosample-v2.0.0-draft.2')
+
+class IndividualsParameters(GVariantParametersBase):
+    requestedSchema = SchemaField('ga4gh-phenopacket-individual-v1.0',
+                                  'beacon-individual-v2.0.0-draft.2',
+                                  default='beacon-individual-v2.0.0-draft.2')
+
+class GVariantsParameters(GVariantParametersBase):
+    requestedSchema = SchemaField('beacon-variant-v2.0.0-draft.2',
+                                  'ga4gh-phenopacket-variant-v1.0',
+                                  default='beacon-variant-v2.0.0-draft.2')
+    requestedAnnotationSchema = SchemaField('beacon-variant-annotation-v2.0.0-draft.2',
+                                            'ga4gh-phenopacket-variant-annotation-v1.0',
+                                  default='beacon-variant-annotation-v2.0.0-draft.2')
