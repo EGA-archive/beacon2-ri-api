@@ -1,9 +1,6 @@
 import logging
 
-import itertools
-
 from .... import conf
-from ..schemas import supported_schemas
 from ....utils.json import jsonb
 
 LOG = logging.getLogger(__name__)
@@ -21,33 +18,36 @@ def build_beacon_response(data,
     """
 
     beacon_response = {
-        'meta': build_meta(qparams_converted, func_response_type, variant_id, individual_id, biosample_id),
+        'meta': build_meta(qparams_converted, variant_id, individual_id, biosample_id),
         'response': build_response(data, qparams_converted, non_accessible_datasets, func_response_type)
     }
     return beacon_response
 
 
-def build_meta(qparams, func_response_type, variant_id=None, individual_id=None, biosample_id=None):
+def build_meta(qparams, variant_id=None, individual_id=None, biosample_id=None):
     """"Builds the `meta` part of the response
 
     We assume that receivedRequest is the evaluated request (qparams) sent by the user.
     """
 
+    schemas = [qparams.requestedAnnotationSchema[0]] if hasattr(qparams, 'requestedAnnotationSchema') else []
+    schemas.append(qparams.requestedSchema[0])
+
     meta = {
         'beaconId': conf.beacon_id,
         'apiVersion': conf.api_version,
-        'receivedRequest': build_received_request(qparams, variant_id, individual_id, biosample_id),
-        'returnedSchemas': build_returned_schemas(qparams, func_response_type)
+        'receivedRequest': build_received_request(qparams, schemas, variant_id, individual_id, biosample_id),
+        'returnedSchemas': schemas,
     }
     return meta
 
 
-def build_received_request(qparams, variant_id=None, individual_id=None, biosample_id=None):
+def build_received_request(qparams, schemas, variant_id=None, individual_id=None, biosample_id=None):
     """"Fills the `receivedRequest` part with the request data"""
 
     request = {
         'meta': {
-            'requestedSchemas' : build_requested_schemas(qparams),
+            'requestedSchemas' : schemas,
             'apiVersion' : qparams.apiVersion,
         },
         'query': build_received_query(qparams, variant_id, individual_id, biosample_id),
@@ -146,82 +146,17 @@ def build_pagination_params(qparams):
     return pagination_params
 
 
-def build_requested_schemas(qparams):
-    """"
-    Fills the `requestedSchemas` part with the request data
-    It includes valid and invalid schemas requested by the user.
-    """
-
-    requested_schemas = {}
-
-    if qparams.requestedSchemasVariant[0] or qparams.requestedSchemasVariant[1]:
-        requested_schemas['Variant'] = [s for s, f in qparams.requestedSchemasVariant[0]] + list(
-            qparams.requestedSchemasVariant[1])
-
-    if qparams.requestedSchemasVariantAnnotation[0] or qparams.requestedSchemasVariantAnnotation[1]:
-        requested_schemas['VariantAnnotation'] = [s for s, f in qparams.requestedSchemasVariantAnnotation[0]] + list(
-            qparams.requestedSchemasVariantAnnotation[1])
-
-    if qparams.requestedSchemasIndividual[0] or qparams.requestedSchemasIndividual[1]:
-        requested_schemas['Individual'] = [s for s, f in qparams.requestedSchemasIndividual[0]] + list(
-            qparams.requestedSchemasIndividual[1])
-
-    if qparams.requestedSchemasBiosample[0] or qparams.requestedSchemasBiosample[1]:
-        requested_schemas['Biosample'] = [s for s, f in qparams.requestedSchemasBiosample[0]] + list(
-            qparams.requestedSchemasBiosample[1])
-
-    return requested_schemas
-
-
-def build_returned_schemas(qparams, func_response_type):
-    """"
-    Fills the `returnedSchema` part with the actual schemas returned in the response.
-    This is the default schema for each type and any valid schema requested by the user.
-    """
-
-    # LOG.debug('func_response_type= %s', func_response_type.__name__)
-
-    returned_schemas_by_response_type = {
-        'build_variant_response': {
-            'Variant': ['beacon-variant-v2.0.0-draft.2'] if not qparams.requestedSchemasVariant[0] else []
-                       + [s for s, f in qparams.requestedSchemasVariant[0]],
-            'VariantAnnotation': ['beacon-variant-annotation-v2.0.0-draft.2'] if not qparams.requestedSchemasVariantAnnotation[0] else []
-                                 + [s for s, f in qparams.requestedSchemasVariantAnnotation[0]],
-        }, 'build_individual_response': {
-            'Individual': ['beacon-individual-v2.0.0-draft.2'] if not qparams.requestedSchemasIndividual[0] else []
-                          + [s for s, f in qparams.requestedSchemasIndividual[0]],
-        }, 'build_biosample_response': {
-            'Biosample': ['beacon-biosample-v2.0.0-draft.2'] if not qparams.requestedSchemasBiosample[0] else []
-                         + [s for s, f in qparams.requestedSchemasBiosample[0]],
-        },
-    }
-
-    return returned_schemas_by_response_type[func_response_type.__name__] # We let it throw a KeyError
-
-
-def build_error(qparams, non_accessible_datasets):
+def build_error(non_accessible_datasets):
     """"
     Fills the `error` part in the response.
     This error only applies to partial errors which do not prevent the Beacon from answering.
     """
 
-    message = 'Some requested schemas are not supported.'
-
-    if len(qparams.requestedSchemasVariant[1]) > 0:
-        message += f' Variant: {qparams.requestedSchemasVariant[1]}'
-
-    if len(qparams.requestedSchemasVariantAnnotation[1]) > 0:
-        message += f' VariantAnnotation: {qparams.requestedSchemasVariantAnnotation[1]}'
-
-    if len(qparams.requestedSchemasIndividual[1]) > 0:
-        message += f' Individual: {qparams.requestedSchemasIndividual[1]}'
-
-    if len(qparams.requestedSchemasBiosample[1]) > 0:
-        message += f' Biosample: {qparams.requestedSchemasBiosample[1]}'
+    message = f'You are not authorized to access some of the requested datasets: {non_accessible_datasets}'
 
     return {
         'error': {
-            'errorCode': 206,
+            'errorCode': 401,
             'errorMessage': message
         }
     }
@@ -229,6 +164,8 @@ def build_error(qparams, non_accessible_datasets):
 
 def build_response(data, qparams, non_accessible_datasets, func):
     """"Fills the `response` part with the correct format in `results`"""
+
+    # LOG.debug('Calling f= %s', func)
 
     response = {
             'exists': len(data) > 0,
@@ -238,16 +175,8 @@ def build_response(data, qparams, non_accessible_datasets, func):
             'beaconHandover': None, # build_beacon_handover
         }
 
-    if (qparams.requestedSchemasVariant[1]
-        or
-        qparams.requestedSchemasVariantAnnotation[1]
-        or
-        qparams.requestedSchemasIndividual[1]
-        or
-        qparams.requestedSchemasBiosample[1]
-        or
-        non_accessible_datasets):
-        response['error'] = build_error(qparams, non_accessible_datasets)
+    if non_accessible_datasets:
+        response['error'] = build_error(non_accessible_datasets)
 
     return response
 
@@ -265,6 +194,11 @@ def build_variant_response(data, qparams):
             'variantHandover': None,  # build_variant_handover
             'datasetAlleleResponses': jsonb(row['dataset_response'])
         }
+
+
+def build_biosample_or_individual_response(data, qparams):
+    # LOG.debug('func= %s', qparams.requestedSchema[1])
+    return build_formatted_response(data, qparams.requestedSchema[1])
 
 
 def build_formatted_response(data, func):
