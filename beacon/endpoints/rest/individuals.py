@@ -1,14 +1,12 @@
 import logging
 
-from ...utils import resolve_token
+from ...utils import resolve_token, db
 from ...utils.exceptions import BeaconUnauthorised
 from ...utils.stream import json_stream
-from ...utils.db import fetch_variants, fetch_individuals, fetch_biosamples
-from ...validation.request import print_qparams
 from .response.response_schema import (build_beacon_response,
                                        build_variant_response,
                                        build_biosample_or_individual_response)
-from . import BiosamplesParameters, GVariantsParameters, IndividualsParameters
+from . import BiosamplesParameters, GVariantsParameters, IndividualsParameters, generic_handler
 
 LOG = logging.getLogger(__name__)
 
@@ -21,58 +19,35 @@ biosamples_proxy = BiosamplesParameters()
 gvariants_proxy = GVariantsParameters()
 individuals_proxy = IndividualsParameters()
 
-def generic_handler(proxy, fetch_func, func_response_type):
-    def decorator(func):
-        async def wrapper(request):
-            LOG.info('Running a request for %s', func)
-            _, qparams_db = await proxy.fetch(request)
-            if LOG.isEnabledFor(logging.DEBUG):
-                print_qparams(qparams_db, proxy, LOG)
 
-            access_token = request.headers.get('Authorization')
-            if access_token:
-                access_token = access_token[7:] # cut out 7 characters: len('Bearer ')
+def fetch_individuals(qparams_db, datasets, authenticated):
+    return db.fetch_individuals(qparams_db, datasets, authenticated, individual_stable_id=qparams_db.targetIdReq)
 
-            datasets, authenticated = await resolve_token(access_token, qparams_db.datasetIds)
-            non_accessible_datasets = qparams_db.datasetIds - set(datasets)
+def fetch_biosamples(qparams_db, datasets, authenticated):
+    return db.fetch_biosamples(qparams_db, datasets, authenticated, individual_stable_id=qparams_db.targetIdReq)
 
-            LOG.debug('requested datasets:  %s', qparams_db.datasetIds)
-            LOG.debug('non_accessible_datasets: %s', non_accessible_datasets)
-            LOG.debug('resolved datasets:  %s', datasets)
-
-            if not datasets and non_accessible_datasets:
-                error = f'You are not authorized to access any of these datasets: {non_accessible_datasets}'
-                raise BeaconUnauthorised(error)
-
-            response = fetch_func(qparams_db, datasets, authenticated, individual_stable_id=qparams_db.targetIdReq)
-            rows = [row async for row in response]
-            # build_beacon_response knows how to loop through it
-            response_converted = build_beacon_response(rows,
-                                                       qparams_db,
-                                                       non_accessible_datasets,
-                                                       func_response_type,
-                                                       individual_id=qparams_db.targetIdReq)
-
-            return await func(request, response_converted, non_accessible_datasets)
-        return wrapper
-    return decorator
+def fetch_variants(qparams_db, datasets, authenticated):
+    return db.fetch_variants(qparams_db, datasets, authenticated, individual_stable_id=qparams_db.targetIdReq)
 
 
-@generic_handler(individuals_proxy, fetch_individuals, build_biosample_or_individual_response)
-async def handler_individuals(request, response_converted, non_accessible_datasets):
-    LOG.info('Formatting the response for the individuals')
-    return await json_stream(request, response_converted, partial=bool(non_accessible_datasets))
+def build_response_individuals(rows, qparams_db, non_accessible_datasets):
+    return build_beacon_response(rows,
+                                 qparams_db,
+                                 non_accessible_datasets,
+                                 build_biosample_or_individual_response,
+                                 individual_id=qparams_db.targetIdReq)
+
+build_response_biosamples = build_response_individuals
+
+def build_response_gvariants(rows, qparams_db, non_accessible_datasets):
+    return build_beacon_response(rows,
+                                 qparams_db,
+                                 non_accessible_datasets,
+                                 build_variant_response,
+                                 individual_id=qparams_db.targetIdReq)
 
 
-@generic_handler(biosamples_proxy, fetch_biosamples, build_biosample_or_individual_response)
-async def handler_biosamples(request, response_converted, non_accessible_datasets):
-    LOG.info('Formatting the response for the biosamples')
 
-    return await json_stream(request, response_converted, partial=bool(non_accessible_datasets))
-
-
-@generic_handler(gvariants_proxy, fetch_variants, build_variant_response)
-async def handler_gvariants(request, response_converted, non_accessible_datasets):
-    LOG.info('Formatting the response for the variants')
-
-    return await json_stream(request, response_converted, partial=bool(non_accessible_datasets))
+handler_individuals = generic_handler('individuals', individuals_proxy, fetch_individuals, build_biosample_or_individual_response)
+handler_biosamples  = generic_handler('biosamples' , biosamples_proxy , fetch_biosamples , build_biosample_or_individual_response)
+handler_gvariants   = generic_handler('gvariants'  , gvariants_proxy  , fetch_variants   , build_variant_response)

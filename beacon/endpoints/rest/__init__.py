@@ -37,7 +37,8 @@ from ...validation.fields import (RegexField,
                                   BoundedListField,
                                   DatasetsField,
                                   SchemaField)
-from ...validation.request import RequestParameters
+from ...validation.request import RequestParameters, print_qparams
+from ...utils import resolve_token
 
 LOG = logging.getLogger(__name__)
 
@@ -132,3 +133,35 @@ class GVariantsParameters(GVariantParametersBase):
     requestedAnnotationSchema = SchemaField('beacon-variant-annotation-v2.0.0-draft.2',
                                             'ga4gh-phenopacket-variant-annotation-v1.0',
                                   default='beacon-variant-annotation-v2.0.0-draft.2')
+
+
+def generic_handler(log_name, proxy, fetch_func, build_response_func):
+    async def wrapper(request):
+        LOG.info('Running a request for %s', log_name)
+        _, qparams_db = await proxy.fetch(request)
+        if LOG.isEnabledFor(logging.DEBUG):
+            print_qparams(qparams_db, proxy, LOG)
+
+        access_token = request.headers.get('Authorization')
+        if access_token:
+            access_token = access_token[7:] # cut out 7 characters: len('Bearer ')
+
+        datasets, authenticated = await resolve_token(access_token, qparams_db.datasetIds)
+        non_accessible_datasets = qparams_db.datasetIds - set(datasets)
+
+        LOG.debug('requested datasets:  %s', qparams_db.datasetIds)
+        LOG.debug('non_accessible_datasets: %s', non_accessible_datasets)
+        LOG.debug('resolved datasets:  %s', datasets)
+
+        if not datasets and non_accessible_datasets:
+            error = f'You are not authorized to access any of these datasets: {non_accessible_datasets}'
+            raise BeaconUnauthorised(error)
+
+        response = fetch_func(qparams_db, datasets, authenticated)
+        rows = [row async for row in response]
+        # build_beacon_response knows how to loop through it
+        response_converted = build_response_func(rows, qparams_db, non_accessible_datasets)
+
+        LOG.info('Formatting the response for %s', log_name)
+        return await json_stream(request, response_converted, partial=bool(non_accessible_datasets))
+    return wrapper
