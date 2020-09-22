@@ -1,13 +1,10 @@
 import logging
 
-from ...utils import resolve_token, db
-from ...utils.exceptions import BeaconUnauthorised
-from ...utils.stream import json_stream
-from ...validation.request import print_qparams
+from ...utils import db
 from .response.response_schema import (build_beacon_response,
                                        build_variant_response,
                                        build_biosample_or_individual_response)
-from . import BiosamplesParameters, GVariantsParameters, IndividualsParameters
+from . import BiosamplesParameters, GVariantsParameters, IndividualsParameters, generic_handler
 
 LOG = logging.getLogger(__name__)
 
