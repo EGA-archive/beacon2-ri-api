@@ -297,13 +297,13 @@ async def access_levels_datasets(connection):
 
 # Returns a generator of record, make sure to consume them before the connection is closed
 @pool.asyncgen_execute
-async def fetch_variants(connection,
-                         qparams_db,
-                         datasets,
-                         authenticated,
-                         variant_id=None,
-                         biosample_stable_id=None,
-                         individual_stable_id=None):
+async def _fetch_variants(connection,
+                          qparams_db,
+                          datasets,
+                          authenticated,
+                          variant_id=None,
+                          biosample_stable_id=None,
+                          individual_stable_id=None):
     LOG.info('Retrieving viral variant information')
 
     # We want just the names, not the formatting functions
@@ -338,16 +338,24 @@ async def fetch_variants(connection,
     for record in response:
         yield record
 
+def fetch_variants_by_variant(qparams_db, datasets, authenticated):
+    return _fetch_variants(qparams_db, datasets, authenticated, variant_id=qparams_db.targetIdReq)
+
+def fetch_variants_by_biosample(qparams_db, datasets, authenticated):
+    return _fetch_variants(qparams_db, datasets, authenticated, biosample_stable_id=qparams_db.targetIdReq)
+
+def fetch_variants_by_individual(qparams_db, datasets, authenticated):
+    return _fetch_variants(qparams_db, datasets, authenticated, individual_stable_id=qparams_db.targetIdReq)
 
 # Returns a generator of record, make sure to consume them before the connection is closed
 @pool.asyncgen_execute
-async def fetch_individuals(connection,
-                            qparams_db,
-                            datasets,
-                            authenticated,
-                            variant_id=None,
-                            biosample_stable_id=None,
-                            individual_stable_id=None):
+async def _fetch_individuals(connection,
+                             qparams_db,
+                             datasets,
+                             authenticated,
+                             variant_id=None,
+                             biosample_stable_id=None,
+                             individual_stable_id=None):
     """
     Contacts the DB to fetch the info.
     Returns a pd.DataFrame with the response.
@@ -384,15 +392,25 @@ async def fetch_individuals(connection,
         yield record
 
 
+def fetch_individuals_by_variant(qparams_db, datasets, authenticated):
+    return _fetch_individuals(qparams_db, datasets, authenticated, variant_id=qparams_db.targetIdReq)
+
+def fetch_individuals_by_biosample(qparams_db, datasets, authenticated):
+    return _fetch_individuals(qparams_db, datasets, authenticated, biosample_stable_id=qparams_db.targetIdReq)
+
+def fetch_individuals_by_individual(qparams_db, datasets, authenticated):
+    return _fetch_individuals(qparams_db, datasets, authenticated, individual_stable_id=qparams_db.targetIdReq)
+
+
 # Returns a generator of record, make sure to consume them before the connection is closed
 @pool.asyncgen_execute
-async def fetch_biosamples(connection,
-                           qparams_db,
-                           datasets,
-                           authenticated,
-                           variant_id=None,
-                           biosample_stable_id=None,
-                           individual_stable_id=None):
+async def _fetch_biosamples(connection,
+                            qparams_db,
+                            datasets,
+                            authenticated,
+                            variant_id=None,
+                            biosample_stable_id=None,
+                            individual_stable_id=None):
     LOG.info('Retrieving viral biosample information')
 
     dollars = ", ".join([ f"${i}" for i in range(1, 21)]) # 1..20
@@ -424,3 +442,12 @@ async def fetch_biosamples(connection,
 
     for record in response:
         yield record
+
+def fetch_biosamples_by_variant(qparams_db, datasets, authenticated):
+    return _fetch_biosamples(qparams_db, datasets, authenticated, variant_id=qparams_db.targetIdReq)
+
+def fetch_biosamples_by_biosample(qparams_db, datasets, authenticated):
+    return _fetch_biosamples(qparams_db, datasets, authenticated, biosample_stable_id=qparams_db.targetIdReq)
+
+def fetch_biosamples_by_individual(qparams_db, datasets, authenticated):
+    return _fetch_biosamples(qparams_db, datasets, authenticated, individual_stable_id=qparams_db.targetIdReq)

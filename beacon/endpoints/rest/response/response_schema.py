@@ -197,12 +197,13 @@ def build_variant_response(data, qparams):
 
 
 def build_biosample_or_individual_response(data, qparams):
-    # LOG.debug('func= %s', qparams.requestedSchema[1])
+    """"Fills the `results` part with the format for biosample or individual data"""
+
     return build_formatted_response(data, qparams.requestedSchema[1])
 
 
 def build_formatted_response(data, func):
-    """"Fills the `results` part with the format for individual data"""
+    """"Fills the `results` part with the format defined in func"""
     return [func(row) for row in data]
 
 
