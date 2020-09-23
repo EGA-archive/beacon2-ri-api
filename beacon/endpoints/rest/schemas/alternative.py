@@ -135,7 +135,7 @@ def ga4gh_phenopackets_variant_v10(row):
             'vcfAllele': {
                 'genome_assembly': row['assembly_id'],  # required
                 'id': variant_id,
-                'chr': row['refseq'],  # required
+                'chr': row['chromosome'],  # required
                 'pos': row['start'],  # required
                 'ref': row['reference'],  # required
                 'alt': row['alternate'],  # required
@@ -170,4 +170,28 @@ def ga4gh_phenopackets_variant_annotation_v10(row):
         # 'diseases': None,
         # 'hts_files': None,
         'meta_data': build_phenopackets_meta_data_block(filter_hstore(row['ontologies_used'], schema_name)), # required
+    }
+
+
+def ga4gh_vr_variant_v11(row):
+    return {
+        'Variation': {
+            'id': row['variant_id'],
+            'Allele': {
+                'location': {
+                    'interval': {
+                        'end': row['end'],
+                        'start': row['start']-1,
+                        'type': 'SimpleInterval'
+                    },
+                    'sequence_id': 'refseq:' + row['refseq_id'],
+                    'type': 'SequenceLocation'
+                    },
+                'state': {
+                    'sequence': row['alternate'],
+                    'type': 'SequenceState'
+                },
+                'type': 'Allele',
+            },
+        }
     }

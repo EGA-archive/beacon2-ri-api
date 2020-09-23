@@ -18,4 +18,6 @@ supported_schemas = {
     'ga4gh-phenopacket-variant-annotation-v1.0': alternative.ga4gh_phenopackets_variant_annotation_v10,
     'ga4gh-phenopacket-individual-v1.0': alternative.ga4gh_phenopackets_individual_v10,
     'ga4gh-phenopacket-biosample-v1.0': alternative.ga4gh_phenopackets_biosamples_v10,
+    # variant representation format
+    'ga4gh-variant-representation-v1.1': alternative.ga4gh_vr_variant_v11,
 }

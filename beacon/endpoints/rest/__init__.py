@@ -132,6 +132,7 @@ class IndividualsParameters(GVariantParametersBase):
 class GVariantsParameters(GVariantParametersBase):
     requestedSchema = SchemaField('beacon-variant-v2.0.0-draft.2',
                                   'ga4gh-phenopacket-variant-v1.0',
+                                  'ga4gh-variant-representation-v1.1',
                                   default='beacon-variant-v2.0.0-draft.2')
     requestedAnnotationSchema = SchemaField('beacon-variant-annotation-v2.0.0-draft.2',
                                             'ga4gh-phenopacket-variant-annotation-v1.0',
