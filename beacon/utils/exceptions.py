@@ -62,7 +62,7 @@ class BeaconUnauthorised(web.HTTPUnauthorized):
         self._beacon_response = make_response(401, error, fields=fields)
         super().__init__(reason=error,
                          # we use auth scheme Bearer by default
-                         # headers={"WWW-Authenticate": f'Bearer realm="{conf.url}"\nerror="{error}"'}
+                         headers={"WWW-Authenticate": f'Bearer realm="{conf.welcome_url}"\nerror="{error}"'}
         )
 
 
