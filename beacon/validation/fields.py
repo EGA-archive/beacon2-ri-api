@@ -335,6 +335,8 @@ class SchemaField(Field):
         for schema in schemas:
             if not isinstance(schema, str):
                 raise FieldError(self.name, f'{schema} must be a str')
+            if not schema in supported_schemas:
+                raise FieldError(self.name, f'{schema} is not a supported schema')
         super().__init__(**kwargs)
         self.schemas = schemas
         self.validate_schemas = EnumValidator(schemas)
