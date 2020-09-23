@@ -24,12 +24,12 @@ class DatasetParameters(RequestParameters):
 #                                         HANDLER FUNCTIONS
 # ----------------------------------------------------------------------------------------------------------------------
 
-proxy_info = DatasetParameters()
+proxy_datasets = DatasetParameters()
 
 
 async def handler(request):
     LOG.info('Running a GET datasets request')
-    _, qparams_db = await proxy_info.fetch(request)
+    _, qparams_db = await proxy_datasets.fetch(request)
 
     if LOG.isEnabledFor(logging.DEBUG):
         print_qparams(qparams_db, proxy_info, LOG)
