@@ -268,7 +268,7 @@ async def fetch_filtering_terms(connection):
     Execute query for returning the filtering terms.
     """
     # async with connection.transaction():
-    query = "SELECT ontology, term, label FROM ontology_term ORDER BY label;"
+    query = "SELECT DISTINCT ontology, term, label FROM ontology_term ORDER BY ontology, term;"
     response = await connection.fetch(query)
     for record in response:
         yield record
