@@ -5,9 +5,6 @@ from .rest import (filtering_terms,
                    info,
                    datasets,
                    handler
-                   # biosamples,
-                   # gvariants,
-                   # individuals
 )
 
 
