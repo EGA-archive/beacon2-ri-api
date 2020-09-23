@@ -28,6 +28,7 @@ The others are HTML endpoints (ie the UI)
 
 import logging
 
+from .response.response_schema import build_beacon_response
 from ...utils.exceptions import BeaconBadRequest
 from ...validation.fields import (RegexField,
                                   IntegerField,
@@ -162,7 +163,7 @@ def generic_handler(log_name, proxy, fetch_func, build_response_func):
         response = fetch_func(qparams_db, datasets, authenticated)
         rows = [row async for row in response]
         # build_beacon_response knows how to loop through it
-        response_converted = build_response_func(rows, qparams_db, non_accessible_datasets)
+        response_converted = build_beacon_response(rows, qparams_db, non_accessible_datasets, build_response_func)
 
         LOG.info('Formatting the response for %s', log_name)
         return await json_stream(request, response_converted, partial=bool(non_accessible_datasets))
