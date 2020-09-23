@@ -2,6 +2,7 @@ import logging
 
 from .... import conf
 from ....utils.json import jsonb
+from ....validation.fields import SchemaField
 
 LOG = logging.getLogger(__name__)
 
@@ -26,12 +27,10 @@ def build_beacon_response(data,
 
 def build_meta(qparams, variant_id=None, individual_id=None, biosample_id=None):
     """"Builds the `meta` part of the response
-
     We assume that receivedRequest is the evaluated request (qparams) sent by the user.
     """
 
-    schemas = [qparams.requestedAnnotationSchema[0]] if hasattr(qparams, 'requestedAnnotationSchema') else []
-    schemas.append(qparams.requestedSchema[0])
+    schemas = get_schemas(qparams)
 
     meta = {
         'beaconId': conf.beacon_id,
@@ -40,6 +39,21 @@ def build_meta(qparams, variant_id=None, individual_id=None, biosample_id=None):
         'returnedSchemas': schemas,
     }
     return meta
+
+
+def get_schemas(proxy):
+    schemas = [proxy.requestedAnnotationSchema[0]] if hasattr(proxy, 'requestedAnnotationSchema') else []
+    schemas.append(proxy.requestedSchema[0])
+    # schemas = []
+    # for key in proxy.__keys__:
+    #     field = proxy.__fields__[key]
+    #     if isinstance(field, SchemaField):
+    #         name = getattr(proxy.__names__, key)
+    #         # value = getattr(values, key)
+    #         # if value is not None:
+    #         #     filters[name] = value
+    #         schemas.append(name)
+    return schemas
 
 
 def build_received_request(qparams, schemas, variant_id=None, individual_id=None, biosample_id=None):
