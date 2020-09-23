@@ -45,22 +45,6 @@ def build_received_request(qparams):
     return request
 
 
-def build_error(qparams):
-    """"
-    Fills the `error` part in the response.
-    This error only applies to partial errors which do not prevent the Beacon from answering.
-    """
-
-    message = 'Some error.'
-
-    return {
-        'error': {
-            'errorCode': 206,
-            'errorMessage': message
-        }
-    }
-
-
 def build_response(data, qparams, func, authorized_datasets=[]):
     """"Fills the `response` part with the correct format in `results`"""
 
