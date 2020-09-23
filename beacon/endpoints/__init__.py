@@ -4,9 +4,10 @@ from aiohttp import web
 from .rest import (filtering_terms,
                    info,
                    datasets,
-                   biosamples,
-                   gvariants,
-                   individuals
+                   handler
+                   # biosamples,
+                   # gvariants,
+                   # individuals
 )
 
 
@@ -36,22 +37,22 @@ routes = [
     # web.get('/api/genomic_region'                   , genomic_query.handler),
 
     # Biosamples
-    web.get('/api/biosamples'                               , biosamples.handler_biosamples),
-    web.get('/api/biosamples/{target_id_req}'               , biosamples.handler_biosamples),
-    web.get('/api/biosamples/{target_id_req}/g_variants'    , biosamples.handler_gvariants),
-    web.get('/api/biosamples/{target_id_req}/individuals'   , biosamples.handler_individuals),
+    web.get('/api/biosamples'                               , handler.handler_biosamples_by_biosample),
+    web.get('/api/biosamples/{target_id_req}'               , handler.handler_biosamples_by_biosample),
+    web.get('/api/biosamples/{target_id_req}/g_variants'    , handler.handler_gvariants_by_biosample),
+    web.get('/api/biosamples/{target_id_req}/individuals'   , handler.handler_individuals_by_biosample),
     
     # # Individuals
-    web.get('/api/individuals'                              , individuals.handler_individuals),
-    web.get('/api/individuals/{target_id_req}'              , individuals.handler_individuals),
-    web.get('/api/individuals/{target_id_req}/g_variants'   , individuals.handler_gvariants),
-    web.get('/api/individuals/{target_id_req}/biosamples'   , individuals.handler_biosamples),
+    web.get('/api/individuals'                              , handler.handler_individuals_by_individual),
+    web.get('/api/individuals/{target_id_req}'              , handler.handler_individuals_by_individual),
+    web.get('/api/individuals/{target_id_req}/g_variants'   , handler.handler_gvariants_by_individual),
+    web.get('/api/individuals/{target_id_req}/biosamples'   , handler.handler_biosamples_by_individual),
 
     # # GVariant
-    web.get('/api/g_variants'                               , gvariants.handler_gvariants),
-    web.get('/api/g_variants/{target_id_req}'               , gvariants.handler_gvariants),
-    web.get('/api/g_variants/{target_id_req}/biosamples'    , gvariants.handler_biosamples),
-    web.get('/api/g_variants/{target_id_req}/individuals'   , gvariants.handler_individuals),
+    web.get('/api/g_variants'                               , handler.handler_gvariants_by_variant),
+    web.get('/api/g_variants/{target_id_req}'               , handler.handler_gvariants_by_variant),
+    web.get('/api/g_variants/{target_id_req}/biosamples'    , handler.handler_individuals_by_variant),
+    web.get('/api/g_variants/{target_id_req}/individuals'   , handler.handler_biosamples_by_variant),
 
 
     ## HTML UI
