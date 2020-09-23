@@ -6,13 +6,14 @@ import logging
 
 from datetime import datetime
 
-from ..conf import database_schema
+from .. import conf
 from .validators import (ValidationError,
                          EnumValidator,
                          RegexValidator,
                          MinValueValidator,
                          MaxValueValidator)
-from ..utils.db import fetch_datasets_access
+from ..utils import db
+from ..endpoints.rest.schemas import supported_schemas
 
 __all__ = (
     'Field', 'StringField', 'IntegerField', 'FloatField', 'DecimalField',
@@ -225,7 +226,6 @@ class ListField(Field):
                 v = v.strip()
             converted_v = await self.item_type.convert(v, **kwargs)
             res.add(converted_v)
-
         return res
 
     async def validate(self, values):
@@ -233,7 +233,6 @@ class ListField(Field):
             return
         for value in values:
             await self.item_type.validate(value)
-        return values
 
 class MultipleField(Filter):
     pass
@@ -292,10 +291,68 @@ class BoundedListField(ListField):
         LOG.debug('field %s, res=%s, len(res)=%s', self.name, res, len(res))
         return res
 
-class SchemasField(ListField):
+class DatasetsField(Field):
+
+    def __init__(self, *, separator=',', trim=True, **kwargs):
+        self.separator = separator
+        self.trim = trim or True
+        super().__init__(**kwargs)
+
+    async def get_datasets(self):
+        datasets = getattr(conf, 'datasets', None)
+        if datasets is None:
+            datasets = set( [name async for _,_,name in db.fetch_datasets_access()] )
+            setattr(conf, 'datasets', datasets)
+        else:
+            LOG.debug('Using cached datasets: %s', datasets)
+        return datasets
 
     async def convert(self, value: str, **kwargs) -> (set, set):
-        values = value.split(self.separator) if value not in EMPTY_VALUES else []
-        from ..endpoints.rest.schemas import partition
-        return partition(values)
+        if value in EMPTY_VALUES:
+            return set()
 
+        values = value.split(self.separator)
+        valid, invalid = set(), set() # avoid repetitions
+        datasets = await self.get_datasets()
+        for value in values:
+            if self.trim:
+                value = value.strip()
+            if value in datasets:
+                valid.add(value)
+            else:
+                invalid.add(value)
+        invalid_size = len(invalid)
+        if invalid_size > 0:
+            error = 'are invalid datasets' if invalid_size > 1 else 'is an invalid dataset'
+            raise ValidationError(f'"{invalid}" {error}')
+        return valid
+
+class SchemaField(Field):
+
+    def __init__(self, *schemas, **kwargs):
+        if not schemas:
+            raise FieldError(self.name, 'You should select some schemas')
+        for schema in schemas:
+            if not isinstance(schema, str):
+                raise FieldError(self.name, f'{schema} must be a str')
+            if not schema in supported_schemas:
+                raise FieldError(self.name, f'{schema} is not a supported schema')
+        super().__init__(**kwargs)
+        self.schemas = schemas
+        self.validate_schemas = EnumValidator(schemas)
+
+    async def validate(self, value): # converted value
+        try:
+            self.validate_schemas(value[0]) # skip the func
+        except ValidationError as e:
+            raise FieldError(self.name, str(e))
+
+    async def convert(self, value: str, **kwargs) -> (set, set):
+        if value in EMPTY_VALUES:
+            if self.required:
+                raise FieldError(self.name, 'required field')
+            value = self.default
+        func = supported_schemas.get(value)
+        if func is None:
+            raise FieldError(self.name, f'{value} is not a supported schema')
+        return (value, func)

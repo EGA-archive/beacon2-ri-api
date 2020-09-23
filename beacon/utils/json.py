@@ -5,8 +5,6 @@ from json.encoder import encode_basestring_ascii
 
 from asyncpg import Record
 
-from .. import conf
-
 LOG = logging.getLogger(__name__)
 
 _INFINITY = float('inf')

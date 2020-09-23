@@ -42,11 +42,9 @@ async def initialize(app):
     )
     env.filters['pluralize'] = pluralize_dj
 
-    # Fetch the Assembly IDs in advance
-    assemblyIDs = await db.fetch_assemblyids()
-    setattr(conf, 'assemblyIDs', assemblyIDs)
-    #app['assemblyIDs'] = assemblyIDs
-    
+    # No need to call those 2:
+    # assemblyIDs = await db.fetch_assemblyids()
+    # datasets = await db.fetch_datasets()
     LOG.info("Initialization done.")
 
 async def destroy(app):

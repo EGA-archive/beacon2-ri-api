@@ -14,7 +14,8 @@ _BUF_SIZE = getattr(conf, 'json_buffer_size', 1000)
 #     from aiohttp.web import json_response as aiohttp_json_response
 #     return aiohttp_json_response(data)
 
-async def json_stream(request, data):
+async def json_stream(request, data, partial=False):
+    # No need here to check if partial is indeed a boolean
 
     # Running this first, in case it raises an error
     # so we don't start the StreamResponse yet
@@ -25,7 +26,8 @@ async def json_stream(request, data):
         'Content-Type': 'application/json;charset=utf-8',
         'Server': f'{conf.beacon_name} {conf.version} (based on {SERVER_SOFTWARE})'
     }
-    response = StreamResponse(headers=headers)
+    LOG.debug('Partial content: %s', partial)
+    response = StreamResponse(headers=headers, status=206 if partial else 200)
 
     # response.enable_chunked_encoding()
     await response.prepare(request)

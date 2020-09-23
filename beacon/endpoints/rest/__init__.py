@@ -28,15 +28,24 @@ The others are HTML endpoints (ie the UI)
 
 import logging
 
+from .response.response_schema import build_beacon_response
 from ...utils.exceptions import BeaconBadRequest
-from ...validation.fields import RegexField, IntegerField, SchemasField, Field, ChoiceField, ListField, BoundedListField
-from ...validation.request import RequestParameters
-
+from ...validation.fields import (RegexField,
+                                  IntegerField,
+                                  Field,
+                                  ChoiceField,
+                                  ListField,
+                                  BoundedListField,
+                                  DatasetsField,
+                                  SchemaField)
+from ...validation.request import RequestParameters, print_qparams
+from ...utils import resolve_token
+from ...utils.exceptions import BeaconUnauthorised
+from ...utils.stream import json_stream
 
 LOG = logging.getLogger(__name__)
 
-
-class GVariantParameters(RequestParameters):
+class GVariantParametersBase(RequestParameters):
     start = BoundedListField(name='start', items=IntegerField(min_value=0, default=None), min_items=1, max_items=2)
     end = BoundedListField(name='end', items=IntegerField(min_value=0, default=None), min_items=1, max_items=2)
     referenceBases = RegexField(r'^([ACGT]+)$', ignore_case=True, default=None)
@@ -49,17 +58,17 @@ class GVariantParameters(RequestParameters):
     assemblyId = RegexField(r'^((GRCh|hg)[0-9]+([.]?p[0-9]+)?)$', ignore_case=True, default=None)
     variantType = ChoiceField("DEL", "INS", "DUP", "INV", "CNV", "SNP", "MNP", "DUP:TANDEM", "DEL:ME", "INS:ME", "BND")
     filters = ListField(items=RegexField(r'.*:.+=?>?<?[0-9]*$'), default=None)
-    datasetIds = ListField(default=[])
+    datasetIds = DatasetsField()
     # TODO implement fusions
     mateName = ChoiceField("1", "2", "3", "4", "5", "6", "7",
                                 "8", "9", "10", "11", "12", "13", "14",
                                 "15", "16", "17", "18", "19", "20",
                                 "21", "22", "X", "Y", "MT")
-    # requested schemas
-    requestedSchemasVariant = SchemasField()
-    requestedSchemasVariantAnnotation = SchemasField()
-    requestedSchemasBiosample = SchemasField()
-    requestedSchemasIndividual = SchemasField()
+
+    # requestedSchemasVariant = SchemasField()
+    # requestedSchemasVariantAnnotation = SchemasField()
+    # requestedSchemasBiosample = SchemasField()
+    # requestedSchemasIndividual = SchemasField()
     apiVersion = RegexField(r'^v[0-9]+(\.[0-9]+)*$')
     # pagination
     skip = IntegerField(min_value=0, default=0)
@@ -108,3 +117,54 @@ class GVariantParameters(RequestParameters):
 
         if values.mateName:
             raise BeaconBadRequest("Queries using 'mateName' are not implemented (yet)")
+
+
+class BiosamplesParameters(GVariantParametersBase):
+    requestedSchema = SchemaField('ga4gh-phenopacket-biosample-v1.0',
+                                  'beacon-biosample-v2.0.0-draft.2',
+                                  default='beacon-biosample-v2.0.0-draft.2')
+
+class IndividualsParameters(GVariantParametersBase):
+    requestedSchema = SchemaField('ga4gh-phenopacket-individual-v1.0',
+                                  'beacon-individual-v2.0.0-draft.2',
+                                  default='beacon-individual-v2.0.0-draft.2')
+
+class GVariantsParameters(GVariantParametersBase):
+    requestedSchema = SchemaField('beacon-variant-v2.0.0-draft.2',
+                                  'ga4gh-phenopacket-variant-v1.0',
+                                  default='beacon-variant-v2.0.0-draft.2')
+    requestedAnnotationSchema = SchemaField('beacon-variant-annotation-v2.0.0-draft.2',
+                                            'ga4gh-phenopacket-variant-annotation-v1.0',
+                                  default='beacon-variant-annotation-v2.0.0-draft.2')
+
+
+def generic_handler(log_name, proxy, fetch_func, build_response_func):
+    async def wrapper(request):
+        LOG.info('Running a request for %s', log_name)
+        _, qparams_db = await proxy.fetch(request)
+        if LOG.isEnabledFor(logging.DEBUG):
+            print_qparams(qparams_db, proxy, LOG)
+
+        access_token = request.headers.get('Authorization')
+        if access_token:
+            access_token = access_token[7:] # cut out 7 characters: len('Bearer ')
+
+        datasets, authenticated = await resolve_token(access_token, qparams_db.datasetIds)
+        non_accessible_datasets = qparams_db.datasetIds - set(datasets)
+
+        LOG.debug('requested datasets:  %s', qparams_db.datasetIds)
+        LOG.debug('non_accessible_datasets: %s', non_accessible_datasets)
+        LOG.debug('resolved datasets:  %s', datasets)
+
+        if not datasets and non_accessible_datasets:
+            error = f'You are not authorized to access any of these datasets: {non_accessible_datasets}'
+            raise BeaconUnauthorised(error)
+
+        response = fetch_func(qparams_db, datasets, authenticated)
+        rows = [row async for row in response]
+        # build_beacon_response knows how to loop through it
+        response_converted = build_beacon_response(proxy, rows, qparams_db, non_accessible_datasets, build_response_func)
+
+        LOG.info('Formatting the response for %s', log_name)
+        return await json_stream(request, response_converted, partial=bool(non_accessible_datasets))
+    return wrapper

@@ -1,8 +1,7 @@
 from datetime import datetime
 
 from .... import conf
-from ....utils import filter_hstore
-
+from .utils import filter_hstore
 
 def ga4gh_service_info_v10(row, authorized_datasets=None):
     return {

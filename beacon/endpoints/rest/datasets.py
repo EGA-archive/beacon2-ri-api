@@ -2,7 +2,7 @@ import logging
 
 from ...utils import resolve_token
 from ...validation.request import RequestParameters, print_qparams
-from ...validation.fields import SchemasField, RegexField
+from ...validation.fields import RegexField, SchemaField
 from ...utils.db import fetch_datasets_metadata
 from ...utils.stream import json_stream
 from .response.info_response_schema import build_beacon_response, build_dataset_info_response
@@ -15,9 +15,8 @@ LOG = logging.getLogger(__name__)
 # ----------------------------------------------------------------------------------------------------------------------
 
 class DatasetParameters(RequestParameters):
-    # requested schemas
-    requestedSchemasServiceInfo = SchemasField()
-    requestedSchemasDataset = SchemasField()
+    requestedSchema = SchemaField('beacon-dataset-v2.0.0-draft.2',
+                                  default='beacon-dataset-v2.0.0-draft.2')
     apiVersion = RegexField(r'^v[0-9]+(\.[0-9]+)*$')
 
 
@@ -25,12 +24,12 @@ class DatasetParameters(RequestParameters):
 #                                         HANDLER FUNCTIONS
 # ----------------------------------------------------------------------------------------------------------------------
 
-proxy_info = DatasetParameters()
+proxy_datasets = DatasetParameters()
 
 
 async def handler(request):
     LOG.info('Running a GET datasets request')
-    _, qparams_db = await proxy_info.fetch(request)
+    _, qparams_db = await proxy_datasets.fetch(request)
 
     if LOG.isEnabledFor(logging.DEBUG):
         print_qparams(qparams_db, proxy_info, LOG)
