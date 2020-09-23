@@ -89,8 +89,3 @@ def build_dataset_info_response(data, qparams, authorized_datasets=[]):
 
     func = qparams.requestedSchema[1]
     return [func(row, authorized_datasets) for row in data]
-
-
-def build_formatted_response(data, func):
-    """"Fills the `results` part with the format defined in func"""
-    return [func(row) for row in data]

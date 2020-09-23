@@ -168,7 +168,7 @@ def build_response(data, qparams, non_accessible_datasets, func):
     # LOG.debug('Calling f= %s', func)
 
     response = {
-            'exists': len(data) > 0,
+            'exists': bool(data),
             'results': func(data, qparams),
             'info': None,
             'resultsHandover': None, # build_results_handover
