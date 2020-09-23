@@ -7,7 +7,8 @@ from ....validation.fields import SchemaField
 LOG = logging.getLogger(__name__)
 
 
-def build_beacon_response(data,
+def build_beacon_response(proxy,
+                          data,
                           qparams_converted,
                           non_accessible_datasets,
                           func_response_type,
@@ -19,18 +20,18 @@ def build_beacon_response(data,
     """
 
     beacon_response = {
-        'meta': build_meta(qparams_converted, variant_id, individual_id, biosample_id),
+        'meta': build_meta(proxy, qparams_converted, variant_id, individual_id, biosample_id),
         'response': build_response(data, qparams_converted, non_accessible_datasets, func_response_type)
     }
     return beacon_response
 
 
-def build_meta(qparams, variant_id=None, individual_id=None, biosample_id=None):
+def build_meta(proxy, qparams, variant_id=None, individual_id=None, biosample_id=None):
     """"Builds the `meta` part of the response
     We assume that receivedRequest is the evaluated request (qparams) sent by the user.
     """
 
-    schemas = get_schemas(qparams)
+    schemas = get_schemas(proxy) # generator
 
     meta = {
         'beaconId': conf.beacon_id,
@@ -42,18 +43,11 @@ def build_meta(qparams, variant_id=None, individual_id=None, biosample_id=None):
 
 
 def get_schemas(proxy):
-    schemas = [proxy.requestedAnnotationSchema[0]] if hasattr(proxy, 'requestedAnnotationSchema') else []
-    schemas.append(proxy.requestedSchema[0])
-    # schemas = []
-    # for key in proxy.__keys__:
-    #     field = proxy.__fields__[key]
-    #     if isinstance(field, SchemaField):
-    #         name = getattr(proxy.__names__, key)
-    #         # value = getattr(values, key)
-    #         # if value is not None:
-    #         #     filters[name] = value
-    #         schemas.append(name)
-    return schemas
+    for key in proxy.__keys__:
+        field = proxy.__fields__[key]
+        if isinstance(field, SchemaField):
+            name = getattr(proxy.__names__, key)
+            yield name
 
 
 def build_received_request(qparams, schemas, variant_id=None, individual_id=None, biosample_id=None):
