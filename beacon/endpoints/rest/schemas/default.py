@@ -68,7 +68,7 @@ def beacon_dataset_info_v20(row, authorized_datasets=[]):
 def beacon_variant_v20(row):
     return {
             'variantId': row['variant_id'],
-            'refseqId': row['refseq'],
+            'refseqId': row['refseq_id'],
             'ref': row['reference'],
             'alt': row['alternate'],
             'variantType': row['variant_type'],
