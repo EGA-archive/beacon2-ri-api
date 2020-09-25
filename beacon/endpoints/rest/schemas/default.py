@@ -117,7 +117,7 @@ def beacon_individual_v20(row):
     schema_name = 'beacon-individual-v2.0.0-draft.2'
     return {
         'subjectId': row['individual_stable_id'],
-        'datasetId': None, # TODO
+        'datasetIds': row['dataset_ids'],
         'taxonId': row['taxon_id'],
         'sex': row['sex_ontology'],
         'ethnicity': row['ethnicity_ontology'],
