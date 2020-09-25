@@ -53,7 +53,7 @@ async def error_middleware(request, handler):
         # if the request comes from /api/*, we output the json version
         LOG.error('Error on page %s: %s', request.path, ex)
 
-        if hasattr(ex, 'api_error', False):
+        if hasattr(ex, 'api_error'):
             raise
 
         # Else, we are a regular HTML response

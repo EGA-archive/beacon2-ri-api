@@ -26,7 +26,7 @@ def make_response(error_code, error, fields=None):
             'apiVersion': conf.api_version,
             'receivedRequest': {
                 'meta': {
-                    'requestedSchemas': dict(fields or []),
+                    'requestedSchema': dict(fields or []),
                 },
                 'query': None,
             },
@@ -51,9 +51,11 @@ class BeaconBadRequest(web.HTTPBadRequest):
         self.api_error = api_error
         if api_error:
             content = json.dumps(make_response(400, error, fields=fields))
+            headers = { 'Content-Type': 'application/json' }
         else:
             content = error
-        super(self, web.HTTPBadRequest).__init__(reason=content)
+            headers = None
+        super().__init__(text=content, headers=headers)
 
 class BeaconUnauthorised(web.HTTPUnauthorized):
     """HTTP Exception returns with 401 code with a custom error message.
@@ -65,14 +67,15 @@ class BeaconUnauthorised(web.HTTPUnauthorized):
     def __init__(self, error, fields=None, api_error=True):
         """Return custom unauthorized exception."""
         self.api_error = api_error
+        # we use auth scheme Bearer by default
         if api_error:
             content = json.dumps(make_response(401, error, fields=fields))
+            headers = { "WWW-Authenticate": f'Bearer realm="{conf.welcome_url}"\nerror="{error}"',
+                        'Content-Type': 'application/json' }
         else:
             content = error
-        super().__init__(reason=content,
-                         # we use auth scheme Bearer by default
-                         headers={"WWW-Authenticate": f'Bearer realm="{conf.welcome_url}"\nerror="{error}"'}
-        )
+            headers = {"WWW-Authenticate": f'Bearer realm="{conf.welcome_url}"\nerror="{error}"'}
+        super().__init__(text=content, headers=headers)
 
 
 class BeaconForbidden(web.HTTPForbidden):
@@ -88,9 +91,11 @@ class BeaconForbidden(web.HTTPForbidden):
         self.api_error = api_error
         if api_error:
             content = json.dumps(make_response(403, error, fields=fields))
+            headers = { 'Content-Type': 'application/json' }
         else:
             content = error
-        super().__init__(reason=content)
+            headers = None
+        super().__init__(text=content, headers=headers)
 
 
 class BeaconServerError(web.HTTPInternalServerError):
@@ -104,6 +109,8 @@ class BeaconServerError(web.HTTPInternalServerError):
         self.api_error = api_error
         if api_error:
             content = json.dumps({'errorCode': 500, 'errorMessage': error})
+            headers = { 'Content-Type': 'application/json' }
         else:
             content = error
-        super().__init__(reason=content)
+            headers = None
+        super().__init__(text=content, headers=headers)
