@@ -52,17 +52,9 @@ async def error_middleware(request, handler):
 
         # if the request comes from /api/*, we output the json version
         LOG.error('Error on page %s: %s', request.path, ex)
-        if request.path.startswith('/api'):
-            # if it has a _beacon_response field, it's raised by the beacon
-            beacon_response = getattr(ex, '_beacon_response', None)
-            if not beacon_response:
-                beacon_response = {
-                    'error': ex.status,
-                    'errorMessage': default_errors.get(ex.status)
-                }
-            #LOG.debug('Exception class type: %s', ex.__class__.__bases__[0])
-            raise ex.__class__(text=json.dumps(beacon_response),
-                               headers={ 'Content-Type': 'application/json' }) from ex
+
+        if hasattr(ex, 'api_error', False):
+            raise
 
         # Else, we are a regular HTML response
         if ex.status == 401: # Unauthorized

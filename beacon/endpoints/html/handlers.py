@@ -45,6 +45,7 @@ async def privacy(request):
 # ----------------------------------------------------------------------------------------------------------------------
 
 # class QueryParameters(RequestParameters):
+#     json_error = False
 #     query = Field(required=True)
 #     assemblyId = RegexField(r'^((GRCh|hg)[0-9]+([.]?p[0-9]+)?)$', required=True) # GRCh007.p9 is valid
 #     datasets = ListField(items=RegexField(r'^[^<>"/;%{}+=]*$'))

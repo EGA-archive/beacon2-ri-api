@@ -85,6 +85,10 @@ class RequestParameters(metaclass=DeclarativeFieldsMetaclass):
     The main implementation of all the query parameters logic.
     """
     _str = None
+    api_error = True
+
+    def __init__(self, api_error=True):
+        self.api_error = api_error
 
     def __str__(self):
         if self._str is None:
@@ -157,7 +161,7 @@ class RequestParameters(metaclass=DeclarativeFieldsMetaclass):
             # return the values in the order of the keys
             return qparams, values # or qparams?
         except ValidationError as e:
-            raise BeaconBadRequest(str(e), fields=qparams)
+            raise BeaconBadRequest(str(e), fields=qparams, api_error=self.api_error)
 
 
 def print_qparams(qparams_db, proxy, logger):

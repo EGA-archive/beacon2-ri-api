@@ -159,7 +159,7 @@ def generic_handler(log_name, proxy, fetch_func, build_response_func):
 
         if not datasets and non_accessible_datasets:
             error = f'You are not authorized to access any of these datasets: {non_accessible_datasets}'
-            raise BeaconUnauthorised(error)
+            raise BeaconUnauthorised(error, json_error=proxy.json_error)
 
         response = fetch_func(qparams_db, datasets, authenticated)
         rows = [row async for row in response]
