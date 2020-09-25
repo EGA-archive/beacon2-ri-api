@@ -31,7 +31,7 @@ def build_meta(proxy, qparams, variant_id=None, individual_id=None, biosample_id
     We assume that receivedRequest is the evaluated request (qparams) sent by the user.
     """
 
-    schemas = get_schemas(proxy) # generator
+    schemas = [s for s in get_schemas(proxy, qparams)]
 
     meta = {
         'beaconId': conf.beacon_id,
@@ -42,12 +42,12 @@ def build_meta(proxy, qparams, variant_id=None, individual_id=None, biosample_id
     return meta
 
 
-def get_schemas(proxy):
+def get_schemas(proxy, qparams):
     for key in proxy.__keys__:
         field = proxy.__fields__[key]
         if isinstance(field, SchemaField):
             name = getattr(proxy.__names__, key)
-            yield name
+            yield getattr(qparams, name)[0]
 
 
 def build_received_request(qparams, schemas, variant_id=None, individual_id=None, biosample_id=None):
