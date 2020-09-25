@@ -180,7 +180,7 @@ def build_response(data, qparams, non_accessible_datasets, func):
             'results': func(data, qparams),
             'info': None,
             'resultsHandover': None, # build_results_handover
-            'beaconHandover': None, # build_beacon_handover
+            'beaconHandover': conf.beacon_handovers,
         }
 
     if non_accessible_datasets:
