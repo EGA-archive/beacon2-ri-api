@@ -61,8 +61,8 @@ async def error_middleware(request, handler):
                     'errorMessage': default_errors.get(ex.status)
                 }
             #LOG.debug('Exception class type: %s', ex.__class__.__bases__[0])
-            raise ex.__class__.__bases__[0](text=json.dumps(beacon_response),
-                                            headers={ 'Content-Type': 'application/json' }) from ex
+            raise ex.__class__(text=json.dumps(beacon_response),
+                               headers={ 'Content-Type': 'application/json' }) from ex
 
         # Else, we are a regular HTML response
         if ex.status == 401: # Unauthorized
