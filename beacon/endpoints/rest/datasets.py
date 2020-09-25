@@ -32,7 +32,7 @@ async def handler(request):
     _, qparams_db = await proxy_datasets.fetch(request)
 
     if LOG.isEnabledFor(logging.DEBUG):
-        print_qparams(qparams_db, proxy_info, LOG)
+        print_qparams(qparams_db, proxy_datasets, LOG)
 
     # Fetch datasets info
     beacon_datasets = [r async for r in fetch_datasets_metadata()]
