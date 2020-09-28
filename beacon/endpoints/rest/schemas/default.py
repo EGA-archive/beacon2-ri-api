@@ -4,6 +4,7 @@ from .... import conf
 from .utils import filter_hstore
 
 # It will raise an exception if the fields are not found in the record
+from ....utils.json import jsonb
 
 LOG = logging.getLogger(__name__)
 
@@ -109,6 +110,7 @@ def beacon_biosample_v20(row):
             'tumorProgression': row['tumor_progression_ontology'],
             'tumorGrade': row['tumor_grade_ontology'],
         },
+        'handovers': [jsonb(h) for h in row['handovers']],
         'info': None
     }
 
@@ -125,6 +127,7 @@ def beacon_individual_v20(row):
         'phenotypicFeatures': filter_hstore(row['phenotypic_features'], schema_name),
         'diseases': filter_hstore(row['diseases'], schema_name),
         'pedigrees': filter_hstore(row['pedigrees'], schema_name),
+        'handovers': [jsonb(h) for h in row['handovers']],
         'info': None,
     }
 
