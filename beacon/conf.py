@@ -61,7 +61,7 @@ beacon_handovers = [
             'id': 'CUSTOM',
             'label': 'Project description'
         },
-        'note': None,
+        'note': 'Project description',
         'url': 'https://www.nist.gov/programs-projects/genome-bottle'
     }
 ]
