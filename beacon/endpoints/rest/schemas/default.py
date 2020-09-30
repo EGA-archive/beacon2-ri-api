@@ -136,7 +136,6 @@ def beacon_individual_v20(row):
             'sraFamilyId': row['sra_family_id'],
             'alternativeIds': row['alternative_ids'],
             'race': row['race'],
-            'dateOfBirth': row['date_of_birth'].strftime(conf.datetime_format) if row['date_of_birth'] else None,
             'weightKg': row['weight_kg'],
             'heightCm': row['height_cm'],
             'bloodType': row['blood_type'],
