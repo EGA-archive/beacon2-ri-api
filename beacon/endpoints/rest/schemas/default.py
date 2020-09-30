@@ -115,6 +115,7 @@ def beacon_biosample_v20(row):
             'alternativeIds': row['alternative_ids'],
             'studyId': row['study_id'],
             'bioprojectId': row['bioproject_id'],
+            'files': [jsonb(v) for v in row['files'] or []],
         }
     }
 
