@@ -111,7 +111,11 @@ def beacon_biosample_v20(row):
             'tumorGrade': row['tumor_grade_ontology'],
         },
         'handovers': [jsonb(h) for h in row['handovers']],
-        'info': None
+        'info': {
+            'alternative_ids': row['alternative_ids'],
+            'study_id': row['study_id'],
+            'bioproject_id': row['bioproject_id'],
+        }
     }
 
 
@@ -128,6 +132,16 @@ def beacon_individual_v20(row):
         'diseases': filter_hstore(row['diseases'], schema_name),
         'pedigrees': filter_hstore(row['pedigrees'], schema_name),
         'handovers': [jsonb(h) for h in row['handovers']],
-        'info': None,
+        'info': {
+            'sra_family_id': row['sra_family_id'],
+            'alternative_ids': row['alternative_ids'],
+            'race': row['race'],
+            'date_of_birth': row['date_of_birth'].strftime(conf.datetime_format) if row['date_of_birth'] else None,
+            'weight_kg': row['weight_kg'],
+            'height_cm': row['height_cm'],
+            'blood_type': row['blood_type'],
+            'medications': [jsonb(v) for v in row['medications'] or []],
+            'procedures': [jsonb(v) for v in row['procedures'] or []],
+        },
     }
 
