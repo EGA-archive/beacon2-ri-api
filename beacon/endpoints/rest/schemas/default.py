@@ -112,9 +112,9 @@ def beacon_biosample_v20(row):
         },
         'handovers': [jsonb(h) for h in row['handovers']],
         'info': {
-            'alternative_ids': row['alternative_ids'],
-            'study_id': row['study_id'],
-            'bioproject_id': row['bioproject_id'],
+            'alternativeIds': row['alternative_ids'],
+            'studyId': row['study_id'],
+            'bioprojectId': row['bioproject_id'],
         }
     }
 
@@ -133,13 +133,13 @@ def beacon_individual_v20(row):
         'pedigrees': filter_hstore(row['pedigrees'], schema_name),
         'handovers': [jsonb(h) for h in row['handovers']],
         'info': {
-            'sra_family_id': row['sra_family_id'],
-            'alternative_ids': row['alternative_ids'],
+            'sraFamilyId': row['sra_family_id'],
+            'alternativeIds': row['alternative_ids'],
             'race': row['race'],
-            'date_of_birth': row['date_of_birth'].strftime(conf.datetime_format) if row['date_of_birth'] else None,
-            'weight_kg': row['weight_kg'],
-            'height_cm': row['height_cm'],
-            'blood_type': row['blood_type'],
+            'dateOfBirth': row['date_of_birth'].strftime(conf.datetime_format) if row['date_of_birth'] else None,
+            'weightKg': row['weight_kg'],
+            'heightCm': row['height_cm'],
+            'bloodType': row['blood_type'],
             'medications': [jsonb(v) for v in row['medications'] or []],
             'procedures': [jsonb(v) for v in row['procedures'] or []],
         },
