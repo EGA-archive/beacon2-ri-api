@@ -64,7 +64,7 @@ def ga4gh_phenopackets_biosamples_v10(row):
                 },
                 'body_site': None,
             },
-            'hts_files': [jsonb(v) for v in row['files'] or []],
+            'hts_files': [jsonb(v) for v in row['files']],
             'variants': None,
             'is_control_sample': True if row['biosample_status_ontology'] == abnormal_sample_ontology else False,
         }],
@@ -160,7 +160,7 @@ def ga4gh_phenopackets_variant_annotation_v10(row):
             'hgvs': hgvs_id
         },
         'zygosity': None,
-    } for hgvs_id in row['transcript_hgvs_ids'] or []]
+    } for hgvs_id in row['transcript_hgvs_ids']]
 
     return {
         'id': None, # required

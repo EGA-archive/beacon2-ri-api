@@ -115,7 +115,7 @@ def beacon_biosample_v20(row):
             'alternativeIds': row['alternative_ids'],
             'studyId': row['study_id'],
             'bioprojectId': row['bioproject_id'],
-            'files': [jsonb(v) for v in row['files'] or []],
+            'files': [jsonb(v) for v in row['files']],
         }
     }
 
@@ -140,8 +140,8 @@ def beacon_individual_v20(row):
             'weightKg': row['weight_kg'],
             'heightCm': row['height_cm'],
             'bloodType': row['blood_type'],
-            'medications': [jsonb(v) for v in row['medications'] or []],
-            'procedures': [jsonb(v) for v in row['procedures'] or []],
+            'medications': [jsonb(v) for v in row['medications']],
+            'procedures': [jsonb(v) for v in row['procedures']],
         },
     }
 
