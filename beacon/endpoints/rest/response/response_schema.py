@@ -200,7 +200,7 @@ def build_variant_response(data, qparams):
             'variant': variant_func(row),
             'variantAnnotations': variant_annotation_func(row),
             'handovers': None,  # build_variant_handover
-            'datasetAlleleResponses': jsonb(row['dataset_response'])
+            'datasetAlleleResponses': [jsonb(v) for v in row['dataset_response']]
         }
 
 
