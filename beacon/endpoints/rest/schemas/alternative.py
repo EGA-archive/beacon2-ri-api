@@ -2,6 +2,8 @@ from datetime import datetime
 
 from .... import conf
 from .utils import filter_hstore
+from ....utils.json import jsonb
+
 
 def ga4gh_service_info_v10(row, authorized_datasets=None):
     return {
@@ -62,7 +64,7 @@ def ga4gh_phenopackets_biosamples_v10(row):
                 },
                 'body_site': None,
             },
-            'hts_files': None,
+            'hts_files': [jsonb(v) for v in row['files']],
             'variants': None,
             'is_control_sample': True if row['biosample_status_ontology'] == abnormal_sample_ontology else False,
         }],
@@ -103,7 +105,7 @@ def ga4gh_phenopackets_individual_v10(row):
         'id': conf.beacon_id + '_' + individual_id, # required
         'subject': {
             'id': individual_id, # required
-            'alternate_ids': None,
+            'alternate_ids': row['alternative_ids_phenopackets'],
             'date_of_birth': None,
             'age': None,
             'sex': row['sex'].upper() if row['sex'] else None,
@@ -158,7 +160,7 @@ def ga4gh_phenopackets_variant_annotation_v10(row):
             'hgvs': hgvs_id
         },
         'zygosity': None,
-    } for hgvs_id in row['transcript_hgvs_ids'] or []]
+    } for hgvs_id in row['transcript_hgvs_ids']]
 
     return {
         'id': None, # required

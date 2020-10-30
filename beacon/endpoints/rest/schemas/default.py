@@ -4,6 +4,7 @@ from .... import conf
 from .utils import filter_hstore
 
 # It will raise an exception if the fields are not found in the record
+from ....utils.json import jsonb
 
 LOG = logging.getLogger(__name__)
 
@@ -109,7 +110,13 @@ def beacon_biosample_v20(row):
             'tumorProgression': row['tumor_progression_ontology'],
             'tumorGrade': row['tumor_grade_ontology'],
         },
-        'info': None
+        'handovers': [jsonb(h) for h in row['handovers']],
+        'info': {
+            'alternativeIds': row['alternative_ids'],
+            'studyId': row['study_id'],
+            'bioprojectId': row['bioproject_id'],
+            'files': [jsonb(v) for v in row['files']],
+        }
     }
 
 
@@ -117,7 +124,7 @@ def beacon_individual_v20(row):
     schema_name = 'beacon-individual-v2.0.0-draft.2'
     return {
         'subjectId': row['individual_stable_id'],
-        'datasetId': None, # TODO
+        'datasetIds': row['dataset_ids'],
         'taxonId': row['taxon_id'],
         'sex': row['sex_ontology'],
         'ethnicity': row['ethnicity_ontology'],
@@ -125,6 +132,16 @@ def beacon_individual_v20(row):
         'phenotypicFeatures': filter_hstore(row['phenotypic_features'], schema_name),
         'diseases': filter_hstore(row['diseases'], schema_name),
         'pedigrees': filter_hstore(row['pedigrees'], schema_name),
-        'info': None,
+        'handovers': [jsonb(h) for h in row['handovers']],
+        'info': {
+            'sraFamilyId': row['sra_family_id'],
+            'alternativeIds': row['alternative_ids'],
+            'race': row['race'],
+            'weightKg': row['weight_kg'],
+            'heightCm': row['height_cm'],
+            'bloodType': row['blood_type'],
+            'medications': [jsonb(v) for v in row['medications']],
+            'procedures': [jsonb(v) for v in row['procedures']],
+        },
     }
 

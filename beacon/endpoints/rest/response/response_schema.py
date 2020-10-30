@@ -180,7 +180,7 @@ def build_response(data, qparams, non_accessible_datasets, func):
             'results': func(data, qparams),
             'info': None,
             'resultsHandover': None, # build_results_handover
-            'beaconHandover': None, # build_beacon_handover
+            'beaconHandover': conf.beacon_handovers,
         }
 
     if non_accessible_datasets:
@@ -199,8 +199,8 @@ def build_variant_response(data, qparams):
         yield {
             'variant': variant_func(row),
             'variantAnnotations': variant_annotation_func(row),
-            'variantHandover': None,  # build_variant_handover
-            'datasetAlleleResponses': jsonb(row['dataset_response'])
+            'handovers': None,  # build_variant_handover
+            'datasetAlleleResponses': [jsonb(v) for v in row['dataset_response']]
         }
 
 
