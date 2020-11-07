@@ -2,7 +2,7 @@ import logging
 
 from aiohttp_jinja2 import template
 from aiohttp_session import get_session
-from aiohttp_csrf import generate_token
+# from aiohttp_csrf import generate_token
 
 from ... import conf
 from ...utils import db, resolve_token, middlewares
@@ -11,7 +11,7 @@ LOG = logging.getLogger(__name__)
 
 @template('index.html')
 async def index(request):
-    csrf_token = await generate_token(request)
+    #csrf_token = await generate_token(request)
 
     session = await get_session(request)
     access_token = session.get('access_token')
@@ -27,7 +27,7 @@ async def index(request):
         'filters': set(),
         'beacon_response': None,
         'cookies': request.cookies,
-        'csrf_token': f'<input type="hidden" name="{middlewares.CSRF_FIELD_NAME}" value="{csrf_token}" />',
+        #'csrf_token': f'<input type="hidden" name="{middlewares.CSRF_FIELD_NAME}" value="{csrf_token}" />',
     }
 
 @template('privacy.html')

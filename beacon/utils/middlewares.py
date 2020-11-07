@@ -4,7 +4,7 @@ import json
 import traceback
 import sys
 
-import aiohttp_csrf
+#import aiohttp_csrf
 import aiohttp_jinja2
 from aiohttp import web
 from cryptography import fernet
@@ -14,7 +14,7 @@ from aiohttp_session.cookie_storage import EncryptedCookieStorage
 LOG = logging.getLogger(__name__)
 
 CSRF_FIELD_NAME = 'csrf_token'
-SESSION_STORAGE = 'beacon'
+SESSION_STORAGE = 'beacon_session'
 
 error_templates = {
     400: '400.html',
@@ -76,14 +76,13 @@ def setup(app):
     # Session middleware
     fernet_key = fernet.Fernet.generate_key()
     secret_key = base64.urlsafe_b64decode(fernet_key) # 32 url-safe base64-encoded bytes
-    session_setup(app, EncryptedCookieStorage(secret_key))
+    session_setup(app, EncryptedCookieStorage(secret_key, cookie_name=SESSION_STORAGE))
 
-    # CSRF middleware
-    aiohttp_csrf.setup(app,
-                       policy=aiohttp_csrf.policy.FormPolicy(CSRF_FIELD_NAME),
-                       storage=aiohttp_csrf.storage.SessionStorage(SESSION_STORAGE))
-    app.middlewares.append(aiohttp_csrf.csrf_middleware)
-
+    # # CSRF middleware
+    # aiohttp_csrf.setup(app,
+    #                    policy=aiohttp_csrf.policy.FormPolicy(CSRF_FIELD_NAME),
+    #                    storage=aiohttp_csrf.storage.SessionStorage(SESSION_STORAGE))
+    # app.middlewares.append(aiohttp_csrf.csrf_middleware)
 
     # Capture 404 and 500
     app.middlewares.append(error_middleware)

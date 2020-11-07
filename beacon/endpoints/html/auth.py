@@ -73,7 +73,7 @@ async def do_login(request, request_session, next_url):
     stored_state = request_session.get('oidc_state')
     state = request.query.get('state')
     if not state or stored_state != state:
-        LOG.debug('invalid state')
+        LOG.error('invalid state | %s =/= %s', stored_state, state)
         raise HTTPBadRequest(reason="Invalid state")
 
     # We have a code and a state
@@ -123,6 +123,7 @@ async def login(request):
         await get_user_info_and_redirect(access_token, next_url, request_session)
 
     # Otherwise, we don't have a token (yet)
+    # A redirect response will be raised
     await do_login(request, request_session, next_url)
 
     # If we reach here, we have an invalid token, even after creating it
