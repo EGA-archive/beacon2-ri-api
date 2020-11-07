@@ -1,40 +1,38 @@
 ##########################
 ## Build env
 ##########################
-FROM python:buster AS BUILD
+FROM python:3.8-buster AS BUILD
 
 ENV DEBIAN_FRONTEND noninteractive
 
-COPY requirements.txt /tmp/requirements.txt
-
-RUN apt-get update; \
-    apt-get upgrade -y; \
-    apt-get install -y --no-install-recommends \
+RUN apt-get update
+#RUN apt-get upgrade -y
+RUN apt-get install -y --no-install-recommends \
     ca-certificates pkg-config make \
-    bzip2 libssl-dev libffi-dev libpq-dev \
-    ; \
-#    rm -rf /var/lib/apt/lists/*; \
+    libssl-dev libffi-dev libpq-dev
+
 # python packages
-    pip install --upgrade pip; \
-    pip install -r /tmp/requirements.txt
+RUN pip install --upgrade pip
+COPY requirements.txt /tmp/requirements.txt
+RUN pip install -r /tmp/requirements.txt
 
 ##########################
 ## Final image
 ##########################
-FROM python:buster
+FROM python:3.8-buster
 
 LABEL maintainer "CRG System Developers"
 LABEL org.label-schema.schema-version="2.0"
 LABEL org.label-schema.vcs-url="https://github.com/EGA-archive/beacon-2.x/"
 
 # Too much ?
-COPY --from=BUILD /usr/local      /usr/local
+COPY --from=BUILD /usr/local/bin      /usr/local/bin
+COPY --from=BUILD /usr/local/lib      /usr/local/lib
 
 RUN apt-get update && \
-    apt-get upgrade -y && \
+#    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
     nginx \
-    openmpi-bin zlib1g \
     && \
     rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/nginx.list && \
     apt-get purge -y --auto-remove
