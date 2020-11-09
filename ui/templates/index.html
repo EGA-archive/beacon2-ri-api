@@ -69,8 +69,9 @@
 
       <h2>Permissions</h2>
       <section>
-	<a href="/api/g_variants?start=9411318&end=9411338&assemblyId=grch37.p1&referenceName=21">Anonymous user queries public datasets: unauthenticated user returns 2 rows, user <code>john</code> 8 rows, <code>jane</code> 4 rows</a>
-	<!--<a href="/api/g_variants?start=9411318&end=9411338&assemblyId=grch37.p1&referenceName=21&datasetIds=dataset-registered">Anonymous user queries registered dataset: FIXME</a>-->
+        <a href="/api/g_variants?start=9411318&end=9411338&assemblyId=grch37.p1&referenceName=21">User queries public datasets: returns 2 rows for any user</a>
+        <a href="/api/g_variants?start=9411318&end=9411338&assemblyId=grch37.p1&referenceName=21&datasetIds=GiaB,dataset-registered,dataset-controlled">User queries <b>all</b> datasets: unauthenticated user returns 2 rows, user <code>john</code> 6 rows, <code>jane</code> 4 rows</a>
+        <!--<a href="/api/g_variants?start=9411318&end=9411338&assemblyId=grch37.p1&referenceName=21&datasetIds=dataset-registered">Anonymous user queries registered dataset: FIXME</a>-->
       </section>
 
       <h2>Filters</h2>
