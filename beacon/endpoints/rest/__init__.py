@@ -57,7 +57,20 @@ class GVariantParametersBase(RequestParameters):
     includeDatasetResponses = ChoiceField("NONE", "ALL", "HIT", "MISS", default="NONE")
     assemblyId = RegexField(r'^((GRCh|hg)[0-9]+([.]?p[0-9]+)?)$', ignore_case=True, default=None)
     variantType = ChoiceField("DEL", "INS", "DUP", "INV", "CNV", "SNP", "MNP", "DUP:TANDEM", "DEL:ME", "INS:ME", "BND")
-    filters = ListField(items=RegexField(r'.*:.+=?>?<?[0-9]*$'), default=None)
+
+    # Examples:
+    # PATO:0000011<=P70Y
+    # HP:0100526-
+    # HP:0005978
+    # HP:0012622&sim=low
+    # HP:0012622&sim=medium
+    # HP:0012622&sim=high
+    # HP:0032443="unknown medical history"
+    # HP:0032443=%"unknown medical history"%
+    # HP:0032443=!"unknown medical history"
+    # filters = ListField(items=RegexField(r'^.*:\w+(>|<)?=?P?[0-9]+Y?$'), default=None)
+    filters = ListField(items=RegexField(r'^.*:\w+(((>|<)?=?(P?[0-9]+Y?))|-|&sim=(low|medium|high)|=(%|!)?"[0-9a-zA-Z\s]+"%?)?$'), default=None)
+
     datasetIds = DatasetsField()
     # TODO implement fusions
     mateName = ChoiceField("1", "2", "3", "4", "5", "6", "7",
@@ -65,10 +78,6 @@ class GVariantParametersBase(RequestParameters):
                                 "15", "16", "17", "18", "19", "20",
                                 "21", "22", "X", "Y", "MT")
 
-    # requestedSchemasVariant = SchemasField()
-    # requestedSchemasVariantAnnotation = SchemasField()
-    # requestedSchemasBiosample = SchemasField()
-    # requestedSchemasIndividual = SchemasField()
     apiVersion = RegexField(r'^v[0-9]+(\.[0-9]+)*$')
     # pagination
     skip = IntegerField(min_value=0, default=0)
