@@ -1,7 +1,7 @@
+import json
 from datetime import datetime
 
 from .... import conf
-from .utils import filter_hstore
 from ....utils.json import jsonb
 
 
@@ -41,7 +41,7 @@ def ga4gh_phenopackets_biosamples_v10(row):
             'id': biosample_id,
             'individual_id': row['individual_stable_id'],
             'description': row['description'],
-            'sampled_tissue': get_sampled_tissue(row['sample_origins_ontology'], schema_name),
+            'sampled_tissue': get_sampled_tissue(row['sample_origins_ontology']), #, schema_name),
             'phenotypic_features': None,
             'taxonomy': None,
             'individual_age_at_collection': {
@@ -64,7 +64,7 @@ def ga4gh_phenopackets_biosamples_v10(row):
                 },
                 'body_site': None,
             },
-            'hts_files': [jsonb(v) for v in row['files']],
+            'hts_files': jsonb(row['files']),
             'variants': None,
             'is_control_sample': True if row['biosample_status_ontology'] == abnormal_sample_ontology else False,
         }],
@@ -72,7 +72,7 @@ def ga4gh_phenopackets_biosamples_v10(row):
         # 'variants': None,
         # 'diseases': None,
         # 'hts_files': None,
-        'meta_data': build_phenopackets_meta_data_block(filter_hstore(row['ontologies_used'], schema_name)), # required
+        'meta_data': build_phenopackets_meta_data_block(row['ontologies_used']), # required
     }
 
 
@@ -82,24 +82,23 @@ def build_phenopackets_meta_data_block(ontologies_used):
         'created': now.strftime(conf.datetime_format),  # required
         'created_by': conf.beacon_name,  # required
         # 'submitted_by': None,
-        'resources': ontologies_used,  # required
+        'resources': jsonb(ontologies_used),  # required
         # 'updates': None,
         # 'phenopacket_schema_version': None,
         # 'external_references': None,
     }
 
 
-def get_sampled_tissue(hstore, schema_name):
+def get_sampled_tissue(sample_origins): #hstore, schema_name):
     """
     Returns the first element of the list.
     This is because this field might have many values but phenopackets only accepts one.
     """
-    sample_origins = list(filter_hstore(hstore, schema_name) or [])
-    return sample_origins[0] if sample_origins else None
+    json_array = json.loads(sample_origins)
+    return json_array[0] if json_array else None
 
 
 def ga4gh_phenopackets_individual_v10(row):
-    schema_name = 'ga4gh-phenopacket-individual-v1.0'
     individual_id = row['individual_stable_id']
     return {
         'id': conf.beacon_id + '_' + individual_id, # required
@@ -115,13 +114,13 @@ def ga4gh_phenopackets_individual_v10(row):
                 'label': row['taxon_id_ontology_label'],
             }
         },
-        'phenotypic_features': filter_hstore(row['phenotypic_features'], schema_name),
+        'phenotypic_features': jsonb(row['phenotypic_features']),
         # 'biosamples': None,
         # 'genes': None,
         # 'variants': None,
-        'diseases': filter_hstore(row['diseases'], schema_name),
+        'diseases': jsonb(row['diseases']),
         # 'hts_files': None,
-        'meta_data': build_phenopackets_meta_data_block(filter_hstore(row['ontologies_used'], schema_name)), # required
+        'meta_data': build_phenopackets_meta_data_block(jsonb(row['ontologies_used'])), # required
     }
 
 
@@ -167,11 +166,11 @@ def ga4gh_phenopackets_variant_annotation_v10(row):
         # 'subject': None,
         # 'phenotypic_features': None,
         # 'biosamples': None,
-        'genes': filter_hstore(row['genomic_features_ontology'], schema_name),
+        'genes': jsonb(row['genomic_features_ontology']),
         'variants': transcripts_hgvs_ids,
         # 'diseases': None,
         # 'hts_files': None,
-        'meta_data': build_phenopackets_meta_data_block(filter_hstore(row['ontologies_used'], schema_name)), # required
+        'meta_data': build_phenopackets_meta_data_block(row['ontologies_used']), # required
     }
 
 
