@@ -1,4 +1,3 @@
-import json
 from datetime import datetime
 
 from .... import conf
@@ -30,7 +29,6 @@ def ga4gh_service_info_v10(row, authorized_datasets=None):
 
 
 def ga4gh_phenopackets_biosamples_v10(row):
-    schema_name = 'ga4gh-phenopacket-biosample-v1.0'
     abnormal_sample_ontology = 'EFO:0009655'
     biosample_id = row['biosample_stable_id']
     return {
@@ -41,7 +39,7 @@ def ga4gh_phenopackets_biosamples_v10(row):
             'id': biosample_id,
             'individual_id': row['individual_stable_id'],
             'description': row['description'],
-            'sampled_tissue': get_sampled_tissue(row['sample_origins_ontology']), #, schema_name),
+            'sampled_tissue': jsonb(row['sample_origins_ontology']), #, schema_name),
             'phenotypic_features': None,
             'taxonomy': None,
             'individual_age_at_collection': {
@@ -87,15 +85,6 @@ def build_phenopackets_meta_data_block(ontologies_used):
         # 'phenopacket_schema_version': None,
         # 'external_references': None,
     }
-
-
-def get_sampled_tissue(sample_origins): #hstore, schema_name):
-    """
-    Returns the first element of the list.
-    This is because this field might have many values but phenopackets only accepts one.
-    """
-    json_array = json.loads(sample_origins)
-    return json_array[0] if json_array else None
 
 
 def ga4gh_phenopackets_individual_v10(row):
@@ -151,8 +140,6 @@ def ga4gh_phenopackets_variant_v10(row):
 
 
 def ga4gh_phenopackets_variant_annotation_v10(row):
-    schema_name = 'ga4gh-phenopacket-variant-annotation-v1.0'
-
     transcripts_hgvs_ids = [{
         'hgvsAllele': {
             'id': None,
