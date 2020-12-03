@@ -1,8 +1,6 @@
 from datetime import datetime
 
 from .... import conf
-from ....utils.json import jsonb
-
 
 def ga4gh_service_info_v10(row, authorized_datasets=None):
     return {
@@ -39,7 +37,7 @@ def ga4gh_phenopackets_biosamples_v10(row):
             'id': biosample_id,
             'individual_id': row['individual_stable_id'],
             'description': row['description'],
-            'sampled_tissue': jsonb(row['sample_origins_ontology']), #, schema_name),
+            'sampled_tissue': row['sample_origins_ontology'], #, schema_name),
             'phenotypic_features': None,
             'taxonomy': None,
             'individual_age_at_collection': {
@@ -62,7 +60,7 @@ def ga4gh_phenopackets_biosamples_v10(row):
                 },
                 'body_site': None,
             },
-            'hts_files': jsonb(row['files']),
+            'hts_files': row['files'],
             'variants': None,
             'is_control_sample': True if row['biosample_status_ontology'] == abnormal_sample_ontology else False,
         }],
@@ -80,7 +78,7 @@ def build_phenopackets_meta_data_block(ontologies_used):
         'created': now.strftime(conf.datetime_format),  # required
         'created_by': conf.beacon_name,  # required
         # 'submitted_by': None,
-        'resources': jsonb(ontologies_used),  # required
+        'resources': ontologies_used,  # required
         # 'updates': None,
         # 'phenopacket_schema_version': None,
         # 'external_references': None,
@@ -103,13 +101,13 @@ def ga4gh_phenopackets_individual_v10(row):
                 'label': row['taxon_id_ontology_label'],
             }
         },
-        'phenotypic_features': jsonb(row['phenotypic_features']),
+        'phenotypic_features': row['phenotypic_features'],
         # 'biosamples': None,
         # 'genes': None,
         # 'variants': None,
-        'diseases': jsonb(row['diseases']),
+        'diseases': row['diseases'],
         # 'hts_files': None,
-        'meta_data': build_phenopackets_meta_data_block(jsonb(row['ontologies_used'])), # required
+        'meta_data': build_phenopackets_meta_data_block(row['ontologies_used']), # required
     }
 
 
@@ -153,7 +151,7 @@ def ga4gh_phenopackets_variant_annotation_v10(row):
         # 'subject': None,
         # 'phenotypic_features': None,
         # 'biosamples': None,
-        'genes': jsonb(row['genomic_features_ontology']),
+        'genes': row['genomic_features_ontology'],
         'variants': transcripts_hgvs_ids,
         # 'diseases': None,
         # 'hts_files': None,
