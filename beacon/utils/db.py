@@ -85,7 +85,6 @@ class DBConnection():
         LOG.debug('----------- acquiring connection')
         conn = await self.db_pool.acquire()
         try:
-            await conn.set_builtin_type_codec('hstore', codec_name='pg_contrib.hstore', schema='addons')
             yield conn
         except (asyncpg.exceptions._base.InterfaceError,
                 asyncpg.exceptions._base.PostgresError,

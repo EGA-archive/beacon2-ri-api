@@ -1,7 +1,6 @@
 import logging
 
 from .... import conf
-from .utils import filter_hstore
 
 # It will raise an exception if the fields are not found in the record
 from ....utils.json import jsonb
@@ -81,7 +80,6 @@ def beacon_variant_v20(row):
 
 
 def beacon_variant_annotation_v20(row):
-    schema_name = 'beacon-variant-annotation-v2.0.0-draft.2'
     return {
             'variantId': row['variant_id'],
             'variantAlternativeIds': [row['variant_name']],
@@ -89,14 +87,13 @@ def beacon_variant_annotation_v20(row):
             'transcriptHGVSIds': row['transcript_hgvs_ids'],
             'proteinHGVSIds': row['protein_hgvs_ids'],
             'genomicRegions': row['genomic_regions'],
-            'genomicFeatures': filter_hstore(row['genomic_features_ontology'], schema_name),
+            'genomicFeatures': jsonb(row['genomic_features_ontology']),
             'molecularEffects': row['molecular_effects'],
             'aminoacidChanges': row['aminoacid_changes'],
             'info': None
         }
 
 def beacon_biosample_v20(row):
-    schema_name = 'beacon-biosample-v2.0.0-draft.2'
     return {
         'biosampleId': row['biosample_stable_id'],
         'subjectId': row['individual_stable_id'],
@@ -104,24 +101,23 @@ def beacon_biosample_v20(row):
         'biosampleStatus': row['biosample_status_ontology'],
         'collectionDate':  str(row['collection_date']) if row['collection_date'] else None,
         'subjectAgeAtCollection': row['individual_age_at_collection'],
-        'sampleOriginDescriptors': filter_hstore(row['sample_origins_ontology'], schema_name),
+        'sampleOriginDescriptors': jsonb(row['sample_origins_ontology']),
         'obtentionProcedure': row['obtention_procedure_ontology'],
         'cancerFeatures': {
             'tumorProgression': row['tumor_progression_ontology'],
             'tumorGrade': row['tumor_grade_ontology'],
         },
-        'handovers': [jsonb(h) for h in row['handovers']],
+        'handovers': jsonb(row['handovers']),
         'info': {
             'alternativeIds': row['alternative_ids'],
             'studyId': row['study_id'],
             'bioprojectId': row['bioproject_id'],
-            'files': [jsonb(v) for v in row['files']],
+            'files': jsonb(row['files']),
         }
     }
 
 
 def beacon_individual_v20(row):
-    schema_name = 'beacon-individual-v2.0.0-draft.2'
     return {
         'subjectId': row['individual_stable_id'],
         'datasetIds': row['dataset_ids'],
@@ -129,10 +125,10 @@ def beacon_individual_v20(row):
         'sex': row['sex_ontology'],
         'ethnicity': row['ethnicity_ontology'],
         'geographicOrigin': row['geographic_origin_ontology'],
-        'phenotypicFeatures': filter_hstore(row['phenotypic_features'], schema_name),
-        'diseases': filter_hstore(row['diseases'], schema_name),
-        'pedigrees': filter_hstore(row['pedigrees'], schema_name),
-        'handovers': [jsonb(h) for h in row['handovers']],
+        'phenotypicFeatures': jsonb(row['phenotypic_features']),
+        'diseases': jsonb(row['diseases']),
+        'pedigrees': jsonb(row['pedigrees']),
+        'handovers': jsonb(row['handovers']),
         'info': {
             'sraFamilyId': row['sra_family_id'],
             'alternativeIds': row['alternative_ids'],
@@ -140,8 +136,8 @@ def beacon_individual_v20(row):
             'weightKg': row['weight_kg'],
             'heightCm': row['height_cm'],
             'bloodType': row['blood_type'],
-            'medications': [jsonb(v) for v in row['medications']],
-            'procedures': [jsonb(v) for v in row['procedures']],
+            'medications': jsonb(row['medications']),
+            'procedures': jsonb(row['procedures']),
         },
     }
 
