@@ -1,7 +1,6 @@
 import logging
 
 from .... import conf
-from ....utils.json import jsonb
 from ....validation.fields import SchemaField
 
 LOG = logging.getLogger(__name__)
@@ -200,7 +199,7 @@ def build_variant_response(data, qparams):
             'variant': variant_func(row),
             'variantAnnotations': variant_annotation_func(row),
             'handovers': None,  # build_variant_handover
-            'datasetAlleleResponses': jsonb(row['dataset_response'])
+            'datasetAlleleResponses': row['dataset_response']
         }
 
 

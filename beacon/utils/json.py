@@ -2,6 +2,7 @@ import logging
 from decimal import Decimal
 import inspect
 from json.encoder import encode_basestring_ascii
+from json import loads as parse_json
 
 from asyncpg import Record
 
@@ -22,7 +23,21 @@ def is_asyncgen(o):
             inspect.isasyncgenfunction(o))
 
 class jsonb(str):
-    pass
+
+    __parsed = None
+
+    @property
+    def parsed(self):
+        """Return a JSON deserializing of itself."""
+        if self.__parsed is None:
+            self.__parsed = parse_json(self)
+        return self.__parsed
+
+def json_encoder(v):
+    raise NotImplementedError('We should not use json encoding')
+
+def json_decoder(v):
+    return jsonb(v) # just "tag" it
 
 # we make it compact
 _ITEM_SEPARATOR = ','

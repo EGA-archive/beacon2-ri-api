@@ -2,9 +2,6 @@ import logging
 
 from .... import conf
 
-# It will raise an exception if the fields are not found in the record
-from ....utils.json import jsonb
-
 LOG = logging.getLogger(__name__)
 
 
@@ -87,7 +84,7 @@ def beacon_variant_annotation_v20(row):
             'transcriptHGVSIds': row['transcript_hgvs_ids'],
             'proteinHGVSIds': row['protein_hgvs_ids'],
             'genomicRegions': row['genomic_regions'],
-            'genomicFeatures': jsonb(row['genomic_features_ontology']),
+            'genomicFeatures': row['genomic_features_ontology'],
             'molecularEffects': row['molecular_effects'],
             'aminoacidChanges': row['aminoacid_changes'],
             'info': None
@@ -101,18 +98,18 @@ def beacon_biosample_v20(row):
         'biosampleStatus': row['biosample_status_ontology'],
         'collectionDate':  str(row['collection_date']) if row['collection_date'] else None,
         'subjectAgeAtCollection': row['individual_age_at_collection'],
-        'sampleOriginDescriptors': jsonb(row['sample_origins_ontology']),
+        'sampleOriginDescriptors': row['sample_origins_ontology'],
         'obtentionProcedure': row['obtention_procedure_ontology'],
         'cancerFeatures': {
             'tumorProgression': row['tumor_progression_ontology'],
             'tumorGrade': row['tumor_grade_ontology'],
         },
-        'handovers': jsonb(row['handovers']),
+        'handovers': row['handovers'],
         'info': {
             'alternativeIds': row['alternative_ids'],
             'studyId': row['study_id'],
             'bioprojectId': row['bioproject_id'],
-            'files': jsonb(row['files']),
+            'files': row['files'],
         }
     }
 
@@ -125,10 +122,10 @@ def beacon_individual_v20(row):
         'sex': row['sex_ontology'],
         'ethnicity': row['ethnicity_ontology'],
         'geographicOrigin': row['geographic_origin_ontology'],
-        'phenotypicFeatures': jsonb(row['phenotypic_features']),
-        'diseases': jsonb(row['diseases']),
-        'pedigrees': jsonb(row['pedigrees']),
-        'handovers': jsonb(row['handovers']),
+        'phenotypicFeatures': row['phenotypic_features'],
+        'diseases': row['diseases'],
+        'pedigrees': row['pedigrees'],
+        'handovers': row['handovers'],
         'info': {
             'sraFamilyId': row['sra_family_id'],
             'alternativeIds': row['alternative_ids'],
@@ -136,8 +133,8 @@ def beacon_individual_v20(row):
             'weightKg': row['weight_kg'],
             'heightCm': row['height_cm'],
             'bloodType': row['blood_type'],
-            'medications': jsonb(row['medications']),
-            'procedures': jsonb(row['procedures']),
+            'medications': row['medications'],
+            'procedures': row['procedures'],
         },
     }
 
