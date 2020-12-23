@@ -9,23 +9,21 @@ LOG = logging.getLogger(__name__)
 def build_beacon_response(proxy,
                           data,
                           qparams_converted,
+                          by_entity_type,
                           non_accessible_datasets,
-                          func_response_type,
-                          variant_id=None,
-                          individual_id=None,
-                          biosample_id=None):
+                          func_response_type):
     """"
     Transform data into the Beacon response format.
     """
 
     beacon_response = {
-        'meta': build_meta(proxy, qparams_converted, variant_id, individual_id, biosample_id),
+        'meta': build_meta(proxy, qparams_converted, by_entity_type),
         'response': build_response(data, qparams_converted, non_accessible_datasets, func_response_type)
     }
     return beacon_response
 
 
-def build_meta(proxy, qparams, variant_id=None, individual_id=None, biosample_id=None):
+def build_meta(proxy, qparams, by_entity_type):
     """"Builds the `meta` part of the response
     We assume that receivedRequest is the evaluated request (qparams) sent by the user.
     """
@@ -35,7 +33,7 @@ def build_meta(proxy, qparams, variant_id=None, individual_id=None, biosample_id
     meta = {
         'beaconId': conf.beacon_id,
         'apiVersion': conf.api_version,
-        'receivedRequest': build_received_request(qparams, schemas, variant_id, individual_id, biosample_id),
+        'receivedRequest': build_received_request(qparams, schemas, by_entity_type),
         'returnedSchemas': schemas,
     }
     return meta
@@ -49,7 +47,7 @@ def get_schemas(proxy, qparams):
             yield getattr(qparams, name)[0]
 
 
-def build_received_request(qparams, schemas, variant_id=None, individual_id=None, biosample_id=None):
+def build_received_request(qparams, schemas, by_entity_type):
     """"Fills the `receivedRequest` part with the request data"""
 
     request = {
@@ -57,16 +55,16 @@ def build_received_request(qparams, schemas, variant_id=None, individual_id=None
             'requestedSchemas' : schemas,
             'apiVersion' : qparams.apiVersion,
         },
-        'query': build_received_query(qparams, variant_id, individual_id, biosample_id),
+        'query': build_received_query(qparams, by_entity_type),
     }
 
     return request
 
 
-def build_received_query(qparams, variant_id=None, individual_id=None, biosample_id=None):
-    g_variant = build_g_variant_params(qparams, variant_id)
-    individual = build_individual_params(qparams, individual_id)
-    biosample = build_biosample_params(qparams, biosample_id)
+def build_received_query(qparams, by_entity_type):
+    g_variant = build_g_variant_params(qparams, by_entity_type)
+    individual = build_individual_params(qparams, by_entity_type)
+    biosample = build_biosample_params(qparams, by_entity_type)
     datasets = build_datasets_params(qparams)
     pagination = build_pagination_params(qparams)
 
@@ -87,7 +85,7 @@ def build_received_query(qparams, variant_id=None, individual_id=None, biosample
     return query_part
 
 
-def build_g_variant_params(qparams, variant_id=None):
+def build_g_variant_params(qparams, by_entity_type):
     """Fills the `gVariant` part with the request data"""
 
     g_variant_params = {}
@@ -104,28 +102,28 @@ def build_g_variant_params(qparams, variant_id=None):
     if qparams.referenceName:
         g_variant_params['referenceName'] = qparams.referenceName
 
-    if variant_id is not None:
-        g_variant_params['id'] = variant_id
+    if by_entity_type == 'variant' and qparams.targetIdReq:
+        g_variant_params['id'] = qparams.targetIdReq
 
     return g_variant_params
 
 
-def build_individual_params(qparams, individual_id=None):
-    """Fills the `biosample` part with the request data"""
+def build_individual_params(qparams, by_entity_type):
+    """Fills the `individual` part with the request data"""
 
     individual_params = {}
-    if individual_id is not None:
-        individual_params['id'] = individual_id
+    if by_entity_type == 'individual' and qparams.targetIdReq:
+        individual_params['id'] = qparams.targetIdReq
 
     return individual_params
 
 
-def build_biosample_params(qparams, biosample_id=None):
-    """Fills the `inidividual` part with the request data"""
+def build_biosample_params(qparams, by_entity_type):
+    """Fills the `biosample` part with the request data"""
 
     biosample_params = {}
-    if biosample_id is not None:
-        biosample_params['id'] = biosample_id
+    if by_entity_type == 'biosample' and qparams.targetIdReq:
+        biosample_params['id'] = qparams.targetIdReq
 
     return biosample_params
 
