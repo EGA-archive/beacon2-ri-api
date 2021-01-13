@@ -77,15 +77,6 @@ class GVariantParametersBase(RequestParameters):
 
     def correlate(self, req, values):
 
-        # if values.targetIdReq is not None and (
-        #         len(values.start) > 0
-        #         or len(values.end) > 0
-        #         or values.referenceBases is not None
-        #         or values.alternateBases is not None
-        #         or values.assemblyId is not None
-        #         or values.referenceName is not None):
-        #     raise BeaconBadRequest("No other parameters are accepted when querying by Id")
-
         if values.variantType and values.alternateBases and values.alternateBases != "N":
             raise BeaconBadRequest("If 'variantType' is provided then 'alternateBases' must be empty or equal to 'N'")
 

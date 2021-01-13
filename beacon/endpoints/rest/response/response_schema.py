@@ -1,9 +1,15 @@
 import logging
+from enum import IntEnum
 
 from .... import conf
 from ....validation.fields import SchemaField
 
 LOG = logging.getLogger(__name__)
+
+class BeaconEntity(IntEnum):
+    BIOSAMPLE = 1
+    INDIVIDUAL = 2
+    VARIANT = 3
 
 
 def build_beacon_response(proxy,
@@ -102,7 +108,7 @@ def build_g_variant_params(qparams, by_entity_type):
     if qparams.referenceName:
         g_variant_params['referenceName'] = qparams.referenceName
 
-    if by_entity_type == 'variant' and qparams.targetIdReq:
+    if by_entity_type == BeaconEntity.VARIANT and qparams.targetIdReq:
         g_variant_params['id'] = qparams.targetIdReq
 
     return g_variant_params
@@ -112,7 +118,7 @@ def build_individual_params(qparams, by_entity_type):
     """Fills the `individual` part with the request data"""
 
     individual_params = {}
-    if by_entity_type == 'individual' and qparams.targetIdReq:
+    if by_entity_type == BeaconEntity.INDIVIDUAL and qparams.targetIdReq:
         individual_params['id'] = qparams.targetIdReq
 
     return individual_params
@@ -122,7 +128,7 @@ def build_biosample_params(qparams, by_entity_type):
     """Fills the `biosample` part with the request data"""
 
     biosample_params = {}
-    if by_entity_type == 'biosample' and qparams.targetIdReq:
+    if by_entity_type == BeaconEntity.BIOSAMPLE and qparams.targetIdReq:
         biosample_params['id'] = qparams.targetIdReq
 
     return biosample_params
