@@ -176,6 +176,7 @@ def build_response(data, qparams, non_accessible_datasets, func):
 
     response = {
             'exists': bool(data),
+            'numTotalResults': data[0]['num_total_results'] if data else 0,
             'results': func(data, qparams),
             'info': None,
             'resultsHandover': None, # build_results_handover
