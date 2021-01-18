@@ -15,11 +15,15 @@ from ...utils.stream import json_stream
 # LOG = logging.getLogger(__name__)
 
 async def handler(request):
-    ontologyTerms = [record async for record in fetch_filtering_terms()]
+    ontology_terms = [
+        {
+            'id': record['ontology'] + ':' + record['term'],
+            'label': record['label']
+        }
+        async for record in fetch_filtering_terms()]
     response = {
-        'id': conf.beacon_id,
-        'name': conf.beacon_name,
+        'beaconId': conf.beacon_id,
         'apiVersion': conf.api_version,
-        'ontologyTerms': ontologyTerms,
+        'filteringTerms': ontology_terms,
     }
     return await json_stream(request, response)

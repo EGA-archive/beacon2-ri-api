@@ -11,7 +11,6 @@ from ..validation.fields import (RegexField,
 from ..utils import resolve_token
 from ..utils.stream import json_stream
 from ..utils import db
-from ..utils.json import jsonb
 
 LOG = logging.getLogger(__name__)
 

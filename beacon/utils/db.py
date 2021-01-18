@@ -13,6 +13,7 @@ import asyncpg
 
 from .. import conf
 from .exceptions import BeaconServerError
+from .json import jsonb, json_encoder, json_decoder
 
 LOG = logging.getLogger(__name__)
 
@@ -72,12 +73,6 @@ class DBConnection():
                 return await func(connection, *args, **kwargs)
         return inner
 
-    # def execute(self, func):
-    #     if inspect.isasyncgenfunction(func):
-    #         return self.asyncgen_execute(func)
-    #     else:
-    #         return self.coroutine_execute(func)
-
     @asynccontextmanager
     async def connection(self):
         if self.db_pool is None:
@@ -85,7 +80,7 @@ class DBConnection():
         LOG.debug('----------- acquiring connection')
         conn = await self.db_pool.acquire()
         try:
-            await conn.set_builtin_type_codec('hstore', codec_name='pg_contrib.hstore', schema='addons')
+            await conn.set_type_codec('jsonb', encoder=json_encoder, decoder=json_decoder, schema='pg_catalog')
             yield conn
         except (asyncpg.exceptions._base.InterfaceError,
                 asyncpg.exceptions._base.PostgresError,
