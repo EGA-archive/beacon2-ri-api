@@ -59,9 +59,9 @@ services:
     networks:
       - beacon-priv
       - pub
-    entrypoint: ['/bin/sleep','100000000']
+    #entrypoint: ['/bin/sleep','100000000']
     working_dir: '/beacon'
-    #entrypoint: ['python','-m', 'permissions']
+    entrypoint: ['python','-m', 'permissions']
     
   ###########################################
   # Local Identity Provider

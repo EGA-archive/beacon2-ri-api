@@ -33,7 +33,7 @@ async def get_user_info(access_token):
     async with ClientSession() as session:
         headers = { 'Accept': 'application/json', 'Authorization': 'Bearer ' + access_token }
         LOG.debug('Contacting %s', idp_user_info)
-        async with session.get(conf.idp_user_info, headers=headers) as resp:
+        async with session.get(idp_user_info, headers=headers) as resp:
             # LOG.debug('Response %s', resp)
             if resp.status == 200:
                 user = await resp.json()
@@ -45,8 +45,8 @@ async def get_user_info(access_token):
     # Invalid access token
     LOG.error('Invalid token')
     async with ClientSession() as session:
-        async with session.post(conf.idp_introspection,
-                                auth=BasicAuth(conf.idp_client_id, password=conf.idp_client_secret),
+        async with session.post(idp_introspection,
+                                auth=BasicAuth(idp_client_id, password=idp_client_secret),
                                 data=FormData({ 'token': access_token, 'token_type_hint': 'access_token' }, charset='UTF-8')
         ) as resp:
             LOG.debug('Response %s', resp.status)

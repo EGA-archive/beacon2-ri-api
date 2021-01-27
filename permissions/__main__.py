@@ -21,11 +21,11 @@ async def permission(request, username):
 
     if request.headers.get('Content-Type') == 'application/json':
         post_data = await request.json()
-        requested_datasets = post_data.get('datasets') # already a list
+        requested_datasets = post_data.get('datasets', []) # already a list
     else:
         post_data = await request.post() # request.json() crashes on empty data
         LOG.debug('POST DATA: %s', post_data)
-        requested_datasets = post_data.get('datasets').split(',')
+        requested_datasets = post_data.get('datasets', '').split(',')
 
     LOG.debug('requested datasets: %s', requested_datasets)
 
