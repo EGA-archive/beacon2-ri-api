@@ -22,6 +22,7 @@
       #info main > section {display:flex; flex-flow:column nowrap; }
       #info main > section > a {display:block; }
       #info main > section > a::before {content:'\261E'; display:inline-block; margin-right:1ex;}
+      pre, code { white-space: pre-line; width:100%; word-wrap: break-word; }
     </style>
 
   </head>
@@ -106,8 +107,7 @@
       <h1>Beacon v2 authentication token</h1>
       <h2>Hi, {{ session.user.name }}</h2>
       <p>Here is your access token:</p>
-      <pre>{% for i, letter in enumerate(session.access_token, start=1) %}{% if i % 80 == 0 %}
-{% endif %}{{ letter }}{% endfor %}</pre>
+      <pre>{{ session.access_token }}</pre>
       <p>Keep it safe, it is just a temporary page to test the API</p>
       <p>Use it like:</p>
       <code>curl {{request.url}}api -H 'Authorization: Bearer {{ session.access_token}}'</code>
