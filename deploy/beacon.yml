@@ -52,16 +52,16 @@ services:
     hostname: beacon-permissions
     container_name: beacon-permissions
     volumes:
-      - ./permissions.py:/beacon/permissions.py  # inject the code, so we see the modifications "live"
+      - ../permissions/:/beacon/permissions/  # inject the code, so we see the modifications "live"
       - ./logger.yml:/beacon/logger.yml
     ports:
       - "5051:5051"
     networks:
       - beacon-priv
       - pub
-    #entrypoint: ['/bin/sleep','100000000']
+    entrypoint: ['/bin/sleep','100000000']
     working_dir: '/beacon'
-    entrypoint: ['python','permissions.py']
+    #entrypoint: ['python','-m', 'permissions']
     
   ###########################################
   # Local Identity Provider
