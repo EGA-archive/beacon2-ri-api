@@ -12,7 +12,6 @@ import base64
 from aiohttp import web
 import aiohttp_jinja2
 import jinja2
-from jinja2_pluralize import pluralize_dj
 
 from . import conf, load_logger, endpoints
 from .utils import db, middlewares
@@ -40,7 +39,6 @@ async def initialize(app):
         #nsamples=await get_nsamples(),
         #update_datetime=update_datetime_formatted,
     )
-    env.filters['pluralize'] = pluralize_dj
 
     # No need to call those 2:
     # assemblyIDs = await db.fetch_assemblyids()
