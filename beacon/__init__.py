@@ -1,5 +1,5 @@
 """
-The ``beacon_api`` package contains code to start a Beacon Rest API.
+The ``beacon`` package contains code to start a Beacon Rest API.
 """
 
 __title__ = 'Beacon v2.0'
