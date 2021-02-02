@@ -28,14 +28,10 @@ async def permission(request, username):
         requested_datasets = post_data.get('datasets', '').split(',')
 
     LOG.debug('requested datasets: %s', requested_datasets)
+    datasets = await request.app['permissions'].get(username, requested_datasets=requested_datasets)
+    LOG.debug('selected datasets: %s', datasets)
 
-    datasets = await request.app['permissions'].get(username)
-    if requested_datasets:
-        selected_datasets = set(requested_datasets).intersection(datasets)
-    else:
-        selected_datasets = datasets
-    LOG.debug('selected datasets: %s', selected_datasets)
-    return web.json_response(list(selected_datasets or [])) # cuz python json doesn't like sets
+    return web.json_response(list(datasets or [])) # cuz python-json doesn't like sets
 
 async def initialize(app):
     """Initialize server."""
