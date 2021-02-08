@@ -10,7 +10,8 @@ class Permissions():
     async def initialize(self):
         raise NotImplementedError('Overload this function in a subclass')
 
-    async def get(self, username):
+    async def get(self, username, requested_datasets=None):
+        """Return an iterable for the granted datasets for the given username and within a requested list of datasets."""
         raise NotImplementedError('Overload this function in a subclass')
 
     async def close(self):
@@ -37,8 +38,12 @@ class DummyPermissions(Permissions):
     async def initialize(self):
         pass
 
-    async def get(self, username):
-        return self.db.get(username)
+    async def get(self, username, requested_datasets=None):
+        datasets = set(self.db.get(username))
+        if requested_datasets:
+            return set(requested_datasets).intersection(datasets)
+        else:
+            return datasets
 
     async def close(self):
         pass
@@ -64,12 +69,12 @@ class PostgresPermissions(Permissions):
         self.db = await asyncpg.create_pool(*self.args, **self.kwargs)
 
 
-    async def get(self, username):
+    async def get(self, username, requested_datasets=None):
         try:
             async with self.db.acquire() as conn:
                 await conn.set_type_codec('jsonb', encoder=json_encoder, decoder=json_decoder, schema='pg_catalog')            
-                query = "SELECT dataset FROM datasets where username = $1;"
-                response = await connection.fetch(query, username)
+                query = "SELECT dataset FROM datasets where username = $1 and datasets IN $2;"
+                response = await connection.fetch(query, username, requested_datasets)
                 return [r['dataset'] async for r in response]
         except (asyncpg.exceptions._base.InterfaceError,
                 asyncpg.exceptions._base.PostgresError,
