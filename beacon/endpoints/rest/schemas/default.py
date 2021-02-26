@@ -72,7 +72,14 @@ def beacon_variant_v20(row):
             'start': row['start'],
             'end': row['end'],
             'assemblyId': row['assembly_id'],
-            'info': None,
+            'info': {
+                'chromosome': row['chromosome'],
+                'effect_impacts': row['effect_impacts'],
+                'functional_classes': row['functional_classes'],
+                'genomic_regions_ontology': row['genomic_regions_ontology'],
+                'molecular_effects_ontology': row['molecular_effects_ontology'],
+                'ontologies_used': row['ontologies_used']
+            },
         }
 
 
@@ -80,13 +87,13 @@ def beacon_variant_annotation_v20(row):
     return {
             'variantId': row['variant_id'],
             'variantAlternativeIds': [row['variant_name']],
-            'genomicHGVSId': row['genomic_hgvs_id'],
             'transcriptHGVSIds': row['transcript_hgvs_ids'],
             'proteinHGVSIds': row['protein_hgvs_ids'],
             'genomicRegions': row['genomic_regions'],
             'genomicFeatures': row['genomic_features_ontology'],
-            'molecularEffects': row['molecular_effects'],
-            'aminoacidChanges': row['aminoacid_changes'],
+            'molecularEffect': row['molecular_effects'],
+            #'molecularConsequence': row['molecular_consequence'],
+            'aminoacidChange': row['aminoacid_changes'],
             'info': None
         }
 
@@ -116,8 +123,7 @@ def beacon_biosample_v20(row):
 
 def beacon_individual_v20(row):
     return {
-        'subjectId': row['individual_stable_id'],
-        'datasetIds': row['dataset_ids'],
+        'individualId': row['individual_stable_id'],
         'taxonId': row['taxon_id'],
         'sex': row['sex_ontology'],
         'ethnicity': row['ethnicity_ontology'],
@@ -126,6 +132,7 @@ def beacon_individual_v20(row):
         'diseases': row['diseases'],
         'pedigrees': row['pedigrees'],
         'handovers': row['handovers'],
+        #'interventions': row['interventions'],
         'info': {
             'sraFamilyId': row['sra_family_id'],
             'alternativeIds': row['alternative_ids'],
