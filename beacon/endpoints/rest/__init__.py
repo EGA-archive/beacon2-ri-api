@@ -139,7 +139,7 @@ class GVariantsParameters(GVariantParametersBase):
                                   default='beacon-variant-annotation-v2.0.0-draft.2')
 
 
-def generic_handler(log_name, by_entity_type, proxy, fetch_func, build_response_func):
+def generic_handler(log_name, by_entity_type, proxy, fetch_func, count_results_func, build_response_func):
     async def wrapper(request):
         LOG.info('Running a request for %s', log_name)
         _, qparams_db = await proxy.fetch(request)
@@ -162,9 +162,13 @@ def generic_handler(log_name, by_entity_type, proxy, fetch_func, build_response_
             raise BeaconUnauthorised(error, json_error=proxy.json_error)
 
         response = fetch_func(qparams_db, datasets, authenticated)
+        response_total_results = count_results_func(qparams_db, datasets, authenticated)
+        
         rows = [row async for row in response]
+        num_total_results = await response_total_results
+
         # build_beacon_response knows how to loop through it
-        response_converted = build_beacon_response(proxy, rows, qparams_db, by_entity_type, non_accessible_datasets, build_response_func)
+        response_converted = build_beacon_response(proxy, rows, num_total_results, qparams_db, by_entity_type, non_accessible_datasets, build_response_func)
 
         LOG.info('Formatting the response for %s', log_name)
         return await json_stream(request, response_converted, partial=bool(non_accessible_datasets))
