@@ -34,22 +34,22 @@ routes = [
     # web.get('/api/genomic_region'                   , genomic_query.handler),
 
     # Biosamples
-    web.get('/api/biosamples'                               , rest_handlers.biosamples_by_biosample),
-    web.get('/api/biosamples/{target_id_req}'               , rest_handlers.biosamples_by_biosample),
-    web.get('/api/biosamples/{target_id_req}/g_variants'    , rest_handlers.gvariants_by_biosample),
-    web.get('/api/biosamples/{target_id_req}/individuals'   , rest_handlers.individuals_by_biosample),
+    web.post('/api/biosamples'                               , rest_handlers.biosamples_by_biosample),
+    web.post('/api/biosamples/{target_id_req}'               , rest_handlers.biosamples_by_biosample),
+    web.post('/api/biosamples/{target_id_req}/g_variants'    , rest_handlers.gvariants_by_biosample),
+    web.post('/api/biosamples/{target_id_req}/individuals'   , rest_handlers.individuals_by_biosample),
     
     # # Individuals
-    web.get('/api/individuals'                              , rest_handlers.individuals_by_individual),
-    web.get('/api/individuals/{target_id_req}'              , rest_handlers.individuals_by_individual),
-    web.get('/api/individuals/{target_id_req}/g_variants'   , rest_handlers.gvariants_by_individual),
-    web.get('/api/individuals/{target_id_req}/biosamples'   , rest_handlers.biosamples_by_individual),
+    web.post('/api/individuals'                              , rest_handlers.individuals_by_individual),
+    web.post('/api/individuals/{target_id_req}'              , rest_handlers.individuals_by_individual),
+    web.post('/api/individuals/{target_id_req}/g_variants'   , rest_handlers.gvariants_by_individual),
+    web.post('/api/individuals/{target_id_req}/biosamples'   , rest_handlers.biosamples_by_individual),
 
     # # GVariant
-    web.get('/api/g_variants'                               , rest_handlers.gvariants_by_variant),
-    web.get('/api/g_variants/{target_id_req}'               , rest_handlers.gvariants_by_variant),
-    web.get('/api/g_variants/{target_id_req}/biosamples'    , rest_handlers.individuals_by_variant),
-    web.get('/api/g_variants/{target_id_req}/individuals'   , rest_handlers.biosamples_by_variant),
+    web.post('/api/g_variants'                               , rest_handlers.gvariants_by_variant),
+    web.post('/api/g_variants/{target_id_req}'               , rest_handlers.gvariants_by_variant),
+    web.post('/api/g_variants/{target_id_req}/biosamples'    , rest_handlers.individuals_by_variant),
+    web.post('/api/g_variants/{target_id_req}/individuals'   , rest_handlers.biosamples_by_variant),
 
 
     ## HTML UI
