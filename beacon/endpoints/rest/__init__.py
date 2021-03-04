@@ -159,7 +159,7 @@ def generic_handler(log_name, by_entity_type, proxy, fetch_func, count_results_f
 
         if not datasets and non_accessible_datasets:
             error = f'You are not authorized to access any of these datasets: {non_accessible_datasets}'
-            raise BeaconUnauthorised(error, json_error=proxy.json_error)
+            raise BeaconUnauthorised(error, api_error=proxy.json_error)
 
         response = fetch_func(qparams_db, datasets, authenticated)
         response_total_results = count_results_func(qparams_db, datasets, authenticated)
