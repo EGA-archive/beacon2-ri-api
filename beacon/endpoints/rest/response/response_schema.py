@@ -10,6 +10,7 @@ class BeaconEntity(IntEnum):
     BIOSAMPLE = 1
     INDIVIDUAL = 2
     VARIANT = 3
+    COHORT = 4
 
 
 def build_beacon_response(proxy,
@@ -212,4 +213,7 @@ def build_variant_response(data, qparams):
 def build_biosample_or_individual_response(data, qparams):
     """"Fills the `results` part with the format for biosample or individual data"""
 
+    return [qparams.requestedSchema[1](row) for row in data]
+
+def build_cohort_response(data, qparams):
     return [qparams.requestedSchema[1](row) for row in data]

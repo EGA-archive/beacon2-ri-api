@@ -11,6 +11,7 @@ supported_schemas = {
     'beacon-variant-annotation-v2.0.0-draft.2': default.beacon_variant_annotation_v20,
     'beacon-biosample-v2.0.0-draft.2': default.beacon_biosample_v20,
     'beacon-individual-v2.0.0-draft.2': default.beacon_individual_v20,
+    'beacon-cohort-draft3.1': default.beacon_cohort_v31,
     # alternative
     'ga4gh-service-info-v1.0': alternative.ga4gh_service_info_v10,
     # phenopackets format

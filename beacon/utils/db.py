@@ -583,3 +583,37 @@ async def _count_biosamples(connection,
                                      int(variant_id) if variant_id else None,
                                      qparams_db.filters, # requestedSchemas
                                      column=0)
+
+def fetch_cohorts_by_cohort(qparams_db, datasets, authenticated):
+    return _fetch_cohort(qparams_db, datasets, authenticated, cohort_id=qparams_db.targetIdReq)
+
+@pool.asyncgen_execute
+async def _fetch_cohort(connection,
+                            qparams_db,
+                            datasets,
+                            authenticated,
+                            cohort_id=None):
+    LOG.info('Retrieving cohort information')
+
+    query = f"SELECT * FROM {conf.database_schema}.cohort WHERE id = $1;"
+    LOG.debug("QUERY: %s", query)
+    statement = await connection.prepare(query)
+    response = await statement.fetch(int(cohort_id))  # requestedSchemas
+
+    for record in response:
+        yield record
+
+@pool.coroutine_execute
+async def _count_cohorts(connection,
+                            qparams_db,
+                            datasets,
+                            authenticated,
+                            cohort_id=None):
+    LOG.info('Counting cohorts fetched')
+    query = f"SELECT COUNT(*) FROM {conf.database_schema}.cohort WHERE id = $1;"
+    LOG.debug("QUERY: %s", query)
+    statement = await connection.prepare(query)
+    return await statement.fetchval(int(cohort_id), column=0) 
+
+def count_cohorts_by_cohort(qparams_db, datasets, authenticated):
+    return _count_cohorts(qparams_db, datasets, authenticated, cohort_id=qparams_db.targetIdReq)

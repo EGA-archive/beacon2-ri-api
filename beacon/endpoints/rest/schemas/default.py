@@ -1,9 +1,15 @@
 import logging
+import re
+import json
 
 from .... import conf
 
+under_pat = re.compile(r'_([a-z])')
+
 LOG = logging.getLogger(__name__)
 
+def snake_case_to_camelCase(j):
+    return j if j is None else json.loads(under_pat.sub(lambda x: x.group(1).upper(), j))
 
 def beacon_info_v20(datasets, authorized_datasets=[]):
     return {
@@ -145,3 +151,19 @@ def beacon_individual_v20(row):
         },
     }
 
+
+def beacon_cohort_v31(row):
+    return {
+        'cohortId': row['id'],
+        'cohortName': row['cohort_name'],
+        'cohortType': row['cohort_type'],
+        'cohortDesign': row['cohort_design'],
+        'cohortInclusionCriteria': row['cohort_inclusion_criteria'],
+        'cohortExclusionCriteria': row['cohort_exclusion_criteria'],
+        'cohortLicense': row['cohort_license'],
+        'cohortContact': row['cohort_contact'],
+        'cohortRights': row['cohort_rights'],
+        'cohortSize': row['cohort_size'],
+        'cohortDataTypes': row['cohort_data_types'],
+        'collectionEvents': snake_case_to_camelCase(row['collection_events']),
+    }
