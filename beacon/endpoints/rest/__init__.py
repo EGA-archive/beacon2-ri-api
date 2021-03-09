@@ -138,11 +138,17 @@ class GVariantsParameters(GVariantParametersBase):
                                             'ga4gh-phenopacket-variant-annotation-v1.0',
                                   default='beacon-variant-annotation-v2.0.0-draft.2')
 
+class CohortParameters(GVariantParametersBase):
+    requestedSchema = SchemaField(
+        'beacon-cohort-draft3.1',
+        default='beacon-cohort-draft3.1'
+    )
 
 def generic_handler(log_name, by_entity_type, proxy, fetch_func, count_results_func, build_response_func):
     async def wrapper(request):
         LOG.info('Running a request for %s', log_name)
         _, qparams_db = await proxy.fetch(request)
+        LOG.debug(qparams_db)
         if LOG.isEnabledFor(logging.DEBUG):
             print_qparams(qparams_db, proxy, LOG)
 
