@@ -180,39 +180,39 @@
       <h2>Filters</h2>
       <section>
         <form action="/api/individuals" method="post">
-          <input type="hidden" id="filters" value="NCIT:C37967"/>
+          <input type="hidden" name="filters" id="filters" value="NCIT:C37967"/>
           <input type="submit" value="Individuals by phenotypic feature (Hypercholesterolemia) (1 result)"/>
         </form>
         <form action="/api/individuals" method="post">
-          <input type="hidden" id="filters" value="NCIT:C27083,PATO:0000383"/>
+          <input type="hidden" name="filters" id="filters" value="NCIT:C27083,PATO:0000383"/>
           <input type="submit" value="Individuals by phenotypic feature (blood clot) and sex (female) (no results)"/>
         </form>
         <form action="/api/individuals" method="post">
-          <input type="hidden" id="filters" value="NCIT:C27083,PATO:0000384"/>
+          <input type="hidden" name="filters" id="filters" value="NCIT:C27083,PATO:0000384"/>
           <input type="submit" value="Individuals by phenotypic feature (blood clot) and sex (male) (1 result)"/>
         </form>
         <form action="/api/individuals" method="post">
-          <input type="hidden" id="filters" value="PATO:0000384"/>
+          <input type="hidden" name="filters" id="filters" value="PATO:0000384"/>
           <input type="submit" value="Individuals by sex=male (2 results)"/>
         </form>
         <form action="/api/individuals" method="post">
-          <input type="hidden" id="filters" value="PATO:0000383"/>
+          <input type="hidden" name="filters" id="filters" value="PATO:0000383"/>
           <input type="submit" value="Individuals by sex=female (1 result)"/>
         </form>
         <form action="/api/biosamples" method="post">
-          <input type="hidden" id="filters" value="BTO:0000089"/>
+          <input type="hidden" name="filters" id="filters" value="BTO:0000089"/>
           <input type="submit" value="Biosamples by origin (blood) (3 results)"/>
         </form>
         <form action="/api/biosamples" method="post">
-          <input type="hidden" id="filters" value="BTO:0000089,NCIT:C37967"/>
+          <input type="hidden" name="filters" id="filters" value="BTO:0000089,NCIT:C37967"/>
           <input type="submit" value="Biosamples by origin (blood) <i>and</i> individual phenotypic feature (Hypercholesterolemia) (1 result)"/>
         </form>
         <form action="/api/g_variants" method="post">
-          <input type="hidden" id="filters" value="NCIT:C37967"/>
+          <input type="hidden" name="filters" id="filters" value="NCIT:C37967"/>
           <input type="submit" value="Variants of individuals with phenotypic feature (Hypercholesterolemia)"/>
         </form>
         <form action="/api/individuals" method="post">
-          <input type="hidden" id="filters" value="custom.pedigree.id:1"/>
+          <input type="hidden" name="filters" id="filters" value="custom.pedigree.id:1"/>
           <input type="submit" value="Individuals by pedigree Id"/>
         </form>
       </section>

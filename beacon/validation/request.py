@@ -109,7 +109,8 @@ class RequestParameters(metaclass=DeclarativeFieldsMetaclass):
                 # post_data = await req.json()
                 # return dict(flatten_dict(post_data))
                 return req.json()
-            return await req.post()
+            else:
+                return dict(await req.post())
         else:
             return {}
 
