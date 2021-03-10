@@ -43,27 +43,28 @@ def beacon_info_v20(datasets, authorized_datasets=[]):
 
 
 def beacon_dataset_info_v20(row, authorized_datasets=[]):
-    dataset_id = row['datasetId']
+    dataset_id = row['stable_id']
     is_authorized = dataset_id in authorized_datasets
 
     return {
         'id': dataset_id,
         'name': row['name'],
         'description': row['description'],
-        'assemblyId': row['assemblyId'],
-        'createDateTime': row['createdAt'].strftime(conf.datetime_format) if row['createdAt'] else None,
-        'updateDateTime': row['updatedAt'].strftime(conf.datetime_format) if row['updatedAt'] else None,
+        'assemblyId': row['reference_genome'],
+        'createDateTime': row['created_at'].strftime(conf.datetime_format) if row['created_at'] else None,
+        'updateDateTime': row['updated_at'].strftime(conf.datetime_format) if row['updated_at'] else None,
         'dataUseConditions': None,
         'version': None,
-        'variantCount': row['variantCount'],  # already coalesced
-        'callCount': row['callCount'],
-        'sampleCount': row['sampleCount'],
+        'variantCount': row['variant_count'],
+        'callCount': row['call_count'],
+        'sampleCount': row['sample_count'],
         'externalURL': None,
+        'handovers': row['handovers'],
         'info': {
-            'accessType': row['accessType'],
-            'authorized': True if row['accessType'] == 'PUBLIC' else is_authorized,
-            'datasetSource': row['datasetSource'],
-            'datasetType': row['datasetType']
+            'accessType': row['access_type'],
+            'authorized': True if row['access_type'] == 'PUBLIC' else is_authorized,
+            'datasetSource': row['dataset_source'],
+            'datasetType': row['dataset_type']
         }
     }
 

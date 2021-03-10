@@ -2269,23 +2269,42 @@ CREATE TABLE public.dataset_table (
 -- Name: dataset; Type: VIEW; Schema: public; Owner: -
 --
 
-CREATE VIEW public.dataset AS
+CREATE OR REPLACE VIEW public.dataset AS
  SELECT d.id,
     d.stable_id,
     d.name,
     d.description,
     d.access_type,
     d.reference_genome,
-    d.variant_cnt,
-    d.call_cnt,
-    d.sample_cnt,
+    coalesce(d.variant_cnt,0) AS variant_count,
+    coalesce(d.call_cnt,0) AS call_count,
+    coalesce(d.sample_cnt,0) AS sample_count,
     d.dataset_source,
     d.dataset_type,
     d.created_at,
-    d.updated_at
-   FROM public.dataset_table d
-  WHERE (((d.access_type)::text = ANY (ARRAY['PUBLIC'::text, 'REGISTERED'::text, 'CONTROLLED'::text])) AND (d.variant_cnt > 0) AND ((d.reference_genome)::text <> ''::text));
-
+    d.updated_at,
+	dat_hand.dataset_handovers AS handovers
+FROM dataset_table d
+LEFT JOIN (
+	SELECT 
+	dat_hand.dataset_id, 
+	jsonb_agg(
+		jsonb_build_object(
+			'handoverType', jsonb_build_object(
+			'id', hand.type_id,
+			'label', hand.type_label
+			),
+			'note', hand.note,
+			'url', hand.url
+		)
+	) AS dataset_handovers
+	FROM public.dataset_handover_table dat_hand
+	INNER JOIN public.handover_table hand ON hand.id=dat_hand.handover_id
+	GROUP BY dat_hand.dataset_id
+) dat_hand ON dat_hand.dataset_id=d.id
+WHERE (d.access_type::text = ANY (ARRAY['PUBLIC'::text, 'REGISTERED'::text, 'CONTROLLED'::text])) 
+AND d.variant_cnt > 0 
+AND d.reference_genome::text <> ''::text;
 
 --
 -- TOC entry 214 (class 1259 OID 16445)
