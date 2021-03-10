@@ -52,6 +52,7 @@ routes = [
     web.post('/api/g_variants/{target_id_req}/individuals'   , rest_handlers.biosamples_by_variant),
 
     # Cohorts
+    web.post('/api/cohorts'                                  , rest_handlers.cohorts_by_cohort),
     web.post('/api/cohorts/{target_id_req}'                  , rest_handlers.cohorts_by_cohort),
 
     ## HTML UI

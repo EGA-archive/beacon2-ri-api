@@ -594,14 +594,28 @@ async def _fetch_cohort(connection,
                             authenticated,
                             cohort_id=None):
     LOG.info('Retrieving cohort information')
-
-    query = f"SELECT * FROM {conf.database_schema}.cohort WHERE id = $1;"
+    
+    if cohort_id is None:
+        # Build query
+        query = f"SELECT * FROM {conf.database_schema}.cohort"
+            
+        # Execute
+        statement = await connection.prepare(query)
+        response = await statement.fetch()  # requestedSchemas
+        for record in response:
+            yield record
+    else:
+        # Build query
+        query = f"SELECT * FROM {conf.database_schema}.cohort WHERE id = $1;"
+        
+        # Execute
+        statement = await connection.prepare(query)
+        response = await statement.fetch(int(cohort_id))  # requestedSchemas
+        for record in response:
+            yield record
+    
     LOG.debug("QUERY: %s", query)
-    statement = await connection.prepare(query)
-    response = await statement.fetch(int(cohort_id))  # requestedSchemas
 
-    for record in response:
-        yield record
 
 @pool.coroutine_execute
 async def _count_cohorts(connection,
@@ -610,10 +624,23 @@ async def _count_cohorts(connection,
                             authenticated,
                             cohort_id=None):
     LOG.info('Counting cohorts fetched')
-    query = f"SELECT COUNT(*) FROM {conf.database_schema}.cohort WHERE id = $1;"
-    LOG.debug("QUERY: %s", query)
-    statement = await connection.prepare(query)
-    return await statement.fetchval(int(cohort_id), column=0) 
+    
+    if cohort_id is None:
+        # Build query
+        query = f"SELECT COUNT(*) FROM {conf.database_schema}.cohort"
+        LOG.debug("QUERY: %s", query)
+
+        # Execute
+        statement = await connection.prepare(query)
+        return await statement.fetchval(column=0)
+    else:
+        # Build query
+        query = f"SELECT COUNT(*) FROM {conf.database_schema}.cohort WHERE id = $1;"
+        LOG.debug("QUERY: %s", query)
+
+        # Execute
+        statement = await connection.prepare(query)
+        return await statement.fetchval(int(cohort_id), column=0)
 
 def count_cohorts_by_cohort(qparams_db, datasets, authenticated):
     return _count_cohorts(qparams_db, datasets, authenticated, cohort_id=qparams_db.targetIdReq)
