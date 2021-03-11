@@ -140,8 +140,8 @@ class GVariantsParameters(GVariantParametersBase):
 
 class CohortParameters(GVariantParametersBase):
     requestedSchema = SchemaField(
-        'beacon-cohort-v2.0.0-draft3',
-        default='beacon-cohort-v2.0.0-draft3'
+        'beacon-cohort-v2.0.0-draft.3.1',
+        default='beacon-cohort-v2.0.0-draft.3.1'
     )
 
 def generic_handler(log_name, by_entity_type, proxy, fetch_func, count_results_func, build_response_func):
