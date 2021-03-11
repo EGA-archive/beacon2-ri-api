@@ -15,8 +15,8 @@ LOG = logging.getLogger(__name__)
 # ----------------------------------------------------------------------------------------------------------------------
 
 class DatasetParameters(RequestParameters):
-    requestedSchema = SchemaField('beacon-dataset-v2.0.0-draft.2',
-                                  default='beacon-dataset-v2.0.0-draft.2')
+    requestedSchema = SchemaField('beacon-dataset-v2.0.0-draft.3',
+                                  default='beacon-dataset-v2.0.0-draft.3')
     apiVersion = RegexField(r'^v[0-9]+(\.[0-9]+)*$')
 
 

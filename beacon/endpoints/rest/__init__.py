@@ -121,27 +121,27 @@ class GVariantParametersBase(RequestParameters):
 
 class BiosamplesParameters(GVariantParametersBase):
     requestedSchema = SchemaField('ga4gh-phenopacket-biosample-v1.0',
-                                  'beacon-biosample-v2.0.0-draft.2',
-                                  default='beacon-biosample-v2.0.0-draft.2')
+                                  'beacon-biosample-v2.0.0-draft.3',
+                                  default='beacon-biosample-v2.0.0-draft.3')
 
 class IndividualsParameters(GVariantParametersBase):
     requestedSchema = SchemaField('ga4gh-phenopacket-individual-v1.0',
-                                  'beacon-individual-v2.0.0-draft.2',
-                                  default='beacon-individual-v2.0.0-draft.2')
+                                  'beacon-individual-v2.0.0-draft.3',
+                                  default='beacon-individual-v2.0.0-draft.3')
 
 class GVariantsParameters(GVariantParametersBase):
-    requestedSchema = SchemaField('beacon-variant-v2.0.0-draft.2',
+    requestedSchema = SchemaField('beacon-variant-v2.0.0-draft.3',
                                   'ga4gh-phenopacket-variant-v1.0',
                                   'ga4gh-variant-representation-v1.1',
-                                  default='beacon-variant-v2.0.0-draft.2')
-    requestedAnnotationSchema = SchemaField('beacon-variant-annotation-v2.0.0-draft.2',
+                                  default='beacon-variant-v2.0.0-draft.3')
+    requestedAnnotationSchema = SchemaField('beacon-variant-annotation-v2.0.0-draft.3',
                                             'ga4gh-phenopacket-variant-annotation-v1.0',
-                                  default='beacon-variant-annotation-v2.0.0-draft.2')
+                                  default='beacon-variant-annotation-v2.0.0-draft.3')
 
 class CohortParameters(GVariantParametersBase):
     requestedSchema = SchemaField(
-        'beacon-cohort-draft3.1',
-        default='beacon-cohort-draft3.1'
+        'beacon-cohort-v2.0.0-draft3',
+        default='beacon-cohort-v2.0.0-draft3'
     )
 
 def generic_handler(log_name, by_entity_type, proxy, fetch_func, count_results_func, build_response_func):

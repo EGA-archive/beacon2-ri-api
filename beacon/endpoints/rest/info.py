@@ -31,8 +31,8 @@ LOG = logging.getLogger(__name__)
 class InfoParameters(RequestParameters):
     model = ChoiceField('ga4gh-service-info-v1.0', default=None)
     requestedSchema = SchemaField('ga4gh-service-info-v1.0',
-                                  'beacon-info-v2.0.0-draft.2',
-                                  default='beacon-info-v2.0.0-draft.2')
+                                  'beacon-info-v2.0.0-draft.3',
+                                  default='beacon-info-v2.0.0-draft.3')
     apiVersion = RegexField(r'^v[0-9]+(\.[0-9]+)*$')
 
 
