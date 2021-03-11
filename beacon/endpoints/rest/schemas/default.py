@@ -11,7 +11,7 @@ LOG = logging.getLogger(__name__)
 def snake_case_to_camelCase(j):
     return j if j is None else json.loads(under_pat.sub(lambda x: x.group(1).upper(), j))
 
-def beacon_info_v20(datasets, authorized_datasets=[]):
+def beacon_info_v30(datasets, authorized_datasets=[]):
     return {
         'id': conf.beacon_id,
         'name': conf.beacon_name,
@@ -37,12 +37,12 @@ def beacon_info_v20(datasets, authorized_datasets=[]):
         'serviceUrl': conf.service_url,
         'entryPoint': conf.entry_point,
         'open': conf.is_open,
-        'datasets': [beacon_dataset_info_v20(row, authorized_datasets) for row in datasets],
+        'datasets': [beacon_dataset_info_v30(row, authorized_datasets) for row in datasets],
         'info': None,
     }
 
 
-def beacon_dataset_info_v20(row, authorized_datasets=[]):
+def beacon_dataset_info_v30(row, authorized_datasets=[]):
     dataset_id = row['datasetId']
     is_authorized = dataset_id in authorized_datasets
 
@@ -68,16 +68,16 @@ def beacon_dataset_info_v20(row, authorized_datasets=[]):
     }
 
 
-def beacon_variant_v20(row):
+def beacon_variant_v30(row):
     return {
             'variantId': row['variant_id'],
+            'assemblyId': row['assembly_id'],
             'refseqId': row['refseq_id'],
+            'start': row['start'],
+            'end': row['end'],
             'ref': row['reference'],
             'alt': row['alternate'],
             'variantType': row['variant_type'],
-            'start': row['start'],
-            'end': row['end'],
-            'assemblyId': row['assembly_id'],
             'info': {
                 'chromosome': row['chromosome'],
                 'effect_impacts': row['effect_impacts'],
@@ -89,21 +89,30 @@ def beacon_variant_v20(row):
         }
 
 
-def beacon_variant_annotation_v20(row):
+def beacon_variant_annotation_v30(row):
     return {
             'variantId': row['variant_id'],
-            'variantAlternativeIds': [row['variant_name']],
-            'transcriptHGVSIds': row['transcript_hgvs_ids'],
-            'proteinHGVSIds': row['protein_hgvs_ids'],
-            'genomicRegions': row['genomic_regions'],
+            'variantAlternativeId': [row['alternative_id']],
+            'genomicHGVSId': row['genomic_hgvs_id'],
+            'transcriptHGVSId': row['transcript_hgvs_ids'],
+            'proteinHGVSId': row['protein_hgvs_ids'],
+            'genomicRegion': row['genomic_regions'],
             'genomicFeatures': row['genomic_features_ontology'],
+            'annotationToolVersion': 'SnpEffVersion=5.0d (build 2021-01-28 11:39)',
             'molecularEffect': row['molecular_effects'],
             #'molecularConsequence': row['molecular_consequence'],
             'aminoacidChange': row['aminoacid_changes'],
-            'info': None
+            'info': {
+                'aaref': row['aaref'],
+                #'aapos': row['aapos'],
+                'aaalt': row['aaalt'],
+                'aa_pos_aa_length': row['functional_classes'],
+                'rank': row['exon_ranks'],
+                'annotation_impact': row['genomic_regions']
+            }
         }
 
-def beacon_biosample_v20(row):
+def beacon_biosample_v30(row):
     return {
         'biosampleId': row['biosample_stable_id'],
         'subjectId': row['individual_stable_id'],
@@ -127,7 +136,7 @@ def beacon_biosample_v20(row):
     }
 
 
-def beacon_individual_v20(row):
+def beacon_individual_v30(row):
     return {
         'individualId': row['individual_stable_id'],
         'taxonId': row['taxon_id'],
