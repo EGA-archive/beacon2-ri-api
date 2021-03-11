@@ -79,14 +79,7 @@ def beacon_variant_v30(row):
             'ref': row['reference'],
             'alt': row['alternate'],
             'variantType': row['variant_type'],
-            'info': {
-                'chromosome': row['chromosome'],
-                'effect_impacts': row['effect_impacts'],
-                'functional_classes': row['functional_classes'],
-                'genomic_regions_ontology': row['genomic_regions_ontology'],
-                'molecular_effects_ontology': row['molecular_effects_ontology'],
-                'ontologies_used': row['ontologies_used']
-            },
+            'info': None,
         }
 
 
