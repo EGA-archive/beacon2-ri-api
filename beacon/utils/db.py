@@ -235,23 +235,9 @@ async def fetch_datasets_metadata(connection, transform=None):
     Execute query for returning dataset metadata.
     """
     LOG.info('Retrieving datasets metadata')
-    query = f"""SELECT stable_id                AS "datasetId",
-                        name                    AS "name",
-                        description              AS "description",
-                        access_type              AS "accessType",
-                        reference_genome         AS "assemblyId",
-                        COALESCE(variant_cnt, 0) AS "variantCount",
-                        COALESCE(call_cnt   , 0) AS "callCount",
-                        COALESCE(sample_cnt , 0) AS "sampleCount",
-                        dataset_source          AS "datasetSource",
-                        dataset_type            AS "datasetType",
-                        created_at               AS "createdAt",
-                        updated_at               AS "updatedAt"
-                FROM {conf.database_schema}.dataset;"""
+    query = f"""SELECT * FROM {conf.database_schema}.dataset;"""
     LOG.debug("QUERY: %s", query)
     response = await connection.fetch(query)
-    # for record in response:
-    #     yield transform(record) if callable(transform) else record
     for record in response:
         yield record
 
