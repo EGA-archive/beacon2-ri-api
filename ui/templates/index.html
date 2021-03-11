@@ -49,47 +49,47 @@
           <input type="submit" value="Biosamples"/>
         </form>
         <form action="/api/biosamples/SAMN03283350" method="post">
-          <input type="hidden" id="assemblyId" value="GRCh37.p1"/>
+          <input type="hidden" name="assemblyId" value="GRCh37.p1"/>
           <input type="submit" value="Biosample SAMN03283350"/>
         </form>
         <form action="/api/biosamples/SAMN03283350/individuals" method="post">
-          <input type="hidden" id="assemblyId" value="GRCh37.p1"/>
+          <input type="hidden" name="assemblyId" value="GRCh37.p1"/>
           <input type="submit" value="Individuals of biosample SAMN03283350"/>
         </form>
         <form action="/api/biosamples/SAMN03283350/g_variants" method="post">
-          <input type="hidden" id="assemblyId" value="GRCh37.p1"/>
+          <input type="hidden" name="assemblyId" value="GRCh37.p1"/>
           <input type="submit" value="Variants of biosample SAMN03283350"/>
         </form>
         <form action="/api/individuals" method="post">
-          <input type="hidden" id="assemblyId" value="GRCh37.p1"/>
+          <input type="hidden" name="assemblyId" value="GRCh37.p1"/>
           <input type="submit" value="Individuals"/>
         </form>
         <form action="/api/individuals/NA24631" method="post">
-          <input type="hidden" id="assemblyId" value="GRCh37.p1"/>
+          <input type="hidden" name="assemblyId" value="GRCh37.p1"/>
           <input type="submit" value="Individual NA24631"/>
         </form>
         <form action="/api/individuals/NA24631/biosamples" method="post">
-          <input type="hidden" id="assemblyId" value="GRCh37.p1"/>
+          <input type="hidden" name="assemblyId" value="GRCh37.p1"/>
           <input type="submit" value="Biosamples of individual NA24631"/>
         </form>
         <form action="/api/individuals/NA24631/g_variants" method="post">
-          <input type="hidden" id="assemblyId" value="GRCh37.p1"/>
+          <input type="hidden" name="assemblyId" value="GRCh37.p1"/>
           <input type="submit" value="Variants of individual NA24631"/>
         </form>
         <form action="/api/g_variants" method="post">
-          <input type="hidden" id="assemblyId" value="GRCh37.p1"/>
+          <input type="hidden" name="assemblyId" value="GRCh37.p1"/>
           <input type="submit" value="Variants"/>
         </form>
         <form action="/api/g_variants/1325" method="post">
-          <input type="hidden" id="assemblyId" value="GRCh37.p1"/>
+          <input type="hidden" name="assemblyId" value="GRCh37.p1"/>
           <input type="submit" value="Variant 1325"/>
         </form>
         <form action="/api/g_variants/1325/biosamples" method="post">
-          <input type="hidden" id="assemblyId" value="GRCh37.p1"/>
+          <input type="hidden" name="assemblyId" value="GRCh37.p1"/>
           <input type="submit" value="Biosamples of variant 1325"/>
         </form>
         <form action="/api/g_variants/1325/individuals" method="post">
-          <input type="hidden" id="assemblyId" value="GRCh37.p1"/>
+          <input type="hidden" name="assemblyId" value="GRCh37.p1"/>
           <input type="submit" value="Individuals of variant 1325"/>
         </form>
       </section>
@@ -97,20 +97,20 @@
       <h2>Other formats</h2>
       <section>
         <form action="/api/biosamples/SAMN03283350" method="post">
-          <input type="hidden" id="requestedSchema" value="ga4gh-phenopacket-biosample-v1.0"/>
+          <input type="hidden" name="requestedSchema" value="ga4gh-phenopacket-biosample-v1.0"/>
           <input type="submit" value="Biosample SAMN03283350 in phenopacket format"/>
         </form>
         <form action="/api/individuals/NA24631" method="post">
-          <input type="hidden" id="requestedSchema" value="ga4gh-phenopacket-individual-v1.0"/>
+          <input type="hidden" name="requestedSchema" value="ga4gh-phenopacket-individual-v1.0"/>
           <input type="submit" value="Individual NA24631 in phenopacket format"/>
         </form>
         <form action="/api/g_variants/1325" method="post">
-          <input type="hidden" id="requestedSchema" value="ga4gh-phenopacket-variant-v1.0"/>
-          <input type="hidden" id="requestedAnnotationSchema" value="ga4gh-phenopacket-variant-annotation-v1.0"/>
+          <input type="hidden" name="requestedSchema" value="ga4gh-phenopacket-variant-v1.0"/>
+          <input type="hidden" name="requestedAnnotationSchema" value="ga4gh-phenopacket-variant-annotation-v1.0"/>
           <input type="submit" value="Variant 1325 in phenopacket format"/>
         </form>
         <form action="/api/g_variants/1325" method="post">
-          <input type="hidden" id="requestedSchema" value="ga4gh-variant-representation-v1.1"/>
+          <input type="hidden" name="requestedSchema" value="ga4gh-variant-representation-v1.1"/>
           <input type="submit" value="Variant 1325 in VR format"/>
         </form>
       </section>
@@ -118,50 +118,50 @@
       <h2>Querying</h2>
       <section>
         <form action="/api/g_variants" method="post">
-          <input type="hidden" id="assemblyId" value="GRCh37.p1"/>
-          <input type="hidden" id="referenceName" value="MT"/>
-          <input type="hidden" id="referenceBases" value="T"/>
-          <input type="hidden" id="alternateBases" value="C"/>
-          <input type="hidden" id="start" value="150"/>
-          <input type="hidden" id="includeDatasetResponses" value="ALL"/>
+          <input type="hidden" name="assemblyId" value="GRCh37.p1"/>
+          <input type="hidden" name="referenceName" value="MT"/>
+          <input type="hidden" name="referenceBases" value="T"/>
+          <input type="hidden" name="alternateBases" value="C"/>
+          <input type="hidden" name="start" value="150"/>
+          <input type="hidden" name="includeDatasetResponses" value="ALL"/>
           <input type="submit" value="SNP query"/>
         </form>
         <form action="/api/biosamples" method="post">
-          <input type="hidden" id="assemblyId" value="GRCh37.p1"/>
-          <input type="hidden" id="referenceName" value="MT"/>
-          <input type="hidden" id="referenceBases" value="T"/>
-          <input type="hidden" id="alternateBases" value="C"/>
-          <input type="hidden" id="start" value="150"/>
+          <input type="hidden" name="assemblyId" value="GRCh37.p1"/>
+          <input type="hidden" name="referenceName" value="MT"/>
+          <input type="hidden" name="referenceBases" value="T"/>
+          <input type="hidden" name="alternateBases" value="C"/>
+          <input type="hidden" name="start" value="150"/>
           <input type="submit" value="Biosamples with this SNP"/>
         </form>
         <form action="/api/individuals" method="post">
-          <input type="hidden" id="assemblyId" value="GRCh37.p1"/>
-          <input type="hidden" id="referenceName" value="MT"/>
-          <input type="hidden" id="referenceBases" value="T"/>
-          <input type="hidden" id="alternateBases" value="C"/>
-          <input type="hidden" id="start" value="150"/>
+          <input type="hidden" name="assemblyId" value="GRCh37.p1"/>
+          <input type="hidden" name="referenceName" value="MT"/>
+          <input type="hidden" name="referenceBases" value="T"/>
+          <input type="hidden" name="alternateBases" value="C"/>
+          <input type="hidden" name="start" value="150"/>
           <input type="submit" value="Individuals with this SNP"/>
         </form>
         <form action="/api/g_variants" method="post">
-          <input type="hidden" id="assemblyId" value="GRCh37.p1"/>
-          <input type="hidden" id="referenceName" value="MT"/>
-          <input type="hidden" id="start" value="1"/>
-          <input type="hidden" id="end" value="200"/>
+          <input type="hidden" name="assemblyId" value="GRCh37.p1"/>
+          <input type="hidden" name="referenceName" value="MT"/>
+          <input type="hidden" name="start" value="1"/>
+          <input type="hidden" name="end" value="200"/>
           <input type="submit" value="Region query [1-200]"/>
         </form>
         <form action="/api/g_variants" method="post">
-          <input type="hidden" id="assemblyId" value="GRCh37.p1"/>
-          <input type="hidden" id="referenceName" value="21"/>
-          <input type="hidden" id="start" value="42809489"/>
-          <input type="hidden" id="end" value="42809491"/>
+          <input type="hidden" name="assemblyId" value="GRCh37.p1"/>
+          <input type="hidden" name="referenceName" value="21"/>
+          <input type="hidden" name="start" value="42809489"/>
+          <input type="hidden" name="end" value="42809491"/>
           <input type="submit" value="Structural variant - exact match [GRCh37.p1 chr21 42809489-42809491]"/>
         </form>
         <form action="/api/g_variants" method="post">
-          <input type="hidden" id="assemblyId" value="GRCh37.p1"/>
-          <input type="hidden" id="referenceName" value="21"/>
-          <input type="hidden" id="start" value="42809489,42809490"/>
-          <input type="hidden" id="end" value="42809490,42809491"/>
-          <input type="hidden" id="variantType" value="DEL"/>
+          <input type="hidden" name="assemblyId" value="GRCh37.p1"/>
+          <input type="hidden" name="referenceName" value="21"/>
+          <input type="hidden" name="start" value="42809489,42809490"/>
+          <input type="hidden" name="end" value="42809490,42809491"/>
+          <input type="hidden" name="variantType" value="DEL"/>
           <input type="submit" value="Structural variant - fuzzy match (start in [42809489,4280949] and end in [42809490,42809491])"/>
         </form>
       </section>
@@ -169,18 +169,18 @@
       <h2>Permissions</h2>
       <section>
         <form action="/api/g_variants" method="post">
-          <input type="hidden" id="assemblyId" value="grch37.p1"/>
-          <input type="hidden" id="referenceName" value="21"/>
-          <input type="hidden" id="start" value="9411318"/>
-          <input type="hidden" id="end" value="9411338"/>
+          <input type="hidden" name="assemblyId" value="grch37.p1"/>
+          <input type="hidden" name="referenceName" value="21"/>
+          <input type="hidden" name="start" value="9411318"/>
+          <input type="hidden" name="end" value="9411338"/>
           <input type="submit" value="User queries public datasets: returns 2 rows for any user"/>
         </form>
         <form action="/api/g_variants" method="post">
-          <input type="hidden" id="assemblyId" value="grch37.p1"/>
-          <input type="hidden" id="referenceName" value="21"/>
-          <input type="hidden" id="start" value="9411318"/>
-          <input type="hidden" id="end" value="9411338"/>
-          <input type="hidden" id="datasetIds" value="GiaB,dataset-registered,dataset-controlled"/>
+          <input type="hidden" name="assemblyId" value="grch37.p1"/>
+          <input type="hidden" name="referenceName" value="21"/>
+          <input type="hidden" name="start" value="9411318"/>
+          <input type="hidden" name="end" value="9411338"/>
+          <input type="hidden" name="datasetIds" value="GiaB,dataset-registered,dataset-controlled"/>
           <input type="submit" value="User queries all datasets: unauthenticated user returns 2 rows, user 'john' 6 rows, 'jane' 4 rows"/>
         </form>
         <!--<a href="/api/g_variants?start=9411318&end=9411338&assemblyId=grch37.p1&referenceName=21&datasetIds=dataset-registered">Anonymous user queries registered dataset: FIXME</a>-->
@@ -189,39 +189,39 @@
       <h2>Filters</h2>
       <section>
         <form action="/api/individuals" method="post">
-          <input type="hidden" name="filters" id="filters" value="NCIT:C37967"/>
+          <input type="hidden" name="filters" value="NCIT:C37967"/>
           <input type="submit" value="Individuals by phenotypic feature (Hypercholesterolemia) (1 result)"/>
         </form>
         <form action="/api/individuals" method="post">
-          <input type="hidden" name="filters" id="filters" value="NCIT:C27083,PATO:0000383"/>
+          <input type="hidden" name="filters" value="NCIT:C27083,PATO:0000383"/>
           <input type="submit" value="Individuals by phenotypic feature (blood clot) and sex (female) (no results)"/>
         </form>
         <form action="/api/individuals" method="post">
-          <input type="hidden" name="filters" id="filters" value="NCIT:C27083,PATO:0000384"/>
+          <input type="hidden" name="filters" value="NCIT:C27083,PATO:0000384"/>
           <input type="submit" value="Individuals by phenotypic feature (blood clot) and sex (male) (1 result)"/>
         </form>
         <form action="/api/individuals" method="post">
-          <input type="hidden" name="filters" id="filters" value="PATO:0000384"/>
+          <input type="hidden" name="filters" value="PATO:0000384"/>
           <input type="submit" value="Individuals by sex=male (2 results)"/>
         </form>
         <form action="/api/individuals" method="post">
-          <input type="hidden" name="filters" id="filters" value="PATO:0000383"/>
+          <input type="hidden" name="filters" value="PATO:0000383"/>
           <input type="submit" value="Individuals by sex=female (1 result)"/>
         </form>
         <form action="/api/biosamples" method="post">
-          <input type="hidden" name="filters" id="filters" value="BTO:0000089"/>
+          <input type="hidden" name="filters" value="BTO:0000089"/>
           <input type="submit" value="Biosamples by origin (blood) (3 results)"/>
         </form>
         <form action="/api/biosamples" method="post">
-          <input type="hidden" name="filters" id="filters" value="BTO:0000089,NCIT:C37967"/>
+          <input type="hidden" name="filters" value="BTO:0000089,NCIT:C37967"/>
           <input type="submit" value="Biosamples by origin (blood) <i>and</i> individual phenotypic feature (Hypercholesterolemia) (1 result)"/>
         </form>
         <form action="/api/g_variants" method="post">
-          <input type="hidden" name="filters" id="filters" value="NCIT:C37967"/>
+          <input type="hidden" name="filters" value="NCIT:C37967"/>
           <input type="submit" value="Variants of individuals with phenotypic feature (Hypercholesterolemia)"/>
         </form>
         <form action="/api/individuals" method="post">
-          <input type="hidden" name="filters" id="filters" value="custom.pedigree.id:1"/>
+          <input type="hidden" name="filters" value="custom.pedigree.id:1"/>
           <input type="submit" value="Individuals by pedigree Id"/>
         </form>
       </section>
