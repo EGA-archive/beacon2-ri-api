@@ -42,8 +42,6 @@ def beacon_info_v30(datasets, authorized_datasets=[]):
     }
 
 
-def beacon_dataset_info_v20(row, authorized_datasets=[]):
-    dataset_id = row['stable_id']
 def beacon_dataset_info_v30(row, authorized_datasets=[]):
     dataset_id = row['datasetId']
     is_authorized = dataset_id in authorized_datasets
