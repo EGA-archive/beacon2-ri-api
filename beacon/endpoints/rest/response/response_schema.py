@@ -10,10 +10,12 @@ class BeaconEntity(IntEnum):
     BIOSAMPLE = 1
     INDIVIDUAL = 2
     VARIANT = 3
+    COHORT = 4
 
 
 def build_beacon_response(proxy,
                           data,
+                          num_total_results,
                           qparams_converted,
                           by_entity_type,
                           non_accessible_datasets,
@@ -24,7 +26,7 @@ def build_beacon_response(proxy,
 
     beacon_response = {
         'meta': build_meta(proxy, qparams_converted, by_entity_type),
-        'response': build_response(data, qparams_converted, non_accessible_datasets, func_response_type)
+        'response': build_response(data, num_total_results, qparams_converted, non_accessible_datasets, func_response_type)
     }
     return beacon_response
 
@@ -173,14 +175,14 @@ def build_error(non_accessible_datasets):
     }
 
 
-def build_response(data, qparams, non_accessible_datasets, func):
+def build_response(data, num_total_results, qparams, non_accessible_datasets, func):
     """"Fills the `response` part with the correct format in `results`"""
 
     # LOG.debug('Calling f= %s', func)
 
     response = {
             'exists': bool(data),
-            'numTotalResults': data[0]['num_total_results'] if data else 0,
+            'numTotalResults': int(num_total_results),
             'results': func(data, qparams),
             'info': None,
             'resultsHandover': None, # build_results_handover
@@ -211,4 +213,7 @@ def build_variant_response(data, qparams):
 def build_biosample_or_individual_response(data, qparams):
     """"Fills the `results` part with the format for biosample or individual data"""
 
+    return [qparams.requestedSchema[1](row) for row in data]
+
+def build_cohort_response(data, qparams):
     return [qparams.requestedSchema[1](row) for row in data]

@@ -15,8 +15,8 @@ LOG = logging.getLogger(__name__)
 # ----------------------------------------------------------------------------------------------------------------------
 
 class DatasetParameters(RequestParameters):
-    requestedSchema = SchemaField('beacon-dataset-v2.0.0-draft.2',
-                                  default='beacon-dataset-v2.0.0-draft.2')
+    requestedSchema = SchemaField('beacon-dataset-v2.0.0-draft.3',
+                                  default='beacon-dataset-v2.0.0-draft.3')
     apiVersion = RegexField(r'^v[0-9]+(\.[0-9]+)*$')
 
 
@@ -37,7 +37,7 @@ async def handler(request):
     # Fetch datasets info
     beacon_datasets = [r async for r in fetch_datasets_metadata()]
 
-    all_datasets = [r['datasetId'] for r in beacon_datasets]
+    all_datasets = [r['stable_id'] for r in beacon_datasets]
 
     access_token = request.headers.get('Authorization')
     if access_token:

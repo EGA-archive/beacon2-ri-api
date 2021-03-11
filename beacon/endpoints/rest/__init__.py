@@ -121,28 +121,34 @@ class GVariantParametersBase(RequestParameters):
 
 class BiosamplesParameters(GVariantParametersBase):
     requestedSchema = SchemaField('ga4gh-phenopacket-biosample-v1.0',
-                                  'beacon-biosample-v2.0.0-draft.2',
-                                  default='beacon-biosample-v2.0.0-draft.2')
+                                  'beacon-biosample-v2.0.0-draft.3',
+                                  default='beacon-biosample-v2.0.0-draft.3')
 
 class IndividualsParameters(GVariantParametersBase):
     requestedSchema = SchemaField('ga4gh-phenopacket-individual-v1.0',
-                                  'beacon-individual-v2.0.0-draft.2',
-                                  default='beacon-individual-v2.0.0-draft.2')
+                                  'beacon-individual-v2.0.0-draft.3',
+                                  default='beacon-individual-v2.0.0-draft.3')
 
 class GVariantsParameters(GVariantParametersBase):
-    requestedSchema = SchemaField('beacon-variant-v2.0.0-draft.2',
+    requestedSchema = SchemaField('beacon-variant-v2.0.0-draft.3',
                                   'ga4gh-phenopacket-variant-v1.0',
                                   'ga4gh-variant-representation-v1.1',
-                                  default='beacon-variant-v2.0.0-draft.2')
-    requestedAnnotationSchema = SchemaField('beacon-variant-annotation-v2.0.0-draft.2',
+                                  default='beacon-variant-v2.0.0-draft.3')
+    requestedAnnotationSchema = SchemaField('beacon-variant-annotation-v2.0.0-draft.3',
                                             'ga4gh-phenopacket-variant-annotation-v1.0',
-                                  default='beacon-variant-annotation-v2.0.0-draft.2')
+                                  default='beacon-variant-annotation-v2.0.0-draft.3')
 
+class CohortParameters(GVariantParametersBase):
+    requestedSchema = SchemaField(
+        'beacon-cohort-v2.0.0-draft.3.1',
+        default='beacon-cohort-v2.0.0-draft.3.1'
+    )
 
-def generic_handler(log_name, by_entity_type, proxy, fetch_func, build_response_func):
+def generic_handler(log_name, by_entity_type, proxy, fetch_func, count_results_func, build_response_func):
     async def wrapper(request):
         LOG.info('Running a request for %s', log_name)
         _, qparams_db = await proxy.fetch(request)
+        LOG.debug(qparams_db)
         if LOG.isEnabledFor(logging.DEBUG):
             print_qparams(qparams_db, proxy, LOG)
 
@@ -159,12 +165,16 @@ def generic_handler(log_name, by_entity_type, proxy, fetch_func, build_response_
 
         if not datasets and non_accessible_datasets:
             error = f'You are not authorized to access any of these datasets: {non_accessible_datasets}'
-            raise BeaconUnauthorised(error, json_error=proxy.json_error)
+            raise BeaconUnauthorised(error, api_error=proxy.json_error)
 
         response = fetch_func(qparams_db, datasets, authenticated)
+        response_total_results = count_results_func(qparams_db, datasets, authenticated)
+        
         rows = [row async for row in response]
+        num_total_results = await response_total_results
+
         # build_beacon_response knows how to loop through it
-        response_converted = build_beacon_response(proxy, rows, qparams_db, by_entity_type, non_accessible_datasets, build_response_func)
+        response_converted = build_beacon_response(proxy, rows, num_total_results, qparams_db, by_entity_type, non_accessible_datasets, build_response_func)
 
         LOG.info('Formatting the response for %s', log_name)
         return await json_stream(request, response_converted, partial=bool(non_accessible_datasets))

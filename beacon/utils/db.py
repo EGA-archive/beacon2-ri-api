@@ -235,23 +235,9 @@ async def fetch_datasets_metadata(connection, transform=None):
     Execute query for returning dataset metadata.
     """
     LOG.info('Retrieving datasets metadata')
-    query = f"""SELECT stable_id                AS "datasetId",
-                        name                    AS "name",
-                        description              AS "description",
-                        access_type              AS "accessType",
-                        reference_genome         AS "assemblyId",
-                        COALESCE(variant_cnt, 0) AS "variantCount",
-                        COALESCE(call_cnt   , 0) AS "callCount",
-                        COALESCE(sample_cnt , 0) AS "sampleCount",
-                        dataset_source          AS "datasetSource",
-                        dataset_type            AS "datasetType",
-                        created_at               AS "createdAt",
-                        updated_at               AS "updatedAt"
-                FROM {conf.database_schema}.dataset;"""
+    query = f"""SELECT * FROM {conf.database_schema}.dataset;"""
     LOG.debug("QUERY: %s", query)
     response = await connection.fetch(query)
-    # for record in response:
-    #     yield transform(record) if callable(transform) else record
     for record in response:
         yield record
 
@@ -306,7 +292,7 @@ async def _fetch_variants(connection,
 
     dollars = ", ".join([ f"${i}" for i in range(1, 22)]) # 1..21
     LOG.debug("dollars: %s", dollars)
-    query = f"SELECT * FROM {conf.database_schema}.query_gvariants({dollars});"
+    query = f"SELECT * FROM {conf.database_schema}.fetch_gvariants({dollars});"
     LOG.debug("QUERY: %s", query)
     statement = await connection.prepare(query)
     response = await statement.fetch(qparams_db.variantType,  # _variant_type text,
@@ -357,7 +343,7 @@ async def _fetch_individuals(connection,
     """
     # connection.add_log_listener(simple_listener)
     dollars = ", ".join([f"${i}" for i in range(1, 21)])  # 1..20
-    query = f"SELECT * FROM {conf.database_schema}.query_individuals({dollars});"
+    query = f"SELECT * FROM {conf.database_schema}.fetch_individuals({dollars});"
     LOG.debug("QUERY: %s", query)
     statement = await connection.prepare(query)
     response = await statement.fetch(qparams_db.variantType,  # _variant_type text,
@@ -410,7 +396,7 @@ async def _fetch_biosamples(connection,
 
     dollars = ", ".join([ f"${i}" for i in range(1, 21)]) # 1..20
     # LOG.debug("dollars: %s", dollars)
-    query = f"SELECT * FROM {conf.database_schema}.query_samples({dollars});"
+    query = f"SELECT * FROM {conf.database_schema}.fetch_samples({dollars});"
     LOG.debug("QUERY: %s", query)
     statement = await connection.prepare(query)
     response = await statement.fetch(qparams_db.variantType,  # _variant_type text,
@@ -446,3 +432,201 @@ def fetch_biosamples_by_biosample(qparams_db, datasets, authenticated):
 
 def fetch_biosamples_by_individual(qparams_db, datasets, authenticated):
     return _fetch_biosamples(qparams_db, datasets, authenticated, individual_stable_id=qparams_db.targetIdReq)
+
+
+def count_variants_by_variant(qparams_db, datasets, authenticated):
+    return _count_variants(qparams_db, datasets, authenticated, variant_id=qparams_db.targetIdReq)
+
+def count_variants_by_biosample(qparams_db, datasets, authenticated):
+    return _count_variants(qparams_db, datasets, authenticated, biosample_stable_id=qparams_db.targetIdReq)
+
+def count_variants_by_individual(qparams_db, datasets, authenticated):
+    return _count_variants(qparams_db, datasets, authenticated, individual_stable_id=qparams_db.targetIdReq)
+
+def count_individuals_by_variant(qparams_db, datasets, authenticated):
+    return _count_individuals(qparams_db, datasets, authenticated, variant_id=qparams_db.targetIdReq)
+
+def count_individuals_by_biosample(qparams_db, datasets, authenticated):
+    return _count_individuals(qparams_db, datasets, authenticated, biosample_stable_id=qparams_db.targetIdReq)
+
+def count_individuals_by_individual(qparams_db, datasets, authenticated):
+    return _count_individuals(qparams_db, datasets, authenticated, individual_stable_id=qparams_db.targetIdReq)
+
+def count_biosamples_by_variant(qparams_db, datasets, authenticated):
+    return _count_biosamples(qparams_db, datasets, authenticated, variant_id=qparams_db.targetIdReq)
+
+def count_biosamples_by_biosample(qparams_db, datasets, authenticated):
+    return _count_biosamples(qparams_db, datasets, authenticated, biosample_stable_id=qparams_db.targetIdReq)
+
+def count_biosamples_by_individual(qparams_db, datasets, authenticated):
+    return _count_biosamples(qparams_db, datasets, authenticated, individual_stable_id=qparams_db.targetIdReq)
+
+@pool.coroutine_execute
+async def _count_variants(connection,
+                          qparams_db,
+                          datasets,
+                          authenticated,
+                          variant_id=None,
+                          biosample_stable_id=None,
+                          individual_stable_id=None):
+    LOG.info('Retrieving viral variant count')
+
+    # We want just the names, not the formatting functions
+    requested_schemas = [qparams_db.requestedSchema[0], qparams_db.requestedAnnotationSchema[0]]
+
+    dollars = ", ".join([ f"${i}" for i in range(1, 18)]) # 1..16
+    LOG.debug("dollars: %s", dollars)
+    query = f"SELECT * FROM {conf.database_schema}.count_gvariants({dollars});"
+    LOG.debug("QUERY: %s", query)
+    statement = await connection.prepare(query)
+    return await statement.fetchval(qparams_db.variantType,  # _variant_type text,
+                                     qparams_db.start[0] if len(qparams_db.start) == 1 else None,  # _start integer,
+                                     qparams_db.start[0] if len(qparams_db.start) > 1 else None,  # _start_min integer,
+                                     qparams_db.start[1] if len(qparams_db.start) > 1 else None,  # _start_max integer,
+                                     qparams_db.end[0] if len(qparams_db.end) == 1 else None,  # _end integer,
+                                     qparams_db.end[0] if len(qparams_db.end) > 1 else None,  # _end_min integer,
+                                     qparams_db.end[1] if len(qparams_db.end) > 1 else None,  # _end_max integer,
+                                     qparams_db.referenceName, # qparams_db.referenceName,  # _chromosome character varying,
+                                     qparams_db.referenceBases,  # _reference_bases text,
+                                     qparams_db.alternateBases,  # _alternate_bases text,
+                                     qparams_db.assemblyId.lower() if qparams_db.assemblyId else None, #qparams_db.assemblyId,  # _reference_genome text,
+                                     datasets, #qparams_db.datasets[0],  # _dataset_ids text[],
+                                     authenticated, #qparams_db.datasets[1],  # _is_authenticated bool,
+                                     biosample_stable_id,  # _biosample_stable_id text,
+                                     individual_stable_id,  # _individual_stable_id text,
+                                     int(variant_id) if variant_id else None,  # _gvariant_id
+                                     qparams_db.filters,  # requestedSchemas
+                                     column=0)
+
+@pool.coroutine_execute
+async def _count_individuals(connection,
+                             qparams_db,
+                             datasets,
+                             authenticated,
+                             variant_id=None,
+                             biosample_stable_id=None,
+                             individual_stable_id=None):
+    """
+    Contacts the DB to fetch the info.
+    Returns a pd.DataFrame with the response.
+    """
+    LOG.info('Retrieving viral individuals count')
+
+    # connection.add_log_listener(simple_listener)
+    dollars = ", ".join([f"${i}" for i in range(1, 18)])  # 1..16
+    query = f"SELECT * FROM {conf.database_schema}.count_individuals({dollars});"
+    LOG.debug("QUERY: %s", query)
+    statement = await connection.prepare(query)
+    return await statement.fetchval(qparams_db.variantType,  # _variant_type text,
+                                     qparams_db.start[0] if len(qparams_db.start) == 1 else None,  # _start integer,
+                                     qparams_db.start[0] if len(qparams_db.start) > 1 else None,  # _start_min integer,
+                                     qparams_db.start[1] if len(qparams_db.start) > 1 else None,  # _start_max integer,
+                                     qparams_db.end[0] if len(qparams_db.end) == 1 else None,  # _end integer,
+                                     qparams_db.end[0] if len(qparams_db.end) > 1 else None,  # _end_min integer,
+                                     qparams_db.end[1] if len(qparams_db.end) > 1 else None,  # _end_max integer,
+                                     qparams_db.referenceName, # reference_name
+                                     qparams_db.referenceBases,
+                                     qparams_db.alternateBases,
+                                     qparams_db.assemblyId.lower() if qparams_db.assemblyId else None, # assembly_id
+                                     datasets, # dataset_stable_ids
+                                     authenticated, #is_authenticated
+                                     biosample_stable_id,
+                                     individual_stable_id, # individual_stable_id
+                                     int(variant_id) if variant_id else None,
+                                     qparams_db.filters,  # requestedSchemas
+                                     column=0)
+
+@pool.coroutine_execute
+async def _count_biosamples(connection,
+                            qparams_db,
+                            datasets,
+                            authenticated,
+                            variant_id=None,
+                            biosample_stable_id=None,
+                            individual_stable_id=None):
+    LOG.info('Retrieving viral biosample count')
+
+    dollars = ", ".join([ f"${i}" for i in range(1, 18)]) # 1..17
+    # LOG.debug("dollars: %s", dollars)
+    query = f"SELECT * FROM {conf.database_schema}.count_samples({dollars});"
+    LOG.debug("QUERY: %s", query)
+    statement = await connection.prepare(query)
+    return await statement.fetchval(qparams_db.variantType,  # _variant_type text,
+                                     qparams_db.start[0] if len(qparams_db.start) == 1 else None,  # _start integer,
+                                     qparams_db.start[0] if len(qparams_db.start) > 1 else None,  # _start_min integer,
+                                     qparams_db.start[1] if len(qparams_db.start) > 1 else None,  # _start_max integer,
+                                     qparams_db.end[0] if len(qparams_db.end) == 1 else None,  # _end integer,
+                                     qparams_db.end[0] if len(qparams_db.end) > 1 else None,  # _end_min integer,
+                                     qparams_db.end[1] if len(qparams_db.end) > 1 else None,  # _end_max integer,
+                                     qparams_db.referenceName,  # reference_name
+                                     qparams_db.referenceBases,
+                                     qparams_db.alternateBases,
+                                     qparams_db.assemblyId.lower() if qparams_db.assemblyId else None, # assembly_id
+                                     datasets, # dataset_stable_ids
+                                     authenticated, #is_authenticated
+                                     biosample_stable_id,
+                                     individual_stable_id, # individual_stable_id
+                                     int(variant_id) if variant_id else None,
+                                     qparams_db.filters, # requestedSchemas
+                                     column=0)
+
+def fetch_cohorts_by_cohort(qparams_db, datasets, authenticated):
+    return _fetch_cohort(qparams_db, datasets, authenticated, cohort_id=qparams_db.targetIdReq)
+
+@pool.asyncgen_execute
+async def _fetch_cohort(connection,
+                            qparams_db,
+                            datasets,
+                            authenticated,
+                            cohort_id=None):
+    LOG.info('Retrieving cohort information')
+    
+    if cohort_id is None:
+        # Build query
+        query = f"SELECT * FROM {conf.database_schema}.cohort"
+            
+        # Execute
+        statement = await connection.prepare(query)
+        response = await statement.fetch()  # requestedSchemas
+        for record in response:
+            yield record
+    else:
+        # Build query
+        query = f"SELECT * FROM {conf.database_schema}.cohort WHERE id = $1;"
+        
+        # Execute
+        statement = await connection.prepare(query)
+        response = await statement.fetch(int(cohort_id))  # requestedSchemas
+        for record in response:
+            yield record
+    
+    LOG.debug("QUERY: %s", query)
+
+
+@pool.coroutine_execute
+async def _count_cohorts(connection,
+                            qparams_db,
+                            datasets,
+                            authenticated,
+                            cohort_id=None):
+    LOG.info('Counting cohorts fetched')
+    
+    if cohort_id is None:
+        # Build query
+        query = f"SELECT COUNT(*) FROM {conf.database_schema}.cohort"
+        LOG.debug("QUERY: %s", query)
+
+        # Execute
+        statement = await connection.prepare(query)
+        return await statement.fetchval(column=0)
+    else:
+        # Build query
+        query = f"SELECT COUNT(*) FROM {conf.database_schema}.cohort WHERE id = $1;"
+        LOG.debug("QUERY: %s", query)
+
+        # Execute
+        statement = await connection.prepare(query)
+        return await statement.fetchval(int(cohort_id), column=0)
+
+def count_cohorts_by_cohort(qparams_db, datasets, authenticated):
+    return _count_cohorts(qparams_db, datasets, authenticated, cohort_id=qparams_db.targetIdReq)

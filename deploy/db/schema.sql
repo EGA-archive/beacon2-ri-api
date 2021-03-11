@@ -2,10 +2,10 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 12.4
--- Dumped by pg_dump version 13.1 (Ubuntu 13.1-1.pgdg18.04+1)
+-- Dumped from database version 12.6
+-- Dumped by pg_dump version 13.2
 
--- Started on 2021-01-13 08:35:22 CET
+-- Started on 2021-03-11 15:13:38 CET
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -19,7 +19,238 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 255 (class 1255 OID 16385)
+-- TOC entry 8 (class 2615 OID 16385)
+-- Name: tmp; Type: SCHEMA; Schema: -; Owner: -
+--
+
+CREATE SCHEMA tmp;
+
+
+--
+-- TOC entry 624 (class 1247 OID 16388)
+-- Name: fetch_individuals_result_type; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.fetch_individuals_result_type AS (
+	individual_stable_id text,
+	taxon_id text,
+	taxon_id_ontology text,
+	taxon_id_ontology_label text,
+	sex text,
+	sex_ontology text,
+	ethnicity text,
+	ethnicity_ontology text,
+	geographic_origin text,
+	geographic_origin_ontology text,
+	sra_family_id integer,
+	race text,
+	date_of_birth date,
+	weight_kg integer,
+	height_cm integer,
+	blood_type text,
+	medications jsonb,
+	procedures jsonb,
+	alternative_ids text[],
+	alternative_ids_phenopackets text[],
+	dataset_stable_ids text[],
+	handovers jsonb,
+	pedigrees jsonb,
+	diseases jsonb,
+	phenotypic_features jsonb,
+	ontologies_used jsonb
+);
+
+
+--
+-- TOC entry 627 (class 1247 OID 16391)
+-- Name: fetch_samples_result_type; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.fetch_samples_result_type AS (
+	biosample_stable_id text,
+	individual_stable_id text,
+	description text,
+	biosample_status text,
+	biosample_status_ontology text,
+	biosample_status_ontology_label text,
+	individual_age_at_collection text,
+	obtention_procedure text,
+	obtention_procedure_ontology text,
+	obtention_procedure_ontology_label text,
+	tumor_progression text,
+	tumor_progression_ontology text,
+	tumor_progression_ontology_label text,
+	tumor_grade text,
+	tumor_grade_ontology text,
+	tumor_grade_ontology_label text,
+	collection_date date,
+	handovers jsonb,
+	ontologies_used jsonb,
+	alternative_ids text[],
+	study_id text,
+	bioproject_id text,
+	files jsonb,
+	sample_origins jsonb,
+	sample_origins_ontology jsonb
+);
+
+
+--
+-- TOC entry 892 (class 1247 OID 17769)
+-- Name: fetch_variants_result_type; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.fetch_variants_result_type AS (
+	variant_id integer,
+	assembly_id text,
+	chromosome text,
+	refseq_id text,
+	alternative_id text,
+	reference text,
+	alternate text,
+	start integer,
+	"end" integer,
+	variant_type text,
+	genomic_hgvs_id text[],
+	transcript_hgvs_ids text[],
+	protein_hgvs_ids text[],
+	genomic_regions text[],
+	molecular_effects text[],
+	aminoacid_changes text[],
+	effect_impacts text[],
+	functional_classes text[],
+	codon_changes text[],
+	aminoacid_lengths text[],
+	gene_names text[],
+	transcript_biotypes text[],
+	gene_codings text[],
+	transcript_ids text[],
+	exon_ranks text[],
+	genotypes text[],
+	aaref text[],
+	aaalt text[],
+	genomic_regions_ontology jsonb,
+	molecular_effects_ontology jsonb,
+	genomic_features_ontology jsonb,
+	ontologies_used jsonb,
+	dataset_response jsonb
+);
+
+
+--
+-- TOC entry 715 (class 1247 OID 16397)
+-- Name: query_individuals_result_type; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.query_individuals_result_type AS (
+	num_results bigint,
+	individual_stable_id text,
+	taxon_id text,
+	taxon_id_ontology text,
+	taxon_id_ontology_label text,
+	sex text,
+	sex_ontology text,
+	ethnicity text,
+	ethnicity_ontology text,
+	geographic_origin text,
+	geographic_origin_ontology text,
+	sra_family_id integer,
+	race text,
+	date_of_birth date,
+	weight_kg integer,
+	height_cm integer,
+	blood_type text,
+	medications jsonb,
+	procedures jsonb,
+	alternative_ids text[],
+	alternative_ids_phenopackets text[],
+	dataset_stable_ids text[],
+	handovers jsonb,
+	pedigrees jsonb,
+	diseases jsonb,
+	phenotypic_features jsonb,
+	ontologies_used jsonb
+);
+
+
+--
+-- TOC entry 718 (class 1247 OID 16400)
+-- Name: query_samples_result_type; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.query_samples_result_type AS (
+	num_results bigint,
+	biosample_stable_id text,
+	individual_stable_id text,
+	description text,
+	biosample_status text,
+	biosample_status_ontology text,
+	biosample_status_ontology_label text,
+	individual_age_at_collection text,
+	obtention_procedure text,
+	obtention_procedure_ontology text,
+	obtention_procedure_ontology_label text,
+	tumor_progression text,
+	tumor_progression_ontology text,
+	tumor_progression_ontology_label text,
+	tumor_grade text,
+	tumor_grade_ontology text,
+	tumor_grade_ontology_label text,
+	collection_date date,
+	handovers jsonb,
+	ontologies_used jsonb,
+	alternative_ids text[],
+	study_id text,
+	bioproject_id text,
+	files jsonb,
+	sample_origins jsonb,
+	sample_origins_ontology jsonb
+);
+
+
+--
+-- TOC entry 721 (class 1247 OID 16403)
+-- Name: query_variants_result_type; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.query_variants_result_type AS (
+	num_results bigint,
+	variant_id integer,
+	assembly_id text,
+	chromosome text,
+	refseq_id text,
+	variant_name text,
+	reference text,
+	alternate text,
+	start integer,
+	"end" integer,
+	variant_type text,
+	genomic_hgvs_id text,
+	transcript_hgvs_ids text[],
+	protein_hgvs_ids text[],
+	genomic_regions text[],
+	molecular_effects text[],
+	aminoacid_changes text[],
+	effect_impacts text[],
+	functional_classes text[],
+	codon_changes text[],
+	aminoacid_lengths text[],
+	gene_names text[],
+	transcript_biotypes text[],
+	gene_codings text[],
+	transcript_ids text[],
+	exon_ranks text[],
+	genotypes text[],
+	genomic_regions_ontology jsonb,
+	molecular_effects_ontology jsonb,
+	genomic_features_ontology jsonb,
+	ontologies_used jsonb,
+	dataset_response jsonb
+);
+
+
+--
+-- TOC entry 275 (class 1255 OID 16404)
 -- Name: add_where_clause_conditions(text, integer, integer, text, text, text[], boolean, text, text, integer, text); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -85,7 +316,7 @@ BEGIN
 	
 		IF _variant_type IS NOT NULL THEN
 			_where_clause = _where_clause || '
-			AND var.type=$1';
+			AND var.variant_type=$1';
 		END IF;
 
 		IF _start_min IS NOT NULL THEN
@@ -150,7 +381,51 @@ $_$;
 
 
 --
--- TOC entry 272 (class 1255 OID 17478)
+-- TOC entry 299 (class 1255 OID 17648)
+-- Name: build_distribution(integer[], text); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.build_distribution(individual_ids integer[], individual_column text) RETURNS jsonb
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+		_count integer;
+		_availability bool;
+		_distribution jsonb;
+		_result jsonb;
+BEGIN
+
+	SELECT COUNT(individual_column)
+	FROM individual
+	WHERE id = ANY(individual_ids)
+	INTO _count;
+	
+	SELECT COUNT(individual_column) != 0
+	FROM individual
+	WHERE id = ANY(individual_ids)
+	INTO _availability;
+	
+	EXECUTE '
+		SELECT jsonb_agg(t)
+		FROM (
+			SELECT jsonb_build_object(''id'', (ot.ontology || '':'' || ot.term), ''label'', ot.label) as type, count(' || individual_column || ')
+			FROM individual ind, ontology_term_table ot
+			WHERE ot.column_name = ''' || individual_column || ''' AND ot.column_value = ind.' || individual_column || ' AND ind.id = ANY($1)
+			GROUP BY ot.ontology, ot.term, ot.label
+		) t'
+	USING individual_ids
+	INTO _distribution;
+	
+	SELECT ('{"availability": ' || _availability || ', "availability_count": ' || _count || ', "distribution": ' || _distribution || '}')::jsonb
+	INTO _result;
+	
+	RETURN _result;
+END
+$_$;
+
+
+--
+-- TOC entry 276 (class 1255 OID 16405)
 -- Name: count_gvariants(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text[], boolean, text, text, integer, text[]); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -280,7 +555,7 @@ $$;
 
 
 --
--- TOC entry 274 (class 1255 OID 17480)
+-- TOC entry 277 (class 1255 OID 16407)
 -- Name: count_individuals(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text[], boolean, text, text, integer, text[]); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -401,7 +676,7 @@ $$;
 
 
 --
--- TOC entry 273 (class 1255 OID 17486)
+-- TOC entry 278 (class 1255 OID 16409)
 -- Name: count_samples(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text[], boolean, text, text, integer, text[]); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -521,14 +796,108 @@ $$;
 
 
 --
--- TOC entry 276 (class 1255 OID 16388)
+-- TOC entry 300 (class 1255 OID 17688)
+-- Name: create_cohort(text, jsonb, jsonb, integer[]); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.create_cohort(cohort_name text, cohort_inclusion_criteria jsonb, cohort_exclusion_criteria jsonb, collection_event_ids integer[]) RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    	new_id integer;
+		_cohort_type text;
+		_cohort_design text;
+		_cohort_license jsonb;
+		_cohort_contact jsonb;
+		_cohort_rights jsonb;
+		_cohort_size integer;
+		_cohort_data_types jsonb;
+BEGIN
+	
+	_cohort_type := 'beacon-defined';
+	_cohort_size := cardinality(collection_event_ids);
+	
+	INSERT INTO cohort_table (cohort_name, cohort_type, cohort_design, cohort_inclusion_criteria, cohort_exclusion_criteria, cohort_license, cohort_contact, cohort_rights, cohort_size, cohort_data_types)
+	VALUES (cohort_name, _cohort_type, _cohort_design, cohort_inclusion_criteria, cohort_exclusion_criteria, _cohort_license, _cohort_contact, _cohort_rights, _cohort_size, _cohort_data_types)
+	RETURNING id
+	INTO new_id;
+	
+	UPDATE collection_event
+	SET cohort_id = new_id
+	WHERE id = ANY(collection_event_ids);
+	
+	RETURN new_id;
+END;
+$$;
+
+
+--
+-- TOC entry 301 (class 1255 OID 17599)
+-- Name: create_collection_event(integer[]); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.create_collection_event(individual_ids integer[]) RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    	new_id integer;
+		_event_date date;
+		_event_timeline jsonb;
+		_event_size integer;
+		_event_cases integer;
+		_event_controls integer;
+		_event_locations jsonb;
+		_event_genders jsonb;
+		_event_ethnicities jsonb;
+		_event_age_range jsonb;
+		_event_diseases jsonb;
+		_event_phenotypes jsonb;
+		_event_data_types jsonb;
+BEGIN
+
+	_event_date := current_date;
+	-- _event_timeline := ...
+	_event_size := cardinality(individual_ids);
+	-- _event_cases := ...
+	-- _event_controls := ...
+	_event_locations = public.build_distribution(individual_ids, 'geographic_origin');
+	_event_genders := public.build_distribution(individual_ids, 'sex');
+	_event_ethnicities := public.build_distribution(individual_ids, 'ethnicity');
+	
+	SELECT json_build_object('start', MIN(age(date_of_birth)::interval), 'end', MAX(age(date_of_birth)::interval))
+	FROM individual_table
+	INTO _event_age_range;
+	
+	-- _event_diseases := ...
+	-- _event_phenotypes := ...
+	-- _event_data_types := ...
+	
+	----------------------------
+	-- INSERT COLLECTION EVENT
+	----------------------------
+	
+	INSERT INTO collection_event (event_num, event_date, event_timeline, event_size, event_cases, event_controls, event_locations, event_genders, event_ethnicities, event_age_range, event_diseases, event_phenotypes, event_data_types, cohort_id)
+	VALUES (NULL, _event_date, _event_timeline, _event_size, _event_cases, _event_controls, _event_locations, _event_genders, _event_ethnicities, _event_age_range, _event_diseases, _event_phenotypes, _event_data_types, NULL)
+	RETURNING id
+	INTO new_id;
+	
+	----------------------------
+	-- RETURN ID
+	----------------------------
+	
+	RETURN new_id;
+END;
+$$;
+
+
+--
+-- TOC entry 302 (class 1255 OID 17770)
 -- Name: fetch_gvariants(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text, text[], boolean, text, text, integer, text[], integer, integer, text[]); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.fetch_gvariants(_variant_type text, _start integer, _start_min integer, _start_max integer, _end integer, _end_min integer, _end_max integer, _refseq character varying, _reference_bases text, _alternate_bases text, _reference_genome text, _include_dataset_responses text, _dataset_stable_ids text[], _is_authenticated boolean, _biosample_stable_id text, _individual_stable_id text, _gvariant_id integer, _filters text[], _offset integer, _limit integer, _requested_schemas text[]) RETURNS TABLE(variant_id integer, assembly_id text, chromosome text, refseq_id text, variant_name text, reference text, alternate text, start integer, "end" integer, variant_type text, genomic_hgvs_id text, transcript_hgvs_ids text[], protein_hgvs_ids text[], genomic_regions text[], genomic_regions_ontology text[], genomic_features_ontology jsonb, molecular_effects text[], molecular_effects_ontology text[], aminoacid_changes text[], ontologies_used jsonb, dataset_response jsonb)
+CREATE FUNCTION public.fetch_gvariants(_variant_type text, _start integer, _start_min integer, _start_max integer, _end integer, _end_min integer, _end_max integer, _refseq character varying, _reference_bases text, _alternate_bases text, _reference_genome text, _include_dataset_responses text, _dataset_stable_ids text[], _is_authenticated boolean, _biosample_stable_id text, _individual_stable_id text, _gvariant_id integer, _filters text[], _offset integer, _limit integer, _requested_schemas text[]) RETURNS SETOF public.fetch_variants_result_type
     LANGUAGE plpgsql
     AS $_$
-
 -- PRECONDITIONS:
 -- _dataset_stable_ids is optional
 -- If _is_authenticated=false or _dataset_stable_ids is empty, only PUBLIC datasets will be queried 
@@ -543,8 +912,18 @@ CREATE FUNCTION public.fetch_gvariants(_variant_type text, _start integer, _star
 --		* _reference_genome + _refseq + (_variant_type) + _start + _end
 --		* _reference_genome + _refseq + (_variant_type) + _start_min + _start_max + _end_min + _end_max
 
+-- If your variant_table schema is different, you will have to change:
+-- * Type: fetch_variants_result_type: return type of this function. 
+--		It must match with the columns returned in the view function_fetch_variants_cols_required (see next).
+-- * Views: 
+-- 		function_fetch_variants_cols_required: list the columns to be returned in the  outter SELECT in 
+--			this function's query.
+--		variant: view on top of variant_table. It must return the columnas that we want to return in the
+--			function, use to filter or to do JOINs with other tables/views.
+
 DECLARE
 	_query text;
+	_joins_clause text;
 	_where_clause text;
 	_filters_converted text;
 	_join_individual_table bool;
@@ -557,12 +936,17 @@ DECLARE
 	_only_miss_datasets bool;
 	_none_dataset bool;
 	_all_dataset bool;
+	_required_cols text;
 	-- Schemas and formats for some fields
-	_genomic_features_schema_names text;
 	_genomic_features_schema_formats text;
-	_variant_resources_schema_names text;
 	_variant_resources_schema_formats text;
+	_handover_schema_format text;
+	_datasets_missing_response_schema_format text;
+	
 BEGIN
+	--------------------------
+	-- Initialize variables --
+	--------------------------
 	_join_individual_table = FALSE;
 	_join_sample_table = FALSE;
 	_join_pedigree_table = FALSE;
@@ -575,6 +959,16 @@ BEGIN
 	_none_dataset = FALSE;
 	_all_dataset = FALSE;
 	
+	-----------------------------------------------------
+	-- Get columns to be returned in the outter SELECT --
+	-----------------------------------------------------
+	SELECT string_agg(quote_ident(column_name),', ' ORDER BY ordinal_position) INTO _required_cols
+	FROM INFORMATION_SCHEMA.COLUMNS 
+	WHERE table_name = 'function_fetch_variants_cols_required';
+	
+	---------------------------------------------------------
+	-- Find what datasets must be included in the response --
+	---------------------------------------------------------
 	IF _include_dataset_responses = 'HIT' THEN
 		_only_hit_datasets = TRUE;
 	END IF;
@@ -588,27 +982,25 @@ BEGIN
 		_all_dataset = TRUE;
 	END IF;
 
+	---------------------
+	-- Prepare filters --
+	---------------------
 	SELECT * INTO _filters_converted
 	FROM public.parse_filters(_filters);
 
-	-- Aliases used in ontology_term_table
-	-- 	'ind'
-	-- 	'sam'
-	-- 	'ind_ped'
-	-- 	'ind_dis'
-	-- In the future, we may have filters on variant_table
-	
-	-- Check what other tables should be joined depending on the filters provided
-	-- TODO
-
+	----------------------------
+	-- Build the WHERE clause --
+	----------------------------
 	SELECT * INTO _where_clause
 	FROM public.add_where_clause_conditions(_variant_type, _start_min, _end, _reference_bases, 
 											_alternate_bases, _dataset_stable_ids, _is_authenticated, 
 											_biosample_stable_id, _individual_stable_id, _gvariant_id, 
 											_filters_converted);
-											
 	RAISE NOTICE 'WHERE=%', _where_clause;
 	
+	--------------------------------
+	-- Find what joins are needed --
+	--------------------------------
 	IF _where_clause LIKE '%ind.%' 
 		OR _where_clause LIKE '%ped.%'
 		OR _where_clause LIKE '%ind_ped.%' 
@@ -627,132 +1019,94 @@ BEGIN
 	IF _where_clause LIKE '%ind_dis.%' THEN _join_individual_disease_table=TRUE; END IF;
 	IF _where_clause LIKE '%ind_phf.%' THEN _join_individual_phenotypic_feature_table=TRUE; END IF;
 	
-	RAISE NOTICE 'Parameters:  
-		_variant_type=%, 
-		_start=%, _start_min=%, _start_max=%, 
-		_end=%, _end_min=%, _end_max=%,
-		_refseq=%, _reference_bases=%, _alternate_bases=%, _reference_genome=%, 
-		_dataset_stable_ids=%, _is_authenticated=%, 
-		_filters=%, _filters_converted=%,
-		_biosample_stable_id=%, _individual_stable_id=%,
-		_include_dataset_responses=%, 
-		_limit=%, _offset=%', 
-	_variant_type, _start, _start_min, _start_max, _end, _end_min, _end_max,
-	_refseq, _reference_bases, _alternate_bases, _reference_genome, 
-	_dataset_stable_ids, _is_authenticated, _filters, _filters_converted, 
-	_biosample_stable_id, _individual_stable_id, 
-	_include_dataset_responses,
-	_limit, _offset;
+	-------------------
+	-- Prepare joins --
+	-------------------
+	_joins_clause='';
+	IF _join_sample_table THEN
+		_joins_clause = _joins_clause || '
+		INNER JOIN public.variant_sample_table var_sam ON var_sam.variant_id=var.id
+		INNER JOIN public.sample_w_ontology_terms sam ON sam.id=var_sam.sample_id';
+	END IF;
+	IF _join_individual_table THEN
+		_joins_clause = _joins_clause || '
+		INNER JOIN public.individual_w_ontology_terms ind ON ind.id=sam.individual_id';
+	END IF;
+	IF _join_individual_pedigree_table THEN
+		_joins_clause = _joins_clause || '
+		INNER JOIN public.individual_pedigree_w_ontology_terms ind_ped ON ind_ped.individual_id=ind.id';
+	END IF;
+	IF _join_pedigree_table THEN
+		_joins_clause = _joins_clause || '
+		INNER JOIN public.pedigree_table ped ON ped.stable_id=ind_ped.pedigree_stable_id';
+	END IF;
+	IF _join_individual_disease_table THEN
+		_joins_clause = _joins_clause || '
+		INNER JOIN public.individual_disease_w_ontology_terms ind_dis ON ind_dis.individual_id=ind.id';
+	END IF;
+	IF _join_individual_phenotypic_feature_table THEN
+		_joins_clause = _joins_clause || '
+		INNER JOIN public.individual_phenotypic_feature_w_ontology_terms ind_phf ON ind_phf.individual_id=ind.id';
+	END IF;
 	
+-- 	RAISE NOTICE 'Parameters:  
+-- 		_variant_type=%, _start=%, _start_min=%, _start_max=%, _end=%, _end_min=%, _end_max=%,
+-- 		_refseq=%, _reference_bases=%, _alternate_bases=%, _reference_genome=%, 
+-- 		_dataset_stable_ids=%, _is_authenticated=%, _filters=%, _filters_converted=%,
+-- 		_biosample_stable_id=%, _individual_stable_id=%, _include_dataset_responses=%, 
+-- 		_limit=%, _offset=%', 
+-- 	_variant_type, _start, _start_min, _start_max, _end, _end_min, _end_max,
+-- 	_refseq, _reference_bases, _alternate_bases, _reference_genome, 
+-- 	_dataset_stable_ids, _is_authenticated, _filters, _filters_converted, 
+-- 	_biosample_stable_id, _individual_stable_id, _include_dataset_responses,
+-- 	_limit, _offset;
+
 	---------------------------------
 	-- Get the schemas and formats --
 	---------------------------------
-	SELECT COALESCE(_schema_names, '-'), COALESCE(_schema_formats, '-') INTO _genomic_features_schema_names, _genomic_features_schema_formats
+	SELECT COALESCE(_schema_formats, quote_literal('{}')) INTO _genomic_features_schema_formats
 	FROM public.find_format(_requested_schemas,'public.variant_table','genomic_features_ontology');
 
-	IF _genomic_features_schema_names='-' THEN RAISE EXCEPTION 'Requested schemas not found! %', _requested_schemas; END IF;
+	IF _variant_resources_schema_formats='{}' THEN RAISE EXCEPTION 'Requested schemas not found! %', _requested_schemas; END IF;
 	
-	SELECT COALESCE(_schema_names, '-'), COALESCE(_schema_formats, '-') INTO _variant_resources_schema_names, _variant_resources_schema_formats
+	SELECT COALESCE(_schema_formats, quote_literal('{}')) INTO _variant_resources_schema_formats
 	FROM public.find_format(_requested_schemas,'public.variant_table','variant_resources');
 	
-	IF _variant_resources_schema_names='-' THEN 
-		_variant_resources_schema_names = ''; 
-		_variant_resources_schema_formats = '{}';
-	END IF;
+	SELECT COALESCE(_schema_formats, quote_literal('{}')) INTO _handover_schema_format
+	FROM public.find_format(ARRAY['beacon-default-v2.0.0-draft.2'],'handover','handover');
+	
+	SELECT COALESCE(_schema_formats, quote_literal('{}')) INTO _datasets_missing_response_schema_format
+	FROM public.find_format(ARRAY['beacon-default-v2.0.0-draft.2'],'public.variant_table','datasets_missing_response');
 	
 	---------------------
 	-- BUILD THE QUERY --
 	---------------------
 	_query = '
 	SELECT DISTINCT ON (var.id)
-		var.id AS variant_id,
-		var.assembly_id,
-		var.chromosome,
-		var.refseq_id, 
-		var.variant_id AS alternative_id, 
-		var.reference, 
-		var.alternate, 
-		var.start, 
-		var.end, 
-		var.variant_type, --10
-		var.genomic_hgvs_id, 
-		COALESCE(var.transcript_hgvs_ids, ARRAY[]::text[]) AS transcript_hgvs_ids,
-		COALESCE(var.protein_hgvs_ids, ARRAY[]::text[]) AS protein_hgvs_ids,
-		COALESCE(var.genomic_regions, ARRAY[]::text[]) AS genomic_regions,
-		COALESCE(var.genomic_regions_ontology, ARRAY[]::text[]) AS genomic_regions_ontology,
+		' || _required_cols || ',
+		-- JSONB formatted fields
+		''{}''::jsonb AS genomic_regions_ontology, --27
+		''{}''::jsonb AS molecular_effects_ontology, 
 		COALESCE(jsonb_agg(DISTINCT gf.genomic_features_ontology) FILTER (WHERE gf.genomic_features_ontology IS NOT NULL), ''{}''::jsonb) AS genomic_features_ontology,
-		COALESCE(var.molecular_effects, ARRAY[]::text[]) AS molecular_effects,
-		COALESCE(var.molecular_effects_ontology, ARRAY[]::text[]) AS molecular_effects_ontology,
-		COALESCE(var.aminoacid_changes, ARRAY[]::text[]) AS aminoacid_changes,
 		COALESCE(jsonb_agg(DISTINCT gf.ontologies_used) FILTER (WHERE gf.ontologies_used IS NOT NULL), ''{}''::jsonb) AS ontologies_used,
 		CASE WHEN ' || _none_dataset || ' 
 				THEN ''{}''::jsonb
 			WHEN ' || _only_miss_datasets || '
-				THEN dat_missing.missing
+				THEN dat_missing.datasets_missing_response
 			WHEN ' || _all_dataset || ' 
-				THEN dat_missing.missing || datasets_response.datasets_response
+				THEN dat_missing.datasets_missing_response || datasets_response.datasets_response
 			ELSE datasets_response.datasets_response
 		END AS datasets_response
 	FROM (
-		select DISTINCT ON (var.id)
-			var.id,
-			dat.reference_genome::text AS assembly_id,
-			var.chromosome::text,
-			var.refseq_id::text,
-			var.variant_id::text,
-			var.reference::text,
-			var.alternate::text,
-			var.start, 
-			var.end, 
-			var.type::text AS variant_type,
-			var.genomic_hgvs_id,
-			var.transcript_hgvs_ids,
-			var.protein_hgvs_ids,
-			var.genomic_regions,
-			null::text[] AS genomic_regions_ontology,
-			var.gene_names, 
-			var.transcript_ids,
-			var.molecular_effects,
-			null::text[] AS molecular_effects_ontology,
-			var.aminoacid_changes,
-			var.variant_cnt,
-			var.call_cnt,
-			var.sample_cnt,
-			var.matching_sample_cnt,
-			var.frequency,
-			var.dataset_id
-		from public.variant_table var
+		select var.*,
+			dat.reference_genome::text AS assembly_id
+		FROM public.variant var
 		INNER JOIN public.dataset_table dat ON dat.id=var.dataset_id';
 			
-	IF _join_sample_table THEN
-		_query = _query || '
-		INNER JOIN public.variant_sample_table var_sam ON var_sam.variant_id=var.id
-		INNER JOIN public.sample_w_ontology_terms sam ON sam.id=var_sam.sample_id';
-	END IF;
-	IF _join_individual_table THEN
-		_query = _query || '
-		INNER JOIN public.individual_w_ontology_terms ind ON ind.id=sam.individual_id';
-	END IF;
-	IF _join_individual_pedigree_table THEN
-		_query = _query || '
-		INNER JOIN public.individual_pedigree_w_ontology_terms ind_ped ON ind_ped.individual_id=ind.id';
-	END IF;
-	IF _join_pedigree_table THEN
-		_query = _query || '
-		INNER JOIN public.pedigree_table ped ON ped.stable_id=ind_ped.pedigree_stable_id';
-	END IF;
-	IF _join_individual_disease_table THEN
-		_query = _query || '
-		INNER JOIN public.individual_disease_w_ontology_terms ind_dis ON ind_dis.individual_id=ind.id';
-	END IF;
-	IF _join_individual_phenotypic_feature_table THEN
-		_query = _query || '
-		INNER JOIN public.individual_phenotypic_feature_w_ontology_terms ind_phf ON ind_phf.individual_id=ind.id';
-	END IF;
-
-	_query = _query || _where_clause;
-			
+	_query = _query || _joins_clause || _where_clause;
+	
 	_query = _query || '
+		ORDER BY var.id
 		LIMIT $16 OFFSET $17
 	) var
 	LEFT JOIN LATERAL (
@@ -776,17 +1130,8 @@ BEGIN
 		FROM public.dataset_table dat 
 		LEFT JOIN (
 			SELECT 
-				dat_hand.dataset_id, 
-				jsonb_agg(
-					jsonb_build_object(
-						''handoverType'', jsonb_build_object(
-							''id'', hand.type_id,
-							''label'', hand.type_label
-						),
-						''note'', hand.note,
-						''url'', hand.url
-					)
-				) AS dataset_handovers
+				dat_hand.dataset_id, ' || 
+				_handover_schema_format || ' AS dataset_handovers
 			FROM public.dataset_handover_table dat_hand
 			INNER JOIN public.handover_table hand ON hand.id=dat_hand.handover_id
 			GROUP BY dat_hand.dataset_id
@@ -796,79 +1141,45 @@ BEGIN
 	) datasets_response ON TRUE';
 
 	_query = _query || '
+	LEFT JOIN LATERAL (
+		SELECT ' || _genomic_features_schema_formats || '
+			AS genomic_features_ontology,
+			' || _variant_resources_schema_formats || '
+			AS ontologies_used
+		FROM unnest(var.molecular_effects) AS t(gene_name)
+		join lateral (
+			values 
+				(t.gene_name, ''gene'')
+		) as v(gene_or_transcript, label) on true
+		LEFT JOIN public.ontology_term_table ot_gen_feat ON ot_gen_feat.target_table=''public.variant_table'' AND ot_gen_feat.column_name=''genomicFeatures''
+		LEFT JOIN public.ontology_table ot_ontology ON ot_ontology.id=ot_gen_feat.ontology_id
 		LEFT JOIN LATERAL (
-			SELECT ' || _genomic_features_schema_formats || '
-					AS genomic_features_ontology,
-				' ||
-				CASE WHEN _variant_resources_schema_formats='{}' 
-					THEN quote_literal(_variant_resources_schema_formats) 
-					ELSE _variant_resources_schema_formats
-				END
-				|| ' AS ontologies_used
-			FROM unnest(var.gene_names, var.transcript_ids) AS t(gene_name, transcript_id)
-			join lateral (
-				values 
-					(t.gene_name, ''gene''), 
-					(t.transcript_id, ''transcript'') 
-			) as v(gene_or_transcript, label) on true
-			LEFT JOIN public.ontology_term_table ot_gen_feat ON ot_gen_feat.target_table=''public.variant_table'' AND ot_gen_feat.column_name=''genomicFeatures'' AND ot_gen_feat.label=v.label
-			LEFT JOIN public.ontology_table ot_ontology ON ot_ontology.id=ot_gen_feat.ontology_id
-			LEFT JOIN LATERAL (
-				values 
-				(ot_ontology.ontology_id, ot_ontology.ontology_name, ot_ontology.namespace_prefix,
-				ot_ontology.url, ot_ontology.version, ot_ontology.iri_prefix)
-			) AS ot(ontology_id, ontology_name, namespace_prefix, url, version, iri_prefix) ON TRUE
-			where v.gene_or_transcript is not null
-		) gf ON TRUE
-		LEFT JOIN LATERAL (
-			VALUES 
-			(gf.ontologies_used)
-		) AS ontologies(used) ON TRUE';
+			values 
+			(ot_ontology.ontology_id, ot_ontology.ontology_name, ot_ontology.namespace_prefix,
+			ot_ontology.url, ot_ontology.version, ot_ontology.iri_prefix)
+		) AS ot(ontology_id, ontology_name, namespace_prefix, url, version, iri_prefix) ON TRUE
+		where v.gene_or_transcript is not null
+	) gf ON TRUE
+	LEFT JOIN LATERAL (
+		VALUES 
+		(gf.ontologies_used)
+	) AS ontologies(used) ON TRUE';
 		
 	_query = _query || '	
 	LEFT JOIN LATERAL (
-		SELECT jsonb_agg(
-			DISTINCT
-			jsonb_build_object(
-				''datasetId'', dat.stable_id,
-				''exists'', FALSE,
-				''frequency'', null,
-				''variantCount'', null,
-				''callCount'', null,
-				''sampleCount'', null,
-				''note'', null,
-				''externalUrl'', null,
-				''datasetHandover'', null,
-				''info'', null
-			) 
-		) AS missing
+		SELECT ' || _datasets_missing_response_schema_format || ' AS datasets_missing_response
 		FROM public.dataset_table dat 
 		WHERE NOT(dat.id  = ANY (datasets_response.dataset_ids))
 	) dat_missing ON TRUE
 	GROUP BY 
-		var.id,
-		var.assembly_id,
-		var.chromosome,
-		var.refseq_id,
-		var.variant_id, 
-		var.reference,
-		var.alternate, 
-		var.start, 
-		var.end, 
-		var.variant_type, 
-		var.genomic_hgvs_id,
-		var.transcript_hgvs_ids,
-		var.protein_hgvs_ids,
-		var.genomic_regions,
-		var.genomic_regions_ontology,
+		' || _required_cols || ',
+		genomic_regions_ontology, 
+		molecular_effects_ontology,
 		gf.genomic_features_ontology,
 		gf.ontologies_used,
-		var.molecular_effects,
-		var.molecular_effects_ontology,
-		var.aminoacid_changes,
 		datasets_response.datasets_response,
 		datasets_response.dataset_ids,
-		dat_missing.missing
+		dat_missing.datasets_missing_response
 	ORDER BY 
 		var.id';
 
@@ -888,11 +1199,11 @@ $_$;
 
 
 --
--- TOC entry 270 (class 1255 OID 16390)
--- Name: fetch_individuals(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text[], boolean, text, text, integer, text[], integer, integer, text[]); Type: FUNCTION; Schema: public; Owner: -
+-- TOC entry 279 (class 1255 OID 16413)
+-- Name: fetch_individuals(text, integer, integer, integer, integer, integer, integer, text, text, text, text, text[], boolean, text, text, integer, text[], integer, integer, text[]); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.fetch_individuals(_variant_type text, _start integer, _start_min integer, _start_max integer, _end integer, _end_min integer, _end_max integer, _refseq character varying, _reference_bases text, _alternate_bases text, _reference_genome text, _dataset_stable_ids text[], _is_authenticated boolean, _biosample_stable_id text, _individual_stable_id text, _gvariant_id integer, _filters text[], _offset integer, _limit integer, _requested_schemas text[]) RETURNS TABLE(individual_stable_id text, dataset_ids text[], taxon_id text, taxon_id_ontology text, taxon_id_ontology_label text, sex text, sex_ontology text, ethnicity text, ethnicity_ontology text, geographic_origin text, geographic_origin_ontology text, handovers jsonb, pedigrees jsonb, diseases jsonb, phenotypic_features jsonb, ontologies_used jsonb, sra_family_id integer, race text, date_of_birth date, weight_kg integer, height_cm integer, blood_type text, medications jsonb, procedures jsonb, alternative_ids text[], alternative_ids_phenopackets text[])
+CREATE FUNCTION public.fetch_individuals(_variant_type text, _start integer, _start_min integer, _start_max integer, _end integer, _end_min integer, _end_max integer, _refseq text, _reference_bases text, _alternate_bases text, _reference_genome text, _dataset_stable_ids text[], _is_authenticated boolean, _biosample_stable_id text, _individual_stable_id text, _gvariant_id integer, _filters text[], _offset integer, _limit integer, _requested_schemas text[]) RETURNS SETOF public.fetch_individuals_result_type
     LANGUAGE plpgsql
     AS $_$
 
@@ -910,50 +1221,68 @@ CREATE FUNCTION public.fetch_individuals(_variant_type text, _start integer, _st
 --		* _reference_genome + _refseq + (_variant_type) + _start + _end
 --		* _reference_genome + _refseq + (_variant_type) + _start_min + _start_max + _end_min + _end_max
 
+-- If your individual_table schema is different, you will have to change:
+-- * Type: fetch_individuals_result_type: return type of this function. 
+--		It must match with the columns returned in the view function_fetch_individuals_cols_required (see next).
+-- * Views: 
+-- 		function_fetch_individuals_cols_required: list the columns to be returned in the  outter SELECT in 
+--			this function's query.
+--		individual_w_ontology_terms: view on top of individual_table, which also includes the ontologies values.
+
 DECLARE
 	_query text;
 	_where_clause text;
 	_filters_converted text;
+	_joins_clause text;
 	_join_variant_table bool;
 	_join_individual_pedigree_table bool;
 	_join_individual_disease_table bool;
 	_join_individual_phenotypic_feature_table bool;
 	_join_pedigree_table bool;
+	_required_cols text;
 	-- Schemas and formats for some fields
-	_phf_schema_names text;
 	_phf_schema_formats text;
-	_dis_schema_names text;
 	_dis_schema_formats text;
-	_ped_schema_names text;
 	_ped_schema_formats text;
-	_individual_resources_schema_names text;
 	_individual_resources_schema_formats text;
+	_handover_schema_format text;
+	
 BEGIN
+	--------------------------
+	-- Initialize variables --
+	--------------------------
 	_join_variant_table = FALSE;
 	_join_pedigree_table = FALSE;
 	_join_individual_pedigree_table = FALSE;
 	_join_individual_disease_table = FALSE;
 	_join_individual_phenotypic_feature_table = FALSE;
 
+	-----------------------------------------------------
+	-- Get columns to be returned in the outter SELECT --
+	-----------------------------------------------------
+	SELECT 'ind.'|| string_agg(quote_ident(column_name),', ind.' ORDER BY ordinal_position) INTO _required_cols
+	FROM INFORMATION_SCHEMA.COLUMNS 
+	WHERE table_name = 'function_fetch_individuals_cols_required';
+
+	---------------------
+	-- Prepare filters --
+	---------------------
 	SELECT * INTO _filters_converted
 	FROM public.parse_filters(_filters);
 	
+	----------------------------
+	-- Build the WHERE clause --
+	----------------------------
 	SELECT * INTO _where_clause
 	FROM public.add_where_clause_conditions(_variant_type, _start_min, _end, _reference_bases, 
 											_alternate_bases, _dataset_stable_ids, _is_authenticated, 
 											_biosample_stable_id, _individual_stable_id, _gvariant_id, 
 											_filters_converted);
-											
 	RAISE NOTICE 'WHERE=%', _where_clause;
 	
-	-- Aliases used in ontology_term_table
-	-- 	'ind'
-	-- 	'sam'
-	-- 	'ind_ped'
-	-- 	'ind_dis'
-	-- In the future, we may have filters on variant_table
-	
-	-- Check what other tables should be joined depending on the filters provided
+	--------------------------------
+	-- Find what joins are needed --
+	--------------------------------
 	IF _where_clause LIKE '%var.%' THEN _join_variant_table=TRUE; END IF;
 	IF _where_clause LIKE '%ind_ped.%' THEN _join_individual_pedigree_table=TRUE; END IF;
 	IF _where_clause LIKE '%ind_dis.%' THEN _join_individual_disease_table=TRUE; END IF;
@@ -962,157 +1291,104 @@ BEGIN
 		_join_individual_pedigree_table=TRUE; 
 		_join_pedigree_table=TRUE; 
 	END IF;
-											
-	RAISE NOTICE 'Parameters:  
-		_variant_type=%, 
-		_start=%, _start_min=%, _start_max=%, 
-		_end=%, _end_min=%, _end_max=%,
-		_refseq=%, _reference_bases=%, _alternate_bases=%, _reference_genome=%, 
-		_dataset_stable_ids=%, _is_authenticated=%, 
-		_filters=%, _filters_converted=%,
-		_biosample_stable_id=%, _individual_stable_id=%,
-		_limit=%, _offset=%, _join_variant_table=%', 
-	_variant_type, _start, _start_min, _start_max, _end, _end_min, _end_max,
-	_refseq, _reference_bases, _alternate_bases, _reference_genome, 
-	_dataset_stable_ids, _is_authenticated, _filters, _filters_converted, 
-	_biosample_stable_id, _individual_stable_id, 
-	_limit, _offset, _join_variant_table;
+	
+	-------------------
+	-- Prepare joins --
+	-------------------
+	_joins_clause = '';
+	IF _join_variant_table THEN
+		_joins_clause = _joins_clause || '
+		INNER JOIN public.variant_sample_table var_sam ON var_sam.sample_id=sam.id
+		INNER JOIN public.variant_table var ON var.id=var_sam.variant_id AND var.dataset_id=dat.id';
+	END IF;
+	
+	IF _join_individual_pedigree_table THEN
+		_joins_clause = _joins_clause || '
+		INNER JOIN public.individual_pedigree_w_ontology_terms ind_ped ON ind_ped.individual_id=ind.id';
+	END IF;
+	
+	IF _join_individual_disease_table THEN
+		_joins_clause = _joins_clause || '
+		INNER JOIN public.individual_disease_w_ontology_terms ind_dis ON ind_dis.individual_id=ind.id';
+	END IF;
+	
+	IF _join_individual_phenotypic_feature_table THEN
+		_joins_clause = _joins_clause || '
+		INNER JOIN public.individual_phenotypic_feature_w_ontology_terms ind_phf ON ind_phf.individual_id=ind.id';
+	END IF;
+	
+	IF _join_pedigree_table THEN
+		_joins_clause = _joins_clause || '
+		INNER JOIN public.pedigree_table ped ON ped.stable_id=ind_ped.pedigree_stable_id';
+	END IF;
 	
 	---------------------------------
 	-- Get the schemas and formats --
 	---------------------------------
-	SELECT COALESCE(_schema_names, '-'), COALESCE(_schema_formats, '-') INTO _phf_schema_names, _phf_schema_formats
+	SELECT COALESCE(_schema_formats, quote_literal('{}')) INTO _phf_schema_formats
 	FROM public.find_format(_requested_schemas,'public.individual_table','phenotypic_features');
 
-	IF _phf_schema_names='-' THEN RAISE EXCEPTION 'Requested schemas not found! %', _requested_schemas; END IF;
+	IF _phf_schema_formats=quote_literal('{}') THEN 
+		RAISE EXCEPTION 'Requested schemas not found! %', _requested_schemas; 
+	END IF;
 
-	SELECT COALESCE(_schema_names, '-'), COALESCE(_schema_formats, '-') INTO _dis_schema_names, _dis_schema_formats
+	SELECT COALESCE(_schema_formats, quote_literal('{}')) INTO _dis_schema_formats
 	FROM public.find_format(_requested_schemas,'public.individual_table','diseases');
 
-	IF _dis_schema_names='-' THEN RAISE EXCEPTION 'Requested schemas not found! %', _requested_schemas; END IF;
+	IF _dis_schema_formats=quote_literal('{}') THEN 
+		RAISE EXCEPTION 'Requested schemas not found! %', _requested_schemas; 
+	END IF;
 	
-	SELECT COALESCE(_schema_names, '-'), COALESCE(_schema_formats, '-') INTO _ped_schema_names, _ped_schema_formats
+	SELECT COALESCE(_schema_formats, quote_literal('{}')) INTO _ped_schema_formats
 	FROM public.find_format(_requested_schemas,'public.individual_table','pedigrees');
 
-	IF _ped_schema_names='-' THEN RAISE EXCEPTION 'Requested schemas not found! %', _requested_schemas; END IF;
+	IF _ped_schema_formats=quote_literal('{}') THEN 
+		RAISE EXCEPTION 'Requested schemas not found! %', _requested_schemas; 
+	END IF;
 	
-	SELECT COALESCE(_schema_names, '-'), COALESCE(_schema_formats, '-') INTO _individual_resources_schema_names, _individual_resources_schema_formats
+	SELECT COALESCE(_schema_formats, quote_literal('{}')) INTO _individual_resources_schema_formats
 	FROM public.find_format(_requested_schemas,'public.individual_table','individual_resources');
 
-	IF _individual_resources_schema_names='-' THEN 
-		_individual_resources_schema_names = ''; 
-		_individual_resources_schema_formats = '{}';
-	END IF;
+	SELECT COALESCE(_schema_formats, quote_literal('{}')) INTO _handover_schema_format
+	FROM public.find_format(ARRAY['beacon-default-v2.0.0-draft.2'],'handover','handover');
 	
 	---------------------
 	-- BUILD THE QUERY --
 	---------------------
 	_query = '
 		SELECT DISTINCT ON (ind.stable_id)
-			ind.stable_id AS individual_id,
+			' || _required_cols || ',
 			array_agg(DISTINCT dat.stable_id::text) AS dataset_ids,
-			ind.taxon_id AS taxon_id,
-			ind.taxon_id_ontology AS taxon_id_ontology,
-			ind.taxon_id_ontology_label,
-			ind.sex AS sex,
-			ind.sex_ontology AS sex_ontology,
-			ind.ethnicity AS ethnicity,
-			ind.ethnicity_ontology AS ethnicity_ontology,
-			ind.geographic_origin AS geographic_origin,
-			ind.geographic_origin_ontology AS geographic_origin_ontology,
+			COALESCE(array_agg(DISTINCT ind.alternative_id_ontology) FILTER (WHERE ind.alternative_id_ontology IS NOT NULL), ARRAY[]::text[]) AS alternative_ids,
+			COALESCE(array_agg(DISTINCT alt_ids_phenopackets.alternative_id_ontology) FILTER (WHERE alt_ids_phenopackets.alternative_id_ontology IS NOT NULL), ARRAY[]::text[]) AS alterntive_ids_phenopackets,
 			ind_hand.individual_handovers,
 			COALESCE(jsonb_agg(DISTINCT ind_ped2.pedigrees) FILTER (WHERE ind_ped2.pedigrees IS NOT NULL), ''{}''::jsonb) AS pedigrees,
 			COALESCE(jsonb_agg(DISTINCT ind_dis2.diseases) FILTER (WHERE ind_dis2.diseases IS NOT NULL), ''{}''::jsonb) AS diseases,
 			COALESCE(jsonb_agg(DISTINCT ind_phf2.phenotypic_features) FILTER (WHERE ind_phf2.phenotypic_features IS NOT NULL), ''{}''::jsonb) AS phenotypic_features,
-			COALESCE(jsonb_agg(DISTINCT ontologies.used) FILTER (WHERE ontologies.used IS NOT NULL), ''{}''::jsonb) AS ontologies_used,
-			-- extra info
-			ind.sra_family_id,
-			ind.race,
-			ind.date_of_birth,
-			ind.weight_kg,
-			ind.height_cm,
-			ind.blood_type,
-			COALESCE(ind.medications,''{}''::jsonb) AS medications,
-			COALESCE(ind.procedures,''{}''::jsonb) AS procedures,
-			COALESCE(array_agg(DISTINCT ind.alternative_id_ontology) FILTER (WHERE ind.alternative_id_ontology IS NOT NULL), ARRAY[]::text[]) AS alternative_ids,
-			COALESCE(array_agg(DISTINCT alt_ids_phenopackets.alternative_id_ontology) FILTER (WHERE alt_ids_phenopackets.alternative_id_ontology IS NOT NULL), ARRAY[]::text[]) AS alterntive_ids_phenopackets
+			COALESCE(jsonb_agg(DISTINCT ontologies.used) FILTER (WHERE ontologies.used IS NOT NULL), ''{}''::jsonb) AS ontologies_used			
 		FROM public.individual_w_ontology_terms ind 
 		INNER JOIN public.sample_table sam ON sam.individual_id=ind.id
 		INNER JOIN public.dataset_sample_table dataset_sam ON dataset_sam.sample_id=sam.id
-		INNER JOIN public.dataset_table dat ON dat.id = dataset_sam.dataset_id
-		';
-	
-	-- Join other tables only if they are necessary
-	IF _join_variant_table THEN
-		_query = _query || '
-		INNER JOIN public.variant_sample_table var_sam ON var_sam.sample_id=sam.id
-		INNER JOIN public.variant_table var ON var.id=var_sam.variant_id AND var.dataset_id=dat.id';
-	END IF;
-	
-	IF _join_individual_pedigree_table THEN
-		_query = _query || '
-		INNER JOIN public.individual_pedigree_w_ontology_terms ind_ped ON ind_ped.individual_id=ind.id';
-	END IF;
-	
-	IF _join_individual_disease_table THEN
-		_query = _query || '
-		INNER JOIN public.individual_disease_w_ontology_terms ind_dis ON ind_dis.individual_id=ind.id';
-	END IF;
-	
-	IF _join_individual_phenotypic_feature_table THEN
-		_query = _query || '
-		INNER JOIN public.individual_phenotypic_feature_w_ontology_terms ind_phf ON ind_phf.individual_id=ind.id';
-	END IF;
-	
-	IF _join_pedigree_table THEN
-		_query = _query || '
-		INNER JOIN public.pedigree_table ped ON ped.stable_id=ind_ped.pedigree_stable_id';
-	END IF;
+		INNER JOIN public.dataset_table dat ON dat.id = dataset_sam.dataset_id';
 	
 	-- Add LEFT JOINs
 	_query = _query || '
-		LEFT JOIN LATERAL(
-			SELECT CASE WHEN ind_alt.id IS NOT NULL THEN ind_alt.ontology || '':'' || ind_alt.term ELSE null::text END AS alternative_id_ontology,
-				alt_ontology.id AS alternative_id_ontology_id
-			FROM public.individual_alternative_id_table ind_alt
-			INNER JOIN public.ontology_table alt_ontology ON alt_ontology.id=ind_alt.ontology_id
-			WHERE ind_alt.individual_id=ind.id
-		) alt_ids_phenopackets ON TRUE
-		LEFT JOIN LATERAL(
-			-- Individual''s handovers
-			SELECT jsonb_agg(
-						jsonb_build_object(
-							''handoverType'', jsonb_build_object(
-								''id'', hand.type_id,
-								''label'', hand.type_label
-							),
-							''note'', hand.note,
-							''url'', hand.url
-						)
-					) AS individual_handovers
-			FROM public.individual_handover_table ind_hand
-			LEFT JOIN public.handover_table hand ON hand.id=ind_hand.handover_id
-			WHERE ind_hand.individual_id=ind.id
-			GROUP BY ind_hand.individual_id
-		) ind_hand ON TRUE
-		LEFT JOIN LATERAL (
-			-- Individual''s pedigrees
-			SELECT ' || _ped_schema_formats || '
-				AS pedigrees
+		LEFT JOIN individual_alternative_id_w_ontology alt_ids_phenopackets ON alt_ids_phenopackets.individual_id=ind.id
+		LEFT JOIN ( -- Individual''s handovers
+			SELECT hand.individual_id,
+				' || _handover_schema_format || ' AS individual_handovers
+			FROM individual_handovers hand
+			GROUP BY hand.individual_id
+		) ind_hand ON ind_hand.individual_id=ind.id
+		LEFT JOIN( -- Individual''s pedigrees
+			SELECT ind_ped.individual_id,
+				' || _ped_schema_formats || ' AS pedigrees
 			FROM public.individual_pedigree_w_ontology_terms ind_ped 
-			WHERE ind_ped.individual_id=ind.id
-		) ind_ped2 ON TRUE
-		LEFT JOIN LATERAL (
-			-- Individual''s diseases
-			SELECT ' || _dis_schema_formats || '
-					AS diseases,
-				' ||
-				CASE WHEN _individual_resources_schema_formats='{}' 
-					THEN quote_literal(_individual_resources_schema_formats) 
-					ELSE _individual_resources_schema_formats
-				END
-				|| '
-					AS ontologies_used
+		) ind_ped2 ON ind_ped2.individual_id=ind.id
+		LEFT JOIN( -- Individual''s diseases
+			SELECT ind_dis.individual_id,
+				' || _dis_schema_formats || ' AS diseases,
+				' || _individual_resources_schema_formats || ' AS ontologies_used
 			FROM public.individual_disease_w_ontology_terms ind_dis 
 			LEFT JOIN public.ontology_table disease_ontology ON disease_ontology.id=ind_dis.disease_ontology_id
 			LEFT JOIN public.ontology_table age_group_ontology ON age_group_ontology.id=ind_dis.age_group_ontology_id
@@ -1129,19 +1405,11 @@ BEGIN
 				(onset_type_ontology.ontology_id, onset_type_ontology.ontology_name, onset_type_ontology.namespace_prefix,
 				onset_type_ontology.url, onset_type_ontology.version, onset_type_ontology.iri_prefix)
 			)	AS ot(ontology_id, ontology_name, namespace_prefix, url, version, iri_prefix) ON TRUE
-			WHERE ind_dis.individual_id=ind.id
-		) ind_dis2 ON TRUE
-		LEFT JOIN LATERAL (
-			-- Individual''s phenotypic features
-			SELECT ' || _phf_schema_formats || '
-				AS phenotypic_features,
-				' || 
-				CASE WHEN _individual_resources_schema_formats='{}' 
-					THEN quote_literal(_individual_resources_schema_formats) 
-					ELSE _individual_resources_schema_formats
-				END
-				|| '
-					AS ontologies_used
+		) ind_dis2 ON ind_dis2.individual_id=ind.id
+		LEFT JOIN( -- Individual''s phenotypic features
+			SELECT ind_phf.individual_id,
+				' || _phf_schema_formats || ' AS phenotypic_features,
+				' || _individual_resources_schema_formats || ' AS ontologies_used
 			FROM public.individual_phenotypic_feature_w_ontology_terms ind_phf 
 			LEFT JOIN public.ontology_table phenotype_ontology ON phenotype_ontology.id=ind_phf.phenotype_ontology_id
 			LEFT JOIN public.ontology_table onset_type_ontology ON onset_type_ontology.id=ind_phf.onset_type_ontology_id
@@ -1158,35 +1426,19 @@ BEGIN
 				(severity_ontology.ontology_id, severity_ontology.ontology_name, severity_ontology.namespace_prefix,
 				severity_ontology.url, severity_ontology.version, severity_ontology.iri_prefix)
 			)	AS ot(ontology_id, ontology_name, namespace_prefix, url, version, iri_prefix) ON TRUE
-			WHERE ind_phf.individual_id=ind.id
-		) ind_phf2 ON TRUE
+		) ind_phf2 ON ind_phf2.individual_id=ind.id
 		LEFT JOIN LATERAL (
-			SELECT ' || 
-				CASE WHEN _individual_resources_schema_formats='{}' 
-					THEN quote_literal(_individual_resources_schema_formats) 
-					ELSE _individual_resources_schema_formats
-				END
-			|| '
+			SELECT ' || _individual_resources_schema_formats || '
 				AS ontologies_used
 			FROM public.ontology_table ot 
 			WHERE ot.id=ind.taxon_ontology_id
 			UNION
-			SELECT ' || 
-				CASE WHEN _individual_resources_schema_formats='{}' 
-					THEN quote_literal(_individual_resources_schema_formats) 
-					ELSE _individual_resources_schema_formats
-				END
-			|| '
+			SELECT ' || _individual_resources_schema_formats || '
 				AS ontologies_used
 			FROM public.ontology_table ot 
 			WHERE ot.id=ind.sex_ontology_id
 			UNION
-			SELECT ' ||
-				CASE WHEN _individual_resources_schema_formats='{}' 
-					THEN quote_literal(_individual_resources_schema_formats) 
-					ELSE _individual_resources_schema_formats
-				END
-			|| '
+			SELECT ' || _individual_resources_schema_formats || '
 				AS ontologies_used
 			FROM public.ontology_table ot 
 			WHERE ot.id=alt_ids_phenopackets.alternative_id_ontology_id
@@ -1199,47 +1451,13 @@ BEGIN
 		) AS ontologies(used) ON TRUE
 		';
 
-	_query = _query || _where_clause;
+	_query = _query || _joins_clause || _where_clause;
 	
 	_query = _query || ' 
-		GROUP BY ind.stable_id,
-			ind.taxon_id,
-			ind.taxon_id_ontology,
-			ind.taxon_id_ontology_label,
-			ind.sex,
-			ind.sex_ontology,
-			ind.ethnicity,
-			ind.ethnicity_ontology,
-			ind.geographic_origin,
-			ind.geographic_origin_ontology,
-			ind_hand.individual_handovers,
-			-- extra info
-			ind.sra_family_id,
-			ind.race,
-			ind.date_of_birth,
-			ind.weight_kg,
-			ind.height_cm,
-			ind.blood_type,
-			ind.medications,
-			ind.procedures
- 		ORDER BY ind.stable_id,
- 			ind.sex,
- 			ind.sex_ontology,
- 			ind.ethnicity,
- 			ind.ethnicity_ontology,
- 			ind.geographic_origin,
- 			ind.geographic_origin_ontology,
-			ind_hand.individual_handovers,
-			-- extra info
-			ind.sra_family_id,
-			ind.race,
-			ind.date_of_birth,
-			ind.weight_kg,
-			ind.height_cm,
-			ind.blood_type,
-			ind.medications,
-			ind.procedures
- 			';
+		GROUP BY 
+			' || _required_cols || ',
+			ind_hand.individual_handovers
+ 		ORDER BY ' || _required_cols;
 	
 	-- Apply pagination
 	_query = _query || '
@@ -1262,11 +1480,11 @@ $_$;
 
 
 --
--- TOC entry 271 (class 1255 OID 16392)
--- Name: fetch_samples(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text[], boolean, text, text, integer, text[], integer, integer, text[]); Type: FUNCTION; Schema: public; Owner: -
+-- TOC entry 280 (class 1255 OID 16415)
+-- Name: fetch_samples(text, integer, integer, integer, integer, integer, integer, text, text, text, text, text[], boolean, text, text, integer, text[], integer, integer, text[]); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.fetch_samples(_variant_type text, _start integer, _start_min integer, _start_max integer, _end integer, _end_min integer, _end_max integer, _refseq character varying, _reference_bases text, _alternate_bases text, _reference_genome text, _dataset_stable_ids text[], _is_authenticated boolean, _biosample_stable_id text, _individual_stable_id text, _gvariant_id integer, _filters text[], _offset integer, _limit integer, _requested_schemas text[]) RETURNS TABLE(biosample_stable_id text, individual_stable_id text, description text, biosample_status text, biosample_status_ontology text, biosample_status_ontology_label text, individual_age_at_collection text, obtention_procedure text, obtention_procedure_ontology text, obtention_procedure_ontology_label text, tumor_progression text, tumor_progression_ontology text, tumor_progression_ontology_label text, tumor_grade text, tumor_grade_ontology text, tumor_grade_ontology_label text, collection_date date, handovers jsonb, sample_origins jsonb, sample_origins_ontology jsonb, ontologies_used jsonb, alternative_ids text[], study_id text, bioproject_id text, files jsonb)
+CREATE FUNCTION public.fetch_samples(_variant_type text, _start integer, _start_min integer, _start_max integer, _end integer, _end_min integer, _end_max integer, _refseq text, _reference_bases text, _alternate_bases text, _reference_genome text, _dataset_stable_ids text[], _is_authenticated boolean, _biosample_stable_id text, _individual_stable_id text, _gvariant_id integer, _filters text[], _offset integer, _limit integer, _requested_schemas text[]) RETURNS SETOF public.fetch_samples_result_type
     LANGUAGE plpgsql
     AS $_$
 
@@ -1284,8 +1502,17 @@ CREATE FUNCTION public.fetch_samples(_variant_type text, _start integer, _start_
 --		* _reference_genome + _refseq + (_variant_type) + _start + _end
 --		* _reference_genome + _refseq + (_variant_type) + _start_min + _start_max + _end_min + _end_max
 
+-- If your sample_table schema is different, you will have to change:
+-- * Type: fetch_samples_result_type: return type of this function. 
+--		It must match with the columns returned in the view function_fetch_samples_cols_required (see next).
+-- * Views: 
+-- 		function_fetch_samples_cols_required: list the columns to be returned in the  outter SELECT in 
+--			this function's query.
+--		sample_w_ontology_terms: view on top of sample_table, which also includes the ontologies values.
+
 DECLARE
 	_query text;
+	_joins_clause text;
 	_where_clause text;
 	_filters_converted text;
 	_join_variant_table bool;
@@ -1293,11 +1520,12 @@ DECLARE
 	_join_individual_pedigree_table bool;
 	_join_individual_disease_table bool;
 	_join_individual_phenotypic_feature_table bool;
+	_required_cols text;
 	-- Schemas and formats for some fields
 	_origins_schema_names text;
 	_origins_schema_formats text;
-	_sample_resources_schema_names text;
 	_sample_resources_schema_formats text;
+	_handover_schema_format text;
 BEGIN
 	_join_variant_table = FALSE;
 	_join_pedigree_table = FALSE;
@@ -1305,100 +1533,97 @@ BEGIN
 	_join_individual_disease_table = FALSE;
 	_join_individual_phenotypic_feature_table = FALSE;
 
+	-----------------------------------------------------
+	-- Get columns to be returned in the outter SELECT --
+	-----------------------------------------------------
+	SELECT 'sam.'|| string_agg(quote_ident(column_name),', sam.' ORDER BY ordinal_position) INTO _required_cols
+	FROM INFORMATION_SCHEMA.COLUMNS 
+	WHERE table_name = 'function_fetch_samples_cols_required';
+	
+	---------------------
+	-- Prepare filters --
+	---------------------
 	SELECT * INTO _filters_converted
 	FROM public.parse_filters(_filters);
 
-	-- Aliases used in ontology_term_table
-	-- 	'ind'
-	-- 	'sam'
-	-- 	'ind_ped'
-	-- 	'ind_dis'
-	-- In the future, we may have filters on variant_table
-	
-	-- Check what other tables should be joined depending on the filters provided
-	IF _filters_converted LIKE '%var.%' THEN _join_variant_table=TRUE; END IF;
-	IF _filters_converted LIKE '%ped.%' THEN 
-		_join_individual_pedigree_table=TRUE;
-		_join_pedigree_table=TRUE; 
-	END IF;
-	IF _filters_converted LIKE '%ind_ped.%' THEN _join_individual_pedigree_table=TRUE; END IF;
-	IF _filters_converted LIKE '%ind_dis.%' THEN _join_individual_disease_table=TRUE; END IF;
-	IF _filters_converted LIKE '%ind_phf.%' THEN _join_individual_phenotypic_feature_table=TRUE; END IF;
-
+	----------------------------
+	-- Build the WHERE clause --
+	----------------------------
 	SELECT * INTO _where_clause
 	FROM public.add_where_clause_conditions(_variant_type, _start_min, _end, _reference_bases, 
 											_alternate_bases, _dataset_stable_ids, _is_authenticated, 
-											_biosample_stable_id, _individual_stable_id, _gvariant_id,
+											_biosample_stable_id, _individual_stable_id, _gvariant_id, 
 											_filters_converted);
-											
 	RAISE NOTICE 'WHERE=%', _where_clause;
 											
 	IF _where_clause LIKE '%var.%' THEN _join_variant_table=TRUE; END IF;
 	
-	RAISE NOTICE 'Parameters:  
-		_variant_type=%, 
-		_start=%, _start_min=%, _start_max=%, 
-		_end=%, _end_min=%, _end_max=%,
-		_refseq=%, _reference_bases=%, _alternate_bases=%, _reference_genome=%, 
-		_dataset_stable_ids=%, _is_authenticated=%, 
-		_filters=%, _filters_converted=%,
-		_biosample_stable_id=%, _individual_stable_id=%,
-		_limit=%, _offset=%, _join_variant_table=%', 
-	_variant_type, _start, _start_min, _start_max, _end, _end_min, _end_max,
-	_refseq, _reference_bases, _alternate_bases, _reference_genome, 
-	_dataset_stable_ids, _is_authenticated, _filters, _filters_converted, 
-	_biosample_stable_id, _individual_stable_id, 
-	_limit, _offset, _join_variant_table;
+	--------------------------------
+	-- Find what joins are needed --
+	--------------------------------
+	IF _where_clause LIKE '%var.%' THEN _join_variant_table=TRUE; END IF;
+	IF _where_clause LIKE '%ped.%' THEN 
+		_join_individual_pedigree_table=TRUE;
+		_join_pedigree_table=TRUE; 
+	END IF;
+	IF _where_clause LIKE '%ind_ped.%' THEN _join_individual_pedigree_table=TRUE; END IF;
+	IF _where_clause LIKE '%ind_dis.%' THEN _join_individual_disease_table=TRUE; END IF;
+	IF _where_clause LIKE '%ind_phf.%' THEN _join_individual_phenotypic_feature_table=TRUE; END IF;
+
+	-------------------
+	-- Prepare joins --
+	-------------------
+	_joins_clause = '';
+	IF _join_variant_table THEN
+		_joins_clause = _joins_clause || '
+		INNER JOIN public.variant_sample_table var_sam ON var_sam.sample_id=sam.id
+		INNER JOIN public.variant_table var ON var.id=var_sam.variant_id';
+	END IF;
+	
+	IF _join_individual_pedigree_table THEN
+		_joins_clause = _joins_clause || '
+		INNER JOIN public.individual_pedigree_w_ontology_terms ind_ped ON ind_ped.individual_id=ind.id';
+	END IF;
+	
+	IF _join_pedigree_table THEN
+		_joins_clause = _joins_clause || '
+		INNER JOIN public.pedigree_table ped ON ped.stable_id=ind_ped.pedigree_stable_id';
+	END IF;
+	
+	IF _join_individual_disease_table THEN
+		_joins_clause = _joins_clause || '
+		INNER JOIN public.individual_disease_w_ontology_terms ind_dis ON ind_dis.individual_id=ind.id';
+	END IF;
+	
+	IF _join_individual_phenotypic_feature_table THEN
+		_joins_clause = _joins_clause || '
+		INNER JOIN public.individual_phenotypic_feature_w_ontology_terms ind_phf ON ind_phf.individual_id=ind.id';
+	END IF;
 	
 	---------------------------------
 	-- Get the schemas and formats --
 	---------------------------------
-	SELECT COALESCE(_schema_names, '-'), COALESCE(_schema_formats, '-') INTO _origins_schema_names, _origins_schema_formats
+	SELECT COALESCE(_schema_names, '-'), COALESCE(_schema_formats, quote_literal('{}')) INTO _origins_schema_names, _origins_schema_formats
 	FROM public.find_format(_requested_schemas,'public.sample_table','sample_origins_ontology');
 	
-	IF _origins_schema_names='-' THEN RAISE EXCEPTION 'Requested schemas not found! %', _requested_schemas; END IF;
+	IF _origins_schema_formats='{}' THEN RAISE EXCEPTION 'Requested schemas not found! %', _requested_schemas; END IF;
 	
-	SELECT COALESCE(_schema_names, '-'), COALESCE(_schema_formats, '-') INTO _sample_resources_schema_names, _sample_resources_schema_formats
+	SELECT COALESCE(_schema_formats, quote_literal('{}')) INTO _sample_resources_schema_formats
 	FROM public.find_format(_requested_schemas,'public.sample_table','sample_resources');
 	
-	IF _sample_resources_schema_names='-' THEN 
-		_sample_resources_schema_names = ''; 
-		_sample_resources_schema_formats = '{}';
-	END IF;
+	SELECT COALESCE(_schema_formats, quote_literal('{}')) INTO _handover_schema_format
+	FROM public.find_format(ARRAY['beacon-default-v2.0.0-draft.2'],'handover','handover');
 	
 	---------------------
 	-- BUILD THE QUERY --
 	---------------------
 	_query = '
 	SELECT 
-		q.biosample_stable_id,
-		q.individual_stable_id,
-		q.description,
-		q.biosample_status,
-		q.biosample_status_ontology,
-		q.biosample_status_ontology_label,
-		q.individual_age_at_collection,
-		q.obtention_procedure,
-		q.obtention_procedure_ontology,
-		q.obtention_procedure_ontology_label,
-		q.tumor_progression,
-		q.tumor_progression_ontology,
-		q.tumor_progression_ontology_label,
-		q.tumor_grade,
-		q.tumor_grade_ontology,
-		q.tumor_grade_ontology_label,
-		q.collection_date,
-		q.biosample_handovers,
-		q.sample_origins,
+		' || _required_cols || ',
 		CASE WHEN ' || _origins_schema_names || ' ILIKE ''%phenopacket%'' 
-			THEN q.sample_origins_ontology->0 -- for phenopackets format, only return one value
-			ELSE q.sample_origins_ontology 
-		END as sample_origins_ontology,
-		q.ontologies_used,
-		q.alternative_ids,
-		q.study_id,
-		q.bioproject_id,
-		q.files
+			THEN sam.sample_origins_ontology->0 -- for phenopackets format, only return one value
+			ELSE sam.sample_origins_ontology 
+		END as sample_origins_ontology
 	FROM (
 		SELECT DISTINCT ON (sam.stable_id)
 			sam.stable_id AS biosample_stable_id,
@@ -1432,61 +1657,22 @@ BEGIN
 		INNER JOIN public.dataset_sample_table dataset_sam ON dataset_sam.sample_id=sam.id
 		INNER JOIN public.dataset_table dat ON dat.id = dataset_sam.dataset_id';
 	
-	-- Join other tables only if they are necessary	
-	IF _join_variant_table THEN
-		_query = _query || '
-		INNER JOIN public.variant_sample_table var_sam ON var_sam.sample_id=sam.id
-		INNER JOIN public.variant_table var ON var.id=var_sam.variant_id';
-	END IF;
-	
-	IF _join_individual_pedigree_table THEN
-		_query = _query || '
-		INNER JOIN public.individual_pedigree_w_ontology_terms ind_ped ON ind_ped.individual_id=ind.id';
-	END IF;
-	
-	IF _join_pedigree_table THEN
-		_query = _query || '
-		INNER JOIN public.pedigree_table ped ON ped.stable_id=ind_ped.pedigree_stable_id';
-	END IF;
-	
-	IF _join_individual_disease_table THEN
-		_query = _query || '
-		INNER JOIN public.individual_disease_w_ontology_terms ind_dis ON ind_dis.individual_id=ind.id';
-	END IF;
-	
-	IF _join_individual_phenotypic_feature_table THEN
-		_query = _query || '
-		INNER JOIN public.individual_phenotypic_feature_w_ontology_terms ind_phf ON ind_phf.individual_id=ind.id';
-	END IF;
+	_query = _query || _joins_clause;
 	
 	-- Add LEFT JOINS
 	_query = _query || '
-		LEFT JOIN LATERAL(
+		LEFT JOIN (
 			-- Biosample''s handovers
-			SELECT jsonb_agg(
-						jsonb_build_object(
-							''handoverType'', jsonb_build_object(
-								''id'', hand.type_id,
-								''label'', hand.type_label
-							),
-							''note'', hand.note,
-							''url'', hand.url
-						)
-					) AS biosample_handovers
+			SELECT sam_hand.sample_id,' || 
+				_handover_schema_format || ' AS biosample_handovers
 			FROM public.sample_handover_table sam_hand
 			LEFT JOIN public.handover_table hand ON hand.id=sam_hand.handover_id
-			WHERE sam_hand.sample_id=ind.id
 			GROUP BY sam_hand.sample_id
-		) sam_hand ON TRUE
+		) sam_hand ON sam_hand.sample_id=ind.id
 		LEFT JOIN LATERAL (
 			SELECT ' || _origins_schema_formats || '
 				AS sample_origin_descriptors,
-					' ||
-					CASE WHEN _sample_resources_schema_formats='{}' 
-						THEN quote_literal(_sample_resources_schema_formats) 
-						ELSE _sample_resources_schema_formats
-					END
-					|| '
+					' || _sample_resources_schema_formats || '
 				AS ontologies_used
 			FROM jsonb_array_elements(sam.sample_origins) AS sam_origins(data)
 			LEFT JOIN public.ontology_term_table ot_origin_type ON ot_origin_type.target_table=''public.sample_table'' AND ot_origin_type.column_name=''sampleOriginType'' 
@@ -1549,13 +1735,12 @@ BEGIN
 			sam.alternative_ids,
 			sam.study_id,
 			sam.bioproject_id,
-			files
-			';
+			files';
 	
 		-- Apply pagination
 		_query = _query || '
 		LIMIT $16 OFFSET $17
-	)q';
+	)sam';
 
 	RAISE NOTICE '_query: %', _query;
 
@@ -1573,7 +1758,7 @@ $_$;
 
 
 --
--- TOC entry 256 (class 1255 OID 16386)
+-- TOC entry 293 (class 1255 OID 16417)
 -- Name: find_format(text[], text, text); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -1608,7 +1793,7 @@ $$;
 
 
 --
--- TOC entry 269 (class 1255 OID 16387)
+-- TOC entry 294 (class 1255 OID 16418)
 -- Name: parse_filters(text[]); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -1658,14 +1843,13 @@ $$;
 
 
 --
--- TOC entry 278 (class 1255 OID 17477)
+-- TOC entry 295 (class 1255 OID 16419)
 -- Name: query_gvariants(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text, text[], boolean, text, text, integer, text[], integer, integer, text[]); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.query_gvariants(_variant_type text, _start integer, _start_min integer, _start_max integer, _end integer, _end_min integer, _end_max integer, _refseq character varying, _reference_bases text, _alternate_bases text, _reference_genome text, _include_dataset_responses text, _dataset_stable_ids text[], _is_authenticated boolean, _biosample_stable_id text, _individual_stable_id text, _gvariant_id integer, _filters text[], _offset integer, _limit integer, _requested_schemas text[]) RETURNS TABLE(num_total_results bigint, variant_id integer, assembly_id text, chromosome text, refseq_id text, variant_name text, reference text, alternate text, start integer, "end" integer, variant_type text, genomic_hgvs_id text, transcript_hgvs_ids text[], protein_hgvs_ids text[], genomic_regions text[], genomic_regions_ontology text[], genomic_features_ontology jsonb, molecular_effects text[], molecular_effects_ontology text[], aminoacid_changes text[], ontologies_used jsonb, dataset_response jsonb)
+CREATE FUNCTION public.query_gvariants(_variant_type text, _start integer, _start_min integer, _start_max integer, _end integer, _end_min integer, _end_max integer, _refseq character varying, _reference_bases text, _alternate_bases text, _reference_genome text, _include_dataset_responses text, _dataset_stable_ids text[], _is_authenticated boolean, _biosample_stable_id text, _individual_stable_id text, _gvariant_id integer, _filters text[], _offset integer, _limit integer, _requested_schemas text[]) RETURNS SETOF public.query_variants_result_type
     LANGUAGE plpgsql
     AS $_$
-
 DECLARE
 	_num_total_results bigint;
 	_query text;
@@ -1727,14 +1911,13 @@ $_$;
 
 
 --
--- TOC entry 277 (class 1255 OID 17488)
+-- TOC entry 296 (class 1255 OID 16420)
 -- Name: query_individuals(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text[], boolean, text, text, integer, text[], integer, integer, text[]); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.query_individuals(_variant_type text, _start integer, _start_min integer, _start_max integer, _end integer, _end_min integer, _end_max integer, _refseq character varying, _reference_bases text, _alternate_bases text, _reference_genome text, _dataset_stable_ids text[], _is_authenticated boolean, _biosample_stable_id text, _individual_stable_id text, _gvariant_id integer, _filters text[], _offset integer, _limit integer, _requested_schemas text[]) RETURNS TABLE(num_total_results bigint, individual_stable_id text, dataset_ids text[], taxon_id text, taxon_id_ontology text, taxon_id_ontology_label text, sex text, sex_ontology text, ethnicity text, ethnicity_ontology text, geographic_origin text, geographic_origin_ontology text, handovers jsonb, pedigrees jsonb, diseases jsonb, phenotypic_features jsonb, ontologies_used jsonb, sra_family_id integer, race text, date_of_birth date, weight_kg integer, height_cm integer, blood_type text, medications jsonb, procedures jsonb, alternative_ids text[], alternative_ids_phenopackets text[])
+CREATE FUNCTION public.query_individuals(_variant_type text, _start integer, _start_min integer, _start_max integer, _end integer, _end_min integer, _end_max integer, _refseq character varying, _reference_bases text, _alternate_bases text, _reference_genome text, _dataset_stable_ids text[], _is_authenticated boolean, _biosample_stable_id text, _individual_stable_id text, _gvariant_id integer, _filters text[], _offset integer, _limit integer, _requested_schemas text[]) RETURNS SETOF public.query_individuals_result_type
     LANGUAGE plpgsql
     AS $_$
-
 DECLARE
 	_num_total_results bigint;
 	_query text;
@@ -1795,14 +1978,13 @@ $_$;
 
 
 --
--- TOC entry 275 (class 1255 OID 17489)
+-- TOC entry 297 (class 1255 OID 16421)
 -- Name: query_samples(text, integer, integer, integer, integer, integer, integer, character varying, text, text, text, text[], boolean, text, text, integer, text[], integer, integer, text[]); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.query_samples(_variant_type text, _start integer, _start_min integer, _start_max integer, _end integer, _end_min integer, _end_max integer, _refseq character varying, _reference_bases text, _alternate_bases text, _reference_genome text, _dataset_stable_ids text[], _is_authenticated boolean, _biosample_stable_id text, _individual_stable_id text, _gvariant_id integer, _filters text[], _offset integer, _limit integer, _requested_schemas text[]) RETURNS TABLE(num_total_results bigint, biosample_stable_id text, individual_stable_id text, description text, biosample_status text, biosample_status_ontology text, biosample_status_ontology_label text, individual_age_at_collection text, obtention_procedure text, obtention_procedure_ontology text, obtention_procedure_ontology_label text, tumor_progression text, tumor_progression_ontology text, tumor_progression_ontology_label text, tumor_grade text, tumor_grade_ontology text, tumor_grade_ontology_label text, collection_date date, handovers jsonb, sample_origins jsonb, sample_origins_ontology jsonb, ontologies_used jsonb, alternative_ids text[], study_id text, bioproject_id text, files jsonb)
+CREATE FUNCTION public.query_samples(_variant_type text, _start integer, _start_min integer, _start_max integer, _end integer, _end_min integer, _end_max integer, _refseq character varying, _reference_bases text, _alternate_bases text, _reference_genome text, _dataset_stable_ids text[], _is_authenticated boolean, _biosample_stable_id text, _individual_stable_id text, _gvariant_id integer, _filters text[], _offset integer, _limit integer, _requested_schemas text[]) RETURNS SETOF public.query_samples_result_type
     LANGUAGE plpgsql
     AS $_$
-
 DECLARE
 	_num_total_results bigint;
 	_query text;
@@ -1862,12 +2044,157 @@ END
 $_$;
 
 
+--
+-- TOC entry 298 (class 1255 OID 17593)
+-- Name: select_individuals_with_criteria(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.select_individuals_with_criteria() RETURNS integer[]
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	return array[1, 2];
+END;
+$$;
+
+
+--
+-- TOC entry 262 (class 1259 OID 17602)
+-- Name: cohort_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.cohort_table_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- TOC entry 202 (class 1259 OID 16394)
+-- TOC entry 263 (class 1259 OID 17655)
+-- Name: cohort_table; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.cohort_table (
+    id integer DEFAULT nextval('public.cohort_table_id_seq'::regclass) NOT NULL,
+    cohort_name text,
+    cohort_type text,
+    cohort_design text,
+    cohort_inclusion_criteria jsonb,
+    cohort_exclusion_criteria jsonb,
+    cohort_license jsonb,
+    cohort_contact jsonb,
+    cohort_rights jsonb,
+    cohort_size integer,
+    cohort_data_types jsonb
+);
+
+
+--
+-- TOC entry 261 (class 1259 OID 17600)
+-- Name: collection_event_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.collection_event_table_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- TOC entry 264 (class 1259 OID 17664)
+-- Name: collection_event_table; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.collection_event_table (
+    id integer DEFAULT nextval('public.collection_event_table_id_seq'::regclass) NOT NULL,
+    event_num integer,
+    event_date date,
+    event_timeline jsonb,
+    event_size integer,
+    event_cases integer,
+    event_controls integer,
+    event_locations jsonb,
+    event_genders jsonb,
+    event_ethnicities jsonb,
+    event_age_range jsonb,
+    event_diseases jsonb,
+    event_phenotypes jsonb,
+    event_data_types jsonb,
+    cohort_id integer
+);
+
+
+--
+-- TOC entry 265 (class 1259 OID 17678)
+-- Name: collection_event; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.collection_event AS
+ SELECT collection_event_table.id,
+    collection_event_table.event_num,
+    collection_event_table.event_date,
+    collection_event_table.event_timeline,
+    collection_event_table.event_size,
+    collection_event_table.event_cases,
+    collection_event_table.event_controls,
+    collection_event_table.event_locations,
+    collection_event_table.event_genders,
+    collection_event_table.event_ethnicities,
+    collection_event_table.event_age_range,
+    collection_event_table.event_diseases,
+    collection_event_table.event_phenotypes,
+    collection_event_table.event_data_types,
+    collection_event_table.cohort_id
+   FROM public.collection_event_table;
+
+
+--
+-- TOC entry 266 (class 1259 OID 17683)
+-- Name: cohort; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.cohort AS
+ SELECT cohort_table.id,
+    cohort_table.cohort_name,
+    cohort_table.cohort_type,
+    cohort_table.cohort_design,
+    cohort_table.cohort_inclusion_criteria,
+    cohort_table.cohort_exclusion_criteria,
+    cohort_table.cohort_license,
+    cohort_table.cohort_contact,
+    cohort_table.cohort_rights,
+    cohort_table.cohort_size,
+    cohort_table.cohort_data_types,
+    ( SELECT jsonb_agg(t.*) AS jsonb_agg
+           FROM ( SELECT collection_event.id,
+                    collection_event.event_num,
+                    collection_event.event_date,
+                    collection_event.event_timeline,
+                    collection_event.event_size,
+                    collection_event.event_cases,
+                    collection_event.event_controls,
+                    collection_event.event_locations,
+                    collection_event.event_genders,
+                    collection_event.event_ethnicities,
+                    collection_event.event_age_range,
+                    collection_event.event_diseases,
+                    collection_event.event_phenotypes,
+                    collection_event.event_data_types
+                   FROM public.collection_event
+                  WHERE (collection_event.cohort_id = cohort_table.id)) t) AS collection_events
+   FROM public.cohort_table;
+
+
+--
+-- TOC entry 208 (class 1259 OID 16422)
 -- Name: consent_code_category_table; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1878,7 +2205,7 @@ CREATE TABLE public.consent_code_category_table (
 
 
 --
--- TOC entry 203 (class 1259 OID 16397)
+-- TOC entry 209 (class 1259 OID 16425)
 -- Name: consent_code_table; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1893,7 +2220,7 @@ CREATE TABLE public.consent_code_table (
 
 
 --
--- TOC entry 204 (class 1259 OID 16403)
+-- TOC entry 210 (class 1259 OID 16431)
 -- Name: consent_code_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -1906,8 +2233,8 @@ CREATE SEQUENCE public.consent_code_table_id_seq
 
 
 --
--- TOC entry 3278 (class 0 OID 0)
--- Dependencies: 204
+-- TOC entry 3375 (class 0 OID 0)
+-- Dependencies: 210
 -- Name: consent_code_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
@@ -1915,7 +2242,18 @@ ALTER SEQUENCE public.consent_code_table_id_seq OWNED BY public.consent_code_tab
 
 
 --
--- TOC entry 205 (class 1259 OID 16405)
+-- TOC entry 216 (class 1259 OID 16467)
+-- Name: dataset_handover_table; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.dataset_handover_table (
+    dataset_id integer NOT NULL,
+    handover_id integer NOT NULL
+);
+
+
+--
+-- TOC entry 211 (class 1259 OID 16433)
 -- Name: dataset_table; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1938,7 +2276,21 @@ CREATE TABLE public.dataset_table (
 
 
 --
--- TOC entry 206 (class 1259 OID 16412)
+-- TOC entry 222 (class 1259 OID 16489)
+-- Name: handover_table; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.handover_table (
+    id integer NOT NULL,
+    type_id text NOT NULL,
+    type_label text,
+    note text,
+    url text NOT NULL
+);
+
+
+--
+-- TOC entry 274 (class 1259 OID 17876)
 -- Name: dataset; Type: VIEW; Schema: public; Owner: -
 --
 
@@ -1949,19 +2301,25 @@ CREATE VIEW public.dataset AS
     d.description,
     d.access_type,
     d.reference_genome,
-    d.variant_cnt,
-    d.call_cnt,
-    d.sample_cnt,
+    COALESCE(d.variant_cnt, (0)::bigint) AS variant_count,
+    COALESCE(d.call_cnt, (0)::bigint) AS call_count,
+    COALESCE(d.sample_cnt, (0)::bigint) AS sample_count,
     d.dataset_source,
     d.dataset_type,
     d.created_at,
-    d.updated_at
-   FROM public.dataset_table d
+    d.updated_at,
+    dat_hand.dataset_handovers AS handovers
+   FROM (public.dataset_table d
+     LEFT JOIN ( SELECT dat_hand_1.dataset_id,
+            jsonb_agg(jsonb_build_object('handoverType', jsonb_build_object('id', hand.type_id, 'label', hand.type_label), 'note', hand.note, 'url', hand.url)) AS dataset_handovers
+           FROM (public.dataset_handover_table dat_hand_1
+             JOIN public.handover_table hand ON ((hand.id = dat_hand_1.handover_id)))
+          GROUP BY dat_hand_1.dataset_id) dat_hand ON ((dat_hand.dataset_id = d.id)))
   WHERE (((d.access_type)::text = ANY (ARRAY['PUBLIC'::text, 'REGISTERED'::text, 'CONTROLLED'::text])) AND (d.variant_cnt > 0) AND ((d.reference_genome)::text <> ''::text));
 
 
 --
--- TOC entry 207 (class 1259 OID 16417)
+-- TOC entry 212 (class 1259 OID 16445)
 -- Name: dataset_access_level_table; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1975,7 +2333,7 @@ CREATE TABLE public.dataset_access_level_table (
 
 
 --
--- TOC entry 208 (class 1259 OID 16424)
+-- TOC entry 213 (class 1259 OID 16452)
 -- Name: dataset_access_level; Type: VIEW; Schema: public; Owner: -
 --
 
@@ -1989,7 +2347,7 @@ CREATE VIEW public.dataset_access_level AS
 
 
 --
--- TOC entry 209 (class 1259 OID 16428)
+-- TOC entry 214 (class 1259 OID 16456)
 -- Name: dataset_consent_code_table; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2003,7 +2361,7 @@ CREATE TABLE public.dataset_consent_code_table (
 
 
 --
--- TOC entry 210 (class 1259 OID 16434)
+-- TOC entry 215 (class 1259 OID 16462)
 -- Name: dataset_consent_code; Type: VIEW; Schema: public; Owner: -
 --
 
@@ -2022,18 +2380,7 @@ CREATE VIEW public.dataset_consent_code AS
 
 
 --
--- TOC entry 211 (class 1259 OID 16439)
--- Name: dataset_handover_table; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.dataset_handover_table (
-    dataset_id integer NOT NULL,
-    handover_id integer NOT NULL
-);
-
-
---
--- TOC entry 212 (class 1259 OID 16442)
+-- TOC entry 217 (class 1259 OID 16470)
 -- Name: dataset_sample_table; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2045,7 +2392,7 @@ CREATE TABLE public.dataset_sample_table (
 
 
 --
--- TOC entry 213 (class 1259 OID 16445)
+-- TOC entry 218 (class 1259 OID 16473)
 -- Name: dataset_sample_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -2058,8 +2405,8 @@ CREATE SEQUENCE public.dataset_sample_table_id_seq
 
 
 --
--- TOC entry 3279 (class 0 OID 0)
--- Dependencies: 213
+-- TOC entry 3376 (class 0 OID 0)
+-- Dependencies: 218
 -- Name: dataset_sample_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
@@ -2067,7 +2414,7 @@ ALTER SEQUENCE public.dataset_sample_table_id_seq OWNED BY public.dataset_sample
 
 
 --
--- TOC entry 214 (class 1259 OID 16447)
+-- TOC entry 219 (class 1259 OID 16475)
 -- Name: dataset_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -2080,8 +2427,8 @@ CREATE SEQUENCE public.dataset_table_id_seq
 
 
 --
--- TOC entry 3280 (class 0 OID 0)
--- Dependencies: 214
+-- TOC entry 3377 (class 0 OID 0)
+-- Dependencies: 219
 -- Name: dataset_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
@@ -2089,21 +2436,101 @@ ALTER SEQUENCE public.dataset_table_id_seq OWNED BY public.dataset_table.id;
 
 
 --
--- TOC entry 215 (class 1259 OID 16449)
--- Name: handover_table; Type: TABLE; Schema: public; Owner: -
+-- TOC entry 220 (class 1259 OID 16477)
+-- Name: function_fetch_individuals_cols_required; Type: VIEW; Schema: public; Owner: -
 --
 
-CREATE TABLE public.handover_table (
-    id integer NOT NULL,
-    type_id text NOT NULL,
-    type_label text,
-    note text,
-    url text NOT NULL
-);
+CREATE VIEW public.function_fetch_individuals_cols_required AS
+ SELECT NULL::text AS stable_id,
+    NULL::text AS taxon_id,
+    NULL::text AS taxon_id_ontology,
+    NULL::text AS taxon_id_ontology_label,
+    NULL::text AS sex,
+    NULL::text AS sex_ontology,
+    NULL::text AS ethnicity,
+    NULL::text AS ethnicity_ontology,
+    NULL::text AS geographic_origin,
+    NULL::text AS geographic_origin_ontology,
+    NULL::text AS sra_family_id,
+    NULL::text AS race,
+    NULL::text AS date_of_birth,
+    NULL::text AS weight_kg,
+    NULL::text AS height_cm,
+    NULL::text AS blood_type,
+    NULL::text AS medications,
+    NULL::text AS procedures;
 
 
 --
--- TOC entry 216 (class 1259 OID 16455)
+-- TOC entry 221 (class 1259 OID 16481)
+-- Name: function_fetch_samples_cols_required; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.function_fetch_samples_cols_required AS
+ SELECT NULL::text AS biosample_stable_id,
+    NULL::text AS individual_stable_id,
+    NULL::text AS description,
+    NULL::text AS biosample_status,
+    NULL::text AS biosample_status_ontology,
+    NULL::text AS biosample_status_ontology_label,
+    NULL::text AS individual_age_at_collection,
+    NULL::text AS obtention_procedure,
+    NULL::text AS obtention_procedure_ontology,
+    NULL::text AS obtention_procedure_ontology_label,
+    NULL::text AS tumor_progression,
+    NULL::text AS tumor_progression_ontology,
+    NULL::text AS tumor_progression_ontology_label,
+    NULL::text AS tumor_grade,
+    NULL::text AS tumor_grade_ontology,
+    NULL::text AS tumor_grade_ontology_label,
+    NULL::text AS collection_date,
+    NULL::text AS biosample_handovers,
+    NULL::text AS ontologies_used,
+    NULL::text AS alternative_ids,
+    NULL::text AS study_id,
+    NULL::text AS bioproject_id,
+    NULL::text AS files,
+    NULL::text AS sample_origins;
+
+
+--
+-- TOC entry 267 (class 1259 OID 17736)
+-- Name: function_fetch_variants_cols_required; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.function_fetch_variants_cols_required AS
+ SELECT NULL::text AS id,
+    NULL::text AS assembly_id,
+    NULL::text AS chromosome,
+    NULL::text AS refseq_id,
+    NULL::text AS alternative_id,
+    NULL::text AS reference,
+    NULL::text AS alternate,
+    NULL::text AS start,
+    NULL::text AS "end",
+    NULL::text AS variant_type,
+    NULL::text AS genomic_hgvs_id,
+    NULL::text AS transcript_hgvs_ids,
+    NULL::text AS protein_hgvs_ids,
+    NULL::text AS genomic_regions,
+    NULL::text AS molecular_effects,
+    NULL::text AS aminoacid_changes,
+    NULL::text AS effect_impacts,
+    NULL::text AS functional_classes,
+    NULL::text AS codon_changes,
+    NULL::text AS aminoacid_lengths,
+    NULL::text AS gene_names,
+    NULL::text AS transcript_biotypes,
+    NULL::text AS gene_codings,
+    NULL::text AS transcript_ids,
+    NULL::text AS exon_ranks,
+    NULL::text AS genotypes,
+    NULL::text AS aaref,
+    NULL::text AS aaalt;
+
+
+--
+-- TOC entry 223 (class 1259 OID 16495)
 -- Name: handover_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -2116,8 +2543,8 @@ CREATE SEQUENCE public.handover_table_id_seq
 
 
 --
--- TOC entry 3281 (class 0 OID 0)
--- Dependencies: 216
+-- TOC entry 3378 (class 0 OID 0)
+-- Dependencies: 223
 -- Name: handover_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
@@ -2125,7 +2552,7 @@ ALTER SEQUENCE public.handover_table_id_seq OWNED BY public.handover_table.id;
 
 
 --
--- TOC entry 217 (class 1259 OID 16457)
+-- TOC entry 224 (class 1259 OID 16497)
 -- Name: individual_table; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2152,7 +2579,7 @@ CREATE TABLE public.individual_table (
 
 
 --
--- TOC entry 218 (class 1259 OID 16464)
+-- TOC entry 225 (class 1259 OID 16504)
 -- Name: individual; Type: VIEW; Schema: public; Owner: -
 --
 
@@ -2167,7 +2594,7 @@ CREATE VIEW public.individual AS
 
 
 --
--- TOC entry 219 (class 1259 OID 16468)
+-- TOC entry 226 (class 1259 OID 16508)
 -- Name: individual_alternative_id_table; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2181,7 +2608,7 @@ CREATE TABLE public.individual_alternative_id_table (
 
 
 --
--- TOC entry 220 (class 1259 OID 16474)
+-- TOC entry 227 (class 1259 OID 16514)
 -- Name: individual_alternative_id_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -2195,8 +2622,8 @@ CREATE SEQUENCE public.individual_alternative_id_table_id_seq
 
 
 --
--- TOC entry 3282 (class 0 OID 0)
--- Dependencies: 220
+-- TOC entry 3379 (class 0 OID 0)
+-- Dependencies: 227
 -- Name: individual_alternative_id_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
@@ -2204,48 +2631,7 @@ ALTER SEQUENCE public.individual_alternative_id_table_id_seq OWNED BY public.ind
 
 
 --
--- TOC entry 221 (class 1259 OID 16476)
--- Name: individual_disease_table; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.individual_disease_table (
-    id integer NOT NULL,
-    individual_id integer NOT NULL,
-    disease_id text NOT NULL,
-    age text,
-    age_group text,
-    stage text,
-    family_history boolean,
-    date_of_onset date,
-    onset_type text,
-    severity text
-);
-
-
---
--- TOC entry 222 (class 1259 OID 16482)
--- Name: individual_disease_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.individual_disease_table_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- TOC entry 3283 (class 0 OID 0)
--- Dependencies: 222
--- Name: individual_disease_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.individual_disease_table_id_seq OWNED BY public.individual_disease_table.id;
-
-
---
--- TOC entry 223 (class 1259 OID 16484)
+-- TOC entry 228 (class 1259 OID 16516)
 -- Name: ontology_table; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2261,7 +2647,65 @@ CREATE TABLE public.ontology_table (
 
 
 --
--- TOC entry 224 (class 1259 OID 16490)
+-- TOC entry 229 (class 1259 OID 16522)
+-- Name: individual_alternative_id_w_ontology; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.individual_alternative_id_w_ontology AS
+ SELECT ind_alt.individual_id,
+        CASE
+            WHEN (ind_alt.id IS NOT NULL) THEN ((ind_alt.ontology || ':'::text) || ind_alt.term)
+            ELSE NULL::text
+        END AS alternative_id_ontology,
+    alt_ontology.id AS alternative_id_ontology_id
+   FROM (public.individual_alternative_id_table ind_alt
+     JOIN public.ontology_table alt_ontology ON ((alt_ontology.id = ind_alt.ontology_id)));
+
+
+--
+-- TOC entry 230 (class 1259 OID 16526)
+-- Name: individual_disease_table; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.individual_disease_table (
+    id integer NOT NULL,
+    individual_id integer NOT NULL,
+    disease_label text NOT NULL,
+    age text,
+    age_group text,
+    stage text,
+    family_history boolean,
+    date_of_onset date,
+    onset_type text,
+    severity text,
+    disease_id text
+);
+
+
+--
+-- TOC entry 231 (class 1259 OID 16532)
+-- Name: individual_disease_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.individual_disease_table_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- TOC entry 3380 (class 0 OID 0)
+-- Dependencies: 231
+-- Name: individual_disease_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.individual_disease_table_id_seq OWNED BY public.individual_disease_table.id;
+
+
+--
+-- TOC entry 232 (class 1259 OID 16534)
 -- Name: ontology_term_table; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2282,14 +2726,14 @@ CREATE TABLE public.ontology_term_table (
 
 
 --
--- TOC entry 225 (class 1259 OID 16496)
+-- TOC entry 233 (class 1259 OID 16540)
 -- Name: individual_disease_w_ontology_terms; Type: VIEW; Schema: public; Owner: -
 --
 
 CREATE VIEW public.individual_disease_w_ontology_terms AS
  SELECT ind_dis.id,
     ind_dis.individual_id,
-    ind_dis.disease_id,
+    ind_dis.disease_label AS disease_id,
         CASE
             WHEN (ot_disease.id IS NOT NULL) THEN ((ot_disease.ontology || ':'::text) || ot_disease.term)
             ELSE NULL::text
@@ -2342,7 +2786,7 @@ CREATE VIEW public.individual_disease_w_ontology_terms AS
             ELSE NULL::text
         END AS severity_ontology_label
    FROM (((((((((public.individual_disease_table ind_dis
-     LEFT JOIN public.ontology_term_table ot_disease ON (((ot_disease.target_table = 'public.individual_disease_table'::text) AND (ot_disease.column_name = 'disease_id'::text) AND (lower(ot_disease.column_value) = lower(ind_dis.disease_id)))))
+     LEFT JOIN public.ontology_term_table ot_disease ON (((ot_disease.target_table = 'public.individual_disease_table'::text) AND (ot_disease.column_name = 'disease_id'::text) AND (lower(ot_disease.column_value) = lower(ind_dis.disease_label)))))
      LEFT JOIN public.ontology_table disease_ontology ON ((disease_ontology.id = ot_disease.ontology_id)))
      LEFT JOIN public.ontology_term_table ot_age_group ON (((ot_age_group.target_table = 'public.individual_disease_table'::text) AND (ot_age_group.column_name = 'age_group'::text) AND (lower(ot_age_group.column_value) = lower(ind_dis.age_group)))))
      LEFT JOIN public.ontology_table age_group_ontology ON ((age_group_ontology.id = ot_age_group.ontology_id)))
@@ -2354,7 +2798,22 @@ CREATE VIEW public.individual_disease_w_ontology_terms AS
 
 
 --
--- TOC entry 226 (class 1259 OID 16501)
+-- TOC entry 271 (class 1259 OID 17813)
+-- Name: individual_exposure_table; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.individual_exposure_table (
+    individual_id text NOT NULL,
+    exposure_id text NOT NULL,
+    label text,
+    quantity_value text,
+    modifier_id text,
+    modifier_label text
+);
+
+
+--
+-- TOC entry 234 (class 1259 OID 16545)
 -- Name: individual_handover_table; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2365,7 +2824,47 @@ CREATE TABLE public.individual_handover_table (
 
 
 --
--- TOC entry 227 (class 1259 OID 16504)
+-- TOC entry 235 (class 1259 OID 16548)
+-- Name: individual_handovers; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.individual_handovers AS
+ SELECT ind_hand.individual_id,
+    hand.type_id,
+    hand.type_label,
+    hand.note,
+    hand.url
+   FROM (public.individual_handover_table ind_hand
+     LEFT JOIN public.handover_table hand ON ((hand.id = ind_hand.handover_id)));
+
+
+--
+-- TOC entry 270 (class 1259 OID 17805)
+-- Name: individual_intervention_table; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.individual_intervention_table (
+    individual_id text NOT NULL,
+    intervention_id text NOT NULL,
+    label text
+);
+
+
+--
+-- TOC entry 272 (class 1259 OID 17862)
+-- Name: individual_measure_table; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.individual_measure_table (
+    individual_id text NOT NULL,
+    measure_id text NOT NULL,
+    label text,
+    quantity_value text
+);
+
+
+--
+-- TOC entry 236 (class 1259 OID 16552)
 -- Name: individual_pedigree_table; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2380,7 +2879,7 @@ CREATE TABLE public.individual_pedigree_table (
 
 
 --
--- TOC entry 228 (class 1259 OID 16510)
+-- TOC entry 237 (class 1259 OID 16558)
 -- Name: pedigree_table; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2392,7 +2891,7 @@ CREATE TABLE public.pedigree_table (
 
 
 --
--- TOC entry 229 (class 1259 OID 16516)
+-- TOC entry 238 (class 1259 OID 16564)
 -- Name: individual_pedigree_w_ontology_terms; Type: VIEW; Schema: public; Owner: -
 --
 
@@ -2426,7 +2925,7 @@ CREATE VIEW public.individual_pedigree_w_ontology_terms AS
 
 
 --
--- TOC entry 230 (class 1259 OID 16521)
+-- TOC entry 239 (class 1259 OID 16569)
 -- Name: individual_phenotypic_feature_table; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2443,7 +2942,7 @@ CREATE TABLE public.individual_phenotypic_feature_table (
 
 
 --
--- TOC entry 231 (class 1259 OID 16527)
+-- TOC entry 240 (class 1259 OID 16575)
 -- Name: individual_phenotypic_feature_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -2456,8 +2955,8 @@ CREATE SEQUENCE public.individual_phenotypic_feature_table_id_seq
 
 
 --
--- TOC entry 3284 (class 0 OID 0)
--- Dependencies: 231
+-- TOC entry 3381 (class 0 OID 0)
+-- Dependencies: 240
 -- Name: individual_phenotypic_feature_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
@@ -2465,7 +2964,7 @@ ALTER SEQUENCE public.individual_phenotypic_feature_table_id_seq OWNED BY public
 
 
 --
--- TOC entry 232 (class 1259 OID 16529)
+-- TOC entry 241 (class 1259 OID 16577)
 -- Name: individual_phenotypic_feature_w_ontology_terms; Type: VIEW; Schema: public; Owner: -
 --
 
@@ -2526,7 +3025,7 @@ CREATE VIEW public.individual_phenotypic_feature_w_ontology_terms AS
 
 
 --
--- TOC entry 233 (class 1259 OID 16534)
+-- TOC entry 242 (class 1259 OID 16582)
 -- Name: individual_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -2539,8 +3038,8 @@ CREATE SEQUENCE public.individual_table_id_seq
 
 
 --
--- TOC entry 3285 (class 0 OID 0)
--- Dependencies: 233
+-- TOC entry 3382 (class 0 OID 0)
+-- Dependencies: 242
 -- Name: individual_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
@@ -2548,7 +3047,53 @@ ALTER SEQUENCE public.individual_table_id_seq OWNED BY public.individual_table.i
 
 
 --
--- TOC entry 234 (class 1259 OID 16536)
+-- TOC entry 273 (class 1259 OID 17870)
+-- Name: individual_w_metadata; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.individual_w_metadata AS
+ SELECT individual_table.id,
+    individual_table.stable_id,
+    individual_table.sex,
+    individual_table.ethnicity,
+    individual_table.geographic_origin,
+    individual_table.taxon_id,
+    individual_table.sra_family_id,
+    individual_table.alternative_ids,
+    individual_table.race,
+    individual_table.date_of_birth,
+    individual_table.weight_kg,
+    individual_table.height_cm,
+    individual_table.blood_type,
+    individual_table.medications2,
+    individual_table.procedures2,
+    individual_table.medications,
+    individual_table.procedures,
+    ( SELECT jsonb_agg(t.*) AS jsonb_agg
+           FROM ( SELECT individual_disease_table.disease_id,
+                    individual_disease_table.disease_label
+                   FROM public.individual_disease_table
+                  WHERE (individual_disease_table.individual_id = individual_table.id)) t) AS diseases,
+    ( SELECT jsonb_agg(t.*) AS jsonb_agg
+           FROM ( SELECT individual_intervention_table.intervention_id,
+                    individual_intervention_table.label
+                   FROM public.individual_intervention_table
+                  WHERE (individual_intervention_table.individual_id = individual_table.stable_id)) t) AS interventions,
+    ( SELECT jsonb_agg(t.*) AS jsonb_agg
+           FROM ( SELECT individual_measure_table.measure_id,
+                    individual_measure_table.label
+                   FROM public.individual_measure_table
+                  WHERE (individual_measure_table.individual_id = individual_table.stable_id)) t) AS measures,
+    ( SELECT jsonb_agg(t.*) AS jsonb_agg
+           FROM ( SELECT individual_exposure_table.exposure_id,
+                    individual_exposure_table.label
+                   FROM public.individual_exposure_table
+                  WHERE (individual_exposure_table.individual_id = individual_table.stable_id)) t) AS exposures
+   FROM public.individual_table;
+
+
+--
+-- TOC entry 243 (class 1259 OID 16584)
 -- Name: individual_w_ontology_terms; Type: VIEW; Schema: public; Owner: -
 --
 
@@ -2618,7 +3163,7 @@ CREATE VIEW public.individual_w_ontology_terms AS
 
 
 --
--- TOC entry 235 (class 1259 OID 16541)
+-- TOC entry 244 (class 1259 OID 16589)
 -- Name: ontology_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -2631,8 +3176,8 @@ CREATE SEQUENCE public.ontology_table_id_seq
 
 
 --
--- TOC entry 3286 (class 0 OID 0)
--- Dependencies: 235
+-- TOC entry 3383 (class 0 OID 0)
+-- Dependencies: 244
 -- Name: ontology_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
@@ -2640,7 +3185,7 @@ ALTER SEQUENCE public.ontology_table_id_seq OWNED BY public.ontology_table.id;
 
 
 --
--- TOC entry 236 (class 1259 OID 16543)
+-- TOC entry 245 (class 1259 OID 16591)
 -- Name: ontology_term; Type: VIEW; Schema: public; Owner: -
 --
 
@@ -2658,7 +3203,7 @@ CREATE VIEW public.ontology_term AS
 
 
 --
--- TOC entry 237 (class 1259 OID 16547)
+-- TOC entry 246 (class 1259 OID 16595)
 -- Name: ontology_term_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -2671,8 +3216,8 @@ CREATE SEQUENCE public.ontology_term_table_id_seq
 
 
 --
--- TOC entry 3287 (class 0 OID 0)
--- Dependencies: 237
+-- TOC entry 3384 (class 0 OID 0)
+-- Dependencies: 246
 -- Name: ontology_term_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
@@ -2680,7 +3225,7 @@ ALTER SEQUENCE public.ontology_term_table_id_seq OWNED BY public.ontology_term_t
 
 
 --
--- TOC entry 238 (class 1259 OID 16549)
+-- TOC entry 247 (class 1259 OID 16597)
 -- Name: pedigree_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -2693,8 +3238,8 @@ CREATE SEQUENCE public.pedigree_table_id_seq
 
 
 --
--- TOC entry 3288 (class 0 OID 0)
--- Dependencies: 238
+-- TOC entry 3385 (class 0 OID 0)
+-- Dependencies: 247
 -- Name: pedigree_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
@@ -2702,7 +3247,7 @@ ALTER SEQUENCE public.pedigree_table_id_seq OWNED BY public.pedigree_table.id;
 
 
 --
--- TOC entry 239 (class 1259 OID 16551)
+-- TOC entry 248 (class 1259 OID 16599)
 -- Name: sample_handover_table; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2713,7 +3258,7 @@ CREATE TABLE public.sample_handover_table (
 
 
 --
--- TOC entry 240 (class 1259 OID 16554)
+-- TOC entry 249 (class 1259 OID 16602)
 -- Name: sample_table; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2737,7 +3282,7 @@ CREATE TABLE public.sample_table (
 
 
 --
--- TOC entry 241 (class 1259 OID 16560)
+-- TOC entry 250 (class 1259 OID 16608)
 -- Name: sample_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -2750,8 +3295,8 @@ CREATE SEQUENCE public.sample_table_id_seq
 
 
 --
--- TOC entry 3289 (class 0 OID 0)
--- Dependencies: 241
+-- TOC entry 3386 (class 0 OID 0)
+-- Dependencies: 250
 -- Name: sample_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
@@ -2759,7 +3304,7 @@ ALTER SEQUENCE public.sample_table_id_seq OWNED BY public.sample_table.id;
 
 
 --
--- TOC entry 242 (class 1259 OID 16562)
+-- TOC entry 251 (class 1259 OID 16610)
 -- Name: sample_w_ontology_terms; Type: VIEW; Schema: public; Owner: -
 --
 
@@ -2857,7 +3402,7 @@ CREATE VIEW public.sample_w_ontology_terms AS
 
 
 --
--- TOC entry 243 (class 1259 OID 16567)
+-- TOC entry 252 (class 1259 OID 16615)
 -- Name: schema_table; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2872,7 +3417,7 @@ CREATE TABLE public.schema_table (
 
 
 --
--- TOC entry 244 (class 1259 OID 16574)
+-- TOC entry 253 (class 1259 OID 16622)
 -- Name: schema_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -2886,8 +3431,8 @@ CREATE SEQUENCE public.schema_table_id_seq
 
 
 --
--- TOC entry 3290 (class 0 OID 0)
--- Dependencies: 244
+-- TOC entry 3387 (class 0 OID 0)
+-- Dependencies: 253
 -- Name: schema_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
@@ -2895,235 +3440,89 @@ ALTER SEQUENCE public.schema_table_id_seq OWNED BY public.schema_table.id;
 
 
 --
--- TOC entry 245 (class 1259 OID 16576)
--- Name: tmp_sample_table; Type: TABLE; Schema: public; Owner: -
+-- TOC entry 254 (class 1259 OID 16624)
+-- Name: variant_table; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.tmp_sample_table (
-    id integer NOT NULL,
-    sample_stable_id text NOT NULL,
-    dataset_id integer NOT NULL
-);
-
-
---
--- TOC entry 246 (class 1259 OID 16582)
--- Name: tmp_sample_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.tmp_sample_table_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- TOC entry 3291 (class 0 OID 0)
--- Dependencies: 246
--- Name: tmp_sample_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.tmp_sample_table_id_seq OWNED BY public.tmp_sample_table.id;
-
-
---
--- TOC entry 247 (class 1259 OID 16584)
--- Name: tmp_variant_table; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.tmp_variant_table (
+CREATE TABLE public.variant_table (
     id integer NOT NULL,
     dataset_id integer NOT NULL,
-    chromosome character varying(2) NOT NULL,
-    variant_id text,
+    chromosome text NOT NULL,
+    alternative_id text,
     reference text NOT NULL,
     alternate text NOT NULL,
     start integer NOT NULL,
     "end" integer,
-    type character varying(10),
+    variant_type text,
     sv_length integer,
     variant_cnt integer,
     call_cnt integer,
     sample_cnt integer,
     matching_sample_cnt integer,
     frequency numeric,
-    genomic_hgvs_id text,
-    transcript_hgvs_ids text[],
-    protein_hgvs_ids text[],
-    genomic_regions text[],
-    molecular_effects text[],
-    aminoacid_changes text[],
-    effect_impacts text[],
-    functional_classes text[],
-    codon_changes text[],
-    aminoacid_lengths text[],
-    gene_names text[],
-    transcript_biotypes text[],
-    gene_codings text[],
-    transcript_ids text[],
-    exon_ranks text[],
-    genotypes text[],
-    custom_id bigint NOT NULL
+    allele text[],
+    annotation text[],
+    annotation_impact text[],
+    gene_name text[],
+    transcript_biotype text[],
+    rank text[],
+    aa_pos_aa_length text[],
+    custom_id bigint,
+    refseq_id text,
+    aaref text[],
+    aaalt text[],
+    hgvsc_snpeff text[],
+    hgvsp_snpeff text[],
+    clinvar_hgvs text[]
 );
 
 
 --
--- TOC entry 248 (class 1259 OID 16590)
--- Name: tmp_variant_annot_without_duplicates; Type: VIEW; Schema: public; Owner: -
+-- TOC entry 268 (class 1259 OID 17756)
+-- Name: variant; Type: VIEW; Schema: public; Owner: -
 --
 
-CREATE VIEW public.tmp_variant_annot_without_duplicates AS
- SELECT tmp_variant_table.dataset_id,
-    tmp_variant_table.chromosome,
-    tmp_variant_table.variant_id,
-    tmp_variant_table.reference,
-    tmp_variant_table.alternate,
-    tmp_variant_table.start,
-    tmp_variant_table."end",
-    tmp_variant_table.type,
-    tmp_variant_table.sv_length,
-    tmp_variant_table.variant_cnt,
-    tmp_variant_table.call_cnt,
-    tmp_variant_table.sample_cnt,
-    tmp_variant_table.matching_sample_cnt,
-    tmp_variant_table.frequency,
-    tmp_variant_table.custom_id,
-    ARRAY( SELECT q.v
-           FROM ( SELECT t.v
-                   FROM unnest(tmp_variant_table.molecular_effects) WITH ORDINALITY t(v, ord)
-                  GROUP BY t.v
-                  ORDER BY (min(t.ord))) q
-          WHERE (q.v <> 'NA'::text)) AS molecular_effects,
-    ARRAY( SELECT q.v
-           FROM ( SELECT t.v
-                   FROM unnest(tmp_variant_table.effect_impacts) WITH ORDINALITY t(v, ord)
-                  GROUP BY t.v
-                  ORDER BY (min(t.ord))) q
-          WHERE (q.v <> 'NA'::text)) AS effect_impacts,
-    ARRAY( SELECT q.v
-           FROM ( SELECT t.v
-                   FROM unnest(tmp_variant_table.functional_classes) WITH ORDINALITY t(v, ord)
-                  GROUP BY t.v
-                  ORDER BY (min(t.ord))) q
-          WHERE (q.v <> 'NA'::text)) AS functional_classes,
-    ARRAY( SELECT q.v
-           FROM ( SELECT t.v
-                   FROM unnest(tmp_variant_table.codon_changes) WITH ORDINALITY t(v, ord)
-                  GROUP BY t.v
-                  ORDER BY (min(t.ord))) q
-          WHERE (q.v <> 'NA'::text)) AS codon_changes,
-    ARRAY( SELECT q.v
-           FROM ( SELECT t.v
-                   FROM unnest(tmp_variant_table.aminoacid_changes) WITH ORDINALITY t(v, ord)
-                  GROUP BY t.v
-                  ORDER BY (min(t.ord))) q
-          WHERE (q.v <> 'NA'::text)) AS aminoacid_changes,
-    ARRAY( SELECT (q.v)::integer AS v
-           FROM ( SELECT t.v
-                   FROM unnest(tmp_variant_table.aminoacid_lengths) WITH ORDINALITY t(v, ord)
-                  GROUP BY t.v
-                  ORDER BY (min(t.ord))) q
-          WHERE (q.v <> 'NA'::text)) AS aminoacid_lengths,
-    ARRAY( SELECT q.v
-           FROM ( SELECT t.v
-                   FROM unnest(tmp_variant_table.gene_names) WITH ORDINALITY t(v, ord)
-                  GROUP BY t.v
-                  ORDER BY (min(t.ord))) q
-          WHERE (q.v <> 'NA'::text)) AS gene_names,
-    ARRAY( SELECT q.v
-           FROM ( SELECT t.v
-                   FROM unnest(tmp_variant_table.transcript_biotypes) WITH ORDINALITY t(v, ord)
-                  GROUP BY t.v
-                  ORDER BY (min(t.ord))) q
-          WHERE (q.v <> 'NA'::text)) AS transcript_biotypes,
-    ARRAY( SELECT q.v
-           FROM ( SELECT t.v
-                   FROM unnest(tmp_variant_table.gene_codings) WITH ORDINALITY t(v, ord)
-                  GROUP BY t.v
-                  ORDER BY (min(t.ord))) q
-          WHERE (q.v <> 'NA'::text)) AS gene_codings,
-    ARRAY( SELECT q.v
-           FROM ( SELECT t.v
-                   FROM unnest(tmp_variant_table.transcript_ids) WITH ORDINALITY t(v, ord)
-                  GROUP BY t.v
-                  ORDER BY (min(t.ord))) q
-          WHERE (q.v <> 'NA'::text)) AS transcript_ids,
-    ARRAY( SELECT q.v
-           FROM ( SELECT t.v
-                   FROM unnest(tmp_variant_table.exon_ranks) WITH ORDINALITY t(v, ord)
-                  GROUP BY t.v
-                  ORDER BY (min(t.ord))) q
-          WHERE (q.v <> 'NA'::text)) AS exon_ranks,
-    ARRAY( SELECT q.v
-           FROM ( SELECT t.v
-                   FROM unnest(tmp_variant_table.genotypes) WITH ORDINALITY t(v, ord)
-                  GROUP BY t.v
-                  ORDER BY (min(t.ord))) q
-          WHERE (q.v <> 'NA'::text)) AS genotypes
-   FROM public.tmp_variant_table;
+CREATE VIEW public.variant AS
+ SELECT variant_table.id,
+    variant_table.dataset_id,
+    variant_table.chromosome,
+    variant_table.refseq_id,
+    variant_table.alternative_id,
+    variant_table.reference,
+    variant_table.alternate,
+    variant_table.start,
+    variant_table."end",
+    variant_table.variant_type,
+    variant_table.sv_length,
+    variant_table.variant_cnt,
+    variant_table.call_cnt,
+    variant_table.sample_cnt,
+    variant_table.matching_sample_cnt,
+    variant_table.frequency,
+    variant_table.clinvar_hgvs AS genomic_hgvs_id,
+    COALESCE(variant_table.allele, ARRAY[]::text[]) AS transcript_hgvs_ids,
+    COALESCE(variant_table.annotation, ARRAY[]::text[]) AS molecular_effects,
+    COALESCE(variant_table.annotation_impact, ARRAY[]::text[]) AS genomic_regions,
+    COALESCE(variant_table.gene_name, ARRAY[]::text[]) AS gene_names,
+    COALESCE(variant_table.transcript_biotype, ARRAY[]::text[]) AS transcript_biotypes,
+    COALESCE(variant_table.rank, ARRAY[]::text[]) AS effect_impacts,
+    COALESCE(variant_table.aa_pos_aa_length, ARRAY[]::text[]) AS functional_classes,
+    COALESCE(variant_table.aaref, ARRAY[]::text[]) AS aaref,
+    COALESCE(variant_table.aaalt, ARRAY[]::text[]) AS aaalt,
+    COALESCE(variant_table.hgvsc_snpeff, ARRAY[]::text[]) AS hgvsc_snpeff,
+    COALESCE(variant_table.hgvsp_snpeff, ARRAY[]::text[]) AS protein_hgvs_ids,
+    COALESCE(variant_table.hgvsp_snpeff, ARRAY[]::text[]) AS aminoacid_changes,
+    ARRAY[]::text[] AS aminoacid_lengths,
+    ARRAY[]::text[] AS gene_codings,
+    ARRAY[]::text[] AS transcript_ids,
+    variant_table.rank AS exon_ranks,
+    ARRAY[]::text[] AS genotypes,
+    ARRAY[]::text[] AS codon_changes
+   FROM public.variant_table;
 
 
 --
--- TOC entry 249 (class 1259 OID 16595)
--- Name: tmp_variant_sample_table; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.tmp_variant_sample_table (
-    id integer NOT NULL,
-    dataset_id integer NOT NULL,
-    sample_ids text[] NOT NULL,
-    custom_id integer NOT NULL
-);
-
-
---
--- TOC entry 250 (class 1259 OID 16601)
--- Name: tmp_variant_sample_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.tmp_variant_sample_table_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- TOC entry 3292 (class 0 OID 0)
--- Dependencies: 250
--- Name: tmp_variant_sample_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.tmp_variant_sample_table_id_seq OWNED BY public.tmp_variant_sample_table.id;
-
-
---
--- TOC entry 251 (class 1259 OID 16603)
--- Name: tmp_variant_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.tmp_variant_table_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- TOC entry 3293 (class 0 OID 0)
--- Dependencies: 251
--- Name: tmp_variant_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.tmp_variant_table_id_seq OWNED BY public.tmp_variant_table.id;
-
-
---
--- TOC entry 252 (class 1259 OID 16605)
+-- TOC entry 255 (class 1259 OID 16635)
 -- Name: variant_sample_table; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -3137,53 +3536,12 @@ CREATE TABLE public.variant_sample_table (
 
 
 --
--- TOC entry 253 (class 1259 OID 16611)
--- Name: variant_table; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.variant_table (
-    id integer NOT NULL,
-    dataset_id integer NOT NULL,
-    chromosome character varying(2) NOT NULL,
-    variant_id text,
-    reference text NOT NULL,
-    alternate text NOT NULL,
-    start integer NOT NULL,
-    "end" integer,
-    type character varying(10),
-    sv_length integer,
-    variant_cnt integer,
-    call_cnt integer,
-    sample_cnt integer,
-    matching_sample_cnt integer,
-    frequency numeric,
-    genomic_hgvs_id text,
-    transcript_hgvs_ids text[],
-    protein_hgvs_ids text[],
-    genomic_regions text[],
-    molecular_effects text[],
-    aminoacid_changes text[],
-    effect_impacts text[],
-    functional_classes text[],
-    codon_changes text[],
-    aminoacid_lengths text[],
-    gene_names text[],
-    transcript_biotypes text[],
-    gene_codings text[],
-    transcript_ids text[],
-    exon_ranks text[],
-    genotypes text[],
-    custom_id bigint,
-    refseq_id text NOT NULL
-);
-
-
---
--- TOC entry 254 (class 1259 OID 16617)
+-- TOC entry 256 (class 1259 OID 16641)
 -- Name: variant_table_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.variant_table_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -3192,8 +3550,8 @@ CREATE SEQUENCE public.variant_table_id_seq
 
 
 --
--- TOC entry 3294 (class 0 OID 0)
--- Dependencies: 254
+-- TOC entry 3388 (class 0 OID 0)
+-- Dependencies: 256
 -- Name: variant_table_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
@@ -3201,7 +3559,77 @@ ALTER SEQUENCE public.variant_table_id_seq OWNED BY public.variant_table.id;
 
 
 --
--- TOC entry 3028 (class 2604 OID 16619)
+-- TOC entry 257 (class 1259 OID 16643)
+-- Name: tmp_sample_table; Type: TABLE; Schema: tmp; Owner: -
+--
+
+CREATE TABLE tmp.tmp_sample_table (
+    id integer NOT NULL,
+    sample_stable_id text NOT NULL,
+    dataset_id integer NOT NULL
+);
+
+
+--
+-- TOC entry 258 (class 1259 OID 16649)
+-- Name: tmp_sample_table_id_seq; Type: SEQUENCE; Schema: tmp; Owner: -
+--
+
+CREATE SEQUENCE tmp.tmp_sample_table_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- TOC entry 3389 (class 0 OID 0)
+-- Dependencies: 258
+-- Name: tmp_sample_table_id_seq; Type: SEQUENCE OWNED BY; Schema: tmp; Owner: -
+--
+
+ALTER SEQUENCE tmp.tmp_sample_table_id_seq OWNED BY tmp.tmp_sample_table.id;
+
+
+--
+-- TOC entry 259 (class 1259 OID 16651)
+-- Name: tmp_variant_sample_table; Type: TABLE; Schema: tmp; Owner: -
+--
+
+CREATE TABLE tmp.tmp_variant_sample_table (
+    id integer NOT NULL,
+    dataset_id integer NOT NULL,
+    sample_ids text[] NOT NULL,
+    custom_id integer NOT NULL
+);
+
+
+--
+-- TOC entry 260 (class 1259 OID 16657)
+-- Name: tmp_variant_sample_table_id_seq; Type: SEQUENCE; Schema: tmp; Owner: -
+--
+
+CREATE SEQUENCE tmp.tmp_variant_sample_table_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- TOC entry 3390 (class 0 OID 0)
+-- Dependencies: 260
+-- Name: tmp_variant_sample_table_id_seq; Type: SEQUENCE OWNED BY; Schema: tmp; Owner: -
+--
+
+ALTER SEQUENCE tmp.tmp_variant_sample_table_id_seq OWNED BY tmp.tmp_variant_sample_table.id;
+
+
+--
+-- TOC entry 3111 (class 2604 OID 16659)
 -- Name: consent_code_table id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3209,7 +3637,7 @@ ALTER TABLE ONLY public.consent_code_table ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
--- TOC entry 3032 (class 2604 OID 16620)
+-- TOC entry 3115 (class 2604 OID 16660)
 -- Name: dataset_sample_table id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3217,7 +3645,7 @@ ALTER TABLE ONLY public.dataset_sample_table ALTER COLUMN id SET DEFAULT nextval
 
 
 --
--- TOC entry 3029 (class 2604 OID 16621)
+-- TOC entry 3112 (class 2604 OID 16661)
 -- Name: dataset_table id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3225,7 +3653,7 @@ ALTER TABLE ONLY public.dataset_table ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
--- TOC entry 3033 (class 2604 OID 16622)
+-- TOC entry 3116 (class 2604 OID 16662)
 -- Name: handover_table id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3233,7 +3661,7 @@ ALTER TABLE ONLY public.handover_table ALTER COLUMN id SET DEFAULT nextval('publ
 
 
 --
--- TOC entry 3036 (class 2604 OID 16623)
+-- TOC entry 3119 (class 2604 OID 16663)
 -- Name: individual_alternative_id_table id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3241,7 +3669,7 @@ ALTER TABLE ONLY public.individual_alternative_id_table ALTER COLUMN id SET DEFA
 
 
 --
--- TOC entry 3037 (class 2604 OID 16624)
+-- TOC entry 3121 (class 2604 OID 16664)
 -- Name: individual_disease_table id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3249,7 +3677,7 @@ ALTER TABLE ONLY public.individual_disease_table ALTER COLUMN id SET DEFAULT nex
 
 
 --
--- TOC entry 3041 (class 2604 OID 16625)
+-- TOC entry 3124 (class 2604 OID 16665)
 -- Name: individual_phenotypic_feature_table id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3257,7 +3685,7 @@ ALTER TABLE ONLY public.individual_phenotypic_feature_table ALTER COLUMN id SET 
 
 
 --
--- TOC entry 3034 (class 2604 OID 16626)
+-- TOC entry 3117 (class 2604 OID 16666)
 -- Name: individual_table id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3265,7 +3693,7 @@ ALTER TABLE ONLY public.individual_table ALTER COLUMN id SET DEFAULT nextval('pu
 
 
 --
--- TOC entry 3038 (class 2604 OID 16627)
+-- TOC entry 3120 (class 2604 OID 16667)
 -- Name: ontology_table id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3273,7 +3701,7 @@ ALTER TABLE ONLY public.ontology_table ALTER COLUMN id SET DEFAULT nextval('publ
 
 
 --
--- TOC entry 3039 (class 2604 OID 16628)
+-- TOC entry 3122 (class 2604 OID 16668)
 -- Name: ontology_term_table id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3281,7 +3709,7 @@ ALTER TABLE ONLY public.ontology_term_table ALTER COLUMN id SET DEFAULT nextval(
 
 
 --
--- TOC entry 3040 (class 2604 OID 16629)
+-- TOC entry 3123 (class 2604 OID 16669)
 -- Name: pedigree_table id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3289,7 +3717,7 @@ ALTER TABLE ONLY public.pedigree_table ALTER COLUMN id SET DEFAULT nextval('publ
 
 
 --
--- TOC entry 3042 (class 2604 OID 16630)
+-- TOC entry 3125 (class 2604 OID 16670)
 -- Name: sample_table id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3297,7 +3725,7 @@ ALTER TABLE ONLY public.sample_table ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
--- TOC entry 3044 (class 2604 OID 16631)
+-- TOC entry 3127 (class 2604 OID 16671)
 -- Name: schema_table id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3305,31 +3733,7 @@ ALTER TABLE ONLY public.schema_table ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
--- TOC entry 3045 (class 2604 OID 16632)
--- Name: tmp_sample_table id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.tmp_sample_table ALTER COLUMN id SET DEFAULT nextval('public.tmp_sample_table_id_seq'::regclass);
-
-
---
--- TOC entry 3047 (class 2604 OID 16633)
--- Name: tmp_variant_sample_table id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.tmp_variant_sample_table ALTER COLUMN id SET DEFAULT nextval('public.tmp_variant_sample_table_id_seq'::regclass);
-
-
---
--- TOC entry 3046 (class 2604 OID 16634)
--- Name: tmp_variant_table id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.tmp_variant_table ALTER COLUMN id SET DEFAULT nextval('public.tmp_variant_table_id_seq'::regclass);
-
-
---
--- TOC entry 3048 (class 2604 OID 16635)
+-- TOC entry 3128 (class 2604 OID 16672)
 -- Name: variant_table id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3337,7 +3741,23 @@ ALTER TABLE ONLY public.variant_table ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
--- TOC entry 3104 (class 2606 OID 16637)
+-- TOC entry 3129 (class 2604 OID 16673)
+-- Name: tmp_sample_table id; Type: DEFAULT; Schema: tmp; Owner: -
+--
+
+ALTER TABLE ONLY tmp.tmp_sample_table ALTER COLUMN id SET DEFAULT nextval('tmp.tmp_sample_table_id_seq'::regclass);
+
+
+--
+-- TOC entry 3130 (class 2604 OID 16674)
+-- Name: tmp_variant_sample_table id; Type: DEFAULT; Schema: tmp; Owner: -
+--
+
+ALTER TABLE ONLY tmp.tmp_variant_sample_table ALTER COLUMN id SET DEFAULT nextval('tmp.tmp_variant_sample_table_id_seq'::regclass);
+
+
+--
+-- TOC entry 3187 (class 2606 OID 16676)
 -- Name: variant_sample_table beacon_data_sample_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3346,7 +3766,7 @@ ALTER TABLE ONLY public.variant_sample_table
 
 
 --
--- TOC entry 3110 (class 2606 OID 16639)
+-- TOC entry 3183 (class 2606 OID 16678)
 -- Name: variant_table beacon_data_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3355,7 +3775,7 @@ ALTER TABLE ONLY public.variant_table
 
 
 --
--- TOC entry 3090 (class 2606 OID 16641)
+-- TOC entry 3174 (class 2606 OID 16680)
 -- Name: sample_table beacon_sample_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3364,7 +3784,25 @@ ALTER TABLE ONLY public.sample_table
 
 
 --
--- TOC entry 3050 (class 2606 OID 16643)
+-- TOC entry 3191 (class 2606 OID 17663)
+-- Name: cohort_table cohort_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cohort_table
+    ADD CONSTRAINT cohort_table_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3193 (class 2606 OID 17672)
+-- Name: collection_event_table collection_event_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.collection_event_table
+    ADD CONSTRAINT collection_event_table_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3134 (class 2606 OID 16682)
 -- Name: consent_code_category_table consent_code_category_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3373,7 +3811,7 @@ ALTER TABLE ONLY public.consent_code_category_table
 
 
 --
--- TOC entry 3052 (class 2606 OID 16645)
+-- TOC entry 3136 (class 2606 OID 16684)
 -- Name: consent_code_table consent_code_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3382,7 +3820,7 @@ ALTER TABLE ONLY public.consent_code_table
 
 
 --
--- TOC entry 3058 (class 2606 OID 16647)
+-- TOC entry 3142 (class 2606 OID 16686)
 -- Name: dataset_access_level_table dataset_access_level_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3391,7 +3829,7 @@ ALTER TABLE ONLY public.dataset_access_level_table
 
 
 --
--- TOC entry 3060 (class 2606 OID 16649)
+-- TOC entry 3144 (class 2606 OID 16688)
 -- Name: dataset_consent_code_table dataset_consent_code_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3400,7 +3838,7 @@ ALTER TABLE ONLY public.dataset_consent_code_table
 
 
 --
--- TOC entry 3062 (class 2606 OID 16651)
+-- TOC entry 3146 (class 2606 OID 16690)
 -- Name: dataset_sample_table dataset_sample_table_dataset_id_sample_id_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3409,7 +3847,7 @@ ALTER TABLE ONLY public.dataset_sample_table
 
 
 --
--- TOC entry 3064 (class 2606 OID 16653)
+-- TOC entry 3148 (class 2606 OID 16692)
 -- Name: dataset_sample_table dataset_sample_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3418,7 +3856,7 @@ ALTER TABLE ONLY public.dataset_sample_table
 
 
 --
--- TOC entry 3054 (class 2606 OID 16655)
+-- TOC entry 3138 (class 2606 OID 16694)
 -- Name: dataset_table dataset_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3427,7 +3865,7 @@ ALTER TABLE ONLY public.dataset_table
 
 
 --
--- TOC entry 3066 (class 2606 OID 16657)
+-- TOC entry 3150 (class 2606 OID 16696)
 -- Name: handover_table handover_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3436,7 +3874,7 @@ ALTER TABLE ONLY public.handover_table
 
 
 --
--- TOC entry 3070 (class 2606 OID 16659)
+-- TOC entry 3154 (class 2606 OID 16698)
 -- Name: individual_alternative_id_table individual_alternative_id_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3445,7 +3883,34 @@ ALTER TABLE ONLY public.individual_alternative_id_table
 
 
 --
--- TOC entry 3088 (class 2606 OID 16661)
+-- TOC entry 3197 (class 2606 OID 17820)
+-- Name: individual_exposure_table individual_exposure_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.individual_exposure_table
+    ADD CONSTRAINT individual_exposure_table_pkey PRIMARY KEY (individual_id, exposure_id);
+
+
+--
+-- TOC entry 3195 (class 2606 OID 17812)
+-- Name: individual_intervention_table individual_intervention_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.individual_intervention_table
+    ADD CONSTRAINT individual_intervention_table_pkey PRIMARY KEY (individual_id, intervention_id);
+
+
+--
+-- TOC entry 3199 (class 2606 OID 17869)
+-- Name: individual_measure_table individual_measure_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.individual_measure_table
+    ADD CONSTRAINT individual_measure_table_pkey PRIMARY KEY (individual_id, measure_id);
+
+
+--
+-- TOC entry 3172 (class 2606 OID 16700)
 -- Name: individual_phenotypic_feature_table individual_phenotypic_feature_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3454,7 +3919,7 @@ ALTER TABLE ONLY public.individual_phenotypic_feature_table
 
 
 --
--- TOC entry 3074 (class 2606 OID 16663)
+-- TOC entry 3156 (class 2606 OID 16702)
 -- Name: ontology_table ontology_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3463,7 +3928,7 @@ ALTER TABLE ONLY public.ontology_table
 
 
 --
--- TOC entry 3078 (class 2606 OID 16665)
+-- TOC entry 3162 (class 2606 OID 16704)
 -- Name: ontology_term_table ontology_term_table_ontology_term_target_table_column_name_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3472,7 +3937,7 @@ ALTER TABLE ONLY public.ontology_term_table
 
 
 --
--- TOC entry 3080 (class 2606 OID 16667)
+-- TOC entry 3164 (class 2606 OID 16706)
 -- Name: ontology_term_table ontology_term_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3481,7 +3946,7 @@ ALTER TABLE ONLY public.ontology_term_table
 
 
 --
--- TOC entry 3072 (class 2606 OID 16669)
+-- TOC entry 3158 (class 2606 OID 16708)
 -- Name: individual_disease_table patient_disease_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3490,7 +3955,7 @@ ALTER TABLE ONLY public.individual_disease_table
 
 
 --
--- TOC entry 3082 (class 2606 OID 16671)
+-- TOC entry 3166 (class 2606 OID 16710)
 -- Name: individual_pedigree_table patient_pedigree_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3499,7 +3964,7 @@ ALTER TABLE ONLY public.individual_pedigree_table
 
 
 --
--- TOC entry 3068 (class 2606 OID 16673)
+-- TOC entry 3152 (class 2606 OID 16712)
 -- Name: individual_table patient_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3508,7 +3973,7 @@ ALTER TABLE ONLY public.individual_table
 
 
 --
--- TOC entry 3084 (class 2606 OID 16675)
+-- TOC entry 3168 (class 2606 OID 16714)
 -- Name: pedigree_table pedigree_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3517,7 +3982,7 @@ ALTER TABLE ONLY public.pedigree_table
 
 
 --
--- TOC entry 3086 (class 2606 OID 16677)
+-- TOC entry 3170 (class 2606 OID 16716)
 -- Name: pedigree_table pedigree_table_stable_id_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3526,7 +3991,7 @@ ALTER TABLE ONLY public.pedigree_table
 
 
 --
--- TOC entry 3093 (class 2606 OID 16679)
+-- TOC entry 3177 (class 2606 OID 16718)
 -- Name: sample_table sample_unique; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3535,7 +4000,7 @@ ALTER TABLE ONLY public.sample_table
 
 
 --
--- TOC entry 3095 (class 2606 OID 16681)
+-- TOC entry 3179 (class 2606 OID 16720)
 -- Name: schema_table schema_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3544,7 +4009,7 @@ ALTER TABLE ONLY public.schema_table
 
 
 --
--- TOC entry 3097 (class 2606 OID 16683)
+-- TOC entry 3181 (class 2606 OID 16722)
 -- Name: schema_table schema_table_schema_name_table_name_field_name_is_default_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3553,25 +4018,7 @@ ALTER TABLE ONLY public.schema_table
 
 
 --
--- TOC entry 3102 (class 2606 OID 16685)
--- Name: tmp_variant_sample_table tmp_variant_sample_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.tmp_variant_sample_table
-    ADD CONSTRAINT tmp_variant_sample_table_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 3100 (class 2606 OID 16687)
--- Name: tmp_variant_table tmp_variant_table_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.tmp_variant_table
-    ADD CONSTRAINT tmp_variant_table_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 3056 (class 2606 OID 16689)
+-- TOC entry 3140 (class 2606 OID 16724)
 -- Name: dataset_table unique_dataset_stable_id_reference_genome_access_type; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3580,16 +4027,16 @@ ALTER TABLE ONLY public.dataset_table
 
 
 --
--- TOC entry 3108 (class 2606 OID 16691)
--- Name: variant_sample_table variant_sample_link_unique; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 3189 (class 2606 OID 16726)
+-- Name: tmp_variant_sample_table tmp_variant_sample_table_pkey; Type: CONSTRAINT; Schema: tmp; Owner: -
 --
 
-ALTER TABLE ONLY public.variant_sample_table
-    ADD CONSTRAINT variant_sample_link_unique UNIQUE (variant_id, sample_id);
+ALTER TABLE ONLY tmp.tmp_variant_sample_table
+    ADD CONSTRAINT tmp_variant_sample_table_pkey PRIMARY KEY (id);
 
 
 --
--- TOC entry 3075 (class 1259 OID 16692)
+-- TOC entry 3159 (class 1259 OID 16727)
 -- Name: idx_ontology_term_table_ontology_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3597,7 +4044,7 @@ CREATE INDEX idx_ontology_term_table_ontology_id ON public.ontology_term_table U
 
 
 --
--- TOC entry 3076 (class 1259 OID 16693)
+-- TOC entry 3160 (class 1259 OID 16728)
 -- Name: idx_ontology_term_table_target_table_column_name_label; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3605,7 +4052,7 @@ CREATE INDEX idx_ontology_term_table_target_table_column_name_label ON public.on
 
 
 --
--- TOC entry 3091 (class 1259 OID 16694)
+-- TOC entry 3175 (class 1259 OID 16729)
 -- Name: idx_sample_table_stable_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3613,31 +4060,7 @@ CREATE INDEX idx_sample_table_stable_id ON public.sample_table USING btree (stab
 
 
 --
--- TOC entry 3098 (class 1259 OID 16695)
--- Name: idx_tmp_variant_table_variant_columns; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX idx_tmp_variant_table_variant_columns ON public.tmp_variant_table USING btree (dataset_id, chromosome, variant_id, reference, alternate, start, type);
-
-
---
--- TOC entry 3105 (class 1259 OID 16696)
--- Name: idx_variant_sample_table_data_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX idx_variant_sample_table_data_id ON public.variant_sample_table USING btree (variant_id);
-
-
---
--- TOC entry 3106 (class 1259 OID 16697)
--- Name: idx_variant_sample_table_sample_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX idx_variant_sample_table_sample_id ON public.variant_sample_table USING btree (sample_id);
-
-
---
--- TOC entry 3111 (class 1259 OID 16698)
+-- TOC entry 3184 (class 1259 OID 16730)
 -- Name: idx_variant_table_region_columns; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3645,7 +4068,7 @@ CREATE INDEX idx_variant_table_region_columns ON public.variant_table USING btre
 
 
 --
--- TOC entry 3112 (class 1259 OID 16699)
+-- TOC entry 3185 (class 1259 OID 16731)
 -- Name: idx_variant_table_snp_columns; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3653,7 +4076,16 @@ CREATE INDEX idx_variant_table_snp_columns ON public.variant_table USING btree (
 
 
 --
--- TOC entry 3113 (class 2606 OID 16700)
+-- TOC entry 3224 (class 2606 OID 17673)
+-- Name: collection_event_table collection_event_table_cohort_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.collection_event_table
+    ADD CONSTRAINT collection_event_table_cohort_id_fkey FOREIGN KEY (cohort_id) REFERENCES public.cohort_table(id);
+
+
+--
+-- TOC entry 3200 (class 2606 OID 16732)
 -- Name: consent_code_table consent_code_table_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3662,7 +4094,7 @@ ALTER TABLE ONLY public.consent_code_table
 
 
 --
--- TOC entry 3114 (class 2606 OID 16705)
+-- TOC entry 3201 (class 2606 OID 16737)
 -- Name: dataset_access_level_table dataset_access_level_table_dataset_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3671,7 +4103,7 @@ ALTER TABLE ONLY public.dataset_access_level_table
 
 
 --
--- TOC entry 3115 (class 2606 OID 16710)
+-- TOC entry 3202 (class 2606 OID 16742)
 -- Name: dataset_consent_code_table dataset_consent_code_table_consent_code_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3680,7 +4112,7 @@ ALTER TABLE ONLY public.dataset_consent_code_table
 
 
 --
--- TOC entry 3116 (class 2606 OID 16715)
+-- TOC entry 3203 (class 2606 OID 16747)
 -- Name: dataset_consent_code_table dataset_consent_code_table_dataset_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3689,7 +4121,7 @@ ALTER TABLE ONLY public.dataset_consent_code_table
 
 
 --
--- TOC entry 3117 (class 2606 OID 16720)
+-- TOC entry 3204 (class 2606 OID 16752)
 -- Name: dataset_handover_table dataset_handover_table_dataset_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3698,7 +4130,7 @@ ALTER TABLE ONLY public.dataset_handover_table
 
 
 --
--- TOC entry 3118 (class 2606 OID 16725)
+-- TOC entry 3205 (class 2606 OID 16757)
 -- Name: dataset_handover_table dataset_handover_table_handover_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3707,7 +4139,7 @@ ALTER TABLE ONLY public.dataset_handover_table
 
 
 --
--- TOC entry 3119 (class 2606 OID 16730)
+-- TOC entry 3206 (class 2606 OID 16762)
 -- Name: dataset_sample_table dataset_sample_table_dataset_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3716,7 +4148,7 @@ ALTER TABLE ONLY public.dataset_sample_table
 
 
 --
--- TOC entry 3120 (class 2606 OID 16735)
+-- TOC entry 3207 (class 2606 OID 16767)
 -- Name: dataset_sample_table dataset_sample_table_sample_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3725,7 +4157,7 @@ ALTER TABLE ONLY public.dataset_sample_table
 
 
 --
--- TOC entry 3121 (class 2606 OID 16740)
+-- TOC entry 3208 (class 2606 OID 16772)
 -- Name: individual_alternative_id_table individual_alternative_id_table_individual_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3734,7 +4166,7 @@ ALTER TABLE ONLY public.individual_alternative_id_table
 
 
 --
--- TOC entry 3122 (class 2606 OID 16745)
+-- TOC entry 3209 (class 2606 OID 16777)
 -- Name: individual_alternative_id_table individual_alternative_id_table_ontology_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3743,7 +4175,7 @@ ALTER TABLE ONLY public.individual_alternative_id_table
 
 
 --
--- TOC entry 3125 (class 2606 OID 16750)
+-- TOC entry 3212 (class 2606 OID 16782)
 -- Name: individual_handover_table individual_handover_table_handover_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3752,7 +4184,7 @@ ALTER TABLE ONLY public.individual_handover_table
 
 
 --
--- TOC entry 3126 (class 2606 OID 16755)
+-- TOC entry 3213 (class 2606 OID 16787)
 -- Name: individual_handover_table individual_handover_table_individual_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3761,7 +4193,7 @@ ALTER TABLE ONLY public.individual_handover_table
 
 
 --
--- TOC entry 3129 (class 2606 OID 16760)
+-- TOC entry 3216 (class 2606 OID 16792)
 -- Name: individual_phenotypic_feature_table individual_phenotypic_feature_table_individual_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3770,7 +4202,7 @@ ALTER TABLE ONLY public.individual_phenotypic_feature_table
 
 
 --
--- TOC entry 3124 (class 2606 OID 16765)
+-- TOC entry 3211 (class 2606 OID 16797)
 -- Name: ontology_term_table ontology_term_table_ontology_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3779,7 +4211,7 @@ ALTER TABLE ONLY public.ontology_term_table
 
 
 --
--- TOC entry 3123 (class 2606 OID 16770)
+-- TOC entry 3210 (class 2606 OID 16802)
 -- Name: individual_disease_table patient_disease_table_patient_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3788,7 +4220,7 @@ ALTER TABLE ONLY public.individual_disease_table
 
 
 --
--- TOC entry 3132 (class 2606 OID 16775)
+-- TOC entry 3219 (class 2606 OID 16807)
 -- Name: sample_table patient_id; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3797,7 +4229,7 @@ ALTER TABLE ONLY public.sample_table
 
 
 --
--- TOC entry 3127 (class 2606 OID 16780)
+-- TOC entry 3214 (class 2606 OID 16812)
 -- Name: individual_pedigree_table patient_pedigree_table_patient_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3806,7 +4238,7 @@ ALTER TABLE ONLY public.individual_pedigree_table
 
 
 --
--- TOC entry 3128 (class 2606 OID 16785)
+-- TOC entry 3215 (class 2606 OID 16817)
 -- Name: individual_pedigree_table patient_pedigree_table_pedigree_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3815,7 +4247,7 @@ ALTER TABLE ONLY public.individual_pedigree_table
 
 
 --
--- TOC entry 3130 (class 2606 OID 16790)
+-- TOC entry 3217 (class 2606 OID 16822)
 -- Name: sample_handover_table sample_handover_table_handover_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3824,7 +4256,7 @@ ALTER TABLE ONLY public.sample_handover_table
 
 
 --
--- TOC entry 3131 (class 2606 OID 16795)
+-- TOC entry 3218 (class 2606 OID 16827)
 -- Name: sample_handover_table sample_handover_table_sample_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3833,25 +4265,25 @@ ALTER TABLE ONLY public.sample_handover_table
 
 
 --
--- TOC entry 3133 (class 2606 OID 16800)
--- Name: tmp_sample_table tmp_sample_table_dataset_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 3221 (class 2606 OID 16832)
+-- Name: variant_sample_table variant_sample_table_sample_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.tmp_sample_table
-    ADD CONSTRAINT tmp_sample_table_dataset_id_fkey FOREIGN KEY (dataset_id) REFERENCES public.dataset_table(id);
-
-
---
--- TOC entry 3134 (class 2606 OID 16805)
--- Name: tmp_variant_table tmp_variant_table_dataset_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.tmp_variant_table
-    ADD CONSTRAINT tmp_variant_table_dataset_id_fkey FOREIGN KEY (dataset_id) REFERENCES public.dataset_table(id);
+ALTER TABLE ONLY public.variant_sample_table
+    ADD CONSTRAINT variant_sample_table_sample_id_fkey FOREIGN KEY (sample_id) REFERENCES public.sample_table(id);
 
 
 --
--- TOC entry 3135 (class 2606 OID 16810)
+-- TOC entry 3222 (class 2606 OID 16837)
+-- Name: variant_sample_table variant_sample_table_variant_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.variant_sample_table
+    ADD CONSTRAINT variant_sample_table_variant_id_fkey FOREIGN KEY (variant_id) REFERENCES public.variant_table(id);
+
+
+--
+-- TOC entry 3220 (class 2606 OID 16842)
 -- Name: variant_table variant_table_dataset_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3859,7 +4291,16 @@ ALTER TABLE ONLY public.variant_table
     ADD CONSTRAINT variant_table_dataset_id_fkey FOREIGN KEY (dataset_id) REFERENCES public.dataset_table(id);
 
 
--- Completed on 2021-01-13 08:35:23 CET
+--
+-- TOC entry 3223 (class 2606 OID 16847)
+-- Name: tmp_sample_table tmp_sample_table_dataset_id_fkey; Type: FK CONSTRAINT; Schema: tmp; Owner: -
+--
+
+ALTER TABLE ONLY tmp.tmp_sample_table
+    ADD CONSTRAINT tmp_sample_table_dataset_id_fkey FOREIGN KEY (dataset_id) REFERENCES public.dataset_table(id);
+
+
+-- Completed on 2021-03-11 15:13:43 CET
 
 --
 -- PostgreSQL database dump complete
