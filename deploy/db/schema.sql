@@ -5,7 +5,7 @@
 -- Dumped from database version 12.6
 -- Dumped by pg_dump version 13.2
 
--- Started on 2021-03-11 11:25:13 CET
+-- Started on 2021-03-11 15:13:38 CET
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1150,7 +1150,7 @@ BEGIN
 		join lateral (
 			values 
 				(t.gene_name, ''gene'')
-		) as v(gene_or_transcript) on true
+		) as v(gene_or_transcript, label) on true
 		LEFT JOIN public.ontology_term_table ot_gen_feat ON ot_gen_feat.target_table=''public.variant_table'' AND ot_gen_feat.column_name=''genomicFeatures''
 		LEFT JOIN public.ontology_table ot_ontology ON ot_ontology.id=ot_gen_feat.ontology_id
 		LEFT JOIN LATERAL (
@@ -4300,7 +4300,7 @@ ALTER TABLE ONLY tmp.tmp_sample_table
     ADD CONSTRAINT tmp_sample_table_dataset_id_fkey FOREIGN KEY (dataset_id) REFERENCES public.dataset_table(id);
 
 
--- Completed on 2021-03-11 11:25:19 CET
+-- Completed on 2021-03-11 15:13:43 CET
 
 --
 -- PostgreSQL database dump complete
