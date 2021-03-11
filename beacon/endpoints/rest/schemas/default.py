@@ -148,9 +148,10 @@ def beacon_individual_v30(row):
         'diseases': row['diseases'],
         'pedigrees': row['pedigrees'],
         'handovers': row['handovers'],
-        #'interventions': row['interventions'],
-        #'measures': row['measures'],
-        #'exposures': row['exposures'],
+        'treatments': None,
+        'interventions': None,
+        'measures': None,
+        'exposures': None,
         'info': {
             'sraFamilyId': row['sra_family_id'],
             'alternativeIds': row['alternative_ids'],
