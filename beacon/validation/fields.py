@@ -219,7 +219,10 @@ class ListField(Field):
     async def convert(self, value: str, **kwargs) -> set:
         if value in EMPTY_VALUES:
             return self.default
-        values = value.split(self.separator)
+        try:
+            values = value.split(self.separator)
+        except:
+            values = list(value)
         res = set()
         for v in values:
             if self.trim:
@@ -272,7 +275,10 @@ class BoundedListField(ListField):
         if value in EMPTY_VALUES:
             return list()
 
-        values = value.split(self.separator)
+        try:
+            values = value.split(self.separator)
+        except:
+            values = list(value)
         res = list()
 
         for v in values:
@@ -310,8 +316,10 @@ class DatasetsField(Field):
     async def convert(self, value: str, **kwargs) -> (set, set):
         if value in EMPTY_VALUES:
             return set()
-
-        values = value.split(self.separator)
+        try:
+            values = value.split(self.separator)
+        except:
+            values = list(value)
         valid, invalid = set(), set() # avoid repetitions
         datasets = await self.get_datasets()
         for value in values:

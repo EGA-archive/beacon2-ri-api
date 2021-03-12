@@ -108,9 +108,9 @@ class RequestParameters(metaclass=DeclarativeFieldsMetaclass):
             if req.headers.get('Content-Type') == 'application/json':
                 # post_data = await req.json()
                 # return dict(flatten_dict(post_data))
-                return req.json()
+                return await req.json()
             else:
-                return dict(await req.post())
+                return await req.post()
         else:
             return {}
 
