@@ -183,6 +183,10 @@
           <input type="hidden" name="datasetIds" value="GiaB,dataset-registered,dataset-controlled"/>
           <input type="submit" value="User queries all datasets: unauthenticated user returns 2 rows, user 'john' 6 rows, 'jane' 4 rows"/>
         </form>
+        <form action="/api/biosamples" method="post">
+          <input type="hidden" name="datasetIds" value="dataset-controlled">
+          <input type="submit" value="Anonymous user queries registered dataset: unauthenticated"/>
+        </form>
         <!--<a href="/api/g_variants?start=9411318&end=9411338&assemblyId=grch37.p1&referenceName=21&datasetIds=dataset-registered">Anonymous user queries registered dataset: FIXME</a>-->
       </section>
 
