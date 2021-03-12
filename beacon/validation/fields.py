@@ -219,7 +219,9 @@ class ListField(Field):
     async def convert(self, value: str, **kwargs) -> set:
         if value in EMPTY_VALUES:
             return self.default
-        if isinstance(value, list):
+        if value is None:
+            values = []
+        elif isinstance(value, list):
             values = value
         else:
             values = value.split(self.separator)
@@ -275,7 +277,9 @@ class BoundedListField(ListField):
         if value in EMPTY_VALUES:
             return list()
 
-        if isinstance(value, list):
+        if value is None:
+            values = []
+        elif isinstance(value, list):
             values = value
         else:
             values = value.split(self.separator)
@@ -317,7 +321,9 @@ class DatasetsField(Field):
         if value in EMPTY_VALUES:
             return set()
 
-        if isinstance(value, list):
+        if value is None:
+            values = []
+        elif isinstance(value, list):
             values = value
         else:
             values = value.split(self.separator)

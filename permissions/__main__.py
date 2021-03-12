@@ -25,10 +25,12 @@ async def permission(request, username):
     else:
         post_data = await request.post() # request.json() crashes on empty data
         LOG.debug('POST DATA: %s', post_data)
-        try:
-            requested_datasets = post_data.get('datasets', '').split(',')
-        except:
-            requested_datasets = list(post_data.get('datasets', ''))
+        if post_data.get('datasets') is None:
+            requested_datasets = []
+        if isinstance(post_data.get('datasets'), list):
+            requested_datasets = post_data.get('datasets')
+        else:
+            requested_datasets = post_data.get('datasets').split(',')
         
     LOG.debug('requested datasets: %s', requested_datasets)
     datasets = await request.app['permissions'].get(username, requested_datasets=requested_datasets)
