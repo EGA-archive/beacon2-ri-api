@@ -222,7 +222,7 @@ class ListField(Field):
         try:
             values = value.split(self.separator)
         except:
-            values = list(value)
+            values = value
         res = set()
         for v in values:
             if self.trim:
@@ -278,7 +278,7 @@ class BoundedListField(ListField):
         try:
             values = value.split(self.separator)
         except:
-            values = list(value)
+            values = value
         res = list()
 
         for v in values:
@@ -319,7 +319,7 @@ class DatasetsField(Field):
         try:
             values = value.split(self.separator)
         except:
-            values = list(value)
+            values = value
         valid, invalid = set(), set() # avoid repetitions
         datasets = await self.get_datasets()
         for value in values:
