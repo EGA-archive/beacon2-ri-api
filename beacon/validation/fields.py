@@ -219,7 +219,12 @@ class ListField(Field):
     async def convert(self, value: str, **kwargs) -> set:
         if value in EMPTY_VALUES:
             return self.default
-        values = value.split(self.separator)
+        if value is None:
+            values = []
+        elif isinstance(value, list):
+            values = value
+        else:
+            values = value.split(self.separator)
         res = set()
         for v in values:
             if self.trim:
@@ -272,7 +277,12 @@ class BoundedListField(ListField):
         if value in EMPTY_VALUES:
             return list()
 
-        values = value.split(self.separator)
+        if value is None:
+            values = []
+        elif isinstance(value, list):
+            values = value
+        else:
+            values = value.split(self.separator)
         res = list()
 
         for v in values:
@@ -307,11 +317,17 @@ class DatasetsField(Field):
             LOG.debug('Using cached datasets: %s', datasets)
         return datasets
 
-    async def convert(self, value: str, **kwargs) -> (set, set):
+    async def convert(self, value: str, **kwargs) -> set:
         if value in EMPTY_VALUES:
             return set()
 
-        values = value.split(self.separator)
+        if value is None:
+            values = []
+        elif isinstance(value, list):
+            values = value
+        else:
+            values = value.split(self.separator)
+
         valid, invalid = set(), set() # avoid repetitions
         datasets = await self.get_datasets()
         for value in values:

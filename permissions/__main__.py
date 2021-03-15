@@ -21,12 +21,18 @@ async def permission(request, username):
 
     if request.headers.get('Content-Type') == 'application/json':
         post_data = await request.json()
-        requested_datasets = post_data.get('datasets', []) # already a list
     else:
-        post_data = await request.post() # request.json() crashes on empty data
-        LOG.debug('POST DATA: %s', post_data)
-        requested_datasets = post_data.get('datasets', '').split(',')
+        post_data = await request.post()
+    LOG.debug('POST DATA: %s', post_data)
 
+    v = post_data.get('datasets')
+    if v is None:
+        requested_datasets = []
+    if isinstance(v, list):
+        requested_datasets = v
+    else:
+        requested_datasets = v.split(',')
+        
     LOG.debug('requested datasets: %s', requested_datasets)
     datasets = await request.app['permissions'].get(username, requested_datasets=requested_datasets)
     LOG.debug('selected datasets: %s', datasets)
