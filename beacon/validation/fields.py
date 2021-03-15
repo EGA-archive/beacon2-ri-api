@@ -317,7 +317,7 @@ class DatasetsField(Field):
             LOG.debug('Using cached datasets: %s', datasets)
         return datasets
 
-    async def convert(self, value: str, **kwargs) -> (set, set):
+    async def convert(self, value: str, **kwargs) -> set:
         if value in EMPTY_VALUES:
             return set()
 
