@@ -5,7 +5,7 @@
 -- Dumped from database version 12.6
 -- Dumped by pg_dump version 13.2
 
--- Started on 2021-03-15 14:40:58 CET
+-- Started on 2021-03-15 14:53:28 CET
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1405,15 +1405,11 @@ BEGIN
 		LEFT JOIN( -- Individual''s diseases
 			SELECT ind_dis.individual_id,
 				' || _dis_schema_formats || ' AS diseases,
-				interventions,
-				exposures,
-				measures,
 				' || _individual_resources_schema_formats || ' AS ontologies_used
 			FROM public.individual_disease_w_ontology_terms ind_dis 
 			LEFT JOIN public.ontology_table disease_ontology ON disease_ontology.id=ind_dis.disease_ontology_id
 			LEFT JOIN public.ontology_table age_group_ontology ON age_group_ontology.id=ind_dis.age_group_ontology_id
 			LEFT JOIN public.ontology_table stage_ontology ON stage_ontology.id=ind_dis.stage_ontology_id
-			LEFT JOIN public.individual_w_metadata ON  individual_w_metadata.id = ind_dis.individual_id
 			LEFT JOIN public.ontology_table onset_type_ontology ON onset_type_ontology.id=ind_dis.onset_type_ontology_id
 			LEFT JOIN LATERAL (
 				values 
@@ -4343,7 +4339,7 @@ ALTER TABLE ONLY tmp.tmp_sample_table
     ADD CONSTRAINT tmp_sample_table_dataset_id_fkey FOREIGN KEY (dataset_id) REFERENCES public.dataset_table(id);
 
 
--- Completed on 2021-03-15 14:41:02 CET
+-- Completed on 2021-03-15 14:53:34 CET
 
 --
 -- PostgreSQL database dump complete
