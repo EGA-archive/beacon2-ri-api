@@ -131,6 +131,7 @@ def beacon_biosample_v30(row):
 
 
 def beacon_individual_v30(row):
+    LOG.debug(row)
     return {
         'individualId': row['individual_stable_id'],
         'taxonId': row['taxon_id'],
@@ -142,9 +143,9 @@ def beacon_individual_v30(row):
         'pedigrees': row['pedigrees'],
         'handovers': row['handovers'],
         'treatments': None,
-        'interventions': None,
-        'measures': None,
-        'exposures': None,
+        'interventions': snake_case_to_camelCase(row['interventions']),
+        'measures': snake_case_to_camelCase(row['measures']),
+        'exposures': snake_case_to_camelCase(row['exposures']),
         'info': {
             'sraFamilyId': row['sra_family_id'],
             'alternativeIds': row['alternative_ids'],
