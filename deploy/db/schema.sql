@@ -784,6 +784,8 @@ BEGIN
 	INNER JOIN public.individual_phenotypic_feature_w_ontology_terms ind_phf ON ind_phf.individual_id=ind.id';
 	END IF;
 	
+	_query = _query || _where_clause;
+				     
 	RAISE NOTICE '_query: %', _query;
 
 	RETURN QUERY EXECUTE _query
