@@ -136,6 +136,8 @@ class RequestParameters(metaclass=DeclarativeFieldsMetaclass):
 
             if key == 'targetIdReq':
                 qval = req.match_info.get('target_id_req')
+            if key == 'cohortId':
+                qval = req.match_info.get('cohort_id')
                 # LOG.debug('targetIdReq=%s', qval)
             # LOG.debug('key %s | val %s | field %s', key, qval, field.__class__.__name__)
             val = await field.clean(req, qval)
