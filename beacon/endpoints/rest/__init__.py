@@ -139,6 +139,9 @@ class GVariantsParameters(GVariantParametersBase):
                                   default='beacon-variant-annotation-v2.0.0-draft.3')
 
 class CohortParameters(GVariantParametersBase):
+    cohortId = IntegerField(min_value=1)
+    individuals = ListField(trim=False)
+    name = Field()
     requestedSchema = SchemaField(
         'beacon-cohort-v2.0.0-draft.3.1',
         default='beacon-cohort-v2.0.0-draft.3.1'

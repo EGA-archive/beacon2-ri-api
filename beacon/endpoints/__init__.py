@@ -53,7 +53,8 @@ routes = [
 
     # Cohorts
     web.post('/api/cohorts'                                  , rest_handlers.cohorts_by_cohort),
-    web.post('/api/cohorts/{target_id_req}'                  , rest_handlers.cohorts_by_cohort),
+    web.post('/api/cohorts/new'                              , rest_handlers.create_new_cohort),
+    web.post('/api/cohorts/{cohort_id}'                      , rest_handlers.cohorts_by_cohort),
 
     ## HTML UI
     web.get('/'       , html.handlers.index  , name='home'   ),

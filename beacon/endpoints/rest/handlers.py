@@ -23,3 +23,4 @@ biosamples_by_individual = generic_handler('biosamples' , BeaconEntity.INDIVIDUA
 gvariants_by_individual = generic_handler('gvariants'  , BeaconEntity.INDIVIDUAL, gvariants_proxy  , db.fetch_variants_by_individual   , db.count_variants_by_individual, build_variant_response)
 
 cohorts_by_cohort = generic_handler('cohorts'  , BeaconEntity.COHORT, cohorts_proxy  , db.fetch_cohorts_by_cohort   , db.count_cohorts_by_cohort, build_cohort_response)
+create_new_cohort = generic_handler('cohorts'  , BeaconEntity.COHORT, cohorts_proxy  , db.create_new_cohort   , db.count_cohorts_created, build_cohort_response)

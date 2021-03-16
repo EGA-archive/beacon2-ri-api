@@ -571,7 +571,7 @@ async def _count_biosamples(connection,
                                      column=0)
 
 def fetch_cohorts_by_cohort(qparams_db, datasets, authenticated):
-    return _fetch_cohort(qparams_db, datasets, authenticated, cohort_id=qparams_db.targetIdReq)
+    return _fetch_cohort(qparams_db, datasets, authenticated, cohort_id=qparams_db.cohortId)
 
 @pool.asyncgen_execute
 async def _fetch_cohort(connection,
@@ -629,4 +629,33 @@ async def _count_cohorts(connection,
         return await statement.fetchval(int(cohort_id), column=0)
 
 def count_cohorts_by_cohort(qparams_db, datasets, authenticated):
-    return _count_cohorts(qparams_db, datasets, authenticated, cohort_id=qparams_db.targetIdReq)
+    return _count_cohorts(qparams_db, datasets, authenticated, cohort_id=qparams_db.cohortId)
+
+@pool.asyncgen_execute
+async def create_new_cohort(connection,
+                            qparams_db,
+                            datasets,
+                            authenticated):
+    LOG.debug("Creating new cohorts with individuals: ", qparams_db.individuals)
+    
+    # Build query
+    query = f"SELECT {conf.database_schema}.create_collection_event($1)"
+    statement = await connection.prepare(query)
+    collection_event_id = await statement.fetchval(qparams_db.individuals)
+
+
+    query = f"SELECT {conf.database_schema}.create_cohort($1, $2, $3, $4)"
+    statement = await connection.prepare(query)
+    cohort_id = await statement.fetchval(qparams_db.name, None, None, [collection_event_id])
+
+    # Get
+    response = _fetch_cohort(qparams_db, datasets, authenticated, cohort_id=int(cohort_id))
+    async for row in response:
+        yield row
+
+
+async def count_cohorts_created(qparams_db,
+                            datasets,
+                            authenticated):
+    LOG.debug("Check created cohort")
+    return 1
