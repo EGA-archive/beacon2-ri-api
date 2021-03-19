@@ -213,7 +213,7 @@ class ListField(Field):
     def __init__(self, *, items=None, separator=',', trim=True, **kwargs):
         self.separator = separator
         self.item_type = items or Field()
-        self.trim = trim or True
+        self.trim = trim
         super().__init__(**kwargs)
 
     async def convert(self, value: str, **kwargs) -> set:
