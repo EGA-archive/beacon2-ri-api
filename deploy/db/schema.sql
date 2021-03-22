@@ -1108,7 +1108,8 @@ BEGIN
 			ELSE datasets_response.datasets_response::jsonb
 		END AS datasets_response
 	FROM (
-		select var.*,
+		select DISTINCT ON (var.id) 
+			var.*,
 			dat.reference_genome::text AS assembly_id
 		FROM public.variant var
 		INNER JOIN public.dataset_table dat ON dat.id=var.dataset_id';
