@@ -131,7 +131,6 @@ def beacon_biosample_v30(row):
 
 
 def beacon_individual_v30(row):
-    LOG.debug(row)
     return {
         'individualId': row['individual_stable_id'],
         'taxonId': row['taxon_id'],
