@@ -3,8 +3,11 @@ from datetime import date
 from .... import conf
 
 def calculate_age(born):
-    today = date.today()
-    return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+    if born is None:
+        return None
+    else:
+        today = date.today()
+        return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
 def ga4gh_service_info_v10(row, authorized_datasets=None):
     return {
