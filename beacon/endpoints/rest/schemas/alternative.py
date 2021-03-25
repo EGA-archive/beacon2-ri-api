@@ -1,6 +1,13 @@
 from datetime import datetime
-
+from datetime import date
 from .... import conf
+
+def calculate_age(born):
+    if born is None:
+        return None
+    else:
+        today = date.today()
+        return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
 def ga4gh_service_info_v10(row, authorized_datasets=None):
     return {
@@ -92,8 +99,8 @@ def ga4gh_phenopackets_individual_v10(row):
         'subject': {
             'id': individual_id, # required
             'alternate_ids': row['alternative_ids_phenopackets'],
-            'date_of_birth': None,
-            'age': None,
+            'date_of_birth': str(row["date_of_birth"]),
+            'age': calculate_age(row["date_of_birth"]),
             'sex': row['sex'].upper() if row['sex'] else None,
             'karyotypic_sex': None,
             'taxonomy': {
