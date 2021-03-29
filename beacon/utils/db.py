@@ -571,7 +571,10 @@ async def _count_biosamples(connection,
                                      column=0)
 
 def fetch_cohorts_by_cohort(qparams_db, datasets, authenticated):
-    return _fetch_cohort(qparams_db, datasets, authenticated, cohort_id=qparams_db.targetIdReq)
+    if qparams_db.individuals is None and qparams_db.cohortName is None and qparams_db.cohortExclusionCriteria is None and qparams_db.cohortInclusionCriteria is None:
+        return _fetch_cohort(qparams_db, datasets, authenticated, cohort_id=qparams_db.targetIdReq)
+    else:
+        return _build_cohort(qparams_db, datasets, authenticated, cohort_name=qparams_db.cohortName, cohort_inclusion_criteria=qparams_db.cohortInclusionCriteria, cohort_exclusion_criteria=qparams_db.cohortExclusionCriteria, individual_list=qparams_db.individuals)
 
 @pool.asyncgen_execute
 async def _fetch_cohort(connection,
@@ -629,4 +632,31 @@ async def _count_cohorts(connection,
         return await statement.fetchval(int(cohort_id), column=0)
 
 def count_cohorts_by_cohort(qparams_db, datasets, authenticated):
-    return _count_cohorts(qparams_db, datasets, authenticated, cohort_id=qparams_db.targetIdReq)
+    if qparams_db.individuals is None and qparams_db.cohortName is None and qparams_db.cohortExclusionCriteria is None and qparams_db.cohortInclusionCriteria is None:
+        return _count_cohorts(qparams_db, datasets, authenticated, cohort_id=qparams_db.targetIdReq)
+    else:
+        async def return_one():
+            return 1
+        return return_one()
+
+@pool.asyncgen_execute
+async def _build_cohort(connection,
+                            qparams_db,
+                            datasets,
+                            authenticated,
+                            cohort_name="",
+                            cohort_inclusion_criteria=None,
+                            cohort_exclusion_criteria=None,
+                            individual_list=[]):
+    LOG.info('Retrieving cohort information')
+    
+    # Build query
+    query = f"SELECT * FROM {conf.database_schema}.select_cohort($1, $2, $3, $4);"
+    
+    # Execute
+    statement = await connection.prepare(query)
+    response = await statement.fetch(cohort_name, cohort_inclusion_criteria, cohort_exclusion_criteria, individual_list)
+    for record in response:
+        yield record
+    
+    LOG.debug("QUERY: %s", query)
