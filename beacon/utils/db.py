@@ -574,7 +574,8 @@ def fetch_cohorts_by_cohort(qparams_db, datasets, authenticated):
     if qparams_db.individuals is None and qparams_db.cohortName is None and qparams_db.cohortExclusionCriteria is None and qparams_db.cohortInclusionCriteria is None:
         return _fetch_cohort(qparams_db, datasets, authenticated, cohort_id=qparams_db.targetIdReq)
     else:
-        return _build_cohort(qparams_db, datasets, authenticated, cohort_name=qparams_db.cohortName, cohort_inclusion_criteria=qparams_db.cohortInclusionCriteria, cohort_exclusion_criteria=qparams_db.cohortExclusionCriteria, individual_list=qparams_db.individuals)
+        return _build_cohort(qparams_db, datasets, authenticated, cohort_id=qparams_db.targetIdReq)
+        #return _build_cohort(qparams_db, datasets, authenticated, cohort_name=qparams_db.cohortName, cohort_inclusion_criteria=qparams_db.cohortInclusionCriteria, cohort_exclusion_criteria=qparams_db.cohortExclusionCriteria, individual_list=qparams_db.individuals)
 
 @pool.asyncgen_execute
 async def _fetch_cohort(connection,
@@ -644,18 +645,37 @@ async def _build_cohort(connection,
                             qparams_db,
                             datasets,
                             authenticated,
-                            cohort_name="",
-                            cohort_inclusion_criteria=None,
-                            cohort_exclusion_criteria=None,
-                            individual_list=[]):
+                            variant_id=None,
+                            biosample_stable_id=None,
+                            individual_stable_id=None):
     LOG.info('Retrieving cohort information')
-    
-    # Build query
-    query = f"SELECT * FROM {conf.database_schema}.select_cohort($1, $2, $3, $4);"
-    
-    # Execute
+
+    dollars = ", ".join([f"${i}" for i in range(1, 21)])  # 1..20
+    query = f"SELECT * FROM {conf.database_schema}.select_cohort({dollars});"
+    LOG.debug("QUERY: %s", query)
     statement = await connection.prepare(query)
-    response = await statement.fetch(cohort_name, cohort_inclusion_criteria, cohort_exclusion_criteria, individual_list)
+    response = await statement.fetch(qparams_db.variantType,  # _variant_type text,
+                                     qparams_db.start[0] if len(qparams_db.start) == 1 else None,  # _start integer,
+                                     qparams_db.start[0] if len(qparams_db.start) > 1 else None,  # _start_min integer,
+                                     qparams_db.start[1] if len(qparams_db.start) > 1 else None,  # _start_max integer,
+                                     qparams_db.end[0] if len(qparams_db.end) == 1 else None,  # _end integer,
+                                     qparams_db.end[0] if len(qparams_db.end) > 1 else None,  # _end_min integer,
+                                     qparams_db.end[1] if len(qparams_db.end) > 1 else None,  # _end_max integer,
+                                     qparams_db.referenceName, # reference_name
+                                     qparams_db.referenceBases,
+                                     qparams_db.alternateBases,
+                                     qparams_db.assemblyId.lower() if qparams_db.assemblyId else None, # assembly_id
+                                     datasets, # dataset_stable_ids
+                                     authenticated, #is_authenticated
+                                     biosample_stable_id,
+                                     individual_stable_id, # individual_stable_id
+                                     int(variant_id) if variant_id else None,
+                                     qparams_db.filters, # filters
+                                     qparams_db.skip * qparams_db.limit,  # _skip
+                                     qparams_db.limit,  # _limit integer
+                                     # we keep a list for the moment
+                                     [qparams_db.requestedSchema[0]])
+    
     for record in response:
         yield record
     
