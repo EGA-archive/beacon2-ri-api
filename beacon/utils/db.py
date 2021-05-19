@@ -571,11 +571,10 @@ async def _count_biosamples(connection,
                                      column=0)
 
 def fetch_cohorts_by_cohort(qparams_db, datasets, authenticated):
-    if qparams_db.individuals is None and qparams_db.cohortName is None and qparams_db.cohortExclusionCriteria is None and qparams_db.cohortInclusionCriteria is None:
+    if qparams_db.start == [] and qparams_db.end == [] and qparams_db.referenceBases is None and qparams_db.alternateBases is None and qparams_db.assemblyId is None and qparams_db.variantType is None and qparams_db.filters is None:
         return _fetch_cohort(qparams_db, datasets, authenticated, cohort_id=qparams_db.targetIdReq)
     else:
         return _build_cohort(qparams_db, datasets, authenticated, cohort_id=qparams_db.targetIdReq)
-        #return _build_cohort(qparams_db, datasets, authenticated, cohort_name=qparams_db.cohortName, cohort_inclusion_criteria=qparams_db.cohortInclusionCriteria, cohort_exclusion_criteria=qparams_db.cohortExclusionCriteria, individual_list=qparams_db.individuals)
 
 @pool.asyncgen_execute
 async def _fetch_cohort(connection,
@@ -633,7 +632,7 @@ async def _count_cohorts(connection,
         return await statement.fetchval(int(cohort_id), column=0)
 
 def count_cohorts_by_cohort(qparams_db, datasets, authenticated):
-    if qparams_db.individuals is None and qparams_db.cohortName is None and qparams_db.cohortExclusionCriteria is None and qparams_db.cohortInclusionCriteria is None:
+    if qparams_db.start == [] and qparams_db.end == [] and qparams_db.referenceBases is None and qparams_db.alternateBases is None and qparams_db.assemblyId is None and qparams_db.variantType is None and qparams_db.filters is None:
         return _count_cohorts(qparams_db, datasets, authenticated, cohort_id=qparams_db.targetIdReq)
     else:
         async def return_one():
