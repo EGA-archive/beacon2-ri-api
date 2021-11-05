@@ -1,9 +1,7 @@
 import asynctest
-from unittest import mock
-
-from beacon_api.api.query import transform_record, transform_misses
-from beacon_api.api.genomic_query import transform_record as transform_record_region
 from beacon_api.api.genomic_query import transform_misses as transform_misses_region
+from beacon_api.api.genomic_query import transform_record as transform_record_region
+from beacon_api.api.query import transform_record, transform_misses
 
 from .test_db_load import Connection
 

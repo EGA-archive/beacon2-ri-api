@@ -1,5 +1,5 @@
-import sys
 import os
+import sys
 
 from aiohttp import ClientSession, BasicAuth, FormData
 

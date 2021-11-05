@@ -3,19 +3,19 @@ version: 1
 #disable_existing_loggers: True
 root:
   level: NOTSET
-  handlers: [noHandler]
+  handlers: [ noHandler ]
 
 loggers:
   __main__:
     level: DEBUG
-    handlers: [console]
+    handlers: [ console ]
   beacon:
     level: DEBUG
-    handlers: [console]
+    handlers: [ console ]
     propagate: True
   aiohttp:
     level: INFO
-    handlers: [console]
+    handlers: [ console ]
 
 handlers:
   noHandler:
@@ -28,5 +28,5 @@ handlers:
 
 formatters:
   simple:
-    format: '[{name:^10}][{levelname:^6}] (L{lineno}) {message}'
-    style: '{'
+    format: "[{name:^10}][{levelname:^6}] (L{lineno}) {message}"
+    style: "{"

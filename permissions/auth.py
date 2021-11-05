@@ -12,8 +12,8 @@ No JWT signature verification.
 
 import logging
 
-from aiohttp import web
 from aiohttp import ClientSession, BasicAuth, FormData
+from aiohttp import web
 
 LOG = logging.getLogger(__name__)
 

@@ -1,6 +1,5 @@
-import unittest
-import asynctest
 import asyncio
+import unittest
 
 
 class Variant:

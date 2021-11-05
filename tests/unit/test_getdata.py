@@ -1,11 +1,9 @@
 import asynctest
-from unittest import mock
-
-from beacon_api.api.query import get_datasets
+from beacon_api.api.access_levels import special_datasets
+from beacon_api.api.genomic_query import fetch_resulting_datasets as fetch_resulting_datasets_region
 from beacon_api.api.genomic_query import get_datasets as get_datasets_region
 from beacon_api.api.query import fetch_resulting_datasets
-from beacon_api.api.genomic_query import fetch_resulting_datasets as fetch_resulting_datasets_region
-from beacon_api.api.access_levels import special_datasets
+from beacon_api.api.query import get_datasets
 
 from .test_db_load import Connection
 

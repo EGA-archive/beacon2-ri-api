@@ -1,17 +1,12 @@
-import json
-import os
-
 import unittest
-import asyncpg
-import asynctest
-
 from unittest import mock
-from aiohttp import web
-from aiohttp.test_utils import AioHTTPTestCase, unittest_run_loop
-# from test.support import EnvironmentVarGuard
-from aiocache import caches
 
+import asynctest
+from aiohttp import web
 from beacon_api.app import init, main, initialize
+
+
+# from test.support import EnvironmentVarGuard
 
 
 class TestBasicFunctionsApp(asynctest.TestCase):

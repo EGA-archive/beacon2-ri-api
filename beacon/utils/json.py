@@ -1,29 +1,33 @@
+import inspect
 import logging
 from decimal import Decimal
-import inspect
 from json.encoder import encode_basestring_ascii
-from json import loads as parse_json
 
 from asyncpg import Record
+
+from json import loads as parse_json
 
 LOG = logging.getLogger(__name__)
 
 _INFINITY = float('inf')
+
 
 def is_list(o):
     return (isinstance(o, (list, set, tuple)) or
             inspect.isgenerator(o) or
             inspect.isgeneratorfunction(o))
 
+
 def is_dict(o):
     return isinstance(o, (dict, Record))
+
 
 def is_asyncgen(o):
     return (inspect.isasyncgen(o) or
             inspect.isasyncgenfunction(o))
 
-class jsonb(str):
 
+class jsonb(str):
     __parsed = None
 
     @property
@@ -33,15 +37,19 @@ class jsonb(str):
             self.__parsed = parse_json(self)
         return self.__parsed
 
+
 def json_encoder(v):
     raise NotImplementedError('We should not use json encoding')
 
+
 def json_decoder(v):
-    return jsonb(v) # just "tag" it
+    return jsonb(v)  # just "tag" it
+
 
 # we make it compact
 _ITEM_SEPARATOR = ','
 _KEY_SEPARATOR = ':'
+
 
 def _atom(o):
     if isinstance(o, jsonb):
@@ -66,9 +74,10 @@ def _atom(o):
         else:
             return float.__repr__(o)
     elif isinstance(o, Decimal):
-        return str(o) # keeps the decimals, float would truncate them
+        return str(o)  # keeps the decimals, float would truncate them
     # not a common type
     return None
+
 
 async def _compound(o, circulars):
     if is_dict(o):
@@ -82,7 +91,8 @@ async def _compound(o, circulars):
             yield i
     else:
         raise TypeError(f'Unsupported type: {o.__class__.__name__}')
-    
+
+
 async def _iterencode_list(items, circulars):
     yield '['
     marker = id(items)
@@ -99,6 +109,7 @@ async def _iterencode_list(items, circulars):
             yield i
     yield ']'
     del circulars[marker]
+
 
 async def _iterencode_dict(d, circulars):
     yield '{'
@@ -122,6 +133,7 @@ async def _iterencode_dict(d, circulars):
     yield '}'
     del circulars[marker]
 
+
 async def _iterencode_async_gen(g, circulars):
     yield '['
     marker = id(g)
@@ -139,13 +151,15 @@ async def _iterencode_async_gen(g, circulars):
     yield ']'
     del circulars[marker]
 
+
 async def _iterencode(o, circulars):
     atom = _atom(o)
     if atom is not None:
         yield atom
-    else: # not an atom type
+    else:  # not an atom type
         async for item in _compound(o, circulars):
             yield item
+
 
 async def json_iterencode(o):
     async for i in _iterencode(o, {}):

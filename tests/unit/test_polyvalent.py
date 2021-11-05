@@ -1,6 +1,4 @@
 import asynctest
-from unittest import mock
-
 from beacon_api.utils.polyvalent_functions import filter_exists, fetch_datasets_access, prepare_filter_parameter
 
 from .test_db_load import Connection
