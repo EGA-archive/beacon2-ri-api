@@ -5,6 +5,7 @@ import ssl
 import sys
 from pathlib import Path
 from time import strftime
+from datetime import datetime
 
 import aiohttp_jinja2
 import jinja2
@@ -35,6 +36,8 @@ async def initialize(app):
         conf=conf,
         now=strftime("%Y"),
     )
+
+    setattr(conf, 'update_datetime', datetime.now().isoformat())
 
     LOG.info("Initialization done.")
 

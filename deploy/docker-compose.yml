@@ -11,7 +11,7 @@ services:
   # MongoDB Database
   ###########################################
 
-  mongo:
+  db:
     image: mongo
     hostname: mongo
     ports:
@@ -19,6 +19,9 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: beacon
+    volumes:
+      - ./mongo-init/:/docker-entrypoint-initdb.d/:ro
     # networks:
     #   - beacon-priv
 

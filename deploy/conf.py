@@ -3,8 +3,8 @@
 #
 # Beacon general info
 #
-beacon_id = 'org.ega-archive.beacon'  # ID of the Beacon
-beacon_name = 'Beacon Test Instance'  # Name of the Beacon service
+beacon_id = 'org.ega-archive.ga4gh-approval-beacon-test'  # ID of the Beacon
+beacon_name = 'GA4GH Approval Beacon Test'  # Name of the Beacon service
 api_version = 'v2.0.0-draft.4'  # Version of the Beacon implementation
 uri = 'https://beacon-giab-test.ega-archive.org'
 beacon_granularity = "record"
@@ -35,9 +35,9 @@ description = (r"This <a href='https://beacon-project.io/'>Beacon</a> "
 version = 'v2.0'
 welcome_url = 'https://beacon.ega-archive.org/'
 alternative_url = 'https://beacon.ega-archive.org/api'
-create_datetime = '2020-07-30 12:00'
-datetime_format = '%Y-%m-%d %H:%M'  # convert datetime python object to string
-# update_datetime will be created when initializing the beacon, using the above format
+create_datetime = '2021-11-29T12:00:00.000000'
+update_datetime = ''
+# update_datetime will be created when initializing the beacon, using the ISO 8601 format
 
 #
 # Service
@@ -47,7 +47,7 @@ service_url = 'https://beacon.ega-archive.org/api/services'
 entry_point = False
 is_open = True
 documentation_url = 'https://github.com/EGA-archive/beacon-2.x/'  # Documentation of the service
-environment = 'DEV'  # Environment (production, development or testing/staging deployments)
+environment = 'test'  # Environment (production, development or testing/staging deployments)
 
 # GA4GH
 ga4gh_service_type_group = 'org.ga4gh'

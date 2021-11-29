@@ -1,5 +1,6 @@
 import inspect
 import logging
+from dataclasses import is_dataclass
 from decimal import Decimal
 from json.encoder import encode_basestring_ascii
 
@@ -89,6 +90,9 @@ async def _compound(o, circulars):
     elif is_asyncgen(o):
         async for i in _iterencode_async_gen(o, circulars):
             yield i
+    elif is_dataclass(o):
+        async for i in _iterencode_dataclass(o, circulars):
+            yield i
     else:
         raise TypeError(f'Unsupported type: {o.__class__.__name__}')
 
@@ -151,6 +155,29 @@ async def _iterencode_async_gen(g, circulars):
     yield ']'
     del circulars[marker]
 
+
+async def _iterencode_dataclass(d, circulars):
+    yield '{'
+    marker = id(d)
+    if marker in circulars:
+        raise ValueError("Circular reference detected")
+    circulars[marker] = d
+    first = True
+    for key in d.__dataclass_fields__:
+        value = getattr(d, key)
+        atom_key = _atom(key)
+        if atom_key is None:
+            raise TypeError(f'keys must be str, int, float or bool, not {key.__class__.__name__}')
+        if first:
+            first = False
+        else:
+            yield _ITEM_SEPARATOR
+        yield atom_key
+        yield _KEY_SEPARATOR
+        async for item in _iterencode(value, circulars):
+            yield item
+    yield '}'
+    del circulars[marker]
 
 async def _iterencode(o, circulars):
     atom = _atom(o)

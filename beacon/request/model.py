@@ -43,7 +43,7 @@ class AlphanumericFilter:
     id: str
     value: str
     scope: str = None
-    operator: str = "="
+    operator: Operator = Operator.EQUAL
 
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
@@ -75,6 +75,7 @@ class RequestQuery:
     filters: List[Union[OntologyFilter, AlphanumericFilter, CustomFilter]]
     include_resultset_responses: IncludeResultsetResponses
     pagination: Pagination
+    test_mode: bool = False
 
 
 @dataclass_json(letter_case=LetterCase.CAMEL)

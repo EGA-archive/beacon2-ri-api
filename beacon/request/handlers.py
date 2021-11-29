@@ -4,8 +4,10 @@ from aiohttp.web_request import Request
 from bson import json_util
 
 from beacon.request import get_parameters
-from beacon.response.info_response_schema import build_beacon_resultset_response
+from beacon.response.build_response import build_beacon_resultset_response
 import logging
+
+from beacon.utils.stream import json_stream
 
 LOG = logging.getLogger(__name__)
 
@@ -18,8 +20,9 @@ def generic_handler(db_fn, request=None):
         entry_id = request.match_info["id"] if "id" in request.match_info else None
 
         # Get response
-        response_converted = [ json.loads(json_util.dumps(r)) for r in db_fn(entry_id, qparams)]
+        records = db_fn(entry_id, qparams)
+        response_converted = [json.loads(json_util.dumps(r)) for r in records] if records else []
         response = build_beacon_resultset_response(response_converted, len(response_converted), qparams, lambda x, y: x)
-        return web.json_response(response)
+        return await json_stream(request, response)
 
     return wrapper
