@@ -34,6 +34,4 @@ down:
 	docker-compose down
 
 verify:
-	cd ~/Work/beacon-verifier/ && \
-	cargo run -- http://localhost:5050/api/ && \
-	cd ~/Work/beacon-2.1/deploy/
+	beacon-verifier http://localhost:5050/api/
