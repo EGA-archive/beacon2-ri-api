@@ -83,6 +83,21 @@ def build_beacon_resultset_response(data,
     }
     return beacon_response
 
+########################################
+# Collection Response
+########################################
+
+def build_beacon_collection_response(data, num_total_results, qparams: RequestParams, func_response_type):
+    beacon_response = {
+        'meta': build_meta(qparams),
+        'responseSummary': build_response_summary(bool(data), num_total_results),
+        # TODO: 'info': build_extended_info(),
+        'beaconHandovers': build_beacon_handovers(),
+        'response': {
+            'collections': [ build_response(data, num_total_results, qparams, func_response_type) ]
+        }
+    }
+    return beacon_response
 
 ########################################
 # Info Response
