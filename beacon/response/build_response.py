@@ -94,7 +94,7 @@ def build_beacon_collection_response(data, num_total_results, qparams: RequestPa
         # TODO: 'info': build_extended_info(),
         'beaconHandovers': build_beacon_handovers(),
         'response': {
-            'collections': [ build_response(data, num_total_results, qparams, func_response_type) ]
+            'collections': func_response_type(data, qparams)
         }
     }
     return beacon_response
