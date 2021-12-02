@@ -22,12 +22,12 @@ def collection_handler(db_fn, request=None):
         entry_id = request.match_info["id"] if "id" in request.match_info else None
 
         # Get response
-        records = db_fn(entry_id, qparams)
+        entity_schema, records = db_fn(entry_id, qparams)
         response_converted = (
             [json.loads(json_util.dumps(r)) for r in records] if records else []
         )
         response = build_beacon_collection_response(
-            response_converted, len(response_converted), qparams, lambda x, y: x
+            response_converted, len(response_converted), qparams, lambda x, y: x, entity_schema
         )
         return await json_stream(request, response)
 
@@ -42,12 +42,12 @@ def result_set_handler(db_fn, request=None):
         entry_id = request.match_info["id"] if "id" in request.match_info else None
 
         # Get response
-        records = db_fn(entry_id, qparams)
+        entity_schema, records = db_fn(entry_id, qparams)
         response_converted = (
             [json.loads(json_util.dumps(r)) for r in records] if records else []
         )
         response = build_beacon_resultset_response(
-            response_converted, len(response_converted), qparams, lambda x, y: x
+            response_converted, len(response_converted), qparams, lambda x, y: x, entity_schema
         )
         return await json_stream(request, response)
 

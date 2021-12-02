@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from strenum import StrEnum
 from typing import List, Union
 from dataclasses_json import dataclass_json, LetterCase
@@ -63,23 +63,23 @@ class Pagination:
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
 class RequestMeta:
-    requested_schemas: List[str]
+    requested_schemas: List[str] = field(default_factory=lambda: [])
     api_version: str = conf.api_version
-    requested_granularity: str = conf.beacon_granularity
 
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
 class RequestQuery:
-    request_parameters: dict
-    filters: List[Union[OntologyFilter, AlphanumericFilter, CustomFilter]]
-    include_resultset_responses: IncludeResultsetResponses
-    pagination: Pagination
+    filters: List[Union[OntologyFilter, AlphanumericFilter, CustomFilter]] = field(default_factory=lambda: [])
+    include_resultset_responses: IncludeResultsetResponses = IncludeResultsetResponses.HIT
+    pagination: Pagination = Pagination()
+    request_parameters: dict = field(default_factory=lambda: {})
     test_mode: bool = False
+    requested_granularity: str = conf.beacon_granularity
 
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
 class RequestParams:
-    meta: RequestMeta
-    query: RequestQuery
+    meta: RequestMeta = RequestMeta()
+    query: RequestQuery = RequestQuery()

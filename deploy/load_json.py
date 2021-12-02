@@ -2,7 +2,7 @@ import json
 import argparse
 from pymongo import MongoClient
 
-entities = ["analyses", "biosamples", "cohorts", "datasets", "g_variants", "individuals", "runs"]
+entities = ["analyses", "biosamples", "cohorts", "datasets", "genomicVariations", "individuals", "runs"]
 
 def main():
     parser = argparse.ArgumentParser("JSON MongoDB Loader")

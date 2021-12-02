@@ -8,7 +8,7 @@ load:
 	python3 load_json.py --file data/biosample*.json --collection biosamples --db "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin"
 	python3 load_json.py --file data/cohorts*.json --collection cohorts --db "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin"
 	python3 load_json.py --file data/datasets*.json --collection datasets --db "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin"
-	python3 load_json.py --file data/genomicVariations*.json --collection g_variants --db "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin"
+	python3 load_json.py --file data/genomicVariations*.json --collection genomicVariations --db "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin"
 	python3 load_json.py --file data/individuals*.json --collection individuals --db "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin"
 	python3 load_json.py --file data/runs*.json --collection runs --db "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin"
 
@@ -35,3 +35,6 @@ down:
 
 verify:
 	beacon-verifier http://localhost:5050/api/
+
+reindex:
+	python3 reindex.py

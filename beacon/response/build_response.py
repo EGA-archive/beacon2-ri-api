@@ -1,8 +1,9 @@
 from beacon import conf
+from beacon.db.schemas import DefaultSchemas
 from beacon.request import RequestParams
 
 
-def build_meta(qparams: RequestParams):
+def build_meta(qparams: RequestParams, entity_schema: DefaultSchemas):
     """"Builds the `meta` part of the response
 
     We assume that receivedRequest is the evaluated request (qparams) sent by the user.
@@ -19,10 +20,10 @@ def build_meta(qparams: RequestParams):
             "requestParameters": qparams.query.request_parameters,
             "includeResultsetResponses": qparams.query.include_resultset_responses,
             "pagination": qparams.query.pagination,
-            "requestedGranularity": qparams.meta.requested_granularity,
+            "requestedGranularity": qparams.query.requested_granularity,
             "testMode": qparams.query.test_mode
         },
-        'returnedSchemas': []
+        'returnedSchemas': [entity_schema]
     }
     return meta
 
@@ -67,13 +68,14 @@ def build_response(data, num_total_results, qparams, func):
 def build_beacon_resultset_response(data,
                                     num_total_results,
                                     qparams: RequestParams,
-                                    func_response_type):
+                                    func_response_type,
+                                    entity_schema: DefaultSchemas):
     """"
     Transform data into the Beacon response format.
     """
 
     beacon_response = {
-        'meta': build_meta(qparams),
+        'meta': build_meta(qparams, entity_schema),
         'responseSummary': build_response_summary(bool(data), num_total_results),
         # TODO: 'extendedInfo': build_extended_info(),
         'response': {
@@ -87,9 +89,9 @@ def build_beacon_resultset_response(data,
 # Collection Response
 ########################################
 
-def build_beacon_collection_response(data, num_total_results, qparams: RequestParams, func_response_type):
+def build_beacon_collection_response(data, num_total_results, qparams: RequestParams, func_response_type, entity_schema: DefaultSchemas):
     beacon_response = {
-        'meta': build_meta(qparams),
+        'meta': build_meta(qparams, entity_schema),
         'responseSummary': build_response_summary(bool(data), num_total_results),
         # TODO: 'info': build_extended_info(),
         'beaconHandovers': build_beacon_handovers(),
@@ -108,7 +110,7 @@ def build_beacon_info_response(data, qparams, func_response_type, authorized_dat
         authorized_datasets = []
 
     beacon_response = {
-        'meta': build_meta(qparams),
+        'meta': build_meta(qparams, None),
         'response': {
             'id': conf.beacon_id,
             'name': conf.beacon_name,

@@ -44,7 +44,7 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter) -> dict:
     # TODO: Similarity
     if query["$text"]["$search"]:
         query["$text"]["$search"] += " "
-    query["$text"]["$search"] += filter.id
+    query["$text"]["$search"] += '\"' + filter.id + '\"'
     LOG.debug("QUERY: %s", query)
     return query
 
