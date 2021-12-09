@@ -63,17 +63,17 @@ class Pagination:
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
 class RequestMeta:
-    requested_schemas: List[str] = field(default_factory=lambda: [])
+    requested_schemas: List[str] = field(default_factory=list)
     api_version: str = conf.api_version
 
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
 class RequestQuery:
-    filters: List[Union[OntologyFilter, AlphanumericFilter, CustomFilter]] = field(default_factory=lambda: [])
+    filters: List[Union[OntologyFilter, AlphanumericFilter, CustomFilter]] = field(default_factory=list)
     include_resultset_responses: IncludeResultsetResponses = IncludeResultsetResponses.HIT
-    pagination: Pagination = Pagination()
-    request_parameters: dict = field(default_factory=lambda: {})
+    pagination: Pagination = field(default_factory=Pagination)
+    request_parameters: dict = field(default_factory=dict)
     test_mode: bool = False
     requested_granularity: str = conf.beacon_granularity
 
@@ -81,5 +81,5 @@ class RequestQuery:
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
 class RequestParams:
-    meta: RequestMeta = RequestMeta()
-    query: RequestQuery = RequestQuery()
+    meta: RequestMeta = field(default_factory=RequestMeta)
+    query: RequestQuery = field(default_factory=RequestQuery)
