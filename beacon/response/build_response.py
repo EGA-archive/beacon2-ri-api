@@ -23,7 +23,7 @@ def build_meta(qparams: RequestParams, entity_schema: DefaultSchemas):
             "requestedGranularity": qparams.query.requested_granularity,
             "testMode": qparams.query.test_mode
         },
-        'returnedSchemas': [entity_schema] if entity_schema is not None else []
+        'returnedSchemas': [ entity_schema.value ] if entity_schema is not None else []
     }
     return meta
 
