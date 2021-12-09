@@ -38,10 +38,6 @@ routes = [
     web.get('/api/cohorts/{id}/', collection_handler(db_fn=cohorts.get_cohort_with_id)),
     web.get('/api/cohorts/{id}/individuals/', result_set_handler(db_fn=cohorts.get_individuals_of_cohort)),
     web.get('/api/cohorts/{id}/filtering_terms/', result_set_handler(db_fn=cohorts.get_filtering_terms_of_cohort)),
-    web.get('/api/cohorts/{id}/g_variants/', result_set_handler(db_fn=cohorts.get_variants_of_cohort)),
-    web.get('/api/cohorts/{id}/biosamples/', result_set_handler(db_fn=cohorts.get_biosamples_of_cohort)),
-    web.get('/api/cohorts/{id}/runs/', result_set_handler(db_fn=cohorts.get_runs_of_cohort)),
-    web.get('/api/cohorts/{id}/analyses/', result_set_handler(db_fn=cohorts.get_analyses_of_cohort)),
 
     web.get('/api/datasets/', collection_handler(db_fn=datasets.get_datasets)),
     web.get('/api/datasets/{id}/', collection_handler(db_fn=datasets.get_dataset_with_id)),
@@ -90,10 +86,6 @@ routes = [
     web.post('/api/cohorts/{id}/', collection_handler(db_fn=cohorts.get_cohort_with_id)),
     web.post('/api/cohorts/{id}/individuals/', result_set_handler(db_fn=cohorts.get_individuals_of_cohort)),
     web.post('/api/cohorts/{id}/filtering_terms/', result_set_handler(db_fn=cohorts.get_filtering_terms_of_cohort)),
-    web.post('/api/cohorts/{id}/g_variants/', result_set_handler(db_fn=cohorts.get_variants_of_cohort)),
-    web.post('/api/cohorts/{id}/biosamples/', result_set_handler(db_fn=cohorts.get_biosamples_of_cohort)),
-    web.post('/api/cohorts/{id}/runs/', result_set_handler(db_fn=cohorts.get_runs_of_cohort)),
-    web.post('/api/cohorts/{id}/analyses/', result_set_handler(db_fn=cohorts.get_analyses_of_cohort)),
 
     web.post('/api/datasets/', collection_handler(db_fn=datasets.get_datasets)),
     web.post('/api/datasets/{id}/', collection_handler(db_fn=datasets.get_dataset_with_id)),

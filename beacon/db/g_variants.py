@@ -3,6 +3,9 @@ from beacon.db.schemas import DefaultSchemas
 from beacon.db.utils import query_id, query_ids
 from beacon.request.model import AlphanumericFilter, RequestParams
 from beacon.db import client
+import json
+from bson import json_util
+
 
 VARIANTS_PROPERTY_MAP = {
     "assemblyId": "position.assemblyId",
@@ -29,6 +32,7 @@ def apply_request_parameters(query: dict, qparams: RequestParams):
 
 def get_variants(entry_id: str, qparams: RequestParams):
     query = apply_request_parameters({}, qparams)
+    query = query_id(query, entry_id)
     query = apply_filters(query, qparams.query.filters)
     return DefaultSchemas.GENOMICVARIATIONS, client.beacon.genomicVariations \
         .find(query) \
@@ -38,8 +42,8 @@ def get_variants(entry_id: str, qparams: RequestParams):
 
 def get_variant_with_id(entry_id: str, qparams: RequestParams):
     query = apply_request_parameters({}, qparams)
-    query = apply_filters(query, qparams.query.filters)
     query = query_id(query, entry_id)
+    query = apply_filters(query, qparams.query.filters)
     return DefaultSchemas.GENOMICVARIATIONS, client.beacon.genomicVariations \
         .find(query) \
         .skip(qparams.query.pagination.skip) \
@@ -48,13 +52,15 @@ def get_variant_with_id(entry_id: str, qparams: RequestParams):
 
 def get_biosamples_of_variant(entry_id: str, qparams: RequestParams):
     query = apply_request_parameters({}, qparams)
-    query = apply_filters(query, qparams.query.filters)
     query = query_id(query, entry_id)
-    ids = client.beacon.genomicVariations \
-        .find_one(query, {"biosamplesIds": 1})
+    query = apply_filters(query, qparams.query.filters)
+    biosample_ids = client.beacon.genomicVariations \
+        .find_one(query, {"caseLevelData.biosamplesId": 1, "_id": 0})
+    biosample_ids = [json.loads(json_util.dumps(r)) for r in biosample_ids] if biosample_ids else []
 
     query = apply_request_parameters({}, qparams)
-    query = query_ids(query, ids)
+    query = query_ids(query, biosample_ids)
+    query = apply_filters(query, qparams.query.filters)
     return DefaultSchemas.BIOSAMPLES, client.beacon.biosamples \
         .find(query) \
         .skip(qparams.query.pagination.skip) \
@@ -62,8 +68,16 @@ def get_biosamples_of_variant(entry_id: str, qparams: RequestParams):
 
 
 def get_individuals_of_variant(entry_id: str, qparams: RequestParams):
-    query = {"variantIds": entry_id}
-    query = apply_request_parameters(query, qparams)
+    query = apply_request_parameters({}, qparams)
+    query = query_id(query, entry_id)
+    query = apply_filters(query, qparams.query.filters)
+    individual_ids = client.beacon.genomicVariations \
+        .find_one(query, {"caseLevelData.individualId": 1, "_id": 0})
+    individual_ids = [json.loads(json_util.dumps(r)) for r in individual_ids] if individual_ids else []
+
+    query = apply_request_parameters({}, qparams)
+    query = query_ids(query, individual_ids)
+    query = apply_filters(query, qparams.query.filters)
     return DefaultSchemas.INDIVIDUALS, client.beacon.individuals \
         .find(query) \
         .skip(qparams.query.pagination.skip) \
@@ -71,10 +85,34 @@ def get_individuals_of_variant(entry_id: str, qparams: RequestParams):
 
 
 def get_runs_of_variant(entry_id: str, qparams: RequestParams):
-    # TODO: To be fixed in the model
-    pass
+    query = apply_request_parameters({}, qparams)
+    query = query_id(query, entry_id)
+    query = apply_filters(query, qparams.query.filters)
+    run_ids = client.beacon.genomicVariations \
+        .find_one(query, {"caseLevelData.runId": 1, "_id": 0})
+    run_ids = [json.loads(json_util.dumps(r)) for r in run_ids] if run_ids else []
+
+    query = apply_request_parameters({}, qparams)
+    query = query_ids(query, run_ids)
+    query = apply_filters(query, qparams.query.filters)
+    return DefaultSchemas.RUNS, client.beacon.runs \
+        .find(query) \
+        .skip(qparams.query.pagination.skip) \
+        .limit(qparams.query.pagination.limit)
 
 
 def get_analyses_of_variant(entry_id: str, qparams: RequestParams):
-    # TODO: To be fixed in the model
-    pass
+    query = apply_request_parameters({}, qparams)
+    query = query_id(query, entry_id)
+    query = apply_filters(query, qparams.query.filters)
+    analysis_ids = client.beacon.genomicVariations \
+        .find_one(query, {"caseLevelData.analysisId": 1, "_id": 0})
+    analysis_ids = [json.loads(json_util.dumps(r)) for r in analysis_ids] if analysis_ids else []
+
+    query = apply_request_parameters({}, qparams)
+    query = query_ids(query, analysis_ids)
+    query = apply_filters(query, qparams.query.filters)
+    return DefaultSchemas.ANALYSES, client.beacon.analyses \
+        .find(query) \
+        .skip(qparams.query.pagination.skip) \
+        .limit(qparams.query.pagination.limit)

@@ -23,12 +23,8 @@ def get_biosample_with_id(entry_id: str, qparams: RequestParams):
 
 
 def get_variants_of_biosample(entry_id: str, qparams: RequestParams):
-    query = apply_filters({}, qparams.query.filters)
-    query = query_id(query, entry_id)
-    ids = client.beacon.biosamples \
-        .find_one(query, {"variantIds": 1})
-
-    query = query_ids({}, ids)
+    query = {"caseLevelData.biosampleId": entry_id}
+    query = apply_filters(query, qparams.query.filters)
     return DefaultSchemas.GENOMICVARIATIONS, client.beacon.genomicVariations \
         .find(query) \
         .skip(qparams.query.pagination.skip) \
