@@ -1,4 +1,4 @@
-all: down up clean generate load rebuild
+all: down up clean generate load reindex rebuild
 
 generate:
 	sh generate_json.sh 10
