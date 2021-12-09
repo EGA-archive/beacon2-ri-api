@@ -3,6 +3,8 @@ from beacon.db.filters import apply_filters
 from beacon.db.schemas import DefaultSchemas
 from beacon.db.utils import query_id
 from beacon.request.model import RequestParams
+import json
+from bson import json_util
 
 
 def get_individuals(entry_id: str, qparams: RequestParams):
@@ -46,10 +48,28 @@ def get_filtering_terms_of_individual(entry_id: str, qparams: RequestParams):
 
 
 def get_runs_of_individual(entry_id: str, qparams: RequestParams):
-    # TODO: To be fixed in the model
-    pass
+    query = {"caseLevelData.individualId": entry_id}
+    query = apply_filters(query, qparams.query.filters)
+    run_ids = client.beacon.genomicVariations.find(query, {"caseLevelData.runId": 1, "_id": 0})
+    run_ids = [json.loads(json_util.dumps(r)) for r in run_ids] if run_ids else []
+
+    query = {"id": run_ids}
+    query = apply_filters(query, qparams.query.filters)
+    return DefaultSchemas.RUNS, client.beacon.runs \
+        .find(query) \
+        .skip(qparams.query.pagination.skip) \
+        .limit(qparams.query.pagination.limit)
 
 
 def get_analyses_of_individual(entry_id: str, qparams: RequestParams):
-    # TODO: To be fixed in the model
-    pass
+    query = {"caseLevelData.individualId": entry_id}
+    query = apply_filters(query, qparams.query.filters)
+    analysis_ids = client.beacon.genomicVariations.find(query, {"caseLevelData.analysisId": 1, "_id": 0})
+    analysis_ids = [json.loads(json_util.dumps(r)) for r in analysis_ids] if analysis_ids else []
+
+    query = {"id": analysis_ids}
+    query = apply_filters(query, qparams.query.filters)
+    return DefaultSchemas.ANALYSES, client.beacon.analyses \
+        .find(query) \
+        .skip(qparams.query.pagination.skip) \
+        .limit(qparams.query.pagination.limit)

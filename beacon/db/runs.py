@@ -23,14 +23,18 @@ def get_run_with_id(entry_id: str, qparams: RequestParams):
 
 
 def get_variants_of_run(entry_id: str, qparams: RequestParams):
-    # TODO
-    pass
+    query = {"caseLevelData.runId": entry_id}
+    query = apply_filters(query, qparams.query.filters)
+    return DefaultSchemas.GENOMICVARIATIONS, client.beacon.genomicVariations \
+        .find(query) \
+        .skip(qparams.query.pagination.skip) \
+        .limit(qparams.query.pagination.limit)
 
 
 def get_analyses_of_run(entry_id: str, qparams: RequestParams):
     query = {"runId": entry_id}
     query = apply_filters(query, qparams.query.filters)
-    return client.beacon.analyses \
+    return DefaultSchemas.ANALYSES, client.beacon.analyses \
         .find(query) \
         .skip(qparams.query.pagination.skip) \
         .limit(qparams.query.pagination.limit)

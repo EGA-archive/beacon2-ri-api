@@ -19,11 +19,14 @@ async def get_parameters(request: Request) -> RequestParams:
         return params
     else:
         requested_schema: str = request.query.get("requestedSchema", "")
-        skip: int = int(request.query.get("skip", "0"))
-        limit: int = int(request.query.get("limit", "10"))
+        skip: int = int(request.query.get("skip", 0))
+        limit: int = int(request.query.get("limit", 10))
         include_resultset_responses: IncludeResultsetResponses = \
             IncludeResultsetResponses(request.query.get("includeResultsetResponses", "HIT"))
         return RequestParams(
             RequestMeta([requested_schema] if requested_schema else []),
-            RequestQuery({}, [], include_resultset_responses, Pagination(skip, limit))
+            RequestQuery(
+                include_resultset_responses=include_resultset_responses,
+                pagination=Pagination(skip, limit)
+            )
         )
