@@ -50,7 +50,14 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter) -> dict:
 
 
 def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter) -> dict:
-    query[filter.id] = filter.value
+    if filter.value.isnumeric():
+        if float(filter.value).is_integer:
+            query[filter.id] = int(filter.value)
+        else:
+            query[filter.id] = float(filter.value)
+    else:
+        query[filter.id] = filter.value
+    
     LOG.debug("QUERY: %s", query)
     return query
 
