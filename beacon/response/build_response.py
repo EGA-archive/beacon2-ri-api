@@ -33,10 +33,15 @@ def build_beacon_handovers():
 
 
 def build_response_summary(exists, num_total_results):
-    return {
-        'exists': exists,
-        'numTotalResults': num_total_results
-    }
+    if num_total_results is None:
+        return {
+            'exists': exists
+        }
+    else:
+        return {
+            'exists': exists,
+            'numTotalResults': num_total_results
+        }
 
 
 def build_response(data, num_total_results, qparams, func):
@@ -81,6 +86,48 @@ def build_beacon_resultset_response(data,
         'response': {
             'resultSets': [build_response(data, num_total_results, qparams, func_response_type)]
         },
+        'beaconHandovers': build_beacon_handovers(),
+    }
+    return beacon_response
+
+########################################
+# Count Response
+########################################
+
+def build_beacon_count_response(data,
+                                    num_total_results,
+                                    qparams: RequestParams,
+                                    func_response_type,
+                                    entity_schema: DefaultSchemas):
+    """"
+    Transform data into the Beacon response format.
+    """
+
+    beacon_response = {
+        'meta': build_meta(qparams, entity_schema),
+        'responseSummary': build_response_summary(bool(data), num_total_results),
+        # TODO: 'extendedInfo': build_extended_info(),
+        'beaconHandovers': build_beacon_handovers(),
+    }
+    return beacon_response
+
+########################################
+# Boolean Response
+########################################
+
+def build_beacon_boolean_response(data,
+                                    num_total_results,
+                                    qparams: RequestParams,
+                                    func_response_type,
+                                    entity_schema: DefaultSchemas):
+    """"
+    Transform data into the Beacon response format.
+    """
+
+    beacon_response = {
+        'meta': build_meta(qparams, entity_schema),
+        'responseSummary': build_response_summary(bool(data), None),
+        # TODO: 'extendedInfo': build_extended_info(),
         'beaconHandovers': build_beacon_handovers(),
     }
     return beacon_response
