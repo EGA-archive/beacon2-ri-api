@@ -1,0 +1,17 @@
+{
+	"$schema": "https://raw.githubusercontent.com/MrRobb/beacon-framework-v2/main/requests/beaconRequestBody.json",
+	"meta": {
+		"apiVersion": "2.0",
+		"requestedSchemas": [{ "entityType": "EntryTypeA", "schema": "entry-typeA-schema-v0.1" }]
+	},
+	"query": {
+		"filters": [],
+		"includeResultsetResponses": "HIT",
+		"pagination": {
+			"skip": 0,
+			"limit": 10
+		},
+		"testMode": false,
+		"requestedGranularity": "record"
+	}
+}
