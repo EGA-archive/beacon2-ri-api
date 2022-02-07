@@ -12,7 +12,7 @@ def build_meta(qparams: RequestParams, entity_schema: DefaultSchemas):
     meta = {
         'beaconId': conf.beacon_id,
         'apiVersion': conf.api_version,
-        'returnedGranularity': conf.beacon_granularity,
+        'returnedGranularity': qparams.query.requested_granularity,
         'receivedRequestSummary': {
             "apiVersion": qparams.meta.api_version,
             "requestedSchemas": qparams.meta.requested_schemas,
