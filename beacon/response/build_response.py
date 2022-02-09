@@ -23,7 +23,7 @@ def build_meta(qparams: RequestParams, entity_schema: DefaultSchemas):
             "requestedGranularity": qparams.query.requested_granularity,
             "testMode": qparams.query.test_mode
         },
-        'returnedSchemas': [ entity_schema.value ] if entity_schema is not None else []
+        'returnedSchemas': [entity_schema.value] if entity_schema is not None else []
     }
     return meta
 
@@ -211,6 +211,19 @@ def build_beacon_service_info_response():
     }
 
     return beacon_response
+
+########################################
+# Filtering terms Response
+########################################
+
+def build_filtering_terms_response(filtering_terms, resources, qparams: RequestParams):
+    return {
+        "meta": build_meta(qparams, entity_schema=None),
+        "response": {
+            "resources": resources,
+            "filteringTerms": filtering_terms
+        }
+    }
 
 ########################################
 # Error Response

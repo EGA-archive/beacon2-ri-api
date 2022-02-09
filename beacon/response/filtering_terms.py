@@ -8,10 +8,12 @@ These are stored in the DB inside the table named 'ontology_terms'.
 
 from beacon import conf
 from beacon.db.filtering_terms import get_filtering_terms
+from beacon.db.schemas import DefaultSchemas
+from beacon.request import RequestParams
 from beacon.utils.stream import json_stream
 
 
-async def handler(request):
+async def handler(request, qparams: RequestParams, entity_schema: DefaultSchemas):
     ontology_terms = [
         {
             'id': record['ontology'] + ':' + record['term'],
@@ -20,7 +22,7 @@ async def handler(request):
         async for record in get_filtering_terms()
     ]
     response = {
-        'beaconId': conf.beacon_id,
+        'meta': conf.beacon_id,
         'apiVersion': conf.api_version,
         'filteringTerms': ontology_terms,
     }
