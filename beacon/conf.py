@@ -117,3 +117,8 @@ idp_redirect_uri = 'http://beacon:5050/login'
 #
 autocomplete_limit = 16
 autocomplete_ellipsis = '...'
+
+#
+# Ontologies
+#
+ontologies_folder = "deploy/ontologies/"

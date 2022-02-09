@@ -32,8 +32,8 @@ class Operator(StrEnum):
 @dataclass
 class OntologyFilter:
     id: str
+    include_descendant_terms: bool
     scope: str = None
-    include_descendant_terms: bool = True
     similarity: Similarity = Similarity.EXACT
 
 

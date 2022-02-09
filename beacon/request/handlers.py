@@ -4,7 +4,7 @@ from aiohttp import web
 from aiohttp.web_request import Request
 from bson import json_util
 
-from beacon.request import get_parameters
+from beacon.request import get_parameters, ontologies
 from beacon.response.build_response import (
     build_beacon_resultset_response,
     build_beacon_collection_response,

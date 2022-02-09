@@ -15,6 +15,7 @@ from aiohttp_session.cookie_storage import EncryptedCookieStorage
 from cryptography import fernet
 
 from beacon import conf, load_logger
+from beacon.request import ontologies
 from beacon.response import middlewares
 from beacon.request.routes import routes
 from beacon.db import client
@@ -88,6 +89,11 @@ def main(path=None):
         sslcontext.load_cert_chain(conf.beacon_cert, conf.beacon_key)  # should exist
         sslcontext.check_hostname = False
         # TODO: add the CA chain
+
+    # Load ontologies
+    LOG.info("Loading ontologies... (this might take a while)")
+    ontologies.load()
+    LOG.info("Finished loading the ontologies...")
 
     # Run beacon
     if path:

@@ -3,6 +3,7 @@ from typing import List, Union
 import re
 import dataclasses
 
+from beacon.request import ontologies
 from beacon.request.model import AlphanumericFilter, CustomFilter, OntologyFilter
 
 import logging
@@ -40,11 +41,25 @@ def apply_filters(query: dict, filters: List[Union[OntologyFilter, AlphanumericF
 
 
 def apply_ontology_filter(query: dict, filter: OntologyFilter) -> dict:
-    # TODO: Add descendants
+    
     # TODO: Similarity
     if query["$text"]["$search"]:
         query["$text"]["$search"] += " "
-    query["$text"]["$search"] += '\"' + filter.id + '\"'
+    query["$text"]["$search"] += '\"' + filter["id"] + '\"'
+
+    # Apply descendant terms
+    if filter["includeDescendantTerms"]:
+        descendants = ontologies.get_descendants(filter["id"])
+        LOG.debug("Descendants: {}".format(descendants))
+        for descendant in descendants:
+            descendant_filter = {
+                "id": descendant,
+                "scope": filter["scope"] if "scope" in filter else None,
+                "includeDescendantTerms": False,
+                "similarity": filter["similarity"] if "similarity" in filter else None
+            }
+            query = apply_ontology_filter(query, descendant_filter)
+
     LOG.debug("QUERY: %s", query)
     return query
 

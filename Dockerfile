@@ -40,6 +40,7 @@ RUN apt-get update && \
 COPY deploy/nginx.conf        /beacon/nginx.conf
 COPY deploy/supervisord.conf  /beacon/supervisord.conf
 COPY deploy/entrypoint.sh     /usr/local/bin/entrypoint.sh
+COPY deploy/ontologies        /beacon/ontologies
 COPY beacon                   /beacon/beacon
 COPY ui                       /beacon/ui
 
