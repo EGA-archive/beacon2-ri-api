@@ -71,8 +71,8 @@ def get_individuals_of_variant(entry_id: str, qparams: RequestParams):
     query = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters)
     individual_ids = client.beacon.genomicVariations \
-        .find_one(query, {"caseLevelData.individualId": 1, "_id": 0})
-    individual_ids = [json.loads(json_util.dumps(r)) for r in individual_ids] if individual_ids else []
+        .find(query)
+    individual_ids = [json.loads(json_util.dumps(r))["caseLevelData"]["individualId"] for r in individual_ids] if individual_ids else []
 
     query = apply_request_parameters({}, qparams)
     query = query_ids(query, individual_ids)
