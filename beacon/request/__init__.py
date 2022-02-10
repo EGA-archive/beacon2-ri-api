@@ -8,7 +8,8 @@ LOG = logging.getLogger(__name__)
 
 async def get_parameters(request: Request) -> RequestParams:
     if request.method == "POST" and request.has_body and request.can_read_body:
-        params = RequestParams.from_json(await request.content.read(-1))
+        params_json = await request.json()
+        params = RequestParams(**params_json)
         LOG.debug(params)
         return params
     else:

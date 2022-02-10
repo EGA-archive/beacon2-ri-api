@@ -19,7 +19,7 @@ def build_meta(qparams: RequestParams, entity_schema: DefaultSchemas):
             "filters": qparams.query.filters,
             "requestParameters": qparams.query.request_parameters,
             "includeResultsetResponses": qparams.query.include_resultset_responses,
-            "pagination": qparams.query.pagination,
+            "pagination": qparams.query.pagination.dict(),
             "requestedGranularity": qparams.query.requested_granularity,
             "testMode": qparams.query.test_mode
         },

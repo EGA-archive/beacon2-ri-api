@@ -13,5 +13,7 @@ aiohttp-jinja2~=1.5
 aiohttp-session~=2.9.0
 dataclasses-json~=0.5.6
 StrEnum~=0.4.7 # Only until Python 3.11 is released (we can use the built-in StrEnum)
-owlready2
+owlready2~=0.36
 tqdm~=4.62.3
+pydantic~=1.9.0
+pyhumps

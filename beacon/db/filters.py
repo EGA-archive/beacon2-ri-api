@@ -21,21 +21,21 @@ def dataclass_from_dict(klass, d):
         return d
 
 
-def apply_filters(query: dict, filters: List[Union[OntologyFilter, AlphanumericFilter, CustomFilter]]) -> dict:
+def apply_filters(query: dict, filters: List[dict]) -> dict:
     if len(filters) > 0:
         query["$text"] = defaultdict(str)
     for filter in filters:
         if "value" in filter:
-            LOG.debug("Alphanumeric filter: %s %s %s", filter["id"], filter["operator"], filter["value"])
-            filter = dataclass_from_dict(AlphanumericFilter, filter)
+            filter = AlphanumericFilter(**filter)
+            LOG.debug("Alphanumeric filter: %s %s %s", filter.id, filter.operator, filter.value)
             query = apply_alphanumeric_filter(query, filter)
-        elif "similarity" in filter or "include_descendant_terms" in filter or re.match(CURIE_REGEX, filter["id"]):
-            LOG.debug("Ontology filter: %s", filter["id"])
-            filter = dataclass_from_dict(OntologyFilter, filter)
+        elif "similarity" in filter or "includeDescendantTerms" in filter or re.match(CURIE_REGEX, filter["id"]):
+            filter = OntologyFilter(**filter)
+            LOG.debug("Ontology filter: %s", filter.id)
             query = apply_ontology_filter(query, filter)
         else:
-            LOG.debug("Custom filter: %s", filter["id"])
-            filter = dataclass_from_dict(CustomFilter, filter)
+            filter = CustomFilter(**filter)
+            LOG.debug("Custom filter: %s", filter.id)
             query = apply_custom_filter(query, filter)
     return query
 
@@ -45,19 +45,19 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter) -> dict:
     # TODO: Similarity
     if query["$text"]["$search"]:
         query["$text"]["$search"] += " "
-    query["$text"]["$search"] += '\"' + filter["id"] + '\"'
+    query["$text"]["$search"] += '\"' + filter.id + '\"'
 
     # Apply descendant terms
-    if filter["includeDescendantTerms"]:
-        descendants = ontologies.get_descendants(filter["id"])
+    if filter.include_descendant_terms:
+        descendants = ontologies.get_descendants(filter.id)
         LOG.debug("Descendants: {}".format(descendants))
         for descendant in descendants:
-            descendant_filter = {
-                "id": descendant,
-                "scope": filter["scope"] if "scope" in filter else None,
-                "includeDescendantTerms": False,
-                "similarity": filter["similarity"] if "similarity" in filter else None
-            }
+            descendant_filter = OntologyFilter(
+                id=descendant,
+                scope=filter.scope,
+                include_descendant_terms=False,
+                similarity=filter.similarity
+            )
             query = apply_ontology_filter(query, descendant_filter)
 
     LOG.debug("QUERY: %s", query)
