@@ -122,13 +122,3 @@ autocomplete_ellipsis = '...'
 # Ontologies
 #
 ontologies_folder = "deploy/ontologies/"
-
-#
-# Entities
-#
-entities = {
-    "analysis": {
-        "name": "Analysis",
-        "collection": "analyses"
-    }
-}
