@@ -13,14 +13,6 @@ LOG = logging.getLogger(__name__)
 CURIE_REGEX = r'^([a-zA-Z0-9]*):\/?[a-zA-Z0-9]*$'
 
 
-def dataclass_from_dict(klass, d):
-    try:
-        fieldtypes = {f.name: f.type for f in dataclasses.fields(klass)}
-        return klass(**{f: dataclass_from_dict(fieldtypes[f], d[f]) for f in d})
-    except:
-        return d
-
-
 def apply_filters(query: dict, filters: List[dict]) -> dict:
     if len(filters) > 0:
         query["$text"] = defaultdict(str)
