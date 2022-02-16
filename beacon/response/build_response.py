@@ -1,9 +1,11 @@
+from typing import Optional
+
 from beacon import conf
 from beacon.db.schemas import DefaultSchemas
 from beacon.request import RequestParams
 
 
-def build_meta(qparams: RequestParams, entity_schema: DefaultSchemas):
+def build_meta(qparams: RequestParams, entity_schema: Optional[DefaultSchemas]):
     """"Builds the `meta` part of the response
 
     We assume that receivedRequest is the evaluated request (qparams) sent by the user.
@@ -47,21 +49,15 @@ def build_response_summary(exists, num_total_results):
 def build_response(data, num_total_results, qparams, func):
     """"Fills the `response` part with the correct format in `results`"""
 
-    # LOG.debug('Calling f= %s', func)
-    results = func(data, qparams)
-
     response = {
         'id': '',
         'setType': '',
-        'exists': bool(data),
+        'exists': num_total_results > 0,
         'resultsCount': num_total_results,
-        'results': results,
+        'results': data,
         # 'info': None,
         'resultsHandover': None,  # build_results_handover
     }
-
-    # if non_accessible_datasets:
-    #     response['error'] = build_error(non_accessible_datasets)
 
     return response
 
@@ -81,7 +77,7 @@ def build_beacon_resultset_response(data,
 
     beacon_response = {
         'meta': build_meta(qparams, entity_schema),
-        'responseSummary': build_response_summary(bool(data), num_total_results),
+        'responseSummary': build_response_summary(num_total_results > 0, num_total_results),
         # TODO: 'extendedInfo': build_extended_info(),
         'response': {
             'resultSets': [build_response(data, num_total_results, qparams, func_response_type)]
@@ -105,7 +101,7 @@ def build_beacon_count_response(data,
 
     beacon_response = {
         'meta': build_meta(qparams, entity_schema),
-        'responseSummary': build_response_summary(bool(data), num_total_results),
+        'responseSummary': build_response_summary(num_total_results > 0, num_total_results),
         # TODO: 'extendedInfo': build_extended_info(),
         'beaconHandovers': build_beacon_handovers(),
     }
@@ -126,7 +122,7 @@ def build_beacon_boolean_response(data,
 
     beacon_response = {
         'meta': build_meta(qparams, entity_schema),
-        'responseSummary': build_response_summary(bool(data), None),
+        'responseSummary': build_response_summary(num_total_results > 0, None),
         # TODO: 'extendedInfo': build_extended_info(),
         'beaconHandovers': build_beacon_handovers(),
     }
@@ -139,7 +135,7 @@ def build_beacon_boolean_response(data,
 def build_beacon_collection_response(data, num_total_results, qparams: RequestParams, func_response_type, entity_schema: DefaultSchemas):
     beacon_response = {
         'meta': build_meta(qparams, entity_schema),
-        'responseSummary': build_response_summary(bool(data), num_total_results),
+        'responseSummary': build_response_summary(num_total_results > 0, num_total_results),
         # TODO: 'info': build_extended_info(),
         'beaconHandovers': build_beacon_handovers(),
         'response': {

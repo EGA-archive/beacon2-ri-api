@@ -1,8 +1,6 @@
-
-from dataclasses import dataclass
 from enum import Enum
 
-@dataclass
+
 class DefaultSchemas(Enum):
     ANALYSES = { "entityType": "analysis", "schema": "beacon-analysis-v2.0.0-draft.4" }
     BIOSAMPLES = { "entityType": "biosample", "schema": "beacon-dataset-v2.0.0-draft.4" }

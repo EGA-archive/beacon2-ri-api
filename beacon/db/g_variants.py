@@ -1,6 +1,6 @@
 from beacon.db.filters import apply_alphanumeric_filter, apply_filters
 from beacon.db.schemas import DefaultSchemas
-from beacon.db.utils import query_id, query_ids
+from beacon.db.utils import query_id, query_ids, get_count, get_documents
 from beacon.request.model import AlphanumericFilter, RequestParams
 from beacon.db import client
 import json
@@ -22,6 +22,7 @@ VARIANTS_PROPERTY_MAP = {
     "aachange": "molecularAttributes.aminoacidChanges"
 }
 
+
 def apply_request_parameters(query: dict, qparams: RequestParams):
     for k, v in qparams.query.request_parameters.items():
         query = apply_alphanumeric_filter(query, AlphanumericFilter(
@@ -30,23 +31,34 @@ def apply_request_parameters(query: dict, qparams: RequestParams):
         ))
     return query
 
+
 def get_variants(entry_id: str, qparams: RequestParams):
     query = apply_request_parameters({}, qparams)
     query = apply_filters(query, qparams.query.filters)
-    return DefaultSchemas.GENOMICVARIATIONS, client.beacon.genomicVariations \
-        .find(query) \
-        .skip(qparams.query.pagination.skip) \
-        .limit(qparams.query.pagination.limit)
+    schema = DefaultSchemas.GENOMICVARIATIONS
+    count = get_count(client.beacon.genomicVariations, query)
+    docs = get_documents(
+        client.beacon.genomicVariations,
+        query,
+        qparams.query.pagination.skip,
+        qparams.query.pagination.limit
+    )
+    return schema, count, docs
 
 
 def get_variant_with_id(entry_id: str, qparams: RequestParams):
     query = {"variantInternalId": entry_id}
     query = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters)
-    return DefaultSchemas.GENOMICVARIATIONS, client.beacon.genomicVariations \
-        .find(query) \
-        .skip(qparams.query.pagination.skip) \
-        .limit(qparams.query.pagination.limit)
+    schema = DefaultSchemas.GENOMICVARIATIONS
+    count = get_count(client.beacon.genomicVariations, query)
+    docs = get_documents(
+        client.beacon.genomicVariations,
+        query,
+        qparams.query.pagination.skip,
+        qparams.query.pagination.limit
+    )
+    return schema, count, docs
 
 
 def get_biosamples_of_variant(entry_id: str, qparams: RequestParams):
@@ -60,10 +72,16 @@ def get_biosamples_of_variant(entry_id: str, qparams: RequestParams):
     query = apply_request_parameters({}, qparams)
     query = query_ids(query, biosample_ids)
     query = apply_filters(query, qparams.query.filters)
-    return DefaultSchemas.BIOSAMPLES, client.beacon.biosamples \
-        .find(query) \
-        .skip(qparams.query.pagination.skip) \
-        .limit(qparams.query.pagination.limit)
+
+    schema = DefaultSchemas.BIOSAMPLES
+    count = get_count(client.beacon.biosamples, query)
+    docs = get_documents(
+        client.beacon.biosamples,
+        query,
+        qparams.query.pagination.skip,
+        qparams.query.pagination.limit
+    )
+    return schema, count, docs
 
 
 def get_individuals_of_variant(entry_id: str, qparams: RequestParams):
@@ -77,10 +95,16 @@ def get_individuals_of_variant(entry_id: str, qparams: RequestParams):
     query = apply_request_parameters({}, qparams)
     query = query_ids(query, individual_ids)
     query = apply_filters(query, qparams.query.filters)
-    return DefaultSchemas.INDIVIDUALS, client.beacon.individuals \
-        .find(query) \
-        .skip(qparams.query.pagination.skip) \
-        .limit(qparams.query.pagination.limit)
+
+    schema = DefaultSchemas.INDIVIDUALS
+    count = get_count(client.beacon.individuals, query)
+    docs = get_documents(
+        client.beacon.individuals,
+        query,
+        qparams.query.pagination.skip,
+        qparams.query.pagination.limit
+    )
+    return schema, count, docs
 
 
 def get_runs_of_variant(entry_id: str, qparams: RequestParams):
@@ -94,10 +118,16 @@ def get_runs_of_variant(entry_id: str, qparams: RequestParams):
     query = apply_request_parameters({}, qparams)
     query = query_ids(query, run_ids)
     query = apply_filters(query, qparams.query.filters)
-    return DefaultSchemas.RUNS, client.beacon.runs \
-        .find(query) \
-        .skip(qparams.query.pagination.skip) \
-        .limit(qparams.query.pagination.limit)
+
+    schema = DefaultSchemas.RUNS
+    count = get_count(client.beacon.runs, query)
+    docs = get_documents(
+        client.beacon.runs,
+        query,
+        qparams.query.pagination.skip,
+        qparams.query.pagination.limit
+    )
+    return schema, count, docs
 
 
 def get_analyses_of_variant(entry_id: str, qparams: RequestParams):
@@ -111,7 +141,13 @@ def get_analyses_of_variant(entry_id: str, qparams: RequestParams):
     query = apply_request_parameters({}, qparams)
     query = query_ids(query, analysis_ids)
     query = apply_filters(query, qparams.query.filters)
-    return DefaultSchemas.ANALYSES, client.beacon.analyses \
-        .find(query) \
-        .skip(qparams.query.pagination.skip) \
-        .limit(qparams.query.pagination.limit)
+
+    schema = DefaultSchemas.ANALYSES
+    count = get_count(client.beacon.analyses, query)
+    docs = get_documents(
+        client.beacon.analyses,
+        query,
+        qparams.query.pagination.skip,
+        qparams.query.pagination.limit
+    )
+    return schema, count, docs

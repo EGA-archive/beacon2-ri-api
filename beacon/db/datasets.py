@@ -1,57 +1,81 @@
 from beacon.db.filters import apply_filters
 from beacon.db.schemas import DefaultSchemas
-from beacon.db.utils import query_id
+from beacon.db.utils import query_id, get_count, get_documents
 from beacon.request.model import RequestParams
 from beacon.db import client
 
 import logging
-import json
 
 LOG = logging.getLogger(__name__)
 
 
 def get_datasets(entry_id: str, qparams: RequestParams):
     query = apply_filters({}, qparams.query.filters)
-    return DefaultSchemas.DATASETS, client.beacon.datasets \
-        .find(query) \
-        .skip(qparams.query.pagination.skip) \
-        .limit(qparams.query.pagination.limit)
+    schema = DefaultSchemas.DATASETS
+    count = get_count(client.beacon.datasets, query)
+    docs = get_documents(
+        client.beacon.datasets,
+        query,
+        qparams.query.pagination.skip,
+        qparams.query.pagination.limit
+    )
+    return schema, count, docs
 
 
 def get_dataset_with_id(entry_id: str, qparams: RequestParams):
     query = apply_filters({}, qparams.query.filters)
     query = query_id(query, entry_id)
-    return DefaultSchemas.DATASETS, client.beacon.datasets \
-        .find(query) \
-        .skip(qparams.query.pagination.skip) \
-        .limit(qparams.query.pagination.limit)
+    schema = DefaultSchemas.DATASETS
+    count = get_count(client.beacon.datasets, query)
+    docs = get_documents(
+        client.beacon.datasets,
+        query,
+        qparams.query.pagination.skip,
+        qparams.query.pagination.limit
+    )
+    return schema, count, docs
 
 
 def get_variants_of_dataset(entry_id: str, qparams: RequestParams):
     query = {"datasetId": entry_id}
     query = apply_filters(query, qparams.query.filters)
-    return DefaultSchemas.GENOMICVARIATIONS, client.beacon.genomicVariations \
-        .find(query) \
-        .skip(qparams.query.pagination.skip) \
-        .limit(qparams.query.pagination.limit)
+    schema = DefaultSchemas.GENOMICVARIATIONS
+    count = get_count(client.beacon.genomicVariations, query)
+    docs = get_documents(
+        client.beacon.genomicVariations,
+        query,
+        qparams.query.pagination.skip,
+        qparams.query.pagination.limit
+    )
+    return schema, count, docs
 
 
 def get_biosamples_of_dataset(entry_id: str, qparams: RequestParams):
     query = {"datasetId": entry_id}
     query = apply_filters(query, qparams.query.filters)
-    return DefaultSchemas.BIOSAMPLES, client.beacon.biosamples \
-        .find(query) \
-        .skip(qparams.query.pagination.skip) \
-        .limit(qparams.query.pagination.limit)
+    schema = DefaultSchemas.BIOSAMPLES
+    count = get_count(client.beacon.biosamples, query)
+    docs = get_documents(
+        client.beacon.biosamples,
+        query,
+        qparams.query.pagination.skip,
+        qparams.query.pagination.limit
+    )
+    return schema, count, docs
 
 
 def get_individuals_of_dataset(entry_id: str, qparams: RequestParams):
     query = {"datasetId": entry_id}
     query = apply_filters(query, qparams.query.filters)
-    return DefaultSchemas.INDIVIDUALS, client.beacon.individuals \
-        .find(query) \
-        .skip(qparams.query.pagination.skip) \
-        .limit(qparams.query.pagination.limit)
+    schema = DefaultSchemas.INDIVIDUALS
+    count = get_count(client.beacon.individuals, query)
+    docs = get_documents(
+        client.beacon.individuals,
+        query,
+        qparams.query.pagination.skip,
+        qparams.query.pagination.limit
+    )
+    return schema, count, docs
 
 
 def filter_public_datasets(requested_datasets_ids):

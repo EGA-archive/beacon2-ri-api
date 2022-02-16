@@ -45,18 +45,18 @@ def generic_handler(db_fn, request=None):
         entry_id = request.match_info["id"] if "id" in request.match_info else None
 
         # Get response
-        entity_schema, records = db_fn(entry_id, qparams)
+        entity_schema, count, records = db_fn(entry_id, qparams)
         response_converted = (
             [json.loads(json_util.dumps(r)) for r in records] if records else []
         )
 
         response = None
         if qparams.query.requested_granularity == "boolean":
-            response = build_beacon_boolean_response(response_converted, len(response_converted), qparams, lambda x, y: x, entity_schema)
+            response = build_beacon_boolean_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
         elif qparams.query.requested_granularity == "count":
-            response = build_beacon_count_response(response_converted, len(response_converted), qparams, lambda x, y: x, entity_schema)
+            response = build_beacon_count_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
         else:
-            response = build_beacon_resultset_response(response_converted, len(response_converted), qparams, lambda x, y: x, entity_schema)
+            response = build_beacon_resultset_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
         return await json_stream(request, response)
 
     return wrapper
