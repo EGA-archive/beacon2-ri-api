@@ -53,11 +53,11 @@ python3 cleanup_json.py ${FRAMEWORK_REPO_LOCATION}
 # npm install -g json-schema-faker-cli
 for i in $(seq 1 $1)
 do
-    fake-schema "${MODEL_REPO_LOCATION}/BEACON-V2-draft4-Model/analyses/defaultSchema.json" > "${DATA_FOLDER}/analyses${i}.json"
-    fake-schema "${MODEL_REPO_LOCATION}/BEACON-V2-draft4-Model/biosamples/defaultSchema.json" > "${DATA_FOLDER}/biosamples${i}.json"
-    fake-schema "${MODEL_REPO_LOCATION}/BEACON-V2-draft4-Model/cohorts/defaultSchema.json" > "${DATA_FOLDER}/cohorts${i}.json"
-    fake-schema "${MODEL_REPO_LOCATION}/BEACON-V2-draft4-Model/datasets/defaultSchema.json" > "${DATA_FOLDER}/datasets${i}.json"
-    fake-schema "${MODEL_REPO_LOCATION}/BEACON-V2-draft4-Model/genomicVariations/defaultSchema.json" > "${DATA_FOLDER}/genomicVariations${i}.json"
-    fake-schema "${MODEL_REPO_LOCATION}/BEACON-V2-draft4-Model/individuals/defaultSchema.json" > "${DATA_FOLDER}/individuals${i}.json"
-    fake-schema "${MODEL_REPO_LOCATION}/BEACON-V2-draft4-Model/runs/defaultSchema.json" > "${DATA_FOLDER}/runs${i}.json"
+    fake-schema "${MODEL_REPO_LOCATION}/BEACON-V2-Model/analyses/defaultSchema.json" > "${DATA_FOLDER}/analyses${i}.json"
+    fake-schema "${MODEL_REPO_LOCATION}/BEACON-V2-Model/biosamples/defaultSchema.json" > "${DATA_FOLDER}/biosamples${i}.json"
+    fake-schema "${MODEL_REPO_LOCATION}/BEACON-V2-Model/cohorts/defaultSchema.json" > "${DATA_FOLDER}/cohorts${i}.json"
+    fake-schema "${MODEL_REPO_LOCATION}/BEACON-V2-Model/datasets/defaultSchema.json" > "${DATA_FOLDER}/datasets${i}.json"
+    fake-schema "${MODEL_REPO_LOCATION}/BEACON-V2-Model/genomicVariations/defaultSchema.json" > "${DATA_FOLDER}/genomicVariations${i}.json"
+    fake-schema "${MODEL_REPO_LOCATION}/BEACON-V2-Model/individuals/defaultSchema.json" > "${DATA_FOLDER}/individuals${i}.json"
+    fake-schema "${MODEL_REPO_LOCATION}/BEACON-V2-Model/runs/defaultSchema.json" > "${DATA_FOLDER}/runs${i}.json"
 done

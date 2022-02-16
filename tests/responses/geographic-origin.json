@@ -10,7 +10,7 @@
     }
   ],
   "meta": {
-    "apiVersion": "v2.0.0-draft.4",
+    "apiVersion": "v2.0.0",
     "beaconId": "org.ega-archive.ga4gh-approval-beacon-test",
     "receivedRequestSummary": {
       "apiVersion": "2.0",
@@ -37,7 +37,7 @@
     },
     "returnedGranularity": "record",
     "returnedSchemas": [
-      "beacon-individual-v2.0.0-draft.4"
+      "beacon-individual-v2.0.0"
     ]
   },
   "response": {
