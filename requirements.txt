@@ -2,12 +2,18 @@
 # That's the case for the HTTPFound redirections
 # It seems the cookies are not sent in the response, and therefore, the browser does not store them
 # Obviously, sessions do not work then, and Openid Connect auth.py code is broken
-aiohttp==3.7.4
-asyncpg
-pyyaml
-supervisor
-cryptography
-aiohttp_session
-jinja2
-aiohttp_jinja2
+aiohttp==3.8.1
+asyncpg~=0.24.0
+pyyaml~=5.4.1
+cryptography~=35.0.0
+jinja2~=3.0.2
 #aiohttp_csrf
+pymongo~=4.0.1
+aiohttp-jinja2~=1.5
+aiohttp-session~=2.9.0
+dataclasses-json~=0.5.6
+StrEnum~=0.4.7 # Only until Python 3.11 is released (we can use the built-in StrEnum)
+owlready2~=0.36
+tqdm~=4.62.3
+pydantic~=1.9.0
+pyhumps

@@ -3,12 +3,13 @@ import logging
 from aiohttp.http import SERVER_SOFTWARE
 from aiohttp.web import StreamResponse
 
-from .. import conf
-from ..utils.json import json_iterencode
+from beacon import conf
+from beacon.utils.json import json_iterencode
 
 LOG = logging.getLogger(__name__)
 
 _BUF_SIZE = getattr(conf, 'json_buffer_size', 1000)
+
 
 # async def json_stream(request, data):
 #     from aiohttp.web import json_response as aiohttp_json_response
@@ -20,7 +21,7 @@ async def json_stream(request, data, partial=False):
     # Running this first, in case it raises an error
     # so we don't start the StreamResponse yet
     content_gen = [chunk async for chunk in json_iterencode(data)]
-    
+
     LOG.debug('HTTP response stream')
     headers = {
         'Content-Type': 'application/json;charset=utf-8',
@@ -42,10 +43,10 @@ async def json_stream(request, data, partial=False):
         buf.append(chunk)
         chunk = ''.join(buf)
         buf = []
-        await response.write(chunk.encode()) # utf-8
-    if buf: # flush the remainder in the buffer
+        await response.write(chunk.encode())  # utf-8
+    if buf:  # flush the remainder in the buffer
         chunk = ''.join(buf)
-        await response.write(chunk.encode()) # utf-8
+        await response.write(chunk.encode())  # utf-8
 
     # LOG.debug('HTTP response stream closing')
     await response.write_eof()

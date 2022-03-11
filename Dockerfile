@@ -1,7 +1,7 @@
 ##########################
 ## Build env
 ##########################
-FROM python:3.8-buster AS BUILD
+FROM python:3.10-buster AS BUILD
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -19,7 +19,7 @@ RUN pip install -r /tmp/requirements.txt
 ##########################
 ## Final image
 ##########################
-FROM python:3.8-buster
+FROM python:3.10-buster
 
 LABEL maintainer "CRG System Developers"
 LABEL org.label-schema.schema-version="2.0"
@@ -40,6 +40,7 @@ RUN apt-get update && \
 COPY deploy/nginx.conf        /beacon/nginx.conf
 COPY deploy/supervisord.conf  /beacon/supervisord.conf
 COPY deploy/entrypoint.sh     /usr/local/bin/entrypoint.sh
+COPY deploy/ontologies        /beacon/ontologies
 COPY beacon                   /beacon/beacon
 COPY ui                       /beacon/ui
 

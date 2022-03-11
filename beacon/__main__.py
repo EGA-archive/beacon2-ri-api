@@ -1,34 +1,34 @@
-"""
-Beacon API Web Server.
-
-Designed with async/await programming model.
-"""
+import base64
 import logging
 import os
+import ssl
+import sys
 from pathlib import Path
 from time import strftime
-import base64
+from datetime import datetime
 
-from aiohttp import web
 import aiohttp_jinja2
 import jinja2
+from aiohttp import web
+from aiohttp_session import setup as session_setup
+from aiohttp_session.cookie_storage import EncryptedCookieStorage
+from cryptography import fernet
 
-from . import conf, load_logger, endpoints
-from .utils import db, middlewares
+from beacon import conf, load_logger
+from beacon.request import ontologies
+from beacon.response import middlewares
+from beacon.request.routes import routes
+from beacon.db import client
 
 LOG = logging.getLogger(__name__)
 
+
 async def initialize(app):
-    """Initialize server."""
-    # Get when the data was last modified (This will also check if DB is up)
-    update_datetime = (await db.get_last_modified_date()).strftime(conf.datetime_format)
-    LOG.info("Update datetime: %s", update_datetime)
-    setattr(conf, 'update_datetime', update_datetime)
+    # Load static
+    app["static_root_url"] = "/static"
 
-    app['static_root_url'] = '/static'
-
+    # Configure jinja
     env = aiohttp_jinja2.get_env(app)
-    #update_datetime_formatted = (await get_last_modified_date()).strftime(conf.update_datetime)
     env.globals.update(
         len=len,
         max=max,
@@ -36,72 +36,87 @@ async def initialize(app):
         range=range,
         conf=conf,
         now=strftime("%Y"),
-        #nsamples=await get_nsamples(),
-        #update_datetime=update_datetime_formatted,
     )
 
-    # No need to call those 2:
-    # assemblyIDs = await db.fetch_assemblyids()
-    # datasets = await db.fetch_datasets()
+    setattr(conf, 'update_datetime', datetime.now().isoformat())
+
     LOG.info("Initialization done.")
+
 
 async def destroy(app):
     """Upon server close, close the DB connections."""
     LOG.info("Shutting down.")
-    await db.close()
+    client.close()
+
 
 def main(path=None):
-    """Run the beacon API."""
-
     # Configure the logging
     load_logger()
-    
+
     # Configure the beacon
-    beacon = web.Application()
+    beacon = web.Application(
+        middlewares=[web.normalize_path_middleware(), middlewares.error_middleware]
+    )
     beacon.on_startup.append(initialize)
     beacon.on_cleanup.append(destroy)
 
     # Prepare for the UI
     main_dir = Path(__file__).parent.parent.resolve()
     # Where the templates are
-    template_loader = jinja2.FileSystemLoader(str(main_dir / 'ui' / 'templates'))
+    template_loader = jinja2.FileSystemLoader(str(main_dir / "ui" / "templates"))
     aiohttp_jinja2.setup(beacon, loader=template_loader)
 
     # Session middleware
-    middlewares.setup(beacon)
+    fernet_key = fernet.Fernet.generate_key()
+    secret_key = base64.urlsafe_b64decode(
+        fernet_key
+    )  # 32 url-safe base64-encoded bytes
+    storage = EncryptedCookieStorage(
+        secret_key, cookie_name=middlewares.SESSION_STORAGE
+    )
+    session_setup(beacon, storage)
 
     # Configure the endpoints
-    beacon.add_routes(endpoints.routes)
+    beacon.add_routes(routes)
 
     # Configure HTTPS (or not)
     ssl_context = None
-    if getattr(conf, 'beacon_tls_enabled', False):
-        use_as_client = getattr(conf, 'beacon_tls_client', False)
-        sslcontext = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH if use_as_client else ssl.Purpose.SERVER_AUTH)
-        sslcontext.load_cert_chain(conf.beacon_cert, conf.beacon_key) # should exist
+    if getattr(conf, "beacon_tls_enabled", False):
+        use_as_client = getattr(conf, "beacon_tls_client", False)
+        sslcontext = ssl.create_default_context(
+            ssl.Purpose.CLIENT_AUTH if use_as_client else ssl.Purpose.SERVER_AUTH
+        )
+        sslcontext.load_cert_chain(conf.beacon_cert, conf.beacon_key)  # should exist
         sslcontext.check_hostname = False
         # TODO: add the CA chain
 
+    # Load ontologies
+    LOG.info("Loading ontologies... (this might take a while)")
+    ontologies.load()
+    LOG.info("Finished loading the ontologies...")
 
-    # .... and cue music
+    # Run beacon
     if path:
         if os.path.exists(path):
             os.unlink(path)
         # will create the UDS socket and bind to it
         web.run_app(beacon, path=path, shutdown_timeout=0, ssl_context=ssl_context)
     else:
-        static_files = Path(__file__).parent.parent.resolve() / 'ui' / 'static'
-        beacon.add_routes([web.static('/static', str(static_files))])
-        web.run_app(beacon,
-                    host=getattr(conf, 'beacon_host', '0.0.0.0'),
-                    port=getattr(conf, 'beacon_port', 5050),
-                    shutdown_timeout=0, ssl_context=ssl_context)
+        static_files = Path(__file__).parent.parent.resolve() / "ui" / "static"
+        beacon.add_routes([web.static("/static", str(static_files))])
+        web.run_app(
+            beacon,
+            host=getattr(conf, "beacon_host", "0.0.0.0"),
+            port=getattr(conf, "beacon_port", 5050),
+            shutdown_timeout=0,
+            ssl_context=ssl_context,
+        )
 
 
-if __name__ == '__main__':
-
-    import sys
-    if len(sys.argv) > 1: # Unix socket
+if __name__ == "__main__":
+    # Unix socket
+    if len(sys.argv) > 1:
         main(path=sys.argv[1])
-    else: # host:port
+    # host:port
+    else:
         main()

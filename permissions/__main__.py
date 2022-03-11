@@ -10,7 +10,6 @@ from aiohttp import web
 
 from . import load_logger
 from .auth import bearer_required
-
 # update that line to use your prefered permissions plugin
 from .plugins import DummyPermissions as PermissionsProxy
 

@@ -1,0 +1,21 @@
+{
+	"$schema": "https://raw.githubusercontent.com/MrRobb/beacon-framework-v2/main/requests/beaconRequestBody.json",
+	"meta": {
+		"apiVersion": "2.0"
+	},
+	"query": {
+		"filters": [
+            {
+                "id": "UBERON:0000178",
+                "includeDescendantTerms": true
+            }
+        ],
+		"includeResultsetResponses": "HIT",
+		"pagination": {
+			"skip": 0,
+			"limit": 100
+		},
+		"testMode": false,
+		"requestedGranularity": "count"
+	}
+}

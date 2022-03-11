@@ -1,0 +1,157 @@
+{
+  "beaconHandovers": [
+    {
+      "handoverType": {
+        "id": "CUSTOM",
+        "label": "Project description"
+      },
+      "note": "Project description",
+      "url": "https://www.nist.gov/programs-projects/genome-bottle"
+    }
+  ],
+  "meta": {
+    "apiVersion": "v2.0.0",
+    "beaconId": "org.ega-archive.ga4gh-approval-beacon-test",
+    "receivedRequestSummary": {
+      "apiVersion": "2.0",
+      "filters": [],
+      "includeResultsetResponses": "HIT",
+      "pagination": {
+        "limit": 10,
+        "skip": 0
+      },
+      "requestParameters": {},
+      "requestedGranularity": "boolean",
+      "requestedSchemas": [
+        {
+          "entityType": "EntryTypeA",
+          "schema": "entry-typeA-schema-v0.1"
+        }
+      ],
+      "testMode": false
+    },
+    "returnedGranularity": "record",
+    "returnedSchemas": [
+      "beacon-individual-v2.0.0"
+    ]
+  },
+  "response": {
+    "resultSets": [
+      {
+        "exists": true,
+        "id": "",
+        "results": [
+          {
+            "_id": {
+              "$oid": "61a5318a6a6a2f4fe57e7e25"
+            },
+            "diseases": [
+              {
+                "diseaseCode": {
+                  "id": "HP:000054",
+                  "label": "intolerance"
+                }
+              }
+            ],
+            "ethnicity": {
+              "id": "HANCESTRO:0021",
+              "label": "Han Chinese"
+            },
+            "geographicOrigin": {
+              "id": "GAZ:00002459",
+              "label": "United States of America"
+            },
+            "id": "NA24631",
+            "phenotypicFeatures": [
+              {
+                "featureType": {
+                  "id": "NCIT:C3001",
+                  "label": "NCIT:C3001"
+                }
+              }
+            ],
+            "sex": {
+              "id": "NCIT:C46112",
+              "label": "male"
+            }
+          },
+          {
+            "_id": {
+              "$oid": "61a5318a6a6a2f4fe57e7e26"
+            },
+            "diseases": [
+              {
+                "diseaseCode": {
+                  "id": "HP:0008711",
+                  "label": "prostatic hyperplasia"
+                }
+              }
+            ],
+            "ethnicity": {
+              "id": "HANCESTRO:0021",
+              "label": "Han Chinese"
+            },
+            "geographicOrigin": {
+              "id": "GAZ:00002459",
+              "label": "United States of America"
+            },
+            "id": "NA24694",
+            "phenotypicFeatures": [
+              {
+                "featureType": {
+                  "id": "NCIT:C37967",
+                  "label": "NCIT:C37967"
+                }
+              }
+            ],
+            "sex": {
+              "id": "NCIT:C46112",
+              "label": "male"
+            }
+          },
+          {
+            "_id": {
+              "$oid": "61a5318a6a6a2f4fe57e7e27"
+            },
+            "diseases": [
+              {
+                "diseaseCode": {
+                  "id": "DOID:6364",
+                  "label": "migraine"
+                }
+              }
+            ],
+            "ethnicity": {
+              "id": "HANCESTRO:0021",
+              "label": "Han Chinese"
+            },
+            "geographicOrigin": {
+              "id": "GAZ:00002459",
+              "label": "United States of America"
+            },
+            "id": "NA24695",
+            "phenotypicFeatures": [
+              {
+                "featureType": {
+                  "id": "HP:0000938",
+                  "label": "HP:0000938"
+                }
+              }
+            ],
+            "sex": {
+              "id": "NCIT:C16576",
+              "label": "female"
+            }
+          }
+        ],
+        "resultsCount": 3,
+        "resultsHandover": null,
+        "setType": ""
+      }
+    ]
+  },
+  "responseSummary": {
+    "exists": true,
+    "numTotalResults": 3
+  }
+}
