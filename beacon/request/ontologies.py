@@ -76,7 +76,7 @@ def get_descendants(filter_id: str) -> List[str]:
 
     onto = ONTOLOGIES.get(ontology)
     if onto is not None:
-        res = onto.search(iri = "*{}".format(ontology_class_name))
+        res = onto.search(iri="*{}".format(ontology_class_name))
         for c in res:
             if c.name == ontology_class_name:
                 for descendant in onto.get_children_of(c):
