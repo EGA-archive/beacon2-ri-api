@@ -32,7 +32,8 @@ class MyProgressBar:
 
 def insert_all_ontology_terms_used() -> [[str]]:
     collections = client.beacon.list_collection_names()
-    collections.remove('filtering_terms')
+    if 'filtering_terms' in collections:
+        collections.remove('filtering_terms')
     print("Collections:", collections)
     for c_name in collections:
         terms = find_ontology_terms_used(c_name)
@@ -166,7 +167,8 @@ def find_alphanumeric_terms_used(collection_name: str) -> [dict]:
 
 def insert_all_alphanumeric_terms_used() -> [[str]]:
     collections = client.beacon.list_collection_names()
-    collections.remove('filtering_terms')
+    if 'filtering_terms' in collections:
+        collections.remove('filtering_terms')
     print("Collections:", collections)
     for c_name in collections:
         terms = find_alphanumeric_terms_used(c_name)
