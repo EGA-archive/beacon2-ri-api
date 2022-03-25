@@ -17,3 +17,4 @@ owlready2~=0.36
 tqdm~=4.62.3
 pydantic~=1.9.0
 pyhumps
+progressbar~=2.5
