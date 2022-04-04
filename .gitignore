@@ -118,3 +118,8 @@ venv.bak/
 
 # IntelliJ
 .idea/
+
+# Custom
+deploy/request.json
+typings/
+deploy/ontologies/
