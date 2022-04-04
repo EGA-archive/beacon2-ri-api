@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from strenum import StrEnum
-from typing import List, Union
+from typing import List, Optional, Union
 from beacon import conf
-from humps import camelize
+from humps.main import camelize
 
 
 def to_camel(string):
@@ -40,21 +40,21 @@ class Operator(StrEnum):
 
 class OntologyFilter(CamelModel):
     id: str
-    scope: str = None
+    scope: Optional[str] = None
     include_descendant_terms: bool = True
     similarity: Similarity = Similarity.EXACT
 
 
 class AlphanumericFilter(CamelModel):
     id: str
-    value: str
-    scope: str = None
+    value: Union[str, List[int]]
+    scope: Optional[str] = None
     operator: Operator = Operator.EQUAL
 
 
 class CustomFilter(CamelModel):
     id: str
-    scope: str = None
+    scope: Optional[str] = None
 
 
 class Pagination(CamelModel):

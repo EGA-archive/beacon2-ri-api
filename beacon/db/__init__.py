@@ -1,7 +1,7 @@
-import pymongo
+from pymongo.mongo_client import MongoClient
 from beacon import conf
 
-client = pymongo.MongoClient("mongodb://{}:{}@{}:{}/{}?authSource={}".format(
+client = MongoClient("mongodb://{}:{}@{}:{}/{}?authSource={}".format(
     conf.database_user,
     conf.database_password,
     conf.database_url,
