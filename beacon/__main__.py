@@ -92,7 +92,7 @@ def main(path=None):
 
     # Load ontologies
     LOG.info("Loading ontologies... (this might take a while)")
-    ontologies.load()
+    ontologies.load_obo()
     LOG.info("Finished loading the ontologies...")
 
     # Run beacon
