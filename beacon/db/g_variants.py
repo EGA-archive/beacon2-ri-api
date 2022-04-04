@@ -28,13 +28,13 @@ VARIANTS_PROPERTY_MAP = {
 def generate_position_filter(key: str, value: List[int]) -> List[AlphanumericFilter]:
     LOG.debug("len value = {}".format(len(value)))
     filters = []
-    if len(list(value)) >= 1:
+    if len(value) >= 1:
         filters.append(AlphanumericFilter(
             id=VARIANTS_PROPERTY_MAP[key],
             value=[value[0]],
             operator=Operator.GREATER_EQUAL
         ))
-    if len(list(value)) >= 2:
+    if len(value) >= 2:
         filters.append(AlphanumericFilter(
             id=VARIANTS_PROPERTY_MAP[key],
             value=[value[1]],
