@@ -1,6 +1,6 @@
 import json
 import argparse
-from pymongo import MongoClient
+from pymongo.mongo_client import MongoClient
 
 entities = ["analyses", "biosamples", "cohorts", "datasets", "genomicVariations", "individuals", "runs"]
 

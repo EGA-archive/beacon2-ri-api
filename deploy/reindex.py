@@ -1,7 +1,7 @@
-import pymongo
+from pymongo.mongo_client import MongoClient
 import conf
 
-client = pymongo.MongoClient(
+client = MongoClient(
     "mongodb://{}:{}@{}:{}/{}?authSource={}".format(
         conf.database_user,
         conf.database_password,

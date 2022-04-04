@@ -2,13 +2,14 @@
 from typing import Set
 import re
 from urllib.error import HTTPError
+from pymongo.mongo_client import MongoClient
 
 import pymongo
 import urllib.request
 import os
 from tqdm import tqdm
 
-client = pymongo.MongoClient("mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin")
+client = MongoClient("mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin")
 
 
 def find_all_ontologies_used() -> Set[str]:
