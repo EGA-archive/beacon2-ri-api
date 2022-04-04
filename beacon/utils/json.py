@@ -2,7 +2,7 @@ import inspect
 import logging
 from dataclasses import is_dataclass
 from decimal import Decimal
-from json.encoder import encode_basestring_ascii
+from json.encoder import py_encode_basestring_ascii
 
 from asyncpg import Record
 
@@ -56,7 +56,7 @@ def _atom(o):
     if isinstance(o, jsonb):
         return o
     elif isinstance(o, str):
-        return encode_basestring_ascii(o)
+        return py_encode_basestring_ascii(o)
     elif o is None:
         return 'null'
     elif o is True:
