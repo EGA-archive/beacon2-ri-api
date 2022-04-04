@@ -1,4 +1,9 @@
 import logging
+import asyncpg
+from asyncpg import Pool
+from typing import Dict, Optional
+
+from beacon.utils.json import json_decoder, json_encoder
 
 LOG = logging.getLogger(__name__)
 
@@ -26,7 +31,7 @@ class DummyPermissions(Permissions):
     We hard-code the dataset permissions.
     """
 
-    db = None
+    db: Dict = {}
 
     def __init__(self, *args, **kwargs):
         # Dummy permission database
@@ -54,7 +59,7 @@ class PostgresPermissions(Permissions):
     Postgres permissions plugin
     
     """
-    db = None
+    db: Optional[Pool] = None
     args = []
     kwargs = {}
 
@@ -71,10 +76,11 @@ class PostgresPermissions(Permissions):
 
     async def get(self, username, requested_datasets=None):
         try:
+            assert(self.db is not None)
             async with self.db.acquire() as conn:
                 await conn.set_type_codec('jsonb', encoder=json_encoder, decoder=json_decoder, schema='pg_catalog')            
                 query = "SELECT dataset FROM datasets where username = $1 and datasets IN $2;"
-                response = await connection.fetch(query, username, requested_datasets)
+                response = await conn.fetch(query, username, requested_datasets)
                 return [r['dataset'] async for r in response]
         except (asyncpg.exceptions._base.InterfaceError,
                 asyncpg.exceptions._base.PostgresError,
