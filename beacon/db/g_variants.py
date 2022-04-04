@@ -1,8 +1,9 @@
 import logging
+from typing import Dict, List, Optional
 from beacon.db.filters import apply_alphanumeric_filter, apply_filters
 from beacon.db.schemas import DefaultSchemas
 from beacon.db.utils import query_id, query_ids, get_count, get_documents
-from beacon.request.model import AlphanumericFilter, RequestParams
+from beacon.request.model import AlphanumericFilter, Operator, RequestParams
 from beacon.db import client
 import json
 from bson import json_util
@@ -78,7 +79,7 @@ def get_variants(entry_id: Optional[str], qparams: RequestParams):
     return schema, count, docs
 
 
-def get_variant_with_id(entry_id: str, qparams: RequestParams):
+def get_variant_with_id(entry_id: Optional[str], qparams: RequestParams):
     query = {"variantInternalId": entry_id}
     query = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters)
@@ -93,7 +94,7 @@ def get_variant_with_id(entry_id: str, qparams: RequestParams):
     return schema, count, docs
 
 
-def get_biosamples_of_variant(entry_id: str, qparams: RequestParams):
+def get_biosamples_of_variant(entry_id: Optional[str], qparams: RequestParams):
     query = {"variantInternalId": entry_id}
     query = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters)
@@ -116,7 +117,7 @@ def get_biosamples_of_variant(entry_id: str, qparams: RequestParams):
     return schema, count, docs
 
 
-def get_individuals_of_variant(entry_id: str, qparams: RequestParams):
+def get_individuals_of_variant(entry_id: Optional[str], qparams: RequestParams):
     query = {"variantInternalId": entry_id}
     query = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters)
@@ -139,7 +140,7 @@ def get_individuals_of_variant(entry_id: str, qparams: RequestParams):
     return schema, count, docs
 
 
-def get_runs_of_variant(entry_id: str, qparams: RequestParams):
+def get_runs_of_variant(entry_id: Optional[str], qparams: RequestParams):
     query = {"variantInternalId": entry_id}
     query = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters)
@@ -162,7 +163,7 @@ def get_runs_of_variant(entry_id: str, qparams: RequestParams):
     return schema, count, docs
 
 
-def get_analyses_of_variant(entry_id: str, qparams: RequestParams):
+def get_analyses_of_variant(entry_id: Optional[str], qparams: RequestParams):
     query = {"variantInternalId": entry_id}
     query = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters)
