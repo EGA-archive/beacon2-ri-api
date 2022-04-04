@@ -1,5 +1,10 @@
 import re
+import fastobo
+import networkx
+from beacon.request.model import Similarity
+from pronto import Ontology
 from os import scandir, listdir
+from pathlib import Path
 
 from owlready2 import OwlReadyOntologyParsingError
 from tqdm import tqdm
@@ -67,21 +72,48 @@ def load():
                 # TODO: Add error
                 continue
 
+def try_convert_owl_to_obo():
+    ontology_directory = conf.ontologies_folder
+    count = len(listdir(ontology_directory))
+    for i, filename in enumerate(tqdm(scandir(ontology_directory), total=count)):
+        new_filename = Path(filename.path).with_suffix(".obo")
+        if filename.is_file() and filename.name.lower().endswith(".owl") and not new_filename.exists():
+            LOG.debug("Transforming {} to {}".format(filename.path, new_filename))
+            owl_onto: Ontology = Ontology(filename.path)
+            with open(new_filename, "wb") as f:
+                owl_onto.dump(f, format="obo")
 
-def get_descendants(filter_id: str) -> List[str]:
-    descendants = []
 
-    ontology_class_name = filter_id.replace(':', '_')
-    ontology, _ = ontology_class_name.split('_')
+def load_obo():
+    try_convert_owl_to_obo()
+    ontology_directory = conf.ontologies_folder
+    count = len(listdir(ontology_directory))
+    for i, filename in enumerate(tqdm(scandir(ontology_directory), total=count)):
+        if filename.is_file() and filename.name.lower().endswith(".obo"):
+            try:
+                LOG.debug("Loading ontology {} of {} ({})".format(i, count, filename.name[:-4]))
+                ONTOLOGIES[filename.name[:-4]] = fastobo.load(filename.path)
+                LOG.debug(ONTOLOGIES[filename.name[:-4]] is None)
+            except:
+                LOG.error("Loading ontology {} failed".format(filename))
 
-    onto = ONTOLOGIES.get(ontology)
-    if onto is not None:
-        res = onto.search(iri="*{}".format(ontology_class_name))
-        for c in res:
-            if c.name == ontology_class_name:
-                for descendant in onto.get_children_of(c):
-                    descendants.append(descendant.name.replace('_', ':'))
-    return descendants
+
+def get_descendants(term: str) -> List[str]:
+
+    ontology_id, term_id = term.split(':')
+
+    # Create ontology graph
+    # TODO: Cache should be the graph
+    knowledge_graph = networkx.DiGraph()
+    for frame in ONTOLOGIES[ontology_id]:
+        if isinstance(frame, fastobo.term.TermFrame):
+            knowledge_graph.add_node(str(frame.id))
+            for clause in frame:
+                if isinstance(clause, fastobo.term.IsAClause):
+                    knowledge_graph.add_edge(str(frame.id), str(clause.term))
+    print(networkx.is_directed_acyclic_graph(knowledge_graph))
+
+    return list(networkx.descendants(knowledge_graph, term))
 
 
 def get_resources():
@@ -92,3 +124,55 @@ def get_resources():
             "url": onto.base_iri
         })
     return resources
+
+
+def get_ontology_neighbours(term: str, depth: int) -> List[str]:
+    ontology_id, term_id = term.split(':')
+
+    # Create ontology graph
+    # TODO: Cache should be the graph
+    knowledge_graph = networkx.DiGraph()
+    for frame in ONTOLOGIES[ontology_id]:
+        if isinstance(frame, fastobo.term.TermFrame):
+            knowledge_graph.add_node(str(frame.id))
+            for clause in frame:
+                if isinstance(clause, fastobo.term.IsAClause):
+                    knowledge_graph.add_edge(str(frame.id), str(clause.term))
+    print(networkx.is_directed_acyclic_graph(knowledge_graph))
+
+    # Get predecessors
+    first_predecessors = set(knowledge_graph.predecessors(term))
+
+    # Get siblings
+    siblings = set()
+    for parent in first_predecessors:
+        siblings = siblings.union(set(knowledge_graph.successors(parent)))
+
+    # Get successors and predecessors with depth
+    predecessors = set(knowledge_graph.predecessors(term))
+    successors = set(knowledge_graph.successors(term))
+    for _ in range(1, depth):
+        for predecessor in predecessors:
+            predecessors = predecessors.union(set(knowledge_graph.predecessors(predecessor)))
+        for successor in successors:
+            successors = successors.union(set(knowledge_graph.successors(successor)))
+
+    # Combine results
+    terms = set()
+    terms.add(term)
+    terms = terms.union(predecessors)
+    terms = terms.union(siblings)
+    terms = terms.union(successors)
+
+    return list(terms)
+
+def get_similar_ontology_terms(term: str, similarity: Similarity) -> List[str]:
+    if similarity == Similarity.EXACT:
+        return [term]
+    elif similarity == Similarity.HIGH:
+        return get_ontology_neighbours(term, depth=1)
+    elif similarity == Similarity.MEDIUM:
+        return get_ontology_neighbours(term, depth=2)
+    else:
+        # similarity == Similarity.LOW
+        return get_ontology_neighbours(term, depth=3)
