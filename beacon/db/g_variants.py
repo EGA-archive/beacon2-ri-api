@@ -80,7 +80,7 @@ def get_variants(entry_id: Optional[str], qparams: RequestParams):
 
 
 def get_variant_with_id(entry_id: Optional[str], qparams: RequestParams):
-    query = {"variantInternalId": entry_id}
+    query = {"$and": [{"variantInternalId": entry_id}]}
     query = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters)
     schema = DefaultSchemas.GENOMICVARIATIONS
@@ -95,7 +95,7 @@ def get_variant_with_id(entry_id: Optional[str], qparams: RequestParams):
 
 
 def get_biosamples_of_variant(entry_id: Optional[str], qparams: RequestParams):
-    query = {"variantInternalId": entry_id}
+    query = {"$and": [{"variantInternalId": entry_id}]}
     query = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters)
     biosample_ids = client.beacon.genomicVariations \
@@ -118,7 +118,7 @@ def get_biosamples_of_variant(entry_id: Optional[str], qparams: RequestParams):
 
 
 def get_individuals_of_variant(entry_id: Optional[str], qparams: RequestParams):
-    query = {"variantInternalId": entry_id}
+    query = {"$and": [{"variantInternalId": entry_id}]}
     query = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters)
     individual_ids = client.beacon.genomicVariations \
@@ -141,7 +141,7 @@ def get_individuals_of_variant(entry_id: Optional[str], qparams: RequestParams):
 
 
 def get_runs_of_variant(entry_id: Optional[str], qparams: RequestParams):
-    query = {"variantInternalId": entry_id}
+    query = {"$and": [{"variantInternalId": entry_id}]}
     query = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters)
     run_ids = client.beacon.genomicVariations \
@@ -164,7 +164,7 @@ def get_runs_of_variant(entry_id: Optional[str], qparams: RequestParams):
 
 
 def get_analyses_of_variant(entry_id: Optional[str], qparams: RequestParams):
-    query = {"variantInternalId": entry_id}
+    query = {"$and": [{"variantInternalId": entry_id}]}
     query = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters)
     analysis_ids = client.beacon.genomicVariations \
