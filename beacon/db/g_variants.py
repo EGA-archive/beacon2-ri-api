@@ -1,3 +1,4 @@
+import logging
 from beacon.db.filters import apply_alphanumeric_filter, apply_filters
 from beacon.db.schemas import DefaultSchemas
 from beacon.db.utils import query_id, query_ids, get_count, get_documents
@@ -6,6 +7,7 @@ from beacon.db import client
 import json
 from bson import json_util
 
+LOG = logging.getLogger(__name__)
 
 VARIANTS_PROPERTY_MAP = {
     "assemblyId": "position.assemblyId",
@@ -22,17 +24,47 @@ VARIANTS_PROPERTY_MAP = {
     "aachange": "molecularAttributes.aminoacidChanges"
 }
 
-
-def apply_request_parameters(query: dict, qparams: RequestParams):
-    for k, v in qparams.query.request_parameters.items():
-        query = apply_alphanumeric_filter(query, AlphanumericFilter(
-            id=VARIANTS_PROPERTY_MAP[k],
-            value=v
+def generate_position_filter(key: str, value: List[int]) -> List[AlphanumericFilter]:
+    LOG.debug("len value = {}".format(len(value)))
+    filters = []
+    if len(list(value)) >= 1:
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=[value[0]],
+            operator=Operator.GREATER_EQUAL
         ))
+    if len(list(value)) >= 2:
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=[value[1]],
+            operator=Operator.LESS_EQUAL
+        ))
+    return filters
+
+def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParams):
+    LOG.debug("Request parameters len = {}".format(len(qparams.query.request_parameters)))
+    if len(qparams.query.request_parameters) > 0 and "$and" not in query:
+        query["$and"] = []
+    for k, v in qparams.query.request_parameters.items():
+        if k == "start":
+            filters = generate_position_filter(k, v)
+            for filter in filters:
+                query["$and"].append(apply_alphanumeric_filter({}, filter))
+        elif k == "end":
+            filters = generate_position_filter(k, v)
+            for filter in filters:
+                query["$and"].append(apply_alphanumeric_filter({}, filter))
+        elif k == "variantMinLength" or k == "variantMaxLength" or k == "mateName":
+            continue
+        else:
+            query["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
+                id=VARIANTS_PROPERTY_MAP[k],
+                value=v
+            )))
     return query
 
 
-def get_variants(entry_id: str, qparams: RequestParams):
+def get_variants(entry_id: Optional[str], qparams: RequestParams):
     query = apply_request_parameters({}, qparams)
     query = apply_filters(query, qparams.query.filters)
     schema = DefaultSchemas.GENOMICVARIATIONS
