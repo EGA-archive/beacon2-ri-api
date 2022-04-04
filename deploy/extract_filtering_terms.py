@@ -1,24 +1,25 @@
 import os.path
 import urllib.request
-from typing import Set, Dict
+from typing import List, Dict, Optional
 import re
 from urllib.error import HTTPError
 
 import owlready2
-import pymongo
+from pymongo.mongo_client import MongoClient
 import progressbar
-from bson import ObjectId
+from bson.objectid import ObjectId
 from owlready2 import OwlReadyOntologyParsingError
 from tqdm import tqdm
 
-client = pymongo.MongoClient("mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin")
+
+client = MongoClient("mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin")
 
 
 class MyProgressBar:
     def __init__(self):
         self.pbar = None
 
-    def __call__(self, block_num, block_size, total_size):
+    def __call__(self, block_num: int, block_size: int, total_size: int):
         if not self.pbar:
             self.pbar = progressbar.ProgressBar(maxval=total_size)
             self.pbar.start()
@@ -30,7 +31,7 @@ class MyProgressBar:
             self.pbar.finish()
 
 
-def insert_all_ontology_terms_used() -> [[str]]:
+def insert_all_ontology_terms_used():
     collections = client.beacon.list_collection_names()
     if 'filtering_terms' in collections:
         collections.remove('filtering_terms')
@@ -44,7 +45,24 @@ def insert_all_ontology_terms_used() -> [[str]]:
 def get_ontology_name(ontology: owlready2.Ontology) -> str:
     return ontology.name
 
-def load_ontology(ontology_id: str) -> owlready2.Ontology:
+
+def load_ontology_obo(ontology_id: str) -> Optional[owlready2.Ontology]:
+    if ontology_id.isalpha():
+        url = "https://www.ebi.ac.uk/{}/{}.obo".format(ontology_id.lower(), ontology_id.lower())
+        path = "ontologies/{}.obo".format(ontology_id)
+        try:
+            if not os.path.exists(path):
+                urllib.request.urlretrieve(url, path, MyProgressBar())
+            return owlready2.get_ontology(path).load()
+        except HTTPError:
+            # TODO: Handle error
+            print("ERROR", HTTPError)
+            pass
+        except OwlReadyOntologyParsingError:
+            # TODO: Handle error
+            pass
+
+def load_ontology(ontology_id: str) -> Optional[owlready2.Ontology]:
     if ontology_id.isalpha():
         url = "https://www.ebi.ac.uk/ols/ontologies/{}/download".format(ontology_id)
         path = "ontologies/{}.owl".format(ontology_id)
@@ -61,7 +79,7 @@ def load_ontology(ontology_id: str) -> owlready2.Ontology:
             pass
 
 
-def get_ontology_term_label(ontology: owlready2.Ontology, term: str) -> str:
+def get_ontology_term_label(ontology: owlready2.Ontology, term: str) -> Optional[str]:
     ontology_class_name = term.replace(':', '_')
     res = ontology.search(iri="*{}".format(ontology_class_name))
     for c in res:
@@ -70,6 +88,7 @@ def get_ontology_term_label(ontology: owlready2.Ontology, term: str) -> str:
                 return c.label.first()
             else:
                 return c.name
+    return None
 
 
 def get_ontology_term_count(collection_name: str, term: str) -> int:
@@ -83,7 +102,7 @@ def get_ontology_term_count(collection_name: str, term: str) -> int:
         .count_documents(query)
 
 
-def find_ontology_terms_used(collection_name: str) -> [dict]:
+def find_ontology_terms_used(collection_name: str) -> List[Dict]:
     terms = []
     terms_ids = set()
     ontologies = dict()
@@ -116,7 +135,7 @@ def get_alphanumeric_term_count(collection_name: str, key: str) -> int:
         .distinct(key))
 
 
-def get_properties_of_document(document, prefix="") -> [str]:
+def get_properties_of_document(document, prefix="") -> List[str]:
     properties = []
     if document is None or isinstance(document, str) or isinstance(document, int):
         return []
@@ -146,7 +165,7 @@ def get_properties_of_document(document, prefix="") -> [str]:
     return properties
 
 
-def find_alphanumeric_terms_used(collection_name: str) -> [dict]:
+def find_alphanumeric_terms_used(collection_name: str) -> List[Dict]:
     terms = []
     terms_ids = set()
     count = client.beacon.get_collection(collection_name).estimated_document_count()
@@ -165,7 +184,7 @@ def find_alphanumeric_terms_used(collection_name: str) -> [dict]:
     return terms
 
 
-def insert_all_alphanumeric_terms_used() -> [[str]]:
+def insert_all_alphanumeric_terms_used():
     collections = client.beacon.list_collection_names()
     if 'filtering_terms' in collections:
         collections.remove('filtering_terms')
