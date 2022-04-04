@@ -25,16 +25,21 @@ VARIANTS_PROPERTY_MAP = {
     "aachange": "molecularAttributes.aminoacidChanges"
 }
 
-def generate_position_filter(key: str, value: List[int]) -> List[AlphanumericFilter]:
+def generate_position_filter_start(key: str, value: List[int]) -> List[AlphanumericFilter]:
     LOG.debug("len value = {}".format(len(value)))
     filters = []
-    if len(value) >= 1:
+    if len(value) == 1:
         filters.append(AlphanumericFilter(
             id=VARIANTS_PROPERTY_MAP[key],
             value=[value[0]],
             operator=Operator.GREATER_EQUAL
         ))
-    if len(value) >= 2:
+    elif len(value) == 2:
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=[value[0]],
+            operator=Operator.GREATER_EQUAL
+        ))
         filters.append(AlphanumericFilter(
             id=VARIANTS_PROPERTY_MAP[key],
             value=[value[1]],
@@ -42,17 +47,45 @@ def generate_position_filter(key: str, value: List[int]) -> List[AlphanumericFil
         ))
     return filters
 
+
+def generate_position_filter_end(key: str, value: List[int]) -> List[AlphanumericFilter]:
+    LOG.debug("len value = {}".format(len(value)))
+    filters = []
+    if len(value) == 1:
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=[value[0]],
+            operator=Operator.LESS_EQUAL
+        ))
+    elif len(value) == 2:
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=[value[0]],
+            operator=Operator.GREATER_EQUAL
+        ))
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=[value[1]],
+            operator=Operator.LESS_EQUAL
+        ))
+    return filters
+
+
 def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParams):
     LOG.debug("Request parameters len = {}".format(len(qparams.query.request_parameters)))
     if len(qparams.query.request_parameters) > 0 and "$and" not in query:
         query["$and"] = []
     for k, v in qparams.query.request_parameters.items():
         if k == "start":
-            filters = generate_position_filter(k, v)
+            if isinstance(v, str):
+                v = v.split(',')
+            filters = generate_position_filter_start(k, v)
             for filter in filters:
                 query["$and"].append(apply_alphanumeric_filter({}, filter))
         elif k == "end":
-            filters = generate_position_filter(k, v)
+            if isinstance(v, str):
+                v = v.split(',')
+            filters = generate_position_filter_end(k, v)
             for filter in filters:
                 query["$and"].append(apply_alphanumeric_filter({}, filter))
         elif k == "variantMinLength" or k == "variantMaxLength" or k == "mateName":
