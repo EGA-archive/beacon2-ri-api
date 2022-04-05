@@ -4,7 +4,6 @@ import re
 from urllib.error import HTTPError
 from pymongo.mongo_client import MongoClient
 
-import pymongo
 import urllib.request
 import os
 from tqdm import tqdm
