@@ -32,7 +32,7 @@ def apply_filters(query: dict, filters: List[dict]) -> dict:
             filter = CustomFilter(**filter)
             LOG.debug("Custom filter: %s", filter.id)
             partial_query = apply_custom_filter(partial_query, filter)
-        query["$and"] += partial_query
+        query["$and"].append(partial_query)
     return query
 
 
