@@ -1,7 +1,8 @@
 all: down up load reindex rebuild
 
 load:
-	mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file data/biosample*.json --collection biosamples
+	mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file data/analyses*.json --collection analyses
+	mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file data/biosamples*.json --collection biosamples
 	mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file data/cohorts*.json --collection cohorts
 	mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file data/datasets*.json --collection datasets
 	mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file data/individuals*.json --collection individuals
@@ -36,5 +37,6 @@ verify:
 reindex:
 	python3 reindex.py
 
+# only works with justfile (https://github.com/casey/just#recipe-parameters)
 test COLLECTION REQUEST:
 	http POST http://localhost:5050/api/{{COLLECTION}}/ --json < {{REQUEST}}
