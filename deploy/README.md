@@ -99,3 +99,91 @@ Check the logs until the beacon is ready to be queried:
 ```bash
 docker-compose logs -f beacon
 ```
+
+## Usage
+
+You can query the beacon using GET or POST. Below, I will some examples of usage:
+
+> For simplicity (and readability), I will be using [HTTPie](https://github.com/httpie/httpie).
+
+### Using GET
+
+Querying this endpoit it should return the 13 variants of the beacon (paginated):
+
+```bash
+http GET http://localhost:5050/api/g_variants/
+```
+
+You can also add [request parameters](https://github.com/ga4gh-beacon/beacon-v2-Models/blob/main/BEACON-V2-Model/genomicVariations/requestParameters.json) to the query, like so:
+
+```bash
+http GET http://localhost:5050/api/g_variants/?start=9411499,9411644&end=9411609
+```
+
+This should return 3 genomic variants.
+
+### Using POST
+
+You can use POST to make the previous query. With a `request.json` file like this one:
+
+```json
+{
+    "meta": {
+        "apiVersion": "2.0"
+    },
+    "query": {
+        "requestParameters": {
+            "start": [ 9411499, 9411644 ],
+            "end": [ 9411609 ]
+        },
+        "filters": [],
+        "includeResultsetResponses": "HIT",
+        "pagination": {
+            "skip": 0,
+            "limit": 10
+        },
+        "testMode": false,
+        "requestedGranularity": "count"
+    }
+}
+```
+
+You can execute:
+
+```bash
+http POST http://localhost:5050/api/g_variants/ --json < request.json
+```
+
+But you can also use complex filters:
+
+```json
+{
+    "meta": {
+        "apiVersion": "2.0"
+    },
+    "query": {
+        "filters": [
+            {
+                "id": "UBERON:0001256",
+                "scope": "biosamples",
+                "includeDescendantTerms": false
+            }
+        ],
+        "includeResultsetResponses": "HIT",
+        "pagination": {
+            "skip": 0,
+            "limit": 10
+        },
+        "testMode": false,
+        "requestedGranularity": "count"
+    }
+}
+```
+
+You can execute:
+
+```bash
+http POST http://localhost:5050/api/biosamples/ --json < request.json
+```
+
+And it will use the ontology filter to filter the results.
