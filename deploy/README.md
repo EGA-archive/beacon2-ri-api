@@ -59,7 +59,7 @@ python3 reindex.py
 
 #### Automatically fetch the ontologies
 
-> This step might require a bit of tinkering since some ontologies used in the dummy data will fail to loaded. I recommend skipping this step unless you know what you are doing.
+> This step might require a bit of tinkering since some ontologies used in the dummy data will fail to loaded. We recommend skipping this step unless you know what you are doing.
 
 You can automatically fetch the ontologies that the database is using with the following script:
 
@@ -101,9 +101,9 @@ docker-compose logs -f beacon
 
 ## Usage
 
-You can query the beacon using GET or POST. Below, I will some examples of usage:
+You can query the beacon using GET or POST. Below, you can find some examples of usage:
 
-> For simplicity (and readability), I will be using [HTTPie](https://github.com/httpie/httpie).
+> For simplicity (and readability), we will be using [HTTPie](https://github.com/httpie/httpie).
 
 ### Using GET
 
