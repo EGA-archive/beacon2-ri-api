@@ -7,9 +7,18 @@ from pymongo.mongo_client import MongoClient
 import urllib.request
 import os
 from tqdm import tqdm
+from beacon import conf
 
-client = MongoClient("mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin")
-
+client = MongoClient(
+    "mongodb://{}:{}@{}:{}/{}?authSource={}".format(
+        conf.database_user,
+        conf.database_password,
+        conf.database_host,
+        conf.database_port,
+        conf.database_name,
+        conf.database_auth_source,
+    )
+)
 
 def find_all_ontologies_used() -> Set[str]:
     ontologies = set()

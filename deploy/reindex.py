@@ -5,7 +5,7 @@ client = MongoClient(
     "mongodb://{}:{}@{}:{}/{}?authSource={}".format(
         conf.database_user,
         conf.database_password,
-        "127.0.0.1",
+        conf.database_host,
         conf.database_port,
         conf.database_name,
         conf.database_auth_source,

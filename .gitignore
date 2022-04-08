@@ -119,7 +119,11 @@ venv.bak/
 # IntelliJ
 .idea/
 
+# VS Code
+.vscode/
+
 # Custom
 deploy/request.json
 typings/
-deploy/ontologies/
+deploy/ontologies/*
+.antlr/
