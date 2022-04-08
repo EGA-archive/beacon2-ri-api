@@ -125,5 +125,6 @@ venv.bak/
 # Custom
 deploy/request.json
 typings/
-deploy/ontologies/*
+deploy/ontologies/*.obo
+deploy/ontologies/*.owl*
 .antlr/
