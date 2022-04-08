@@ -57,17 +57,6 @@ pip3 install pymongo
 python3 reindex.py
 ```
 
-#### Extract the filtering terms
-
-To automatically extract the filtering terms from the data in the database, you can use the following utility script:
-
-```bash
-# Install the dependencies
-pip3 install pymongo tqdm owlready2 progressbar
-
-python3 extract_filtering_terms.py
-```
-
 #### Automatically fetch the ontologies
 
 > This step might require a bit of tinkering since some ontologies used in the dummy data will fail to loaded. I recommend skipping this step unless you know what you are doing.
@@ -80,6 +69,17 @@ pip3 install pymongo tqdm
 
 mkdir ontologies
 python3 fetch_ontologies.py
+```
+
+#### Extract the filtering terms
+
+**If you have the ontologies loaded**, you can automatically extract the filtering terms from the data in the database using the following utility script:
+
+```bash
+# Install the dependencies
+pip3 install pymongo tqdm owlready2 progressbar
+
+python3 extract_filtering_terms.py
 ```
 
 ### Light up the beacon
