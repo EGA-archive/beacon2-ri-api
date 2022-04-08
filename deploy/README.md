@@ -67,7 +67,6 @@ You can automatically fetch the ontologies that the database is using with the f
 # Install the dependencies
 pip3 install pymongo tqdm
 
-mkdir ontologies
 python3 fetch_ontologies.py
 ```
 
