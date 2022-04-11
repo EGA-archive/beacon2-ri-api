@@ -27,7 +27,7 @@ def collection_handler(db_fn, request=None):
         # Get response
         entity_schema, count, records = db_fn(entry_id, qparams)
         response_converted = (
-            [json.loads(json_util.dumps(r)) for r in records] if records else []
+            [r for r in records] if records else []
         )
         response = build_beacon_collection_response(
             response_converted, count, qparams, lambda x, y: x, entity_schema
@@ -46,9 +46,7 @@ def generic_handler(db_fn, request=None):
 
         # Get response
         entity_schema, count, records = db_fn(entry_id, qparams)
-        response_converted = (
-            [json.loads(json_util.dumps(r)) for r in records] if records else []
-        )
+        response_converted = records
 
         response = None
         if qparams.query.requested_granularity == "boolean":
@@ -71,7 +69,7 @@ def filtering_terms_handler(db_fn, request=None):
         # Get response
         _, _, records = db_fn(entry_id, qparams)
         response_converted = (
-            [json.loads(json_util.dumps(r)) for r in records] if records else []
+            [r for r in records] if records else []
         )
         resources = ontologies.get_resources()
         response = build_filtering_terms_response(response_converted, resources, qparams)

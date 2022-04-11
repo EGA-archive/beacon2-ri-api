@@ -133,7 +133,7 @@ def get_biosamples_of_variant(entry_id: Optional[str], qparams: RequestParams):
     query = apply_filters(query, qparams.query.filters)
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosamplesId": 1, "_id": 0})
-    biosample_ids = [json.loads(json_util.dumps(r)) for r in biosample_ids] if biosample_ids else []
+    biosample_ids = [ r for r in biosample_ids ] if biosample_ids else []
 
     query = apply_request_parameters({}, qparams)
     query = query_ids(query, biosample_ids)
@@ -156,7 +156,7 @@ def get_individuals_of_variant(entry_id: Optional[str], qparams: RequestParams):
     query = apply_filters(query, qparams.query.filters)
     individual_ids = client.beacon.genomicVariations \
         .find(query)
-    individual_ids = [json.loads(json_util.dumps(r))["caseLevelData"]["individualId"] for r in individual_ids] if individual_ids else []
+    individual_ids = [ r["caseLevelData"]["individualId"] for r in individual_ids] if individual_ids else []
 
     query = apply_request_parameters({}, qparams)
     query = query_ids(query, individual_ids)
@@ -179,7 +179,7 @@ def get_runs_of_variant(entry_id: Optional[str], qparams: RequestParams):
     query = apply_filters(query, qparams.query.filters)
     run_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.runId": 1, "_id": 0})
-    run_ids = [json.loads(json_util.dumps(r)) for r in run_ids] if run_ids else []
+    run_ids = [ r for r in run_ids] if run_ids else []
 
     query = apply_request_parameters({}, qparams)
     query = query_ids(query, run_ids)
@@ -202,7 +202,7 @@ def get_analyses_of_variant(entry_id: Optional[str], qparams: RequestParams):
     query = apply_filters(query, qparams.query.filters)
     analysis_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.analysisId": 1, "_id": 0})
-    analysis_ids = [json.loads(json_util.dumps(r)) for r in analysis_ids] if analysis_ids else []
+    analysis_ids = [r for r in analysis_ids] if analysis_ids else []
 
     query = apply_request_parameters({}, qparams)
     query = query_ids(query, analysis_ids)

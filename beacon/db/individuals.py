@@ -72,7 +72,7 @@ def get_runs_of_individual(entry_id: Optional[str], qparams: RequestParams):
     query = {"caseLevelData.individualId": entry_id}
     query = apply_filters(query, qparams.query.filters)
     run_ids = client.beacon.genomicVariations.find_one(query, {"caseLevelData.runId": 1, "_id": 0})
-    run_ids = [json.loads(json_util.dumps(r)) for r in run_ids] if run_ids else []
+    run_ids = [r for r in run_ids] if run_ids else []
 
     query = query_id({}, run_ids)
     query = apply_filters(query, qparams.query.filters)
@@ -92,7 +92,7 @@ def get_analyses_of_individual(entry_id: Optional[str], qparams: RequestParams):
     query = {"caseLevelData.individualId": entry_id}
     query = apply_filters(query, qparams.query.filters)
     analysis_ids = client.beacon.genomicVariations.find_one(query, {"caseLevelData.analysisId": 1, "_id": 0})
-    analysis_ids = [json.loads(json_util.dumps(r)) for r in analysis_ids] if analysis_ids else []
+    analysis_ids = [r for r in analysis_ids] if analysis_ids else []
 
     query = query_id({}, analysis_ids)
     query = apply_filters(query, qparams.query.filters)
