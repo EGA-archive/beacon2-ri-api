@@ -1,17 +1,18 @@
+import logging
+from typing_extensions import Self
 from pydantic import BaseModel
 from strenum import StrEnum
 from typing import List, Optional, Union
 from beacon import conf
 from humps.main import camelize
+from aiohttp.web_request import Request
 
-
-def to_camel(string):
-    return camelize(string)
+LOG = logging.getLogger(__name__)
 
 
 class CamelModel(BaseModel):
     class Config:
-        alias_generator = to_camel
+        alias_generator = camelize
         allow_population_by_field_name = True
 
 
