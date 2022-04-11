@@ -5,8 +5,11 @@ We hard-code the dataset permissions.
 
 """
 import logging
+from typing import Optional
 
 from aiohttp import web
+from aiohttp.web import FileField
+from aiohttp.web_request import Request
 
 from . import load_logger
 from .auth import bearer_required
@@ -16,7 +19,7 @@ from .plugins import DummyPermissions as PermissionsProxy
 LOG = logging.getLogger(__name__)
 
 @bearer_required
-async def permission(request, username):
+async def permission(request: Request, username: Optional[str]):
 
     if request.headers.get('Content-Type') == 'application/json':
         post_data = await request.json()
@@ -27,10 +30,12 @@ async def permission(request, username):
     v = post_data.get('datasets')
     if v is None:
         requested_datasets = []
-    if isinstance(v, list):
+    elif isinstance(v, list):
         requested_datasets = v
+    elif isinstance(v, FileField):
+        requested_datasets = []
     else:
-        requested_datasets = v.split(',')
+        requested_datasets = v.split(sep=',')  # type: ignore
         
     LOG.debug('requested datasets: %s', requested_datasets)
     datasets = await request.app['permissions'].get(username, requested_datasets=requested_datasets)
@@ -60,7 +65,7 @@ def main(path=None):
     server.on_cleanup.append(destroy)
 
     # Configure the endpoints
-    server.add_routes([web.post('/', permission)])
+    server.add_routes([web.post('/', permission)])  # type: ignore
 
     web.run_app(server,
                 host='0.0.0.0',

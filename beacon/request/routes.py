@@ -2,7 +2,7 @@ from aiohttp import web
 
 from beacon.db import analyses, biosamples, cohorts, datasets, g_variants, individuals, runs, filtering_terms
 from beacon.request.handlers import collection_handler, generic_handler, filtering_terms_handler
-from beacon.response import framework, info, index, service_info
+from beacon.response import framework, info, service_info
 
 routes = [
 
@@ -10,7 +10,6 @@ routes = [
     # CONFIG
     ########################################
 
-    web.get('/', index.handler),
     web.get('/api/', info.handler),
     web.get('/api/info/', info.handler, name="info"),    # Name added to redirect / -> /info
     web.get('/api/service-info/', service_info.handler),

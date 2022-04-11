@@ -1,17 +1,18 @@
+import logging
+from typing_extensions import Self
 from pydantic import BaseModel
 from strenum import StrEnum
-from typing import List, Union
+from typing import List, Optional, Union
 from beacon import conf
-from humps import camelize
+from humps.main import camelize
+from aiohttp.web_request import Request
 
-
-def to_camel(string):
-    return camelize(string)
+LOG = logging.getLogger(__name__)
 
 
 class CamelModel(BaseModel):
     class Config:
-        alias_generator = to_camel
+        alias_generator = camelize
         allow_population_by_field_name = True
 
 
@@ -37,24 +38,28 @@ class Operator(StrEnum):
     LESS_EQUAL = "<=",
     GREATER_EQUAL = ">="
 
+class Granularity(StrEnum):
+    BOOLEAN = "boolean",
+    COUNT = "count",
+    RECORD = "record"
 
 class OntologyFilter(CamelModel):
     id: str
-    scope: str = None
-    include_descendant_terms: bool = True
+    scope: Optional[str] = None
+    include_descendant_terms: bool = False
     similarity: Similarity = Similarity.EXACT
 
 
 class AlphanumericFilter(CamelModel):
     id: str
-    value: str
-    scope: str = None
+    value: Union[str, List[int]]
+    scope: Optional[str] = None
     operator: Operator = Operator.EQUAL
 
 
 class CustomFilter(CamelModel):
     id: str
-    scope: str = None
+    scope: Optional[str] = None
 
 
 class Pagination(CamelModel):
@@ -73,9 +78,36 @@ class RequestQuery(CamelModel):
     pagination: Pagination = Pagination()
     request_parameters: dict = {}
     test_mode: bool = False
-    requested_granularity: str = conf.beacon_granularity
+    requested_granularity: Granularity = Granularity(conf.beacon_granularity)
 
 
 class RequestParams(CamelModel):
     meta: RequestMeta = RequestMeta()
     query: RequestQuery = RequestQuery()
+
+    def from_request(self, request: Request) -> Self:
+        if request.method != "POST" or not request.has_body or not request.can_read_body:
+            for k, v in request.query.items():
+                if k == "requestedSchema":
+                    self.meta.requested_schemas = [v]
+                elif k == "skip":
+                    self.query.pagination.skip = int(v)
+                elif k == "limit":
+                    self.query.pagination.limit = int(v)
+                elif k == "includeResultsetResponses":
+                    self.query.include_resultset_responses = IncludeResultsetResponses(v)
+                else:
+                    self.query.request_parameters[k] = v
+        return self
+
+    def summary(self):
+        return {
+            "apiVersion": self.meta.api_version,
+            "requestedSchemas": self.meta.requested_schemas,
+            "filters": self.query.filters,
+            "requestParameters": self.query.request_parameters,
+            "includeResultsetResponses": self.query.include_resultset_responses,
+            "pagination": self.query.pagination.dict(),
+            "requestedGranularity": self.query.requested_granularity,
+            "testMode": self.query.test_mode
+        }

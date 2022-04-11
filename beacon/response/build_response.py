@@ -15,23 +15,10 @@ def build_meta(qparams: RequestParams, entity_schema: Optional[DefaultSchemas]):
         'beaconId': conf.beacon_id,
         'apiVersion': conf.api_version,
         'returnedGranularity': qparams.query.requested_granularity,
-        'receivedRequestSummary': {
-            "apiVersion": qparams.meta.api_version,
-            "requestedSchemas": qparams.meta.requested_schemas,
-            "filters": qparams.query.filters,
-            "requestParameters": qparams.query.request_parameters,
-            "includeResultsetResponses": qparams.query.include_resultset_responses,
-            "pagination": qparams.query.pagination.dict(),
-            "requestedGranularity": qparams.query.requested_granularity,
-            "testMode": qparams.query.test_mode
-        },
+        'receivedRequestSummary': qparams.summary(),
         'returnedSchemas': [entity_schema.value] if entity_schema is not None else []
     }
     return meta
-
-
-def build_beacon_handovers():
-    return conf.beacon_handovers
 
 
 def build_response_summary(exists, num_total_results):
@@ -82,7 +69,7 @@ def build_beacon_resultset_response(data,
         'response': {
             'resultSets': [build_response(data, num_total_results, qparams, func_response_type)]
         },
-        'beaconHandovers': build_beacon_handovers(),
+        'beaconHandovers': conf.beacon_handovers,
     }
     return beacon_response
 
@@ -103,7 +90,7 @@ def build_beacon_count_response(data,
         'meta': build_meta(qparams, entity_schema),
         'responseSummary': build_response_summary(num_total_results > 0, num_total_results),
         # TODO: 'extendedInfo': build_extended_info(),
-        'beaconHandovers': build_beacon_handovers(),
+        'beaconHandovers': conf.beacon_handovers,
     }
     return beacon_response
 
@@ -124,7 +111,7 @@ def build_beacon_boolean_response(data,
         'meta': build_meta(qparams, entity_schema),
         'responseSummary': build_response_summary(num_total_results > 0, None),
         # TODO: 'extendedInfo': build_extended_info(),
-        'beaconHandovers': build_beacon_handovers(),
+        'beaconHandovers': conf.beacon_handovers,
     }
     return beacon_response
 
@@ -137,7 +124,7 @@ def build_beacon_collection_response(data, num_total_results, qparams: RequestPa
         'meta': build_meta(qparams, entity_schema),
         'responseSummary': build_response_summary(num_total_results > 0, num_total_results),
         # TODO: 'info': build_extended_info(),
-        'beaconHandovers': build_beacon_handovers(),
+        'beaconHandovers': conf.beacon_handovers,
         'response': {
             'collections': func_response_type(data, qparams)
         }
@@ -218,24 +205,5 @@ def build_filtering_terms_response(filtering_terms, resources, qparams: RequestP
         "response": {
             "resources": resources,
             "filteringTerms": filtering_terms
-        }
-    }
-
-########################################
-# Error Response
-########################################
-
-def build_error(non_accessible_datasets):
-    """"
-    Fills the `error` part in the response.
-    This error only applies to partial errors which do not prevent the Beacon from answering.
-    """
-
-    message = f'You are not authorized to access some of the requested datasets: {non_accessible_datasets}'
-
-    return {
-        'error': {
-            'errorCode': 401,
-            'errorMessage': message
         }
     }

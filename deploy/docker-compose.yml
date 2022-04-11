@@ -12,7 +12,7 @@ services:
   ###########################################
 
   db:
-    image: mongo
+    image: mongo:5
     hostname: mongo
     ports:
       - 27017:27017
@@ -52,6 +52,7 @@ services:
       # - ../ui/templates:/beacon/ui/templates
       - ./conf.py:/beacon/beacon/conf.py
       - ./logger.yml:/beacon/beacon/logger.yml
+      - ./ontologies:/beacon/ontologies
     ports:
       - "5050:5050"
     # networks:

@@ -2,14 +2,24 @@
 from typing import Set
 import re
 from urllib.error import HTTPError
+from pymongo.mongo_client import MongoClient
 
-import pymongo
 import urllib.request
 import os
 from tqdm import tqdm
+from beacon import conf
+from beacon.request.ontologies import ONTOLOGY_REGEX
 
-client = pymongo.MongoClient("mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin")
-
+client = MongoClient(
+    "mongodb://{}:{}@{}:{}/{}?authSource={}".format(
+        conf.database_user,
+        conf.database_password,
+        conf.database_host,
+        conf.database_port,
+        conf.database_name,
+        conf.database_auth_source,
+    )
+)
 
 def find_all_ontologies_used() -> Set[str]:
     ontologies = set()
@@ -21,11 +31,10 @@ def find_all_ontologies_used() -> Set[str]:
 
 def find_ontologies_used(collection_name: str) -> Set[str]:
     terms = set()
-    rgx = re.compile(r"([_A-Za-z]+):(\w+)")
     count = client.beacon.get_collection(collection_name).estimated_document_count()
     xs = client.beacon.get_collection(collection_name).find()
     for r in tqdm(xs, total=count):
-        matches = rgx.findall(str(r))
+        matches = ONTOLOGY_REGEX.findall(str(r))
         for match0, match1 in matches:
             terms.add(match0)
     return terms

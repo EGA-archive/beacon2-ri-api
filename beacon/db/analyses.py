@@ -1,3 +1,4 @@
+from typing import Optional
 from beacon.db import client
 from beacon.db.filters import apply_filters
 from beacon.db.schemas import DefaultSchemas
@@ -5,7 +6,7 @@ from beacon.db.utils import get_documents, query_id, get_count
 from beacon.request.model import RequestParams
 
 
-def get_analyses(entry_id: str, qparams: RequestParams):
+def get_analyses(entry_id: Optional[str], qparams: RequestParams):
     query = apply_filters({}, qparams.query.filters)
     schema = DefaultSchemas.ANALYSES
     count = get_count(client.beacon.analyses, query)
@@ -18,7 +19,7 @@ def get_analyses(entry_id: str, qparams: RequestParams):
     return schema, count, docs
 
 
-def get_analysis_with_id(entry_id: str, qparams: RequestParams):
+def get_analysis_with_id(entry_id: Optional[str], qparams: RequestParams):
     query = apply_filters({}, qparams.query.filters)
     query = query_id(query, entry_id)
     schema = DefaultSchemas.ANALYSES
@@ -32,7 +33,7 @@ def get_analysis_with_id(entry_id: str, qparams: RequestParams):
     return schema, count, docs
 
 
-def get_variants_of_analysis(entry_id: str, qparams: RequestParams):
+def get_variants_of_analysis(entry_id: Optional[str], qparams: RequestParams):
     query = {"caseLevelData.analysisId": entry_id}
     query = apply_filters(query, qparams.query.filters)
     schema = DefaultSchemas.GENOMICVARIATIONS
