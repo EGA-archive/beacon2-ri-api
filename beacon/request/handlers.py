@@ -42,7 +42,7 @@ def generic_handler(db_fn, request=None):
         # Get params
         json_body = await request.json() if request.method == "POST" and request.has_body and request.can_read_body else {}
         qparams = RequestParams(**json_body).from_request(request)
-        entry_id = request.match_info["id"] if "id" in request.match_info else None
+        entry_id = request.match_info.get('id', None)
 
         # Get response
         entity_schema, count, records = db_fn(entry_id, qparams)
@@ -64,7 +64,7 @@ def filtering_terms_handler(db_fn, request=None):
         # Get params
         json_body = await request.json() if request.method == "POST" and request.has_body and request.can_read_body else {}
         qparams = RequestParams(**json_body).from_request(request)
-        entry_id = request.match_info["id"] if "id" in request.match_info else None
+        entry_id = request.match_info.get('id', None)
 
         # Get response
         _, _, records = db_fn(entry_id, qparams)
