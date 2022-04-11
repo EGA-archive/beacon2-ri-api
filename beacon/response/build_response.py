@@ -15,16 +15,7 @@ def build_meta(qparams: RequestParams, entity_schema: Optional[DefaultSchemas]):
         'beaconId': conf.beacon_id,
         'apiVersion': conf.api_version,
         'returnedGranularity': qparams.query.requested_granularity,
-        'receivedRequestSummary': {
-            "apiVersion": qparams.meta.api_version,
-            "requestedSchemas": qparams.meta.requested_schemas,
-            "filters": qparams.query.filters,
-            "requestParameters": qparams.query.request_parameters,
-            "includeResultsetResponses": qparams.query.include_resultset_responses,
-            "pagination": qparams.query.pagination.dict(),
-            "requestedGranularity": qparams.query.requested_granularity,
-            "testMode": qparams.query.test_mode
-        },
+        'receivedRequestSummary': qparams.summary(),
         'returnedSchemas': [entity_schema.value] if entity_schema is not None else []
     }
     return meta
