@@ -29,7 +29,7 @@ async def handler(request: Request):
     # Fetch datasets info
     qparams: RequestParams = await get_parameters(request)
     _, _, datasets = get_datasets(None, qparams)
-    beacon_datasets = [ json.loads(json_util.dumps(r)) for r in datasets ]
+    beacon_datasets = [ r for r in datasets ]
 
     all_datasets = [ r['_id'] for r in beacon_datasets]
 
