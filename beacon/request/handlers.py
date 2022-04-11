@@ -4,7 +4,8 @@ from aiohttp import web
 from aiohttp.web_request import Request
 from bson import json_util
 
-from beacon.request import get_parameters, ontologies
+from beacon.request import ontologies
+from beacon.request.model import Granularity, RequestParams
 from beacon.response.build_response import (
     build_beacon_resultset_response,
     build_beacon_collection_response,
@@ -49,9 +50,9 @@ def generic_handler(db_fn, request=None):
         response_converted = records
 
         response = None
-        if qparams.query.requested_granularity == "boolean":
+        if qparams.query.requested_granularity == Granularity.BOOLEAN:
             response = build_beacon_boolean_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
-        elif qparams.query.requested_granularity == "count":
+        elif qparams.query.requested_granularity == Granularity.COUNT:
             response = build_beacon_count_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
         else:
             response = build_beacon_resultset_response(response_converted, count, qparams, lambda x, y: x, entity_schema)

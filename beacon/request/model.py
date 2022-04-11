@@ -37,6 +37,10 @@ class Operator(StrEnum):
     LESS_EQUAL = "<=",
     GREATER_EQUAL = ">="
 
+class Granularity(StrEnum):
+    BOOLEAN = "boolean",
+    COUNT = "count",
+    RECORD = "record"
 
 class OntologyFilter(CamelModel):
     id: str
@@ -73,7 +77,7 @@ class RequestQuery(CamelModel):
     pagination: Pagination = Pagination()
     request_parameters: dict = {}
     test_mode: bool = False
-    requested_granularity: str = conf.beacon_granularity
+    requested_granularity: Granularity = Granularity(conf.beacon_granularity)
 
 
 class RequestParams(CamelModel):
