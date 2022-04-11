@@ -12,6 +12,7 @@ from owlready2 import OwlReadyOntologyParsingError
 from tqdm import tqdm
 from beacon import conf
 
+from beacon.request.ontologies import ONTOLOGY_REGEX
 
 client = MongoClient(
     "mongodb://{}:{}@{}:{}/{}?authSource={}".format(
@@ -115,11 +116,10 @@ def find_ontology_terms_used(collection_name: str) -> List[Dict]:
     terms = []
     terms_ids = set()
     ontologies = dict()
-    rgx = re.compile(r"([_A-Za-z]+):(\w+)")
     count = client.beacon.get_collection(collection_name).estimated_document_count()
     xs = client.beacon.get_collection(collection_name).find()
     for r in tqdm(xs, total=count):
-        matches = rgx.findall(str(r))
+        matches = ONTOLOGY_REGEX.findall(str(r))
         for ontology_id, term_id in matches:
             term = ':'.join([ontology_id, term_id])
             print(term, ontology_id)

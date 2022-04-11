@@ -2,7 +2,7 @@ import re
 import fastobo
 import networkx
 from beacon.request.model import Similarity
-from pronto import Ontology
+from pronto.ontology import Ontology
 from os import scandir, listdir
 from pathlib import Path
 
@@ -17,7 +17,7 @@ import logging
 LOG = logging.getLogger(__name__)
 
 ONTOLOGIES = {}
-
+ONTOLOGY_REGEX = re.compile(r"([_A-Za-z]+):(\w+)")
 
 def find_all_ontologies_used() -> Set[str]:
     ontologies = set()
@@ -37,11 +37,10 @@ def find_all_ontology_terms_used() -> Set[str]:
 
 def find_ontologies_used(collection_name: str) -> Set[str]:
     ontologies = set()
-    rgx = re.compile(r"([_A-Za-z]+):(\w+)")
     count = client.beacon.get_collection(collection_name).estimated_document_count()
     xs = client.beacon.get_collection(collection_name).find()
     for r in tqdm(xs, total=count):
-        matches = rgx.findall(str(r))
+        matches = ONTOLOGY_REGEX.findall(str(r))
         for match0, _ in matches:
             ontologies.add(match0)
     return ontologies
@@ -49,11 +48,10 @@ def find_ontologies_used(collection_name: str) -> Set[str]:
 
 def find_ontology_terms_used(collection_name: str) -> Set[str]:
     terms = set()
-    rgx = re.compile(r"[_A-Za-z]+:\w+")
     count = client.beacon.get_collection(collection_name).estimated_document_count()
     xs = client.beacon.get_collection(collection_name).find()
     for r in tqdm(xs, total=count):
-        matches = rgx.findall(str(r))
+        matches = ONTOLOGY_REGEX.findall(str(r))
         for match in matches:
             terms.add(match)
     return terms

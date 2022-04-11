@@ -8,6 +8,7 @@ import urllib.request
 import os
 from tqdm import tqdm
 from beacon import conf
+from beacon.request.ontologies import ONTOLOGY_REGEX
 
 client = MongoClient(
     "mongodb://{}:{}@{}:{}/{}?authSource={}".format(
@@ -30,11 +31,10 @@ def find_all_ontologies_used() -> Set[str]:
 
 def find_ontologies_used(collection_name: str) -> Set[str]:
     terms = set()
-    rgx = re.compile(r"([_A-Za-z]+):(\w+)")
     count = client.beacon.get_collection(collection_name).estimated_document_count()
     xs = client.beacon.get_collection(collection_name).find()
     for r in tqdm(xs, total=count):
-        matches = rgx.findall(str(r))
+        matches = ONTOLOGY_REGEX.findall(str(r))
         for match0, match1 in matches:
             terms.add(match0)
     return terms
