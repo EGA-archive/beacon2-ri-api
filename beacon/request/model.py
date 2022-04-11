@@ -45,7 +45,7 @@ class Granularity(StrEnum):
 class OntologyFilter(CamelModel):
     id: str
     scope: Optional[str] = None
-    include_descendant_terms: bool = True
+    include_descendant_terms: bool = False
     similarity: Similarity = Similarity.EXACT
 
 
