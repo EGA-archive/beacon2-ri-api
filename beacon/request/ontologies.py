@@ -114,16 +114,6 @@ def get_descendants(term: str) -> List[str]:
     return list(networkx.descendants(knowledge_graph, term))
 
 
-def get_resources():
-    resources = []
-    for onto in ONTOLOGIES.values():
-        resources.append({
-            "id": onto.name,
-            "url": onto.base_iri
-        })
-    return resources
-
-
 def get_ontology_neighbours(term: str, depth: int) -> List[str]:
     ontology_id, term_id = term.split(':')
 
