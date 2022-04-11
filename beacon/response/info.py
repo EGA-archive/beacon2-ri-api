@@ -15,7 +15,7 @@ import logging
 import json
 from aiohttp.web_request import Request
 from beacon.db.datasets import get_datasets
-from beacon.request import RequestParams, get_parameters
+from beacon.request import RequestParams
 from beacon.response.build_response import build_beacon_info_response
 from beacon.utils.auth import resolve_token
 from beacon.utils.stream import json_stream
@@ -27,7 +27,8 @@ async def handler(request: Request):
     LOG.info('Running a GET info request')
 
     # Fetch datasets info
-    qparams: RequestParams = await get_parameters(request)
+    json_body = await request.json() if request.method == "POST" and request.has_body and request.can_read_body else {}
+    qparams = RequestParams(**json_body).from_request(request)
     _, _, datasets = get_datasets(None, qparams)
     beacon_datasets = [ r for r in datasets ]
 

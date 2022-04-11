@@ -79,3 +79,30 @@ class RequestQuery(CamelModel):
 class RequestParams(CamelModel):
     meta: RequestMeta = RequestMeta()
     query: RequestQuery = RequestQuery()
+
+    def from_request(self, request: Request) -> Self:
+        if request.method != "POST" or not request.has_body or not request.can_read_body:
+            for k, v in request.query.items():
+                if k == "requestedSchema":
+                    self.meta.requested_schemas = [v]
+                elif k == "skip":
+                    self.query.pagination.skip = int(v)
+                elif k == "limit":
+                    self.query.pagination.limit = int(v)
+                elif k == "includeResultsetResponses":
+                    self.query.include_resultset_responses = IncludeResultsetResponses(v)
+                else:
+                    self.query.request_parameters[k] = v
+        return self
+
+    def summary(self):
+        return {
+            "apiVersion": self.meta.api_version,
+            "requestedSchemas": self.meta.requested_schemas,
+            "filters": self.query.filters,
+            "requestParameters": self.query.request_parameters,
+            "includeResultsetResponses": self.query.include_resultset_responses,
+            "pagination": self.query.pagination.dict(),
+            "requestedGranularity": self.query.requested_granularity,
+            "testMode": self.query.test_mode
+        }

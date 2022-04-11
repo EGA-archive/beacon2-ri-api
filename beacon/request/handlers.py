@@ -20,8 +20,8 @@ LOG = logging.getLogger(__name__)
 def collection_handler(db_fn, request=None):
     async def wrapper(request: Request):
         # Get params
-        LOG.debug(type(request))
-        qparams = await get_parameters(request)
+        json_body = await request.json() if request.method == "POST" and request.has_body and request.can_read_body else {}
+        qparams = RequestParams(**json_body).from_request(request)
         entry_id = request.match_info["id"] if "id" in request.match_info else None
 
         # Get response
@@ -40,8 +40,8 @@ def collection_handler(db_fn, request=None):
 def generic_handler(db_fn, request=None):
     async def wrapper(request: Request):
         # Get params
-        LOG.debug(type(request))
-        qparams = await get_parameters(request)
+        json_body = await request.json() if request.method == "POST" and request.has_body and request.can_read_body else {}
+        qparams = RequestParams(**json_body).from_request(request)
         entry_id = request.match_info["id"] if "id" in request.match_info else None
 
         # Get response
@@ -62,8 +62,8 @@ def generic_handler(db_fn, request=None):
 def filtering_terms_handler(db_fn, request=None):
     async def wrapper(request: Request):
         # Get params
-        LOG.debug(type(request))
-        qparams = await get_parameters(request)
+        json_body = await request.json() if request.method == "POST" and request.has_body and request.can_read_body else {}
+        qparams = RequestParams(**json_body).from_request(request)
         entry_id = request.match_info["id"] if "id" in request.match_info else None
 
         # Get response
