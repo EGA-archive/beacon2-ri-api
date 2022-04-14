@@ -19,7 +19,7 @@ def apply_filters(query: dict, filters: List[dict]) -> dict:
     if len(filters) > 0:
         query["$and"] = []
     for filter in filters:
-        partial_query = {"$text": defaultdict(str) }
+        partial_query = {}
         if "value" in filter:
             filter = AlphanumericFilter(**filter)
             LOG.debug("Alphanumeric filter: %s %s %s", filter.id, filter.operator, filter.value)
@@ -27,6 +27,7 @@ def apply_filters(query: dict, filters: List[dict]) -> dict:
         elif "similarity" in filter or "includeDescendantTerms" in filter or re.match(CURIE_REGEX, filter["id"]):
             filter = OntologyFilter(**filter)
             LOG.debug("Ontology filter: %s", filter.id)
+            partial_query = {"$text": defaultdict(str) }
             partial_query = apply_ontology_filter(partial_query, filter)
         else:
             filter = CustomFilter(**filter)
