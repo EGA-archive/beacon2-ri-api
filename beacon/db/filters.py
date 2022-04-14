@@ -97,10 +97,7 @@ def format_operator(operator: Operator) -> str:
 def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter) -> dict:
     formatted_value = format_value(filter.value)
     formatted_operator = format_operator(filter.operator)
-    if filter.id in query:
-        query[filter.id] = { formatted_operator: formatted_value }
-    else:
-        query[filter.id] = { formatted_operator: formatted_value }
+    query[filter.id] = { formatted_operator: formatted_value }
     LOG.debug("QUERY: %s", query)
     return query
 
