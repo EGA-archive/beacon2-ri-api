@@ -132,6 +132,7 @@ def find_ontology_terms_used(collection_name: str) -> List[Dict]:
                         'type': get_ontology_name(ontologies[ontology_id]),
                         'id': term,
                         'label': get_ontology_term_label(ontologies[ontology_id], term),
+                        # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
                         'count': get_ontology_term_count(collection_name, term),
                         'collection': collection_name,
                     })
