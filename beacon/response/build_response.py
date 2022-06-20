@@ -37,8 +37,8 @@ def build_response(data, num_total_results, qparams, func):
     """"Fills the `response` part with the correct format in `results`"""
 
     response = {
-        'id': '',
-        'setType': '',
+        'id': '', # TODO: Set the name of the dataset/cohort
+        'setType': '', # TODO: Set the type of collection
         'exists': num_total_results > 0,
         'resultsCount': num_total_results,
         'results': data,
