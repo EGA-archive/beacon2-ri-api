@@ -21,3 +21,4 @@ progressbar~=2.5
 fastobo~=0.11.1
 networkx~=2.7.1
 pronto~=2.4.4
+requests
