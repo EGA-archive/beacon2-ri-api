@@ -7,7 +7,12 @@ beacon_id = 'org.ega-archive.ga4gh-approval-beacon-test'  # ID of the Beacon
 beacon_name = 'GA4GH Approval Beacon Test'  # Name of the Beacon service
 api_version = 'v2.0.0'  # Version of the Beacon implementation
 uri = 'https://beacon-giab-test.ega-archive.org'
-beacon_granularity = "record"
+
+#
+# Beacon granularity
+#
+default_beacon_granularity = "record"
+max_beacon_granularity = "record"
 
 #
 #  Organization info

@@ -78,7 +78,7 @@ class RequestQuery(CamelModel):
     pagination: Pagination = Pagination()
     request_parameters: dict = {}
     test_mode: bool = False
-    requested_granularity: Granularity = Granularity(conf.beacon_granularity)
+    requested_granularity: Granularity = Granularity(conf.default_beacon_granularity)
 
 
 class RequestParams(CamelModel):
