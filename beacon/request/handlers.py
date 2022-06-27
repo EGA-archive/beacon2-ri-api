@@ -84,11 +84,8 @@ def filtering_terms_handler(db_fn, request=None):
 
         # Get response
         _, _, records = db_fn(entry_id, qparams)
-        response_converted = (
-            [r for r in records] if records else []
-        )
-        resources = [ { "id": onto.name, "url": onto.base_iri } for onto in ontologies.ONTOLOGIES.values() ]
-        response = build_filtering_terms_response(response_converted, resources, qparams)
+        resources = ontologies.get_resources()
+        response = build_filtering_terms_response(records, resources, qparams)
         return await json_stream(request, response)
 
     return wrapper

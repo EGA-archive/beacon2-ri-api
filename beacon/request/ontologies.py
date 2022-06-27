@@ -1,6 +1,7 @@
 import re
 import fastobo
 import networkx
+import requests
 from beacon.request.model import Similarity
 from pronto.ontology import Ontology
 from os import scandir, listdir
@@ -8,7 +9,7 @@ from pathlib import Path
 
 from owlready2 import OwlReadyOntologyParsingError
 from tqdm import tqdm
-from typing import Set, List
+from typing import Dict, Optional, Set, List
 from beacon.db import client
 from beacon import conf
 import owlready2
@@ -164,3 +165,25 @@ def get_similar_ontology_terms(term: str, similarity: Similarity) -> List[str]:
     else:
         # similarity == Similarity.LOW
         return get_ontology_neighbours(term, depth=3)
+
+
+def get_ontology_config(ontology: owlready2.Ontology) -> Optional[Dict]:
+    ontology_url = "https://www.ebi.ac.uk/ols/api/ontologies/{}".format(ontology.name)
+    try:
+        return requests.get(ontology_url).json()["config"]
+    except:
+        return None
+
+def get_resources() -> List[Dict]:
+    resources = []
+    for onto in ONTOLOGIES.values():
+        ontology_config = get_ontology_config(onto)
+        resources.append({ 
+            "id": onto.name,
+            "name": ontology_config["title"] if ontology_config else onto.name,
+            "url": ontology_config["id"] if ontology_config else onto.base_iri,
+            "version": ontology_config["version"] if ontology_config else None,
+            "nameSpacePrefix": ontology_config["namespace"].upper() if ontology_config else None,
+            "iriPrefix": ontology_config["baseUris"][0] if ontology_config else None,
+        })
+    return resources
