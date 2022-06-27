@@ -34,7 +34,7 @@ def get_analysis_with_id(entry_id: Optional[str], qparams: RequestParams):
 
 
 def get_variants_of_analysis(entry_id: Optional[str], qparams: RequestParams):
-    query = {"caseLevelData.analysisId": entry_id}
+    query = { "$and": [ { "analysisId": entry_id } ] }
     query = apply_filters(query, qparams.query.filters)
     schema = DefaultSchemas.GENOMICVARIATIONS
     count = get_count(client.beacon.genomicVariations, query)
