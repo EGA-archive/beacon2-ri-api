@@ -109,7 +109,7 @@ def get_ontology_term_label(ontology: owlready2.Ontology, term: str) -> Optional
 def get_ontology_term_count(collection_name: str, term: str) -> int:
     query = {
         '$text': {
-            '$search': term
+            '$search': '\"' + term + '\"'
         }
     }
     return client.beacon\
