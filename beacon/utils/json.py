@@ -5,7 +5,7 @@ from decimal import Decimal
 from json.encoder import py_encode_basestring_ascii
 from bson.objectid import ObjectId
 
-from asyncpg import Record
+#from asyncpg import Record
 
 from json import loads as parse_json
 
@@ -27,7 +27,8 @@ def is_list(o):
 
 
 def is_dict(o):
-    return isinstance(o, (dict, Record))
+    #return isinstance(o, (dict, Record))
+    return isinstance(o, dict)
 
 
 def is_asyncgen(o):
