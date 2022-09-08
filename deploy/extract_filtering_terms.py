@@ -11,9 +11,10 @@ import progressbar
 from bson.objectid import ObjectId
 from owlready2 import OwlReadyOntologyParsingError
 from tqdm import tqdm
-from beacon import conf
 
-from beacon.request.ontologies import ONTOLOGY_REGEX
+import conf
+#from beacon.request.ontologies import ONTOLOGY_REGEX
+ONTOLOGY_REGEX = re.compile(r"([_A-Za-z]+):(\w+)")
 
 client = MongoClient(
     "mongodb://{}:{}@{}:{}/{}?authSource={}".format(
