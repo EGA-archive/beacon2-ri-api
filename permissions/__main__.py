@@ -10,6 +10,7 @@ from typing import Optional
 from aiohttp import web
 from aiohttp.web import FileField
 from aiohttp.web_request import Request
+import aiohttp_cors
 
 from . import load_logger
 from .auth import bearer_required
@@ -64,14 +65,25 @@ def main(path=None):
     server.on_startup.append(initialize)
     server.on_cleanup.append(destroy)
 
+    
     # Configure the endpoints
-    server.add_routes([web.post('/', permission)])  # type: ignore
+    server.add_routes([web.post('/', permission)]) # type: ignore
+
+    cors = aiohttp_cors.setup(server, defaults={
+    "*": aiohttp_cors.ResourceOptions(
+            allow_credentials=True,
+            expose_headers="*",
+            allow_headers="*",
+        )
+})
+    
+    for route in list(server.router.routes()):
+        cors.add(route)
 
     web.run_app(server,
                 host='0.0.0.0',
                 port=5051,
                 shutdown_timeout=0, ssl_context=None)
-
 
 if __name__ == '__main__':
     main()

@@ -19,13 +19,12 @@ All of the commands should be executed from the deploy directory.
 cd deploy
 ```
 
-### Light up the database
+### Light up the database and the Beacon
 
-#### Up the DB
+#### Up the containers
 
 ```bash
-docker-compose up -d db
-docker-compose up -d mongo-express
+docker-compose up -d --build
 ```
 
 With `mongo-express` we can see the contents of the database at [http://localhost:8081](http://localhost:8081).
@@ -35,62 +34,51 @@ With `mongo-express` we can see the contents of the database at [http://localhos
 To load the database we execute the following commands:
 
 ```bash
-mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file data/analyses*.json --collection analyses
-mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file data/biosamples*.json --collection biosamples
-mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file data/cohorts*.json --collection cohorts
-mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file data/datasets*.json --collection datasets
-mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file data/individuals*.json --collection individuals
-mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file data/runs*.json --collection runs
-mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file data/genomicVariations*.json --collection genomicVariations
+docker cp /path/to/analyses.json deploy_db_1:tmp/analyses.json
+docker cp /path/to/biosamples.json deploy_db_1:tmp/biosamples.json
+docker cp /path/to/cohorts.json deploy_db_1:tmp/cohorts.json
+docker cp /path/to/datasets.json deploy_db_1:tmp/datasets.json
+docker cp /path/to/genomicVariationsVcf.json deploy_db_1:tmp/genomicVariations.json
+docker cp /path/to/individuals.json deploy_db_1:tmp/individuals.json
+docker cp /path/to/runs.json deploy_db_1:tmp/runs.json
 ```
 
-This loads the JSON files inside of the `data` folder into the MongoDB database.
+```bash
+docker exec deploy_db_1 mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file /tmp/datasets.json --collection datasets
+docker exec deploy_db_1 mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file /tmp/analyses.json --collection analyses
+docker exec deploy_db_1 mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file /tmp/biosamples.json --collection biosamples
+docker exec deploy_db_1 mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file /tmp/cohorts.json --collection cohorts
+docker exec deploy_db_1 mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file /tmp/genomicVariations.json --collection genomicVariations
+docker exec deploy_db_1 mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file /tmp/individuals.json --collection individuals
+docker exec deploy_db_1 mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file /tmp/runs.json --collection runs
+```
 
-> You can also use `make load` as a convenience alias.
+This loads the JSON files inside of the `data` folder into the MongoDB database container.
 
 #### Create the indexes
 
 You can create the necessary indexes running the following Python script:
 
 ```bash
-# Install the dependencies
-pip3 install pymongo
-
-python3 reindex.py
+docker exec beacon python beacon/reindex.py
 ```
 
-#### Automatically fetch the ontologies
+#### Fetch the ontologies and extract the filtering terms
 
-> This step might require a bit of tinkering since some ontologies used in the dummy data will fail to loaded. We recommend skipping this step unless you know what you are doing.
+> This step consists of analyzing all the collections of the Mongo database for first extracting the ontology OBO files and then filling the filtering terms endpoint with the information of the data loaded in the database.∫
 
-You can automatically fetch the ontologies that the database is using with the following script:
+You can automatically fetch the ontologies and extract the filtering terms running the following script:
 
 ```bash
-# Install the dependencies
-pip3 install pymongo tqdm
-
-python3 fetch_ontologies.py
+docker exec beacon python beacon/db/extract_filtering_terms.py
 ```
 
-#### Extract the filtering terms
+#### Get descendant and semantic similarity terms
 
-**If you have the ontologies loaded**, you can automatically extract the filtering terms from the data in the database using the following utility script:
-
-```bash
-# Install the dependencies
-pip3 install pymongo tqdm owlready2 progressbar
-
-python3 extract_filtering_terms.py
-```
-
-### Light up the beacon
-
-#### Up the beacon
-
-Once the database is setup, you can up the beacon with the following command:
+**If you have the ontologies loaded and the filtering terms extracted**, you can automatically get their descendant and semantic similarity terms running the following script:
 
 ```bash
-docker-compose up -d beacon
+docker exec beacon python beacon/db/get_descendants.py
 ```
 
 #### Check the logs
@@ -112,16 +100,14 @@ You can query the beacon using GET or POST. Below, you can find some examples of
 Querying this endpoit it should return the 13 variants of the beacon (paginated):
 
 ```bash
-http GET http://localhost:5050/api/g_variants/
+http GET http://localhost:5050/api/g_variants
 ```
 
 You can also add [request parameters](https://github.com/ga4gh-beacon/beacon-v2-Models/blob/main/BEACON-V2-Model/genomicVariations/requestParameters.json) to the query, like so:
 
 ```bash
-http GET http://localhost:5050/api/g_variants/?start=9411499,9411644&end=9411609
+http GET http://localhost:5050/api/individuals?filters=NCIT:C16576,NCIT:C42331
 ```
-
-This should return 3 genomic variants.
 
 ### Using POST
 
@@ -134,8 +120,11 @@ You can use POST to make the previous query. With a `request.json` file like thi
     },
     "query": {
         "requestParameters": {
-            "start": [ 9411499, 9411644 ],
-            "end": [ 9411609 ]
+    "alternateBases": "G" ,
+    "referenceBases": "A" ,
+"start": [ 16050074 ],
+            "end": [ 16050568 ],
+	    "variantType": "SNP"
         },
         "filters": [],
         "includeResultsetResponses": "HIT",
@@ -144,15 +133,43 @@ You can use POST to make the previous query. With a `request.json` file like thi
             "limit": 10
         },
         "testMode": false,
-        "requestedGranularity": "count"
+        "requestedGranularity": "record"
     }
 }
+
 ```
 
 You can execute:
 
 ```bash
-http POST http://localhost:5050/api/g_variants/ --json < request.json
+curl \
+  -H 'Content-Type: application/json' \
+  -X POST \
+  -d '{
+    "meta": {
+        "apiVersion": "2.0"
+    },
+    "query": {
+        "requestParameters": {
+    "alternateBases": "G" ,
+    "referenceBases": "A" ,
+"start": [ 16050074 ],
+            "end": [ 16050568 ],
+	    "variantType": "SNP"
+        },
+        "filters": [],
+        "includeResultsetResponses": "HIT",
+        "pagination": {
+            "skip": 0,
+            "limit": 10
+        },
+        "testMode": false,
+        "requestedGranularity": "record"
+    }
+}' \
+  http://localhost:5050/api/g_variants
+
+
 ```
 
 But you can also use complex filters:
@@ -184,7 +201,7 @@ But you can also use complex filters:
 You can execute:
 
 ```bash
-http POST http://localhost:5050/api/biosamples/ --json < request.json
+http POST http://localhost:5050/api/biosamples --json < request.json
 ```
 
 And it will use the ontology filter to filter the results.

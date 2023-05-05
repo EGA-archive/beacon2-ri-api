@@ -2,6 +2,7 @@ import logging
 import asyncpg
 from asyncpg import Pool
 from typing import Dict, Optional
+import yaml
 
 from beacon.utils.json import json_decoder, json_encoder
 
@@ -35,16 +36,25 @@ class DummyPermissions(Permissions):
 
     def __init__(self, *args, **kwargs):
         # Dummy permission database
-        self.db = {
-            "john": ["GiaB", "dataset-registered", "dataset-controlled"],
-            "jane": ["GiaB", "dataset-registered"],
-        }
+        with open("/beacon/permissions/permissions.yml", 'r') as stream:
+            out = yaml.safe_load(stream)
+        self.db = out
 
     async def initialize(self):
         pass
 
     async def get(self, username, requested_datasets=None):
-        datasets = set(self.db.get(username))
+        try:
+            datasets = set(self.db.get(username))
+        except Exception:
+            with open("/beacon/permissions/permissions.yml", 'r') as stream:
+                permissions_dict = yaml.safe_load(stream)
+            permissions_dict[username]=[]
+            with open("/beacon/permissions/permissions.yml", 'w') as file:
+                yaml.dump(permissions_dict, file)
+                self.db = permissions_dict
+            datasets = set(self.db.get(username))
+            
         if requested_datasets:
             return set(requested_datasets).intersection(datasets)
         else:

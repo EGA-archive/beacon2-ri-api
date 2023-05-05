@@ -10,6 +10,7 @@ from datetime import datetime
 import aiohttp_jinja2
 import jinja2
 from aiohttp import web
+import aiohttp_cors
 from aiohttp_session import setup as session_setup
 from aiohttp_session.cookie_storage import EncryptedCookieStorage
 from cryptography import fernet
@@ -79,6 +80,19 @@ def main(path=None):
     # Configure the endpoints
     beacon.add_routes(routes)
 
+
+
+    cors = aiohttp_cors.setup(beacon, defaults={
+    "http://localhost:3000": aiohttp_cors.ResourceOptions(
+            allow_credentials=True,
+            expose_headers="*",
+            allow_headers="*",
+        )
+})
+
+    for route in list(beacon.router.routes()):
+        cors.add(route)
+
     # Configure HTTPS (or not)
     ssl_context = None
     if getattr(conf, "beacon_tls_enabled", False):
@@ -91,9 +105,9 @@ def main(path=None):
         # TODO: add the CA chain
 
     # Load ontologies
-    LOG.info("Loading ontologies... (this might take a while)")
-    ontologies.load_obo()
-    LOG.info("Finished loading the ontologies...")
+    #LOG.info("Loading ontologies... (this might take a while)")
+    #ontologies.load_obo()
+    #LOG.info("Finished loading the ontologies...")
 
     # Run beacon
     if path:

@@ -8,6 +8,29 @@ networks:
 services:
 
   ###########################################
+  # beacon-ri-tools
+  ###########################################
+
+  beacon-ri-tools:
+    image: beacon2ri/beacon_reference_implementation:v2.0.0
+    hostname: beacon-ri-tools
+    networks:
+      - beacon-priv 
+    tty: true
+
+  ###########################################
+  # training-ui
+  ###########################################
+
+  training-ui:
+    image: beacon2ri/training_ui:v0.1
+    hostname: beacon_training_ui    
+    ports:
+      - 9000:9000
+    networks:
+      - beacon-priv
+
+  ###########################################
   # MongoDB Database
   ###########################################
 
@@ -22,8 +45,8 @@ services:
       MONGO_INITDB_DATABASE: beacon
     volumes:
       - ./mongo-init/:/docker-entrypoint-initdb.d/:ro
-    # networks:
-    #   - beacon-priv
+    networks:
+      - beacon-priv
 
   mongo-express:
     image: mongo-express
@@ -34,8 +57,8 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
-    # networks:
-    #   - beacon-priv
+    networks:
+      - beacon-priv
 
   ###########################################
   # Beacon
@@ -55,9 +78,10 @@ services:
       - ./ontologies:/beacon/ontologies
     ports:
       - "5050:5050"
-    # networks:
-    #   - beacon-priv
-    #   - pub
+    networks:
+      - beacon-priv
+      - pub
+      - idp-priv
     working_dir: '/beacon'
     entrypoint: ['python','-m','beacon']
     # entrypoint: ['/bin/sleep','100000000']
@@ -75,9 +99,10 @@ services:
       - ./logger.yml:/beacon/logger.yml
     ports:
       - "5051:5051"
-    # networks:
-    #   - beacon-priv
-    #   - pub
+    networks:
+      - beacon-priv
+      - pub
+      - idp-priv
     #entrypoint: ['/bin/sleep','100000000']
     working_dir: '/beacon'
     entrypoint: ['python','-m', 'permissions']
@@ -105,14 +130,16 @@ services:
       - DB_PORT=5432
       - DB_DATABASE=keycloak
       #- DB_SCHEMA=public
-      - KEYCLOAK_IMPORT=/tmp/beacon-realm.json -Dkeycloak.profile.feature.upload_scripts=enabled
+      - KEYCLOAK_IMPORT=/tmp/beacon-realm.json -Dkeycloak.profile.feature.upload_scripts=enabled -Dkeycloak.profile.feature.token_exchange=enabled -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled
+      - KEYCLOAK_HOSTNAME=localhost
     volumes:
       - ./beacon-realm.json:/tmp/beacon-realm.json
     ports:
       - "8080:8080"
-    # networks:
-    #   - pub
-    #   - idp-priv
+      - "9991:8443"
+    networks:
+      - pub
+      - idp-priv 
     depends_on:
       - idp-db
 
@@ -124,5 +151,5 @@ services:
       - POSTGRES_DB=keycloak
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=secret
-    # networks:
-    #   - idp-priv
+    networks:
+      - idp-priv 

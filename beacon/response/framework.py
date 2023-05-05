@@ -201,147 +201,147 @@ async def beacon_map(request):
             "analysis": {
                 "entryType": "analysis",
                 "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/analyses/endpoints.json",
-                "rootUrl": conf.uri + "/api/analyses",
-                "singleEntryUrl": conf.uri + "/api/analyses/{id}",
+                "rootUrl": conf.uri + "analyses",
+                "singleEntryUrl": conf.uri + "analyses/{id}",
                 "endpoints": {
                     "genomicVariation": {
                         "returnedEntryType": "genomicVariation",
-                        "url": conf.uri + "/api/analyses/{id}/g_variants"
+                        "url": conf.uri + "analyses/{id}/g_variants"
                     },
                 }
             },
             "biosample": {
                 "entryType": "biosample",
                 "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/biosamples/endpoints.json",
-                "rootUrl": conf.uri + "/api/biosamples",
-                "singleEntryUrl": conf.uri + "/api/biosamples/{id}",
+                "rootUrl": conf.uri + "biosamples",
+                "singleEntryUrl": conf.uri + "biosamples/{id}",
                 "endpoints": {
                     "analysis": {
                         "returnedEntryType": "analysis",
-                        "url": conf.uri + "/api/biosamples/{id}/analyses"
+                        "url": conf.uri + "biosamples/{id}/analyses"
                     },
                     "genomicVariation": {
                         "returnedEntryType": "genomicVariation",
-                        "url": conf.uri + "/api/biosamples/{id}/g_variants"
+                        "url": conf.uri + "biosamples/{id}/g_variants"
                     },
                     "run": {
                         "returnedEntryType": "run",
-                        "url": conf.uri + "/api/biosamples/{id}/runs"
+                        "url": conf.uri + "biosamples/{id}/runs"
                     },
                 }
             },
             "cohort": {
                 "entryType": "cohort",
                 "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/cohorts/endpoints.json",
-                "rootUrl": conf.uri + "/api/cohorts",
-                "singleEntryUrl": conf.uri + "/api/cohorts/{id}",
-                "filteringTermsUrl": conf.uri + "/api/cohorts/{id}/filtering_terms",
+                "rootUrl": conf.uri + "cohorts",
+                "singleEntryUrl": conf.uri + "cohorts/{id}",
+                "filteringTermsUrl": conf.uri + "filtering_terms/cohorts",
                 "endpoints": {
                     "analysis": {
                         "returnedEntryType": "analysis",
-                        "url": conf.uri + "/api/cohorts/{id}/analyses"
+                        "url": conf.uri + "cohorts/{id}/analyses"
                     },
                     "individual": {
                         "returnedEntryType": "individual",
-                        "url": conf.uri + "/api/cohorts/{id}/individuals"
+                        "url": conf.uri + "cohorts/{id}/individuals"
                     },
                     "run": {
                         "returnedEntryType": "run",
-                        "url": conf.uri + "/api/cohorts/{id}/runs"
+                        "url": conf.uri + "cohorts/{id}/runs"
                     }
                 }
             },
             "dataset": {
                 "entryType": "dataset",
                 "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/datasets/endpoints.json",
-                "rootUrl": conf.uri + "/api/datasets",
-                "singleEntryUrl": conf.uri + "/api/datasets/{id}",
-                "filteringTermsUrl": conf.uri + "/api/datasets/{id}/filtering_terms",
+                "rootUrl": conf.uri + "datasets",
+                "singleEntryUrl": conf.uri + "datasets/{id}",
+                "filteringTermsUrl": conf.uri + "filtering_terms/datasets",
                 "endpoints": {
                     "analysis": {
                         "returnedEntryType": "analysis",
-                        "url": conf.uri + "/api/datasets/{id}/analyses"
+                        "url": conf.uri + "datasets/{id}/analyses"
                     },
                     "biosample": {
                         "returnedEntryType": "biosample",
-                        "url": conf.uri + "/api/datasets/{id}/biosamples"
+                        "url": conf.uri + "datasets/{id}/biosamples"
                     },
                     "genomicVariation": {
                         "returnedEntryType": "genomicVariation",
-                        "url": conf.uri + "/api/datasets/{id}/g_variants"
+                        "url": conf.uri + "datasets/{id}/g_variants"
                     },
                     "individual": {
                         "returnedEntryType": "individual",
-                        "url": conf.uri + "/api/datasets/{id}/individuals"
+                        "url": conf.uri + "datasets/{id}/individuals"
                     },
                     "run": {
                         "returnedEntryType": "run",
-                        "url": conf.uri + "/api/datasets/{id}/runs"
+                        "url": conf.uri + "datasets/{id}/runs"
                     }
                 }
             },
             "genomicVariation": {
                 "entryType": "genomicVariation",
                 "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/genomicVariations/endpoints.json",
-                "rootUrl": conf.uri + "/api/g_variants",
-                "singleEntryUrl": conf.uri + "/api/g_variants/{id}",
+                "rootUrl": conf.uri + "g_variants",
+                "singleEntryUrl": conf.uri + "g_variants/{id}",
                 "endpoints": {
                     "analysis": {
                         "returnedEntryType": "analysis",
-                        "url": conf.uri + "/api/g_variants/{id}/analyses"
+                        "url": conf.uri + "g_variants/{id}/analyses"
                     },
                     "biosample": {
                         "returnedEntryType": "biosample",
-                        "url": conf.uri + "/api/g_variants/{id}/biosamples"
+                        "url": conf.uri + "g_variants/{id}/biosamples"
                     },
                     "individual": {
                         "returnedEntryType": "individual",
-                        "url": conf.uri + "/api/g_variants/{id}/individuals"
+                        "url": conf.uri + "g_variants/{id}/individuals"
                     },
                     "run": {
                         "returnedEntryType": "run",
-                        "url": conf.uri + "/api/g_variants/{id}/runs"
+                        "url": conf.uri + "g_variants/{id}/runs"
                     }
                 }
             },
             "individual": {
                 "entryType": "individual",
                 "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/individuals/endpoints.json",
-                "rootUrl": conf.uri + "/api/individuals",
-                "singleEntryUrl": conf.uri + "/api/individuals/{id}",
-                "filteringTermsUrl": conf.uri + "/api/individuals/{id}/filtering_terms",
+                "rootUrl": conf.uri + "individuals",
+                "singleEntryUrl": conf.uri + "individuals/{id}",
+                "filteringTermsUrl": conf.uri + "filtering_terms/individuals",
                 "endpoints": {
                     "analysis": {
                         "returnedEntryType": "analysis",
-                        "url": conf.uri + "/api/individuals/{id}/analyses"
+                        "url": conf.uri + "individuals/{id}/analyses"
                     },
                     "biosample": {
                         "returnedEntryType": "biosample",
-                        "url": conf.uri + "/api/individuals/{id}/biosamples"
+                        "url": conf.uri + "individuals/{id}/biosamples"
                     },
                     "genomicVariation": {
                         "returnedEntryType": "genomicVariation",
-                        "url": conf.uri + "/api/individuals/{id}/g_variants"
+                        "url": conf.uri + "individuals/{id}/g_variants"
                     },
                     "run": {
                         "returnedEntryType": "run",
-                        "url": conf.uri + "/api/individuals/{id}/runs"
+                        "url": conf.uri + "individuals/{id}/runs"
                     }
                 }
             },
             "run": {
                 "entryType": "run",
                 "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/runs/endpoints.json",
-                "rootUrl": conf.uri + "/api/runs",
-                "singleEntryUrl": conf.uri + "/api/runs/{id}",
+                "rootUrl": conf.uri + "runs",
+                "singleEntryUrl": conf.uri + "runs/{id}",
                 "endpoints": {
                     "analysis": {
                         "returnedEntryType": "analysis",
-                        "url": conf.uri + "/api/runs/{id}/analyses"
+                        "url": conf.uri + "runs/{id}/analyses"
                     },
                     "genomicVariation": {
                         "returnedEntryType": "genomicVariation",
-                        "url": conf.uri + "/api/runs/{id}/g_variants"
+                        "url": conf.uri + "runs/{id}/g_variants"
                     },
                 }
             },

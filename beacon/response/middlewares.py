@@ -55,6 +55,9 @@ async def error_middleware(request, handler):
         # Else, we are a regular HTML response
         if ex.status == 401:  # Unauthorized
             raise web.HTTPFound('/login')
+        
+        if ex.status == 404:
+            raise web.HTTPNotFound
 
         if ex.status >= 500:
             LOG.error('Error caught: %s', ex)

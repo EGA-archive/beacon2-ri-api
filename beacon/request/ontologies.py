@@ -17,7 +17,7 @@ import logging
 
 LOG = logging.getLogger(__name__)
 
-ONTOLOGIES = {}
+ONTOLOGIES = {"NCIT":"hola"}
 ONTOLOGY_REGEX = re.compile(r"([_A-Za-z]+):(\w+)")
 
 def find_all_ontologies_used() -> Set[str]:
@@ -117,10 +117,11 @@ def get_descendants(term: str) -> List[str]:
 
 def get_ontology_neighbours(term: str, depth: int) -> List[str]:
     ontology_id, term_id = term.split(':')
-
+    LOG.debug(ONTOLOGIES)
     # Create ontology graph
     # TODO: Cache should be the graph
     knowledge_graph = networkx.DiGraph()
+    
     for frame in ONTOLOGIES[ontology_id]:
         if isinstance(frame, fastobo.term.TermFrame):
             knowledge_graph.add_node(str(frame.id))
@@ -128,7 +129,7 @@ def get_ontology_neighbours(term: str, depth: int) -> List[str]:
                 if isinstance(clause, fastobo.term.IsAClause):
                     knowledge_graph.add_edge(str(frame.id), str(clause.term))
     print(networkx.is_directed_acyclic_graph(knowledge_graph))
-
+    LOG.debug(knowledge_graph)
     # Get predecessors
     first_predecessors = set(knowledge_graph.predecessors(term))
 

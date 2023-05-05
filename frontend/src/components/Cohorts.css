@@ -1,0 +1,51 @@
+.chartsModule{
+    display: flex;
+    align-items: center;
+    width: 100vw;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+
+
+#chartEthnicity {
+    width: 900px;
+    margin: 50px;
+}
+
+
+#chartGeo{ 
+    width: 500px;
+    margin: 28px;
+    height: 400px ;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#apexcharts3avqrkqj{
+    width: 900px !important;
+  
+}
+
+#SvgjsSvg1043{
+    width: 900px !important;
+}
+
+#SvgjsText5832{
+    margin-bottom: 16px;
+}
+
+#chartSex{
+   height: 300px ;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   width: 400px;
+   margin: 28px;
+}
+
+#chartDiseases{
+    width: 1000px;
+   
+}

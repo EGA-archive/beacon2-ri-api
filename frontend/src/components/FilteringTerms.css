@@ -1,0 +1,129 @@
+.search-box {
+    margin: 10px;
+    width: 100%;
+}
+
+.search-tr {
+    display: flex;
+    width: 40%;
+}
+
+
+thead {
+    display: flex;
+    border-bottom: solid 1px #e1e1e1;
+}
+
+.table {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+
+.th1 {
+
+    display: flex;
+    width: 45%;
+    /* height: 100%; */
+    /* justify-content: center; */
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding-left: 32px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.tag-box input{
+    display: none !important;;
+}
+
+.tag-box ul{
+    display: flex !important;
+    flex-wrap: wrap !important;
+}
+
+.tag-box ul {
+    background: white !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    z-index: 0 !important;
+   
+    /* padding: 26px; */
+    width: 100vw !important;
+    /* z-index: 1010; */
+    /* position: absolute; */
+    /* padding: 26px; */
+    /* width: 242px; */
+}
+
+.tag-box-pills li{
+    margin-bottom: -4px !important;;
+    margin-left: 10px !important;;
+    margin-right: 3px !important;;
+    box-sizing: border-box !important;;
+    border-radius: 5px !important;;
+    /* box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.15); */
+    border: 2px solid #2492d7 !important;;
+    background-color: rgb(232 231 231) !important;;
+    cursor: text !important;;
+    height: auto !important;;
+    overflow-y: visible !important;;
+    overflow-x: hidden !important;;
+    font-size: 14px !important;;
+    padding: 3px !important;;
+    margin-top: 6px !important;;
+  }
+
+.tag-box-pill button{
+    font-size: 14px;
+}
+
+.th2 {
+
+    display: flex;
+    width: 77%;
+    /* height: 100%; */
+    /* justify-content: center; */
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding-left: 32px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+
+.select-checkbox{
+    position: absolute;
+    margin-top: 6px;
+    margin-left: -57px;
+}
+
+.searchTermInput {
+    margin: 10px;
+    width: 224px;
+    height: 31px;
+}
+
+.searchTermInput1{
+    margin: 10px;
+    width: 370px;
+    height: 31px;
+}
+
+
+tr {
+    display: flex;
+    width: 100%;
+}
+
+.terms1 {
+    background-color: #fffafa;
+}
+
+.checkbox {
+    margin-right: -25px;
+}
+
+.checkbox2 {
+    border: none;
+}

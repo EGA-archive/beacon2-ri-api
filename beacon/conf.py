@@ -6,7 +6,7 @@
 beacon_id = 'org.ega-archive.ga4gh-approval-beacon-test'  # ID of the Beacon
 beacon_name = 'GA4GH Approval Beacon Test'  # Name of the Beacon service
 api_version = 'v2.0.0'  # Version of the Beacon implementation
-uri = 'https://beacon-giab-test.ega-archive.org'
+uri = 'https://ega-archive.org/test-beacon-apis/cineca/'
 
 #
 # Beacon granularity
@@ -98,7 +98,8 @@ CA_cert = '/etc/ega/CA.cert'
 #
 # Permissions server configuration
 #
-permissions_url = 'http://beacon-permissions'
+#permissions_url = 'http://beacon-permissions'
+permissions_url = 'http://localhost:5051/'
 
 #
 # IdP endpoints (OpenID Connect/Oauth2)

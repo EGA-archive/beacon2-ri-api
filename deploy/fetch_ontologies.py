@@ -12,16 +12,7 @@ import conf
 ONTOLOGY_REGEX = re.compile(r"([_A-Za-z]+):(\w+)")
 
 client = MongoClient(
-    "mongodb://{}:{}@{}:{}/{}?authSource={}".format(
-        conf.database_user,
-        conf.database_password,
-        conf.database_host,
-        conf.database_port,
-        conf.database_name,
-        conf.database_auth_source,
-    )
-)
-
+    "mongodb://127.0.0.1:27017/")
 def find_all_ontologies_used() -> Set[str]:
     ontologies = set()
     for c_name in ["analyses", "biosamples", "cohorts", "genomicVariations", "datasets", "individuals", "runs"]:

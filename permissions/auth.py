@@ -19,8 +19,10 @@ LOG = logging.getLogger(__name__)
 
 idp_client_id     = 'permissions'
 idp_client_secret = 'c0285717-1bfb-4b32-b01d-d663470ce7c4'
-idp_user_info     = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
+idp_user_info  = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
 idp_introspection = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/token/introspect'
+#idp_user_info     = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
+#idp_introspection = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/token/introspect'
 
 async def get_user_info(access_token):
     '''
