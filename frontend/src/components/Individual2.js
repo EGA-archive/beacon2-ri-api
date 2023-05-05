@@ -161,27 +161,32 @@ function Individuals2(props) {
               "requestedGranularity": "record",
             }
           }
-
-
           jsonData1 = JSON.stringify(jsonData1)
           console.log(jsonData1)
-          console.log(token)
-          //ORIOL 
-          //res = await axios.post("http://localhost:5050/api/individuals", jsonData1)
-          console.log(token)
-          const headers = { 'Authorization': `Bearer ${token}` , 'Content-Type': "application/json",}
-          res = axios.post('http://localhost:5050/api/individuals', { headers }, jsonData1)
-            .then(response => console.log(response));
 
-          setNumberResults(res.data.responseSummary.numTotalResults)
-          setBoolean(res.data.responseSummary.exists)
+          const headers = {'Content-type':'application/json','Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJreS1tUXNxZ0ZYeHdSUVRfRUhuQlJJUGpmbVhfRXZuUTVEbzZWUTJCazdZIn0.eyJleHAiOjE2ODMyOTg0NjQsImlhdCI6MTY4MzI5ODE2NCwianRpIjoiYTBmZjMxYTAtYTIwYy00NGViLWFkOWMtOWRlY2ZhYmZmOTBjIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2F1dGgvcmVhbG1zL0JlYWNvbiIsInN1YiI6IjI4YjJmY2QyLTBlMDUtNDRmMS04YjQ3LTM2NDE2MjIyMTYzYSIsInR5cCI6IkJlYXJlciIsImF6cCI6ImJlYWNvbiIsInNlc3Npb25fc3RhdGUiOiI4ZmFiMjA2OC0wYTdmLTRiNWEtYjg1Ny1jMDcyOWE0ZTRmNmUiLCJhY3IiOiIxIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCBtaWNyb3Byb2ZpbGUtand0Iiwic2lkIjoiOGZhYjIwNjgtMGE3Zi00YjVhLWI4NTctYzA3MjlhNGU0ZjZlIiwidXBuIjoibmV3X3VzZXIiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZ3JvdXBzIjpbIm9mZmxpbmVfYWNjZXNzIiwiZGVmYXVsdC1yb2xlcy1iZWFjb24iLCJ1bWFfYXV0aG9yaXphdGlvbiIsIm9mZmxpbmVfYWNjZXNzIiwiZGVmYXVsdC1yb2xlcy1iZWFjb24iLCJ1bWFfYXV0aG9yaXphdGlvbiJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJuZXdfdXNlciJ9.kpS3wI29eBfvu3t1OXzzYvMnfCeVqhVcVqqXDjm3GZO-75-O8gE_HmFVVGoJgE0tLjMEli7_40deUKd4molNTUaJbeiy_5GLxH8QRxvGB16RiuRGVBSbhMUSizivVjt-jzYiPCQL7Mygw7BJuFV9R14s3RfeKQbOTy3Fd_-3wjREaScG7lHl7yayf_9wYvw3sS_w_mRjh_nXNA217cJbkMKk45D0f3zzj8aHdf5HgI0iMO7uFXTRIHlzLk14AqDMJ7fIg1hmp4qkByJcAEJUEw4e6d7RevO_A1nohJwvTxZPwmYgeCkowrNlAMMUW-YoWSi3Eb4qAQaBdOXXYR8fZQ'}
+          
+
+          res = await axios.post("http://localhost:5050/api/individuals", jsonData1, {headers: headers})
+
           setTimeOut(true)
-          res.data.response.resultSets[0].results.forEach((element, index) => {
 
-            results.push(res.data.response.resultSets[0].results[index])
+          if (res.data.response.resultSets[0].results[0] === undefined) {
+            setError("No results. Please check the query and retry")
+            setNumberResults(0)
+            setBoolean(false)
 
+          }
+          else {
+            res.data.response.resultSets[0].results.forEach((element, index) => {
 
-          })
+              results.push(res.data.response.resultSets[0].results[index])
+            })
+
+            setNumberResults(res.data.responseSummary.numTotalResults)
+            setBoolean(res.data.responseSummary.exists)
+          }
+
 
         } else {
 

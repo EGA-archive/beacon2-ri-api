@@ -14,6 +14,8 @@ import aiohttp_cors
 from aiohttp_session import setup as session_setup
 from aiohttp_session.cookie_storage import EncryptedCookieStorage
 from cryptography import fernet
+from aiohttp_middlewares import cors_middleware
+from aiohttp_middlewares.cors import DEFAULT_ALLOW_HEADERS
 
 from beacon import conf, load_logger
 from beacon.request import ontologies
@@ -56,7 +58,7 @@ def main(path=None):
 
     # Configure the beacon
     beacon = web.Application(
-        middlewares=[web.normalize_path_middleware(), middlewares.error_middleware]
+        middlewares=[web.normalize_path_middleware(), middlewares.error_middleware, cors_middleware(allow_all=True)]
     )
     beacon.on_startup.append(initialize)
     beacon.on_cleanup.append(destroy)
@@ -83,10 +85,11 @@ def main(path=None):
 
 
     cors = aiohttp_cors.setup(beacon, defaults={
-    "http://localhost:3000": aiohttp_cors.ResourceOptions(
+    "*": aiohttp_cors.ResourceOptions(
             allow_credentials=True,
             expose_headers="*",
-            allow_headers="*",
+            allow_methods=("POST", "PATCH", "GET", "OPTIONS"),
+            allow_headers=DEFAULT_ALLOW_HEADERS
         )
 })
 
@@ -134,3 +137,4 @@ if __name__ == "__main__":
     # host:port
     else:
         main()
+
