@@ -83,6 +83,19 @@ html {
   box-shadow: 1px 2px 2px #cecece;
 }
 
+.newSearch {
+  display: flex;
+  width: 100vw;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.newSearchButton{
+  margin-right: 199px;
+  padding: 20px;
+  margin-top: -54px;
+}
+
 .chosen-value {
   background: white;
   border: 2px solid #e16e00;
@@ -191,7 +204,8 @@ ul {
   margin-top: 51px;
 
 }
-.container1 a{
+
+.container1 a {
   display: flex;
   align-content: center;
   justify-content: center;
@@ -316,14 +330,14 @@ hr {
 }
 
 .logos {
-    display: flex;
-    width: 63vw;
-    align-items: center;
-    align-content: center;
-    flex-direction: row-reverse;
-    justify-content: center;
-    margin-bottom: 18px;
-    margin-top: 11px;
+  display: flex;
+  width: 63vw;
+  align-items: center;
+  align-content: center;
+  flex-direction: row-reverse;
+  justify-content: center;
+  margin-bottom: 18px;
+  margin-top: 11px;
 }
 
 
