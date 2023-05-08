@@ -25,17 +25,25 @@ function Navbar() {
     }
 
     return (
+        <div className="navB">
+            <nav className='nav2'>
+                <a href="/" className='Individuals'>Individuals</a>
+                <a href="/biosamples" className='Biosamples'>Biosamples</a>
+                <a href="/genomicVariations" className='Variants'>Variants</a>
+                <a href="/runs" className='Runs'>Runs</a>
+                <a href="/analyses" className='Analyses'>Analyses</a>
+                <a href="/cohorts" className='Cohorts'>Cohorts</a>
+                <a href="/cross-queries" className='Cross-queries'>Cross queries</a>
+                <div class="animation nav2"></div>
+            </nav>
+            <nav className='nav3'>
+                <a href="/members" className='Members'>Network members</a>
+                {!isLoggedIn && <a href="/sign-in" className='Sign-in'>Sign in</a>}
+                {isLoggedIn && <a href="/sign-in" className='Sign-in'>Log out</a>}
+                <div class="animation nav3"></div>
+            </nav>
 
-        <nav className='nav2'>
-            <a href="/">Home</a>
-            <a href="/cross-queries">Cross queries</a>
-            <a href="/members">Network members</a>
-            {!isLoggedIn && <a href="/sign-up">Sign up</a>}
-            {!isLoggedIn && <a href="/sign-in">Sign in</a>}
-            {isLoggedIn && <a href="/sign-in">Log out</a>}
-            <div class="animation start-home"></div>
-        </nav>
-
+        </div>
 
 
     )

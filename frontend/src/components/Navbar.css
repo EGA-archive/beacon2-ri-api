@@ -1,17 +1,26 @@
-.nav2 {
-	position: relative;
-	width: 100vw;
+.navB{
+    display: flex;
+    width: 100vw;
+    position: relative;
 	height: 50px;
 	background-color: #34495e;
-	border-radius: 8px;
 	font-size: 0;
+}
+.nav2 {
+    width: 70%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
+}
+.nav3 {
+    width: 30%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 }
 .nav2 a {
 	line-height: 50px;
 	height: 100%;
-	font-size: 15px;
+	font-size: 12px;
 	display: inline-block;
 	position: relative;
 	z-index: 1;
@@ -21,7 +30,21 @@
 	color: white;
 	cursor: pointer;
 }
-.nav2 .animation {
+.nav3 a {
+	line-height: 50px;
+	height: 100%;
+	font-size: 12px;
+	display: inline-block;
+	position: relative;
+	z-index: 1;
+	text-decoration: none;
+	text-transform: uppercase;
+	text-align: center;
+	color: white;
+	cursor: pointer;
+}
+
+.navB .animation {
 	position: absolute;
 	height: 100%;
 	top: 0;
@@ -29,45 +52,91 @@
 	transition: all .5s ease 0s;
 	border-radius: 8px;
 }
-a:nth-child(1) {
-	width: 200px;
+
+
+.Individuals {
+	width: 120px;
 }
-a:nth-child(2) {
-	width: 200px;
+
+.Biosamples{
+	width: 120px;
 }
-a:nth-child(3) {
-	width: 200px;
+
+.Variants {
+	width: 120px;
 }
-a:nth-child(4) {
-	width: 200px;
+
+.Runs {
+	width: 120px;
 }
-a:nth-child(5) {
-	width: 200px;
+
+.Analyses{
+    width: 120px;
 }
-.nav2 .start-home, a:nth-child(1):hover~.animation {
-	width: 200px;
-	left: 15.5%;
-	background-color: #1abc9c;
+
+.Cohorts{
+    width: 120px;
 }
-.nav2 .start-about, a:nth-child(2):hover~.animation {
+
+.Cross-queries{
+    width: 120px;
+}
+
+.Members{
+    width: 220px;
+}
+
+.Sign-in{
+    width: 120px;
+}
+
+.Members:hover~.animation {
 	width: 200px;
-	left: 29%;
+	right: 130px;
+	background-color: #4961b8;
+}
+.Sign-in:hover~.animation {
+	width: 120px;
+	right: 0px;
+	background-color: #e575dd;
+}
+
+.Individuals:hover~.animation {
+	width: 120px !important;
+	left: 0px !important;
+	background-color: #1abc9c !important;
+}
+.Biosamples:hover~.animation {
+	width: 120px;
+	left: 120px;
 	background-color: #e74c3c;
 }
-.nav2 .start-blog, a:nth-child(3):hover~.animation {
-	width: 200px;
-	left: 43%;
+
+.Variants:hover~.animation {
+	width: 120px;
+	left: 240px;
 	background-color: #3498db;
 }
-.nav2 .start-portefolio, a:nth-child(4):hover~.animation {
-	width: 200px;
-	left: 57%;
+
+.Runs:hover~.animation {
+	width: 120px;
+	left: 360px;
 	background-color: #9b59b6;
 }
-.nav2 .start-contact, a:nth-child(5):hover~.animation {
-	width: 200px;
-	left: 71%;
+.Analyses:hover~.animation {
+	width: 120px;
+	left: 480px;
 	background-color: #e67e22;
+}
+.Cohorts:hover~.animation {
+	width: 120px;
+	left: 600px;
+	background-color: #5be57b;
+}
+.Cross-queries:hover~.animation {
+	width: 120px;
+	left: 720px;
+	background-color: #d4c223;
 }
 
 
