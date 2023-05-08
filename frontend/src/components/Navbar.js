@@ -1,21 +1,22 @@
 import { NavLink } from 'react-router-dom';
-import './Navbar.scss'
+
 import React, { useState } from 'react';
 import { AuthContext } from './context/AuthContext';
 import { useContext } from 'react';
 import SignInForm from './SignInForm';
+import './Navbar.css';
 
 
 function Navbar() {
 
     const [selected, setIsSelected] = useState('')
-    const [openModal1, setIsOpenModal1]= useState(false)
-    
+    const [openModal1, setIsOpenModal1] = useState(false)
+
     const { isLoggedIn, setIsLoggedIn, logOutUser, authenticateUser, getStoredToken } = useContext(AuthContext);
 
     const handleHelpModal1 = () => {
         setIsOpenModal1(true)
-      }
+    }
     const logOut = (e) => {
 
         logOutUser()
@@ -25,23 +26,14 @@ function Navbar() {
 
     return (
 
-        <nav id="nav">
-            <div className="nav left">
-
-                <span className="gradient skew"><h1 className="logo un-skew"><a href="/">
-                    < img src="./home2.png" className="homeIcon" alt="home" />
-                </a></h1></span>
-            </div>
-
-            <div class="nav right">
-            <button className="helpButton3" onClick={handleHelpModal1}><img className="questionLogo3" src="./question.png" alt='questionIcon'></img></button>
-                <NavLink to="/cross-queries" className={selected ? 'nav-link2' : 'nav-link2'} onClick={() => { setIsSelected(true) }}><span className="nav-link-span"><span className="u-nav">Cross queries</span></span> </NavLink>
-                <NavLink to="/members" className={selected ? 'nav-link' : 'nav-link'} onClick={() => { setIsSelected(true) }}><span className="nav-link-span"><span className="u-nav">Network members</span></span></NavLink>
-                {!isLoggedIn && <NavLink to="/sign-up" className={selected ? 'nav-link' : 'nav-link'} onClick={() => { setIsSelected(true) }}><span className="nav-link-span"><span className="u-nav">Sign Up</span></span> </NavLink>}
-                {!isLoggedIn && <NavLink to="/sign-in" className={selected ? 'nav-link' : 'nav-link'} onClick={() => { setIsSelected(true) }}> <span className="nav-link-span"><span className="u-nav">Sign In</span></span></NavLink>}
-
-                {isLoggedIn && <NavLink to="/" className={selected ? 'nav-link' : 'nav-link'} onClick={logOut}><span className="nav-link-span"><span className="u-nav">LOG OUT</span></span> </NavLink>}
-            </div>
+        <nav className='nav2'>
+            <a href="/">Home</a>
+            <a href="/cross-queries">Cross queries</a>
+            <a href="/members">Network members</a>
+            {!isLoggedIn && <a href="/sign-up">Sign up</a>}
+            {!isLoggedIn && <a href="/sign-in">Sign in</a>}
+            {isLoggedIn && <a href="/sign-in">Log out</a>}
+            <div class="animation start-home"></div>
         </nav>
 
 
