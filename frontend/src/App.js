@@ -28,6 +28,7 @@ import axios from "axios";
 
 import ReactModal from 'react-modal';
 import makeAnimated from 'react-select/animated';
+import { renderActionsCell } from '@mui/x-data-grid';
 
 
 
@@ -91,6 +92,7 @@ function Layout() {
   })
 
 
+  const [isSubmitted, setIsSub] = useState(false)
 
   const [options, setOptions] = useState([
     { value: 'CINECA_synthetic_cohort_UK1', label: 'CINECA_synthetic_cohort_UK1' },
@@ -316,7 +318,7 @@ function Layout() {
   useEffect(() => {
 
     setShowCohorts(false)
-    setResults(null)
+
 
     if (collection === 'Individuals') {
       setPlaceholder('filtering term comma-separated, ID><=value')
@@ -346,7 +348,13 @@ function Layout() {
 
   const onSubmit = async (event) => {
 
+
     event.preventDefault()
+
+    setIsSub(!isSubmitted)
+
+    console.log(query)
+
 
 
     setCollectionType([`${collection}`])
@@ -363,14 +371,15 @@ function Layout() {
         setQuery(null)
       }
       if (collection === 'Individuals') {
-      
+
+
         setResults('Individuals')
 
       } else if (collection === 'Cohorts') {
         setResults('Cohorts')
       }
 
-    
+
     } catch (error) {
       console.log(error)
       setError(error.response.data.errorMessage)
@@ -379,8 +388,7 @@ function Layout() {
 
   function search(e) {
     setQuery(e.target.value)
-   
-    setResults(null)
+
   }
 
   return (
@@ -410,6 +418,8 @@ function Layout() {
 
       <button className="helpButton" onClick={handleHelpModal2}><img className="questionLogo2" src="./question.png" alt='questionIcon'></img><h5>Help for querying</h5></button>
       <nav className="navbar">
+        {isSubmitted && 
+        <div className="newSearch"><button className="newSearchButton" onClick={onSubmit} type="submit">NEW SEARCH</button></div>}
         <div className="container-fluid">
           <select className="form-select" aria-label="Default select example" onClick={handleClick} onChange={e => { handleAddrTypeChange(e) }}>
             {
@@ -421,7 +431,8 @@ function Layout() {
           {cohorts === false &&
             <form className="d-flex" onSubmit={onSubmit}>
               <input className="formSearch" type="search" placeholder={placeholder} value={query} onChange={(e) => search(e)} aria-label="Search" />
-              <button className="searchButton" type="submit"><img className="searchIcon" src="./magnifier.png" alt='searchIcon'></img></button>
+              {!isSubmitted && <button className="searchButton" type="submit"><img className="searchIcon" src="./magnifier.png" alt='searchIcon'></img></button>}
+
             </form>}
 
           {cohorts &&
@@ -492,7 +503,7 @@ function Layout() {
 
                 <div id="operator" >
 
-                  <select className="selectedOperator"onChange={Operatorchange} name="selectedOperator" >
+                  <select className="selectedOperator" onChange={Operatorchange} name="selectedOperator" >
                     <option value="=" >= </option>
                     <option value=">" >&lt;</option>
                     <option value="<" >&gt;</option>
@@ -610,7 +621,9 @@ function Layout() {
       <hr></hr>
       <div className="results">
         {results === null && !showFilteringTerms && <ResultsDatasets />}
-        {results === 'Individuals' && <Individuals2 query={query} resultSets={resultSet} ID={ID} operator={operator} valueFree={valueFree} descendantTerm={descendantTerm} similarity={similarity} />}
+        {isSubmitted &&
+          <Individuals2 query={query} resultSets={resultSet} ID={ID} operator={operator} valueFree={valueFree} descendantTerm={descendantTerm} similarity={similarity} />
+        }
         {results === null && showFilteringTerms && <FilteringTermsIndividuals filteringTerms={filteringTerms} collection={collection} setPlaceholder={setPlaceholder} placeholder={placeholder} />}
         {cohorts && results === 'Cohorts' &&
 
