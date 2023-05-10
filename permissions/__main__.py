@@ -11,6 +11,8 @@ from aiohttp import web
 from aiohttp.web import FileField
 from aiohttp.web_request import Request
 import aiohttp_cors
+from aiohttp_middlewares import cors_middleware
+from aiohttp_middlewares.cors import DEFAULT_ALLOW_HEADERS
 
 from . import load_logger
 from .auth import bearer_required
@@ -73,7 +75,8 @@ def main(path=None):
     "*": aiohttp_cors.ResourceOptions(
             allow_credentials=True,
             expose_headers="*",
-            allow_headers="*",
+            allow_methods=("POST", "PATCH", "GET", "OPTIONS"),
+            allow_headers=DEFAULT_ALLOW_HEADERS
         )
 })
     

@@ -24,8 +24,8 @@ from utils import get_filtering_documents
 ONTOLOGY_REGEX = re.compile(r"([_A-Za-z0-9]+):([_A-Za-z0-9^\-]+)")
 
 client = MongoClient(
-    #"mongodb://127.0.0.1:27017/"
-    "mongodb://root:example@mongo:27017/beacon?authSource=admin"
+    "mongodb://127.0.0.1:27017/"
+    #"mongodb://root:example@mongo:27017/beacon?authSource=admin"
 
 )
 
@@ -155,18 +155,21 @@ def get_ontology_field_name(ontology_id:str, term_id:str, collection:str):
 
 
         if '.' in field:
-            final_field = ''
-            field_split = field.split('.')
-            del field_split[-1]
-            for item in field_split:
-                if final_field == '':
-                    final_field = item
-                else:
-                    final_field = final_field + '.' + item
-            final_dict={}
-            final_dict['field']=final_field
-            final_dict['label']=label
-            return final_dict
+            try:
+                final_field = ''
+                field_split = field.split('.')
+                del field_split[-1]
+                for item in field_split:
+                    if final_field == '':
+                        final_field = item
+                    else:
+                        final_field = final_field + '.' + item
+                final_dict={}
+                final_dict['field']=final_field
+                final_dict['label']=label
+                return final_dict
+            except Exception:
+                pass
         else:
             pass
 
@@ -248,8 +251,8 @@ def get_filtering_object(terms_ids: list, collection_name: str):
         except Exception:
             pass
         
-            
-    path = "/beacon/beacon/db/filtering_terms/filtering_terms_{}.txt".format(collection_name)
+    path = "beacon/db/filtering_terms/filtering_terms_{}.txt".format(collection_name)
+    #path = "/beacon/beacon/db/filtering_terms/filtering_terms_{}.txt".format(collection_name)
     with open(path, 'w') as f:
         for item in list_of_ontologies:
             f.write(item+"\n")
