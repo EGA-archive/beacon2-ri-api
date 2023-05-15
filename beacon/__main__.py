@@ -57,9 +57,15 @@ def main(path=None):
     load_logger()
 
     # Configure the beacon
+    #beacon = web.Application(
+        #middlewares=[web.normalize_path_middleware(), middlewares.error_middleware, cors_middleware(allow_all=True)]
+    #)
+
     beacon = web.Application(
-        middlewares=[web.normalize_path_middleware(), middlewares.error_middleware, cors_middleware(allow_all=True)]
+        middlewares=[web.normalize_path_middleware(), middlewares.error_middleware, cors_middleware(origins=["http://localhost:3000"])]
     )
+
+
     beacon.on_startup.append(initialize)
     beacon.on_cleanup.append(destroy)
 
@@ -85,7 +91,7 @@ def main(path=None):
 
 
     cors = aiohttp_cors.setup(beacon, defaults={
-    "*": aiohttp_cors.ResourceOptions(
+    "http://localhost:3000": aiohttp_cors.ResourceOptions(
             allow_credentials=True,
             expose_headers="*",
             allow_methods=("POST", "PATCH", "GET", "OPTIONS"),
