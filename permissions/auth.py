@@ -15,14 +15,27 @@ import logging
 from aiohttp import ClientSession, BasicAuth, FormData
 from aiohttp import web
 
+
+
 LOG = logging.getLogger(__name__)
+
+
 
 idp_client_id     = 'permissions'
 idp_client_secret = 'c0285717-1bfb-4b32-b01d-d663470ce7c4'
-idp_user_info  = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
-idp_introspection = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/token/introspect'
+#idp_user_info = 'http://localhost:8080/oidc/userinfo'
+idp_user_info = 'http://ls-aai-mock:8080/oidc/userinfo'
+#idp_user_info  = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
+idp_introspection = 'http://ls-aai-mock:8080/oidc/introspect'
+#idp_introspection = 'http://idp:8000/auth/realms/Beacon/protocol/openid-connect/token/introspect'
 #idp_user_info     = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
 #idp_introspection = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/token/introspect'
+
+
+
+
+
+
 
 async def get_user_info(access_token):
     '''
@@ -32,11 +45,11 @@ async def get_user_info(access_token):
     LOG.debug('Token: %s', access_token)
 
     user = None
-    async with ClientSession() as session:
+    async with ClientSession(trust_env=True) as session:
         headers = { 'Accept': 'application/json', 'Authorization': 'Bearer ' + access_token }
         LOG.debug('Contacting %s', idp_user_info)
         async with session.get(idp_user_info, headers=headers) as resp:
-            # LOG.debug('Response %s', resp)
+            LOG.debug('Response %s', resp)
             if resp.status == 200:
                 user = await resp.json()
                 return user
