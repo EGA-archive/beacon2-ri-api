@@ -116,6 +116,7 @@ def generic_handler(db_fn, request=None):
 
                 LOG.debug(specific_datasets_unauthorized_and_found)
                 LOG.debug(specific_datasets_unauthorized)
+                LOG.debug(list_of_dataset_dicts)
 
             else:
                 qparams.query.request_parameters = {}
@@ -145,6 +146,7 @@ def generic_handler(db_fn, request=None):
                     dict_dataset['dataset']=data_s
                     dict_dataset['ids'] = ['Unauthorized dataset']
                     list_of_dataset_dicts.append(dict_dataset)
+                LOG.debug(list_of_dataset_dicts)
         else:
             list_of_dataset_dicts=[]
 
@@ -153,6 +155,7 @@ def generic_handler(db_fn, request=None):
 
         entry_id = request.match_info.get('id', None)
         entity_schema, count, records = db_fn(entry_id, qparams)
+        LOG.debug(entity_schema)
 
         response_converted = records
         
@@ -173,7 +176,7 @@ def generic_handler(db_fn, request=None):
             elif conf.max_beacon_granularity == Granularity.COUNT:
                 response = build_beacon_count_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
             else:
-                response = build_beacon_resultset_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
+                response = build_beacon_resultset_response_by_dataset(response_converted, list_of_dataset_dicts, count, qparams, lambda x, y: x, entity_schema)
                 
         return await json_stream(request, response)
 
@@ -282,6 +285,7 @@ def filtering_terms_handler(db_fn, request=None):
                     dict_dataset['dataset']=data_s
                     dict_dataset['ids'] = ['Unauthorized dataset']
                     list_of_dataset_dicts.append(dict_dataset)
+                LOG.debug(list_of_dataset_dicts)
         else:
             list_of_dataset_dicts=[]
 
