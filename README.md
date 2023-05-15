@@ -6,7 +6,10 @@ This repository is an implementation of the [Beacon v2.0 Model](https://github.c
 
 * The (Python 3.9+) [source code for beacon](beacon),
 * A MongoDB database with sample data to demo the capabilities of the Beacon API.
-* AAI and LS-AAI integrated. For LS-AAI, gdi ls aai mock repository is required to be up and running in another docker compose service.
+* AAI and LS-AAI integrated. For LS-AAI, gdi ls aai mock repository is required to be up and running in another docker compose service, and then you will need to create this external network:
+```bash
+docker network create my-app-network
+```
 
 > [Local deployment instructions](deploy/README.md)
 
@@ -18,7 +21,6 @@ Furthermore, if you are using LS-AAI method, you will need to get the authorizat
 ```bash
  curl --location --request POST 'http://localhost:8080/oidc/token' \--header 'Content-Type: application/x-www-form-urlencoded' \--data-urlencode 'grant_type=authorization_code' \--data-urlencode 'pasteyourcodefrombrowserhere' \--data-urlencode 'client_id=app-123' \--data-urlencode 'client_secret=secret_value' \--data-urlencode 'scope=openid' \
 --data-urlencode 'requested_token_type=urn:ietf:params:oauth:token-type:refresh_token'
-)
 ```
 When you have your authorization token, pass it in a header in your POST request to get your answers.
 
