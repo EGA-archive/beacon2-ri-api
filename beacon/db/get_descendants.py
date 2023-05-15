@@ -27,7 +27,7 @@ def load_ontology(ontology_id: str) -> Optional[owlready2.Ontology]:
     if ontology_id.isalpha():
         url_alt = "https://www.ebi.ac.uk/efo/EFO.obo"
         url = "http://purl.obolibrary.org/obo/{}.obo".format(ontology_id.lower())
-        path = "ontologies/{}.obo".format(ontology_id)
+        path = "/beacon/beacon/db/ontologies/{}.obo".format(ontology_id)
         try:
             if not os.path.exists(path):
                 urllib.request.urlretrieve(url, path, MyProgressBar())
@@ -58,7 +58,7 @@ def load_ontology(ontology_id: str) -> Optional[owlready2.Ontology]:
 def get_descendants_and_similarities(ontology:str):
     ontology_list = ontology.split(':')
     load_ontology(ontology_list[0])    
-    url = "ontologies/{}.obo".format(ontology_list[0])
+    url = "/beacon/beacon/db/ontologies/{}.obo".format(ontology_list[0])
     list_of_cousins = []
     list_of_brothers = []
     list_of_uncles = []
@@ -74,7 +74,7 @@ def get_descendants_and_similarities(ontology:str):
         descendants = ''
     descendants=list(descendants)
     print(descendants)
-    path = "descendants/{}{}.txt".format(ontology_list[0],ontology_list[1])
+    path = "/beacon/beacon/db/descendants/{}{}.txt".format(ontology_list[0],ontology_list[1])
     with open(path, 'w') as f:
         for item in descendants:
             f.write(item+"\n")
@@ -124,25 +124,27 @@ def get_descendants_and_similarities(ontology:str):
     dict[ontology]['similarity_medium']=similarity_medium
     dict[ontology]['similarity_low']=similarity_low
     
-    path = "similarities/{}{}{}.txt".format(ontology_list[0],ontology_list[1],'high')
+    path = "/beacon/beacon/db/similarities/{}{}{}.txt".format(ontology_list[0],ontology_list[1],'high')
     with open(path, 'w') as f:
         for item in similarity_high:
             f.write(item+"\n")
     f.close()
-    path = "similarities/{}{}{}.txt".format(ontology_list[0],ontology_list[1],'medium')
+    path = "/beacon/beacon/db/similarities/{}{}{}.txt".format(ontology_list[0],ontology_list[1],'medium')
     with open(path, 'w') as f:
         for item in similarity_medium:
             f.write(item+"\n")
     f.close()
-    path = "similarities/{}{}{}.txt".format(ontology_list[0],ontology_list[1],'low')
+    path = "/beacon/beacon/db/similarities/{}{}{}.txt".format(ontology_list[0],ontology_list[1],'low')
     with open(path, 'w') as f:
         for item in similarity_low:
             f.write(item+"\n")
     f.close()
     
 i=0
-for filename in os.listdir('filtering_terms'):
-    file = os.path.join('filtering_terms', filename)
+path_filtering_terms= '/beacon/beacon/db/filtering_terms'
+
+for filename in os.listdir(path_filtering_terms):
+    file = os.path.join(path_filtering_terms, filename)
     with open(file, 'r') as f:
         for line in f:
             i +=1
