@@ -16,7 +16,7 @@ build:
 	docker build $(ARGS) -t $(IMG):$(TARGET) .
 
 run: PORTS=-p 5050:5050
-up: PORTS=-p 5050:8080
+up: PORTS=-p 5050:8000
 run: ENTRYPOINT=--entrypoint "/bin/sleep"
 run: CMD=1000000000000
 up run:

@@ -3,6 +3,8 @@ gemma_test: []
 jane:
 - GiaB
 - CINECA_synthetic_cohort_EUROPE_UK1
+jofrdo:
+- CINECA_synthetic_cohort_EUROPE_UK1
 john:
 - GiabV
 - dataset-registered

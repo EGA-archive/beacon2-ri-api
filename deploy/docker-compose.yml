@@ -4,6 +4,8 @@ networks:
   beacon-priv:
   idp-priv:
   pub:
+  my-app-network:
+    external: true
 
 services:
 
@@ -47,6 +49,7 @@ services:
       - ./mongo-init/:/docker-entrypoint-initdb.d/:ro
     networks:
       - beacon-priv
+      - my-app-network
 
   mongo-express:
     image: mongo-express
@@ -82,6 +85,7 @@ services:
       - beacon-priv
       - pub
       - idp-priv
+      - my-app-network
     working_dir: '/beacon'
     entrypoint: ['python','-m','beacon']
     # entrypoint: ['/bin/sleep','100000000']
@@ -103,6 +107,7 @@ services:
       - beacon-priv
       - pub
       - idp-priv
+      - my-app-network
     #entrypoint: ['/bin/sleep','100000000']
     working_dir: '/beacon'
     entrypoint: ['python','-m', 'permissions']
@@ -136,7 +141,7 @@ services:
     volumes:
       - ./beacon-realm.json:/tmp/beacon-realm.json
     ports:
-      - "8080:8080"
+      - "8000:8000"
       - "9991:8443"
     networks:
       - pub
@@ -154,3 +159,4 @@ services:
       - POSTGRES_PASSWORD=secret
     networks:
       - idp-priv 
+      - my-app-network
