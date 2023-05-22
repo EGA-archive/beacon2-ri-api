@@ -176,7 +176,7 @@ def generic_handler(db_fn, request=None):
             elif conf.max_beacon_granularity == Granularity.COUNT:
                 response = build_beacon_count_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
             else:
-                response = build_beacon_resultset_response_by_dataset(response_converted, list_of_dataset_dicts, count, qparams, lambda x, y: x, entity_schema)
+                response = build_beacon_resultset_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
                 
         return await json_stream(request, response)
 

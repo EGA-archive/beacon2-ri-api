@@ -101,10 +101,14 @@ class RequestParams(CamelModel):
         return self
 
     def summary(self):
+        list_of_filters=[]
+        for item in self.query.filters:
+            for k,v in item.items():
+                list_of_filters.append(v)
         return {
             "apiVersion": self.meta.api_version,
             "requestedSchemas": self.meta.requested_schemas,
-            "filters": self.query.filters,
+            "filters": list_of_filters,
             "requestParameters": self.query.request_parameters,
             "includeResultsetResponses": self.query.include_resultset_responses,
             "pagination": self.query.pagination.dict(),
