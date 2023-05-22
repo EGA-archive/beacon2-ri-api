@@ -5445,14 +5445,9 @@ flat-cache@^3.0.4:
     flatted "^3.1.0"
     rimraf "^3.0.2"
 
-flatted@^3.1.0:
+flatted@^3.1.0, flatted@^3.2.7:
   version "3.2.7"
   resolved "https://registry.npmjs.org/flatted/-/flatted-3.2.7.tgz"
-  integrity sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==
-
-flatted@^3.2.7:
-  version "3.2.7"
-  resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.7.tgz#609f39207cb614b89d0765b477cb2d437fbf9787"
   integrity sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==
 
 follow-redirects@^1.0.0, follow-redirects@^1.15.0:
@@ -9282,7 +9277,7 @@ react-modal@^3.16.1:
 
 react-multi-switch-toggle@^1.0.12:
   version "1.0.12"
-  resolved "https://registry.npmjs.org/react-multi-switch-toggle/-/react-multi-switch-toggle-1.0.12.tgz"
+  resolved "https://registry.yarnpkg.com/react-multi-switch-toggle/-/react-multi-switch-toggle-1.0.12.tgz#a220c98537ae09006ca9c4b5c97b53c36fbbe8c7"
   integrity sha512-SW/g2InMjQOZSUZvq8uPnblpWpHgL/uox/xGKEoRSPZNhyHbHJEb902W+R/oS5bu2udhc7OrWi8M+G7NHzMKAw==
 
 react-path-tooltip@^1.0.25:
