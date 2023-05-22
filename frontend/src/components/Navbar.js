@@ -27,19 +27,52 @@ function Navbar() {
     return (
         <div className="navB">
             <nav className='nav2'>
-                <a href="/" className='Individuals'>Individuals</a>
-                <a href="/biosamples" className='Biosamples'>Biosamples</a>
-                <a href="/genomicVariations" className='Variants'>Variants</a>
-                <a href="/runs" className='Runs'>Runs</a>
-                <a href="/analyses" className='Analyses'>Analyses</a>
-                <a href="/cohorts" className='Cohorts'>Cohorts</a>
-                <a href="/cross-queries" className='Cross-queries'>Cross queries</a>
+                <NavLink exact
+                    to="/"
+                    className={({ isActive }) => (isActive ? 'Individuals2' : 'Individuals')}
+                >Individuals</NavLink>
+                <NavLink exact
+                    to="/biosamples"
+                    className={({ isActive }) => (isActive ? 'Biosamples2' : 'Biosamples')}
+                >Biosamples</NavLink>
+                <NavLink exact
+                    to="/genomicVariations"
+                    className={({ isActive }) => (isActive ? 'Variants2' : 'Variants')}
+                >Variant</NavLink>
+                <NavLink exact
+                    to="/runs"
+                    className={({ isActive }) => (isActive ? 'Runs2' : 'Runs')}
+                >Runs</NavLink>
+                <NavLink exact
+                    to="/analyses"
+                    className={({ isActive }) => (isActive ? 'Analyses2' : 'Analyses')}
+                >Analyses</NavLink>
+                <NavLink exact
+                    to="/cohorts"
+                    className={({ isActive }) => (isActive ? 'Cohorts2' : 'Cohorts')}
+                >Cohorts</NavLink>
+                <NavLink exact
+                    to="/cross-queries"
+                    className={({ isActive }) => (isActive ? 'Cross-queries2' : 'Cross-queries')}
+                >Cross queries</NavLink>
                 <div class="animation nav2"></div>
             </nav>
             <nav className='nav3'>
-                <a href="/members" className='Members'>Network members</a>
-                {!isLoggedIn && <a href="/sign-in" className='Sign-in'>Sign in</a>}
-                {isLoggedIn && <a href="/sign-in" className='Sign-in'>Log out</a>}
+                <NavLink exact
+                    to="/members"
+                    className={({ isActive }) => (isActive ? 'Members2' : 'Members')}
+                >Network members</NavLink>
+                {!isLoggedIn &&
+                    <NavLink exact
+                        to="/sign-in"
+                        className={({ isActive }) => (isActive ? 'Sign-in2' : 'Sign-in')}
+                    >Sign in</NavLink>}
+                {isLoggedIn &&
+                    <NavLink exact
+                        to="/sign-in"
+                        className={({ isActive }) => (isActive ? 'Sign-in2' : 'Sign-in')}
+                    onClick={logOut}>Log out</NavLink>}
+
                 <div class="animation nav3"></div>
             </nav>
 

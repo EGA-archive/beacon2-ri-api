@@ -1,0 +1,58 @@
+.crossQueriesForm{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 40px;
+    align-content: center;
+    align-items: flex-start;
+}
+
+select{
+    background: white;
+    border: 2px solid #010a7d;
+    font-size: medium;
+    border-radius: 5px;
+    width: 150px;
+    margin-left: 10px;
+    height: 29px;
+    box-shadow: 1px 2px 2px #cecece;
+    cursor: pointer;
+}
+
+.inputId{
+    background: white;
+    border: 2px solid #010a7d;
+    font-size: medium;
+    border-radius: 5px;
+    width: 150px;
+    margin-left: 10px;
+    height: 19px;
+    box-shadow: 1px 2px 2px #cecece;
+    cursor: pointer;
+}
+
+.divCrossQueries{
+    display: flex;
+    justify-content: center;
+}
+
+.crossQueriesForm label{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.formButton{
+    cursor: pointer;
+    background: rgb(214, 207, 207);
+    border: 2px 2px 2px 0px solid #010a7d;
+    font-size: medium;
+    border-radius: 5px;
+    width: 100px;
+    height: 35px;
+    box-shadow: 1px 2px 2px #cecece;
+    margin-top: 30px;
+}
+
+.formButton:hover{
+    background: rgb(237, 142, 40);
+}

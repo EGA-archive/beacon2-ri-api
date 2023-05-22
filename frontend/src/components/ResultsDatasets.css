@@ -7,7 +7,9 @@
 
 .datasetCard{
     width: 460px;
-    margin: 40px;
+    margin: 9px;
+    margin-right: 24px;
+    margin-left: 24px;
     border: 2px solid #3b9ad5;
     padding: 16px;
     display: flex;
@@ -16,7 +18,9 @@
     align-content: center;
     flex-direction: column;
     background-color: white;
+
 }
+
 
 p{
     font-size: 14px;
@@ -43,7 +47,7 @@ h1{
 
 .tittle{
     width: 100%;
-    background: #e16e00;
+    background: #4f85bc;
     height: 80px;
     display: flex;
     justify-content: center;
@@ -52,9 +56,9 @@ h1{
 
 
 .resultsRecord h3{
-    color: #c11524;
+    color: #34495e;
     text-transform: uppercase;
     margin-left: 50px;
-    margin-top: 40px;
+    margin-top: 15px;
     font-size: 16px;
 }

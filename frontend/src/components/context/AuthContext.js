@@ -55,15 +55,18 @@ function AuthProviderWrapper(props) {
    const authenticateUser = async () => {
     
       const storedToken = localStorage.getItem('authToken');
-      if (storedToken !== undefined){
+     
+      if (storedToken !== 'undefined'){
          setIsLoggedIn(true)
+         console.log("SDSADS")
       }
       const refreshToken = localStorage.getItem('refreshToken')
       const expirationTime = localStorage.getItem('expirationTime');
       const refreshTime = localStorage.getItem('refreshExpirationTime')
 
       const startTime = localStorage.getItem('startTime')
-
+      const token = localStorage.getItem('authToken')
+      console.log(token)
       console.log(startTime)
 
       setCurrentTime(Date.now())

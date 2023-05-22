@@ -28,8 +28,12 @@ html {
 
 
 .searchButton:hover {
-  background: linear-gradient(356deg, #6ac5ff 50%, #86d2ff 80%);
-  border-radius: 4px;
+  background: linear-gradient(356deg, #cee3e7 50%, #daecf0 80%);
+  border-radius: 10px;
+}
+
+.newSearchButton:hover {
+  color: #4fb5f0;
 }
 
 .searchButton2 {
@@ -41,12 +45,33 @@ html {
 }
 
 .searchButton2:hover {
-  background: linear-gradient(356deg, #6ac5ff 50%, #86d2ff 80%);
+  background: linear-gradient(356deg, #cee3e7 50%, #daecf0 80%);
   border-radius: 14px;
 }
 
 
 
+.switchDescendants {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.switchDescendants h3 {
+  color: #e16e00;
+  text-transform: uppercase;
+  margin-left: 3px !important;
+  margin-top: 17px;
+  font-size: 14px;
+}
+
+.multi-switch-container {
+  width: 180px;
+  background-color: white;
+  border-color: black;
+  height: 30px;
+  margin-left: 14px;
+}
 
 .container-fluid {
   display: flex;
@@ -61,11 +86,11 @@ html {
 .form-select {
   margin-right: 3px;
   cursor: pointer;
-  border: 2px solid #e16e00;
+  border: 2px solid #e66f0f;
 }
 
 .form-select2 {
-  height: 30px;
+  height: 28px;
   margin-right: 3px;
   cursor: pointer;
   margin: 10px;
@@ -75,11 +100,11 @@ html {
 
 .selectedOperator {
   background: white;
-  border: 2px solid #366ef5;
+  border: 2px solid rgba(12, 16, 64, 0.606);
   font-size: medium;
-  border-radius: 2px;
+  border-radius: 4px;
   width: 43px;
-  height: 30px;
+  height: 28px;
   box-shadow: 1px 2px 2px #cecece;
 }
 
@@ -90,7 +115,7 @@ html {
   align-items: center;
 }
 
-.newSearchButton{
+.newSearchButton {
   margin-right: 199px;
   padding: 20px;
   margin-top: -54px;
@@ -127,11 +152,12 @@ ul {
   width: 60vw;
   margin-right: 3px;
   background: white;
-  border: 2px solid #e16e00;
-  font-size: large;
-  border-radius: 2px;
-  box-shadow: 2px 1px 2px #cecece;
-  height: 39px;
+  border: 2px solid #8985c1;
+  font-size: medium;
+  /* margin: 10px; */
+  border-radius: 10px;
+  /* box-shadow: 2px 1px 2px #cecece; */
+  height: 34px;
 }
 
 .searchIcon {
@@ -140,7 +166,8 @@ ul {
 }
 
 .forwardIcon {
-  width: 29px;
+  width: 24px;
+  margin-left: 4px;
 }
 
 .navbar {
@@ -161,6 +188,12 @@ ul {
   flex-direction: column;
   align-items: center;
   flex-wrap: wrap
+}
+
+.container2 {
+  width: 100vw;
+  display: flex;
+  margin-bottom: 40px;
 }
 
 .alphanumContainer {
@@ -197,32 +230,29 @@ ul {
 
 
 .cinecaLogo {
-  padding-bottom: 25px;
   /* width: 400px; */
-  height: 68px;
+  height: 49px;
   align-items: center;
-  margin-top: 51px;
-
+  margin-top: 30px;
+  margin-right: 20px;
 }
 
 .container1 a {
   display: flex;
   align-content: center;
   justify-content: center;
-  width: 20%;
-  margin-right: 80px;
-  margin-left: 80px;
+  margin-right: 20px;
 }
 
 .elixirLogo {
-  height: 124px;
-  margin-top: 35px;
+  height: 86px;
+  margin-top: 29px;
 }
 
 select {
 
   background: white;
-  border: 2px solid #366ef5;
+  border: 2px solid #e66f0f;
   font-size: medium;
   border-radius: 2px;
   width: 150px;
@@ -280,6 +310,14 @@ select {
   align-items: center;
 }
 
+.resultSet {
+  margin-top: -22px;
+}
+
+.cohortsModule {
+  display: flex;
+}
+
 .tittleAlph {
   display: flex;
   margin-bottom: 4px;
@@ -290,7 +328,7 @@ select {
 
 hr {
   width: 85vw;
-  margin-top: 3px;
+  margin-top: 6px;
   margin-bottom: 8px;
   height: 1px;
   background-color: #ccc;
@@ -301,8 +339,10 @@ hr {
   border: none;
   background-color: #ffffff;
   color: #4d4b4b;
-  font-size: 13px;
   cursor: pointer;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  text-transform: uppercase;
+  font-size: 12px;
 }
 
 .bulbExample {
@@ -323,21 +363,23 @@ hr {
 }
 
 .helpButton {
-  width: 138px;
   display: flex;
   align-items: center;
-
+  width: 188px;
+  margin-left: 20px;
 }
+
+
 
 .logos {
   display: flex;
-  width: 63vw;
+  width: 100vw;
   align-items: center;
-  align-content: center;
+  align-content: flex-end;
   flex-direction: row-reverse;
-  justify-content: center;
-  margin-bottom: 18px;
-  margin-top: 11px;
+  /* justify-content: flex-end; */
+  margin-bottom: -11px;
+  margin-top: -16px;
 }
 
 
@@ -346,9 +388,19 @@ hr {
 }
 
 .bulbLogo {
-  height: 18px;
+  height: 16px;
   margin-right: 10px;
 }
+
+.arrowLogo {
+  height: 12px;
+}
+
+.containerExtraSections {
+  display: flex;
+  flex-direction: column;
+}
+
 
 .questionLogo {
   width: 17px;
@@ -391,12 +443,13 @@ hr {
 
 
 .example {
+
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 30px;
-  margin-bottom: 15px;
-  margin-left: 161px;
+  margin-top: 14px;
+  /* margin-bottom: -1px; */
+  margin-left: 233px;
 }
 
 .extraSections {
@@ -461,8 +514,13 @@ hr {
   background: #86d2ff;
 }
 
+
+
 h5 {
-  font-size: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: normal;
 }
 
 .buttonClass {
@@ -479,32 +537,38 @@ h5 {
 
 .advSearch-module {
   display: flex;
+  align-items: center;
+  margin-top: 8px;
 }
 
-
-
+#similarityCheck {
+  width: 14px;
+  margin-top: 5px;
+  margin-left: 6px;
+  cursor: pointer;
+}
 
 .IdForm {
   background: white;
-  border: 2px solid #366ef5;
+  border: 2px solid rgba(12, 16, 64, 0.606);
   margin: 4px;
   padding: 6px;
   box-shadow: 1px 1px 2px #a3a0a0;
   width: 222px;
-  height: 14px;
-  border-radius: 2px;
+  height: 12px;
+  border-radius: 4px;
 }
 
 
 .ValueForm {
   background: white;
-  border: 2px solid #366ef5;
+  border: 2px solid rgba(12, 16, 64, 0.606);
   margin: 20px;
   padding: 6px;
   box-shadow: 1px 1px 2px #a3a0a0;
   width: 16%;
-  height: 14px;
-  border-radius: 2px;
+  height: 12px;
+  border-radius: 4px;
 
 }
 
@@ -523,7 +587,7 @@ h5 {
 
 .operator {
   background: white;
-  border: 2px solid #366ef5;
+  border: 2px solid #e66f0f;
   padding: 3px;
   box-shadow: 1px 1px 2px #a3a0a0;
   width: 21%;
@@ -545,6 +609,9 @@ h5 {
   padding: 4px;
   cursor: pointer;
   margin-bottom: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  text-transform: uppercase;
+  font-size: 12px;
 }
 
 .filters:hover {

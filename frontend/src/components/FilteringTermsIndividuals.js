@@ -24,7 +24,7 @@ function FilteringTermsIndividuals(props) {
         list: props.filteringTerms !== false ? props.filteringTerms.data.response.filteringTerms : "error"
     })
 
-    const [trigger, setTrigger]= useState(false)
+    const [trigger, setTrigger] = useState(false)
 
     const remove = tag => {
 
@@ -38,27 +38,29 @@ function FilteringTermsIndividuals(props) {
             }
 
         });
-       
+
         props.filteringTerms.data.response.filteringTerms.forEach(element => {
-            if (element.id === tag.value){
+            if (element.id === tag.value) {
                 state.list.unshift(element)
             }
         })
-       
-        
+
+
         setTrigger(true)
-       
-        if (props.placeholder.includes(`,${tag.value}`)) {
-            props.setPlaceholder(props.placeholder.replace(`,${tag.value}`, ""))
-        } else if (props.placeholder.includes(`${tag.value},`)) {
-            props.setPlaceholder(props.placeholder.replace(`${tag.value},`, ""))
+
+        if (props.query.includes(`,${tag.value}`)) {
+            props.setQuery(props.query.replace(`,${tag.value}`, ""))
+        } else if (props.query.includes(`${tag.value},`)) {
+            props.setQuery(props.query.replace(`${tag.value},`, ""))
+        } else if (props.query.includes(`${tag.value}`)) {
+            props.setQuery(props.query.replace(`${tag.value}`, ""))
         } else {
-            props.setPlaceholder(props.placeholder.replace(tag.value, ""))
-            props.setPlaceholder('filtering term comma-separated, ID><=value')
+            props.setQuery(props.query.replace(tag.value, ""))
+            props.setQuery('filtering term comma-separated, ID><=value')
         }
 
-        if (props.placeholder === '') {
-            props.setPlaceholder('filtering term comma-separated, ID><=value')
+        if (props.query === '') {
+            props.setQuery('filtering term comma-separated, ID><=value')
         }
 
 
@@ -100,7 +102,7 @@ function FilteringTermsIndividuals(props) {
         // setSelected(selected)
         // setTags(state.list)
 
-    }, [props.filteringTerms,trigger])
+    }, [props.filteringTerms, trigger])
 
 
     const handleChange = (e) => {
@@ -124,7 +126,7 @@ function FilteringTermsIndividuals(props) {
 
         })
         setstate({
-            query: e.target.value,
+            //query: e.target.value,
             list: results
         })
 
@@ -137,7 +139,7 @@ function FilteringTermsIndividuals(props) {
 
         const results = props.filteringTerms.data.response.filteringTerms.filter(post => {
             console.log(post)
-            if (post.label !=='' && post.label !== undefined ){
+            if (post.label !== '' && post.label !== undefined) {
                 if (e.target.value === '') {
                     return props.filteringTerms.data.response.filteringTerms
                 } else {
@@ -151,12 +153,12 @@ function FilteringTermsIndividuals(props) {
                         }
                     }
                 }
-    
+
             }
-          
+
         })
         setstate({
-            query: e.target.value,
+
             list: results
         })
 
@@ -172,7 +174,7 @@ function FilteringTermsIndividuals(props) {
             if (e.target.value === "") {
                 return props.filteringTerms.data.response.filteringTerms
             } else {
-                if (post.type != undefined) {
+                if (post.type !== undefined) {
                     if (post.type.toLowerCase().includes(e.target.value.toLowerCase())) {
                         return post
                     }
@@ -185,7 +187,7 @@ function FilteringTermsIndividuals(props) {
 
         })
         setstate({
-            query: e.target.value,
+
             list: results
         })
 
@@ -203,7 +205,7 @@ function FilteringTermsIndividuals(props) {
             if (e.target.value === "") {
                 return props.filteringTerms.data.response.filteringTerms
             } else {
-                if (post.scope != undefined) {
+                if (post.scope !== undefined) {
                     if (post.scope.toLowerCase().includes(e.target.value.toLowerCase())) {
                         return post
                     }
@@ -216,22 +218,20 @@ function FilteringTermsIndividuals(props) {
 
         })
         setstate({
-            query: e.target.value,
+
             list: results
         })
 
-  
+
 
     }
 
- 
+
 
     const handleCheck = (e) => {
 
-
-
         let count = 0
-        
+
         const alreadySelected = selected.filter(term => term.label === e.target.value)
 
         if (alreadySelected.length !== 0) {
@@ -266,48 +266,51 @@ function FilteringTermsIndividuals(props) {
 
         }
 
+        if (props.query !== null) {
+            let stringQuery = ''
+            if (props.query.includes(',')) {
+
+                let arrayTerms = props.query.split(',')
+                arrayTerms.forEach(element => {
+
+                    if (element === e.target.value) {
+                        stringQuery = props.query
+                    } else {
+                        stringQuery = props.query + ',' + e.target.value
+                    }
+
+                })
+
+                if (stringQuery === '' || stringQuery === ',') {
+                    props.setQuery('filtering term comma-separated, ID><=value')
+                } else {
+
+                    props.setQuery(stringQuery)
+                }
 
 
-
-        if (props.placeholder.includes(e.target.value)) {
-
-            let stringQuery = props.placeholder
-
-            if (stringQuery.includes(',')) {
-                stringQuery = stringQuery.replace(`,${e.target.value}`, '')
-                stringQuery = stringQuery.replace(`${e.target.value},`, '')
             } else {
-                stringQuery = stringQuery.replace(e.target.value, '')
+                console.log("asdsd")
+                if ((e.target.value !== props.query && props.query !== '')) {
+
+                    stringQuery = `${props.query},` + e.target.value
+                    props.setQuery(stringQuery)
+                } else if ((e.target.value !== props.query && props.query === '')) {
+                    stringQuery = `${props.query}` + e.target.value
+                    props.setQuery(stringQuery)
+                }
             }
-
-
-
-            if (stringQuery === '' || stringQuery === ',') {
-                props.setPlaceholder('filtering term comma-separated, ID><=value')
-            } else {
-
-                props.setPlaceholder(stringQuery)
-            }
-
 
         } else {
-            if ((e.target.value != props.placeholder) && (props.placeholder != 'filtering term comma-separated, ID><=value')) {
-                let stringQuery = `${props.placeholder},` + e.target.value
-                stringQuery = stringQuery.replace('filtering term comma-separated, ID><=value', '')
-                props.setPlaceholder(stringQuery)
-            } else {
-                let stringQuery = e.target.value
-                stringQuery = stringQuery.replace('filtering term comma-separated, ID><=value', '')
-                props.setPlaceholder(stringQuery)
-            }
-
-
+            let stringQuery = e.target.value
+            props.setQuery(stringQuery)
         }
+
 
         console.log(state.list)
         const filteredItems = state.list.filter(item => item.id !== e.target.value)
         e.target.checked = false
-        
+
         setstate({
             query: '',
             list: filteredItems
@@ -335,7 +338,7 @@ function FilteringTermsIndividuals(props) {
             {!error && <div className="tableWrapper">
 
                 <table className="table">
-                    <thead>
+                    <thead className="thead1">
                         <tr className="search-tr">
                             <th className="search-box sorting" tabIndex="0" aria-controls="DataTables_Table_0" rowSpan="1" colSpan="2" aria-sort="ascending" aria-label=": activate to sort column descending"><form><input className="searchTermInput1" type="search" value={state.query} onChange={handleChange} placeholder="Search term" /></form></th>
 
@@ -353,7 +356,7 @@ function FilteringTermsIndividuals(props) {
 
                         </tr>
                     </thead>
-                    <thead>
+                    <thead className="thead2">
                         <tr>
                             <th className="th2">term</th>
                             <th className="th1">label</th>
@@ -368,7 +371,7 @@ function FilteringTermsIndividuals(props) {
                             <tbody>
 
                                 {index % 2 === 0 && <tr className="terms1">
-                                    <td className="th2"> <input className="select-checkbox"  onClick={handleCheck} type="checkbox" id='includeTerm' name="term" value={term.id} />
+                                    <td className="th2"> <input className="select-checkbox" onClick={handleCheck} type="checkbox" id='includeTerm' name="term" value={term.id} />
                                         {term.id}</td>
                                     {term.label !== '' ? <td className="th1">{term.label}</td> : <td className="th1">-</td>}
                                     <td className="th1">{term.type}</td>
