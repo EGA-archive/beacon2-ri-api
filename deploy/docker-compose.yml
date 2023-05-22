@@ -159,3 +159,15 @@ services:
     networks:
       - idp-priv 
       - my-app-network
+  
+  frontend:
+    build:
+      context: ../frontend
+    command: [ "yarn", "start" ]
+    container_name: react
+    depends_on:
+      - beacon
+    ports:
+      - 3000:3000
+    volumes:
+      - ../frontend:/usr/src/app
