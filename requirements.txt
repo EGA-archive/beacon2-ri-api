@@ -23,7 +23,7 @@ progressbar~=2.5
 fastobo~=0.11.1
 pronto~=2.4.4
 #requests
-requests==2.25.1
+requests==2.31.0
 pandas==1.5.3
 scipy==1.10.0
 numpy==1.24.2
