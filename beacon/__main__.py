@@ -62,7 +62,7 @@ def main(path=None):
     #)
 
     beacon = web.Application(
-        middlewares=[web.normalize_path_middleware(), middlewares.error_middleware, cors_middleware(origins=["https://beacon-network-test.ega-archive.org", "https://beacon-network-test2.ega-archive.org"])]
+        middlewares=[web.normalize_path_middleware(), middlewares.error_middleware, cors_middleware(origins=["https://beacon-network-test.ega-archive.org", "https://beacon-network-test2.ega-archive.org", "http://localhost:3000"])]
     )
 
 
@@ -99,8 +99,20 @@ def main(path=None):
         )
 })
 
+
     for route in list(beacon.router.routes()):
-        cors.add(route)
+        cors.add(route, {
+        "http://localhost:3000":
+            aiohttp_cors.ResourceOptions(allow_credentials=True,
+            expose_headers="*",
+            allow_methods=("POST", "PATCH", "GET", "OPTIONS"),
+            allow_headers=DEFAULT_ALLOW_HEADERS),
+        "https://beacon-network-test2.ega-archive.org":
+            aiohttp_cors.ResourceOptions(allow_credentials=True,
+            expose_headers="*",
+            allow_methods=("POST", "PATCH", "GET", "OPTIONS"),
+            allow_headers=DEFAULT_ALLOW_HEADERS),
+    })
 
     # Configure HTTPS (or not)
     ssl_context = None
