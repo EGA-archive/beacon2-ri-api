@@ -72,7 +72,7 @@ def main(path=None):
     server.add_routes([web.post('/', permission)]) # type: ignore
 
     cors = aiohttp_cors.setup(server, defaults={
-    "http://localhost:3000": aiohttp_cors.ResourceOptions(
+    "https://beacon-network-test.ega-archive.org": aiohttp_cors.ResourceOptions(
             allow_credentials=True,
             expose_headers="*",
             allow_methods=("POST", "PATCH", "GET", "OPTIONS"),
@@ -81,7 +81,18 @@ def main(path=None):
 })
     
     for route in list(server.router.routes()):
-        cors.add(route)
+        cors.add(route, {
+        "http://localhost:3000":
+            aiohttp_cors.ResourceOptions(allow_credentials=True,
+            expose_headers="*",
+            allow_methods=("POST", "PATCH", "GET", "OPTIONS"),
+            allow_headers=DEFAULT_ALLOW_HEADERS),
+        "https://beacon-network-test2.ega-archive.org":
+            aiohttp_cors.ResourceOptions(allow_credentials=True,
+            expose_headers="*",
+            allow_methods=("POST", "PATCH", "GET", "OPTIONS"),
+            allow_headers=DEFAULT_ALLOW_HEADERS),
+    })
 
     web.run_app(server,
                 host='0.0.0.0',

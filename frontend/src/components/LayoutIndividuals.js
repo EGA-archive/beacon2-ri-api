@@ -12,7 +12,7 @@ import { AuthContext } from './context/AuthContext';
 import { useContext } from 'react';
 
 import Switch from '@mui/material/Switch';
-import MultiSwitch from "react-multi-switch-toggle";
+import MultiSwitch from 'react-multi-switch-toggle';
 
 import axios from "axios";
 
