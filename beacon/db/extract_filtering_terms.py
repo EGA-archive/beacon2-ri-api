@@ -247,6 +247,34 @@ def get_filtering_object(terms_ids: list, collection_name: str):
                                         #'count': get_ontology_term_count(collection_name, onto),
                                         'scope': collection_name                    
                                     })
+                    if label == 'Weight':
+                        terms.append({
+                                                'type': 'alphanumeric',
+                                                'id': label,
+                                                'label': ontology_label,
+                                                # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
+                                                #'count': get_ontology_term_count(collection_name, onto),
+                                                'scope': collection_name
+                                            })
+                    if label == 'BMI':
+                        terms.append({
+                                                'type': 'alphanumeric',
+                                                'id': label,
+                                                'label': ontology_label,
+                                                # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
+                                                #'count': get_ontology_term_count(collection_name, onto),
+                                                'scope': collection_name
+                                            })
+                    if label == 'Height-standing':
+                        terms.append({
+                                                'type': 'alphanumeric',
+                                                'id': label,
+                                                'label': ontology_label,
+                                                # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
+                                                #'count': get_ontology_term_count(collection_name, onto),
+                                                'scope': collection_name
+                                            })
+
                 print(terms)
         except Exception:
             pass
