@@ -4,13 +4,14 @@
     flex-wrap: wrap;
     justify-content: center;
 }
-
+.logoBeacon{
+    width: 100px;
+}
 .datasetCard{
-    width: 460px;
+    width: 40vw;
     margin: 9px;
-    margin-right: 24px;
     margin-left: 24px;
-    border: 2px solid #3b9ad5;
+    /* border: 2px solid #3b9ad5; */
     padding: 16px;
     display: flex;
     box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(179, 179, 179, 0.22) 0px 10px 10px;
@@ -18,6 +19,7 @@
     align-content: center;
     flex-direction: column;
     background-color: white;
+    justify-content: flex-start;
 
 }
 

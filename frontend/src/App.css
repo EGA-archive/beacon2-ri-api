@@ -110,16 +110,9 @@ html {
 
 .newSearch {
   display: flex;
-  width: 100vw;
-  justify-content: flex-end;
-  align-items: center;
 }
 
-.newSearchButton {
-  margin-right: 199px;
-  padding: 20px;
-  margin-top: -54px;
-}
+
 
 .chosen-value {
   background: white;

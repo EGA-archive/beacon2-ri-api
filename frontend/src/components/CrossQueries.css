@@ -1,11 +1,13 @@
 .crossQueriesForm{
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    margin-top: 40px;
+    /* justify-content: center; */
+    margin-top: 40px; 
+    margin-right: 30px;
     align-content: center;
     align-items: flex-start;
 }
+
 
 select{
     background: white;
@@ -55,4 +57,24 @@ select{
 
 .formButton:hover{
     background: rgb(237, 142, 40);
+}
+
+h5{
+    color: rgb(209, 66, 66);
+    font-weight: bold;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.preCrossQueries{
+    margin-left: 30px;
+}
+
+.preCrossQueries p{
+    font-size: 11px;
+    background: #e5e5e5;
+    color: black;
+    padding: 20px;
 }

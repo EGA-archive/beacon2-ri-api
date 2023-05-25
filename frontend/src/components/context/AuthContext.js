@@ -89,7 +89,7 @@ function AuthProviderWrapper(props) {
             var details = {
                'grant_type': 'refresh_token',
                'client_id': 'beacon',
-               'client_secret': 'b26ca0f9-1137-4bee-b453-ee51eefbe7ba',
+               'client_secret': 'WGahOcaJcbQ2srhBsNH56NhhDxH5M51f',
                'realm': 'Beacon',
                'scope': 'openid',
                'requested_token_type': 'urn:ietf:params:oauth:token-type:refresh_token',

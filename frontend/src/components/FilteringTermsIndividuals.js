@@ -230,7 +230,6 @@ function FilteringTermsIndividuals(props) {
 
     const handleCheck = (e) => {
 
-        let count = 0
 
         const alreadySelected = selected.filter(term => term.label === e.target.value)
 
@@ -250,15 +249,7 @@ function FilteringTermsIndividuals(props) {
                         value: tags[i].value || tags[i].label
                     }
                     console.log(newTag)
-                    if (count === 0) {
-                        selected.push(newTag)
-                        count = 1
-                        console.log(count)
-                    }
-                    if (count === 1 && i === tags.length - 1) {
-
-                        count = 0
-                    }
+                    selected.push(newTag)
 
                 }
                 console.log(selected)
@@ -371,14 +362,14 @@ function FilteringTermsIndividuals(props) {
                             <tbody>
 
                                 {index % 2 === 0 && <tr className="terms1">
-                                    <td className="th2"> <input className="select-checkbox" onClick={handleCheck} type="checkbox" id='includeTerm' name="term" value={term.id} />
+                                    <td className="th2"> {(term.type=== "ontology" || term.type === "custom") && <input className="select-checkbox" onClick={handleCheck} type="checkbox" id='includeTerm' name="term" value={term.id} />}
                                         {term.id}</td>
                                     {term.label !== '' ? <td className="th1">{term.label}</td> : <td className="th1">-</td>}
                                     <td className="th1">{term.type}</td>
                                     <td className="th1">{term.scope}</td>
                                 </tr>}
                                 {index % 2 == !0 && <tr className="terms2">
-                                    <td className="th2">  <input className="select-checkbox" onClick={handleCheck} type="checkbox" id="includeTerm" name="term" value={term.id} />
+                                    <td className="th2"> {(term.type=== "ontology" || term.type === "custom") &&  <input className="select-checkbox" onClick={handleCheck} type="checkbox" id="includeTerm" name="term" value={term.id} />}
                                         {term.id}</td>
                                     {term.label !== '' ? <td className="th1">{term.label}</td> : <td className="th1">-</td>}
                                     <td className="th1">{term.type}</td>

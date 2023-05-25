@@ -58,8 +58,10 @@ function Navbar() {
                 <div class="animation nav2"></div>
             </nav>
             <nav className='nav3'>
-                <NavLink exact
-                    to="/members"
+                <NavLink 
+                    to={{pathname:"/members",
+                    state: {title:'from home page'}  
+                    }}
                     className={({ isActive }) => (isActive ? 'Members2' : 'Members')}
                 >Network members</NavLink>
                 {!isLoggedIn &&

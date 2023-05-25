@@ -12,7 +12,7 @@ import { AuthContext } from './context/AuthContext';
 import { useContext } from 'react';
 
 import Switch from '@mui/material/Switch';
-import MultiSwitch from "react-multi-switch-toggle";
+import MultiSwitch from 'react-multi-switch-toggle';
 
 import axios from "axios";
 
@@ -52,6 +52,7 @@ function LayoutIndividuals(props) {
     const [showFilteringTerms, setShowFilteringTerms] = useState(false)
     const [filteringTerms, setFilteringTerms] = useState(false)
 
+    const [trigger, setTrigger] = useState(false)
     const { storeToken, refreshToken, getStoredToken, authenticateUser, setExpirationTime, setExpirationTimeRefresh } = useContext(AuthContext);
 
 
@@ -67,6 +68,8 @@ function LayoutIndividuals(props) {
     const [counter, setCounter] = useState(0)
 
     const animatedComponents = makeAnimated();
+
+    const [resetSearch, setResetSearch] = useState(false)
 
     const [state, setstate] = useState({
         query: '',
@@ -279,7 +282,7 @@ function LayoutIndividuals(props) {
         const fetchData = async () => {
 
             try {
-                let res = await axios.get("http://localhost:5050/api/individuals/filtering_terms?limit=0")
+                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/individuals/filtering_terms")
                 if (res !== null) {
                     res.data.response.filteringTerms.forEach(element => {
                         arrayFilteringTerms.push(element.id)
@@ -349,6 +352,30 @@ function LayoutIndividuals(props) {
         setExampleQ([])
 
 
+        setResetSearch(true)
+
+
+        if (query === '1' || query === '') {
+            setQuery(null)
+        }
+        if (props.collection === 'Individuals') {
+
+            setResults('Individuals')
+        }
+
+
+    }
+
+    const onSubmit2 = (event) => {
+
+        setPlaceholder("filtering term comma-separated, ID><=value");
+
+
+        setIsSub(!isSubmitted)
+
+        setExampleQ([])
+
+
         if (query === '1' || query === '') {
             setQuery(null)
         }
@@ -363,6 +390,7 @@ function LayoutIndividuals(props) {
     const onSubmitCohorts = () => {
         setResults('Cohorts')
         props.setShowGraphs(true)
+        props.setLogged(!props.logged)
     }
 
     function search(e) {
@@ -398,15 +426,15 @@ function LayoutIndividuals(props) {
                 }
             </div>
             <nav className="navbar">
-                {isSubmitted &&
-                    <div className="newSearch"><button className="newSearchButton" onClick={onSubmit} type="submit">NEW SEARCH</button></div>}
+
                 <div className="container-fluid">
 
                     {cohorts === false &&
                         <form className="d-flex" onSubmit={onSubmit}>
                             <input className="formSearch" type="search" placeholder={placeholder} value={query} onChange={(e) => search(e)} aria-label="Search" />
                             {!isSubmitted && <button className="searchButton" type="submit"><img className="searchIcon" src="./magnifier.png" alt='searchIcon'></img></button>}
-
+                            {isSubmitted &&
+                                <div className="newSearch"><button className="newSearchButton" onClick={onSubmit2} type="submit">NEW SEARCH</button></div>}
                         </form>}
 
                     {cohorts &&
@@ -442,7 +470,7 @@ function LayoutIndividuals(props) {
                                         return (<div id='exampleQueries'>
 
 
-                                            <button className="exampleQuery" onClick={() => { setPlaceholder(`${result}`); setQuery(`${result}`); setResults(null); setValue(`${result}`) }}  >{result}</button>
+                                            <button className="exampleQuery" onClick={() => { setPlaceholder(`${result}`); setQuery(`${result}`); setValue(`${result}`) }}  >{result}</button>
                                         </div>)
 
                                     })}
@@ -632,11 +660,11 @@ function LayoutIndividuals(props) {
                         <IndividualsResults query={query} resultSets={resultSet} ID={ID} operator={operator} valueFree={valueFree} descendantTerm={descendantTerm} similarity={similarity} isSubmitted={isSubmitted} />
                     </div>
                 }
-                {results === null && showFilteringTerms && <FilteringTermsIndividuals filteringTerms={filteringTerms} collection={props.collection} setPlaceholder={setPlaceholder} placeholder={placeholder} query={query} setQuery={setQuery}/>}
+                {results === null && showFilteringTerms && <FilteringTermsIndividuals filteringTerms={filteringTerms} collection={props.collection} setPlaceholder={setPlaceholder} placeholder={placeholder} query={query} setQuery={setQuery} />}
                 {cohorts && results === 'Cohorts' &&
 
                     <div>
-                        <Cohorts showCohorts={'show'} />
+                        <Cohorts  />
                     </div>}
             </div>
 

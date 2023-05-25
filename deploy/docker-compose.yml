@@ -137,7 +137,7 @@ services:
       - DB_DATABASE=keycloak
       #- DB_SCHEMA=public
       - KEYCLOAK_IMPORT=/tmp/beacon-realm.json -Dkeycloak.profile.feature.upload_scripts=enabled -Dkeycloak.profile.feature.token_exchange=enabled -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled
-      - KEYCLOAK_HOSTNAME=localhost
+      - KEYCLOAK_HOSTNAME=https://beacon-network-test2.ega-archive.org/auth/
     volumes:
       - ./beacon-realm.json:/tmp/beacon-realm.json
     ports:
@@ -160,3 +160,15 @@ services:
     networks:
       - idp-priv 
       - my-app-network
+  
+  frontend:
+    build:
+      context: ../frontend
+    command: [ "yarn", "start" ]
+    container_name: react
+    depends_on:
+      - beacon
+    ports:
+      - 3000:3000
+    volumes:
+      - ../frontend:/usr/src/app

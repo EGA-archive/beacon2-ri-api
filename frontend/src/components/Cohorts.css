@@ -13,6 +13,24 @@
     margin: 50px;
 }
 
+.back{
+    background: #f1f1f6;
+    border-radius: 2px;
+    margin-top: 10px;
+    margin-left: 10px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.back:hover{
+    background: #ffffff;
+    border-radius: 2px;
+    margin-top: 10px;
+    margin-left: 10px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
 
 #chartGeo{ 
     width: 500px;
