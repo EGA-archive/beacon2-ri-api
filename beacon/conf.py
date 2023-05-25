@@ -34,9 +34,9 @@ org_info = ''
 #
 # Project info
 #
-description = (r"This Beacon is based on synthetic data hosted at the "
-               r"<a href='https://ega-archive.org/datasets/EGAD00001003338'>EGA</a>"
-               r". The dataset contains 2504 samples including genetic data based on 1K Genomes data, and 76 individual attributes and phenotypic data derived from UKBiobank.")
+description = (r'This Beacon is based on synthetic data hosted at the '
+               r'<a href="https://ega-archive.org/datasets/EGAD00001003338">EGA</a>'
+               r'. The dataset contains 2504 samples including genetic data based on 1K Genomes data, and 76 individual attributes and phenotypic data derived from UKBiobank.')
 version = 'v2.0'
 welcome_url = 'https://beacon.ega-archive.org/'
 alternative_url = 'https://beacon.ega-archive.org/api'
