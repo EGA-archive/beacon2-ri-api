@@ -61,7 +61,7 @@ ga4gh_service_type_version = '1.0'
 beacon_handovers = [
     {
         'handoverType': {
-            'id': 'CUSTOM',
+            'id': 'CUSTOM:000001',
             'label': 'Project description'
         },
         'note': 'Project description',
