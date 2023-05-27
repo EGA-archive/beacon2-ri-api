@@ -181,8 +181,7 @@ def insert_all_ontology_terms_used():
     if 'filtering_terms' in collections:
         collections.remove('filtering_terms')
     print("Collections:", collections)
-    coll = ['genomicVariations']
-    for c_name in coll:
+    for c_name in collections:
         terms_ids = find_ontology_terms_used(c_name)
         print(terms_ids)
         terms = get_filtering_object(terms_ids, c_name)
