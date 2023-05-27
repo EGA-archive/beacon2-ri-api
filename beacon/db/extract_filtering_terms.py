@@ -51,7 +51,7 @@ def get_ontology_field_name(ontology_id:str, term_id:str, collection:str):
             '$search': '\"' + ontology_id + ":" + term_id + '\"'
         }
     }
-    results = client.beacon.get_collection(collection).find(query)
+    results = client.beacon.get_collection(collection).find(query).limit(1)
     results = list(results)
     results = dumps(results)
     results = json.loads(results)
@@ -182,20 +182,9 @@ def insert_all_ontology_terms_used():
     print("Collections:", collections)
     for c_name in collections:
         terms_ids = find_ontology_terms_used(c_name)
-        i = 0
-        j =50
-        while i < len(terms_ids)-1:
-            if j < len(terms_ids)-1:
-                terms_partials = terms_ids[i:j]
-                i+=50
-                j+=50
-            else:
-                terms_partials = terms_ids[i:-1]
-                i+=50
-                j+=50
-            terms = get_filtering_object(terms_partials, c_name)
-            if len(terms) > 0:
-                client.beacon.filtering_terms.insert_many(terms)
+        terms = get_filtering_object(terms_ids, c_name)
+        if len(terms) > 0:
+            client.beacon.filtering_terms.insert_many(terms)
 
 def find_ontology_terms_used(collection_name: str) -> List[Dict]:
     print(collection_name)
