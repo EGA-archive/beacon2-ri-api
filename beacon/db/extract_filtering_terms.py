@@ -193,12 +193,12 @@ def find_ontology_terms_used(collection_name: str) -> List[Dict]:
     print(collection_name)
     terms_ids = []
     count = client.beacon.get_collection(collection_name).estimated_document_count()
-    if count < 20000:
+    if count < 10000:
         num_total=count
     else:
-        num_total=20000
+        num_total=10000
     i=0
-    xs = client.beacon.get_collection(collection_name).find().skip(i).limit(20000)
+    xs = client.beacon.get_collection(collection_name).find().skip(i).limit(10000)
     for r in tqdm(xs, total=num_total):
         matches = ONTOLOGY_REGEX.findall(str(r))
         for ontology_id, term_id in matches:
