@@ -181,7 +181,7 @@ def insert_all_ontology_terms_used():
     if 'filtering_terms' in collections:
         collections.remove('filtering_terms')
     print("Collections:", collections)
-    coll = ['g_variants']
+    coll = ['genomicVariations']
     for c_name in coll:
         terms_ids = find_ontology_terms_used(c_name)
         print(terms_ids)
@@ -193,18 +193,14 @@ def find_ontology_terms_used(collection_name: str) -> List[Dict]:
     print(collection_name)
     terms_ids = []
     count = client.beacon.get_collection(collection_name).estimated_document_count()
-    num_chunks = 10000
-    i=0
 
-    while i < count:
-        xs = client.beacon.get_collection(collection_name).find().skip(i).limit(num_chunks)
-        for r in tqdm(xs, total=count):
-            matches = ONTOLOGY_REGEX.findall(str(r))
-            for ontology_id, term_id in matches:
-                term = ':'.join([ontology_id, term_id])
-                if term not in terms_ids:
-                    terms_ids.append(term)
-        i += 10000
+    xs = client.beacon.get_collection(collection_name).find()
+    for r in tqdm(xs, total=10000):
+        matches = ONTOLOGY_REGEX.findall(str(r))
+        for ontology_id, term_id in matches:
+            term = ':'.join([ontology_id, term_id])
+            if term not in terms_ids:
+                terms_ids.append(term)
 
     return terms_ids
 
