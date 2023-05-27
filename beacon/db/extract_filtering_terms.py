@@ -200,7 +200,7 @@ def find_ontology_terms_used(collection_name: str) -> List[Dict]:
     i=0
     while i < 100000:
         xs = client.beacon.get_collection(collection_name).find().skip(i).limit(10000)
-        for r in tqdm(xs, total=num_total):
+        for r in tqdm(xs, total=100000):
             matches = ONTOLOGY_REGEX.findall(str(r))
             for ontology_id, term_id in matches:
                 term = ':'.join([ontology_id, term_id])
