@@ -44,6 +44,7 @@ class MyProgressBar:
         else:
             self.pbar.finish()
 
+
 def get_ontology_field_name(ontology_id:str, term_id:str, collection:str):
     query = {
         '$text': {
@@ -189,14 +190,23 @@ def find_ontology_terms_used(collection_name: str) -> List[Dict]:
     print(collection_name)
     terms_ids = []
     count = client.beacon.get_collection(collection_name).estimated_document_count()
-    xs = client.beacon.get_collection(collection_name).find()
-    for r in tqdm(xs, total=count):
-        matches = ONTOLOGY_REGEX.findall(str(r))
-        for ontology_id, term_id in matches:
-            term = ':'.join([ontology_id, term_id])
-            if term not in terms_ids:
-                terms_ids.append(term)
+    num_chunks = 1000
+    i=0
+
+    while i < count:
+        xs = client.beacon.get_collection(collection_name).find().skip(i).limit(num_chunks)
+        for r in tqdm(xs, total=count):
+            matches = ONTOLOGY_REGEX.findall(str(r))
+            for ontology_id, term_id in matches:
+                term = ':'.join([ontology_id, term_id])
+                if term not in terms_ids:
+                    terms_ids.append(term)
+        i += num_chunks
+        num_chunks += num_chunks
+
     return terms_ids
+
+
 
 def get_filtering_object(terms_ids: list, collection_name: str):
     terms = []
