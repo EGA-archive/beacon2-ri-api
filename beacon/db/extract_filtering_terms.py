@@ -190,7 +190,7 @@ def find_ontology_terms_used(collection_name: str) -> List[Dict]:
     print(collection_name)
     terms_ids = []
     count = client.beacon.get_collection(collection_name).estimated_document_count()
-    num_chunks = 1000
+    num_chunks = 10000
     i=0
 
     while i < count:
@@ -201,8 +201,8 @@ def find_ontology_terms_used(collection_name: str) -> List[Dict]:
                 term = ':'.join([ontology_id, term_id])
                 if term not in terms_ids:
                     terms_ids.append(term)
-        i += num_chunks
-        num_chunks += num_chunks
+        i += 10000
+        num_chunks += 10000
 
     return terms_ids
 
