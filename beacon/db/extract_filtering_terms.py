@@ -202,7 +202,6 @@ def find_ontology_terms_used(collection_name: str) -> List[Dict]:
                 if term not in terms_ids:
                     terms_ids.append(term)
         i += 10000
-        num_chunks += 10000
 
     return terms_ids
 
