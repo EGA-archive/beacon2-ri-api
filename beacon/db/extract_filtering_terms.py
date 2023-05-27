@@ -52,6 +52,7 @@ def get_ontology_field_name(ontology_id:str, term_id:str, collection:str):
         }
     }
     results = client.beacon.get_collection(collection).find(query).limit(1)
+    print(results)
     results = list(results)
     results = dumps(results)
     results = json.loads(results)
@@ -180,8 +181,10 @@ def insert_all_ontology_terms_used():
     if 'filtering_terms' in collections:
         collections.remove('filtering_terms')
     print("Collections:", collections)
-    for c_name in collections:
+    coll = ['g_variants']
+    for c_name in coll:
         terms_ids = find_ontology_terms_used(c_name)
+        print(terms_ids)
         terms = get_filtering_object(terms_ids, c_name)
         if len(terms) > 0:
             client.beacon.filtering_terms.insert_many(terms)
