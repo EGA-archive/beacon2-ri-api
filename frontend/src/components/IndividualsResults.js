@@ -83,9 +83,7 @@ function IndividualsResults(props) {
                     queryStringTerm = props.query.split(',')
                     console.log(queryStringTerm)
                     queryStringTerm.forEach((element, index) => {
-
                         element = element.trim()
-
                         if (element.includes('=') || element.includes('>') || element.includes('<') || element.includes('!') || element.includes('%')) {
 
                             if (element.includes('=')) {
@@ -122,13 +120,42 @@ function IndividualsResults(props) {
                             }
                             arrayFilter.push(filter2)
                         }
-
                     })
                 } else {
-                    const filter = {
-                        "id": props.query
+
+                    if (props.query.includes('=') || props.query.includes('>') || props.query.includes('<') || props.query.includes('!') || props.query.includes('%')) {
+                        if (props.query.includes('=')) {
+                            queryArray[0] = props.query.split('=')
+                            queryArray[0].push('=')
+                        }
+                        else if (props.query.includes('>')) {
+                            queryArray[0] = props.query.split('>')
+                            queryArray[0].push('>')
+                        } else if (props.query.includes('<')) {
+                            queryArray[0] = props.query.split('<')
+                            queryArray[0].push('<')
+                        } else if (props.query.includes('!')) {
+                            queryArray[0] = props.query.split('!')
+                            queryArray[0].push('!')
+                        } else {
+                            queryArray[0] = props.query.split('%')
+                            queryArray[0].push('%')
+                        }
+
+                        const alphaNumFilter = {
+                            "id": queryArray[0][0],
+                            "operator": queryArray[0][2],
+                            "value": queryArray[0][1],
+                        }
+                        arrayFilter.push(alphaNumFilter)
+
+                    } else {
+                        const filter = {
+                            "id": props.query
+                        }
+                        arrayFilter.push(filter)
                     }
-                    arrayFilter.push(filter)
+
 
                 }
 
@@ -206,7 +233,7 @@ function IndividualsResults(props) {
                             }
 
                         })
-
+            
                         setNumberResults(res.data.responseSummary.numTotalResults)
                         setBoolean(res.data.responseSummary.exists)
                     }
@@ -237,12 +264,12 @@ function IndividualsResults(props) {
                     console.log(res)
                     setTimeOut(true)
 
-                    if (res.data.responseSummary.numTotalResults < 1) {
+                    if (res.data.responseSummary.numTotalResults < 1 || res.data.responseSummary.numTotalResults === undefined) {
                         setError("No results. Please check the query and retry")
                         setNumberResults(0)
                         setBoolean(false)
                     } else {
-
+                        console.log(res.data.responseSummary.numTotalResults)
                         setNumberResults(res.data.responseSummary.numTotalResults)
                         setBoolean(res.data.responseSummary.exists)
 
@@ -260,7 +287,7 @@ function IndividualsResults(props) {
                                 console.log(results)
                             }
 
-        
+
 
                         })
 
@@ -270,7 +297,7 @@ function IndividualsResults(props) {
 
             } catch (error) {
                 console.log(error)
-        
+
             }
         };
         apiCall();

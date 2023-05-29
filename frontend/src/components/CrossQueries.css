@@ -68,6 +68,15 @@ h5{
     justify-content: center;
 }
 
+h5:hover{
+    color: rgb(118, 151, 228);
+    font-weight: bold;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .preCrossQueries{
     margin-left: 30px;
 }

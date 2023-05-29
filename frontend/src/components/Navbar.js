@@ -59,9 +59,7 @@ function Navbar() {
             </nav>
             <nav className='nav3'>
                 <NavLink 
-                    to={{pathname:"/members",
-                    state: {title:'from home page'}  
-                    }}
+                    to="/members"
                     className={({ isActive }) => (isActive ? 'Members2' : 'Members')}
                 >Network members</NavLink>
                 {!isLoggedIn &&

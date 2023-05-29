@@ -83,7 +83,7 @@ function AuthProviderWrapper(props) {
             setExpirationMessage('Session expired due to inactivity. Please log in again')
             logOutUser()
          } else {
-
+            setExpirationMessage('')
             console.log("HA PASADO EL EXPIRATION TIME")
 
             var details = {

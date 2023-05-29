@@ -238,22 +238,22 @@ function FilteringTermsIndividuals(props) {
             setSelected(selected.filter(t => t.value !== e.target.value))
         } else {
 
-            for (let i = 0; i < tags.length; i++) {
+       //     for (let i = 0; i < tags.length; i++) {
 
-                console.log(tags[i])
+             //   console.log(tags[i])
 
-                if (tags[i].label === e.target.value) {
+             //   if (tags[i].label === e.target.value) {
 
                     const newTag = {
-                        label: tags[i].label,
-                        value: tags[i].value || tags[i].label
+                        label: e.target.value,
+                        value: e.target.value
                     }
                     console.log(newTag)
                     selected.push(newTag)
 
-                }
+           //     }
                 console.log(selected)
-            }
+      //      }
 
         }
 
