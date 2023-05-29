@@ -10,5 +10,5 @@ ENV PATH /usr/src/app/node_modules/.bin:$PATH
 COPY package.json .
 COPY yarn.lock .
 
-RUN yarn install
+RUN yarn install --production
 RUN yarn i
