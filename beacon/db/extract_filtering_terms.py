@@ -296,8 +296,15 @@ def get_filtering_object(terms_ids: list, collection_name: str):
         for item in list_of_ontologies:
             f.write(item+"\n")
     f.close()
-    terms = [*set(terms)]
-    return terms
+    seen = set()
+    new_l = []
+    for d in terms:
+        t = tuple(sorted(d.items()))
+        if t not in seen:
+            seen.add(t)
+            new_l.append(d)
+
+    return new_l
 
 
 def get_alphanumeric_term_count(collection_name: str, key: str) -> int:
