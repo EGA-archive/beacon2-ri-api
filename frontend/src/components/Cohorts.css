@@ -33,9 +33,9 @@
 
 
 #chartGeo{ 
-    width: 500px;
+    width: 500px !important;
     margin: 28px;
-    height: 400px ;
+    height: 400px !important;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -55,15 +55,14 @@
 }
 
 #chartSex{
-   height: 300px ;
    display: flex;
    justify-content: center;
    align-items: center;
-   width: 400px;
+   width: 800px !important;
    margin: 28px;
 }
 
 #chartDiseases{
-    width: 1000px;
+    width: 1000px !important;
    
 }
