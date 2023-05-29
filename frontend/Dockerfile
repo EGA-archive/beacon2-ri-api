@@ -7,4 +7,5 @@ WORKDIR /usr/src/app
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
 
 # install app dependencies
+RUN yarn install
 RUN yarn
