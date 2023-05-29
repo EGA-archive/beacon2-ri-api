@@ -165,7 +165,7 @@ services:
   frontend:
     build:
       context: ../frontend
-    command: [ "yarn", "start" ]
+    command: [ "cd", "../frontend", "yarn", "start" ]
     container_name: react
     depends_on:
       - beacon
