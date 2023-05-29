@@ -4,6 +4,7 @@
   }
 
 .appAside {
+    height: 100vh;
     width: 50%;
     background-color: #0b5e81;
 }

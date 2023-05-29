@@ -39,7 +39,7 @@ export default function SignInForm(){
         var details = {
             'grant_type': 'password',
             'client_id': 'beacon',
-            'client_secret': 'b26ca0f9-1137-4bee-b453-ee51eefbe7ba',
+            'client_secret': 'lGqWrKKNDDucrWHHpUY6B6T8zVKq62i7',
             'username': userName,
             'password': password,
             'realm': 'Beacon',
@@ -103,13 +103,7 @@ export default function SignInForm(){
                         >
                             Sign In
                         </NavLink>
-                        <NavLink
-                           exact
-                            to="/sign-up"
-                            className={(element) => element.isActive ? 'formTitleLink' : 'formTitleLink-active'}
-                        >
-                            Sign Up
-                        </NavLink>
+                   
                     </div>
 
                     <div className="formCenter">
