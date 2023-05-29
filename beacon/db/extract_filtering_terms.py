@@ -257,6 +257,7 @@ def get_filtering_object(terms_ids: list, collection_name: str):
         for item in list_of_ontologies:
             f.write(item+"\n")
     f.close()
+    terms = [*set(terms)]
     return terms
 
 
