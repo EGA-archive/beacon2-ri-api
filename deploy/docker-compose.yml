@@ -28,7 +28,7 @@ services:
     image: beacon2ri/training_ui:v0.1
     hostname: beacon_training_ui    
     ports:
-      - 9000:9000
+      - 9000:8080
     networks:
       - beacon-priv
 
