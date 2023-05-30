@@ -110,16 +110,9 @@ html {
 
 .newSearch {
   display: flex;
-  width: 100vw;
-  justify-content: flex-end;
-  align-items: center;
 }
 
-.newSearchButton {
-  margin-right: 199px;
-  padding: 20px;
-  margin-top: -54px;
-}
+
 
 .chosen-value {
   background: white;
@@ -138,14 +131,6 @@ html {
 .d-flex2 {
   display: flex;
   justify-content: flex-end;
-}
-
-ul {
-  background: #cfd4dd;
-  z-index: 1010;
-  position: absolute;
-  /* padding: 26px; */
-  width: 242px;
 }
 
 .formSearch {
@@ -266,41 +251,42 @@ select {
   justify-content: center !important;
 }
 
-.ulIds {
-  height: 143px !important;
-  display: flex !important;
-  background: #cfd4dd !important;
-  z-index: 1010 !important;
-  /* position: absolute; */
-  /* padding: 26px; */
-  overflow-y: scroll !important;
-  width: 196px !important;
-  font-size: 14px !important;
-  margin-top: 218px !important;
-  margin-right: 243px !important;
-  flex-direction: column !important;
-  scroll-behavior: auto !important;
-  padding-top: 10px !important;
-  padding-bottom: 10px !important;
+
+
+.alphaIdModule {
+  display: flex;
+  flex-direction: column;
 }
 
-.alphanumContainer2 ul {
-  height: 143px !important;
-  display: flex !important;
-  background: #e1e5eb !important;
-  z-index: 1010 !important;
-  /* position: absolute; */
-  /* padding: 26px; */
-  overflow-y: scroll !important;
-  width: 195px !important;
-  font-size: 14px !important;
-  margin-top: 208px !important;
-  margin-right: 249px !important;
-  flex-direction: column !important;
-  scroll-behavior: auto !important;
-  padding-top: 10px !important;
-  padding-bottom: 10px !important;
+.selectedId {
+  background: white;
+  border: 1px solid rgba(201, 204, 244, 0.606);
+  /* margin: 4px; */
+  padding: 6px;
+  box-shadow: 0px 1px 1px #a3a0a0;
+  width: 197px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 3%;
+  margin-left: 7%;
+  margin-top: -9px;
+  overflow: auto;
+  height: 100px;
+  width: 239px;
 }
+
+.selectedId option{
+  padding: 3px;
+  width: 230px;
+}
+
+
+.selectedId option:hover {
+  background: #f6a558;
+  width: 230px;
+  padding: 3px;
+}
+
 
 .results {
   display: flex;
@@ -355,11 +341,11 @@ hr {
 }
 
 .exampleQuery:hover {
-  color: #4fb5f0;
+  color: rgb(118, 151, 228);
 }
 
 .exampleQueries:hover {
-  color: #4fb5f0;
+  color: rgb(118, 151, 228);
 }
 
 .helpButton {
@@ -557,6 +543,7 @@ h5 {
   width: 222px;
   height: 12px;
   border-radius: 4px;
+  overflow: auto;
 }
 
 
@@ -571,8 +558,6 @@ h5 {
   border-radius: 4px;
 
 }
-
-
 
 #operator {
   display: flex;
@@ -616,7 +601,7 @@ h5 {
 
 .filters:hover {
 
-  color: #4fb5f0;
+  color: rgb(118, 151, 228);
 }
 
 .ReactModal__Content--after-open {

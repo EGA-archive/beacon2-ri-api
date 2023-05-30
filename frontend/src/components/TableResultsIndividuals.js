@@ -23,13 +23,12 @@ function TableResultsIndividuals(props) {
     ]
     console.log(props.results)
     const rows = []
-    props.results.forEach(element => {
+    const ids = []
+    props.results.forEach((element, index) => {
 
+    
         if (element[1] !== undefined) {
-
-
-
-
+            console.log(element[0])
             let eth_id = ''
             let eth_label = ''
             let stringEth = ''
@@ -129,8 +128,8 @@ function TableResultsIndividuals(props) {
                 }
 
             }
-
-            rows.push({ Beacon_Id: element[0], id: element[1].id, ethnicity: stringEth, geographicOrigin: stringGeographic, interventionsOrProcedures: interventionsProcedures, measures: measuresJson, sex: stringSex, diseases: diseases })
+            console.log(element[0])
+            rows.push({ Beacon_Id: element[0], id: element[1].id + `_${index}`, ethnicity: stringEth, geographicOrigin: stringGeographic, interventionsOrProcedures: interventionsProcedures, measures: measuresJson, sex: stringSex, diseases: diseases })
 
         }
 
@@ -139,8 +138,10 @@ function TableResultsIndividuals(props) {
 
     return (
         <DataGrid getRowHeight={() => 'auto'}
+
             columns={columns}
             rows={rows}
+
         />
     )
 

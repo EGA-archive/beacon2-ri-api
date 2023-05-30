@@ -22,7 +22,7 @@
     width: 88vw;
     margin-right: 5px;
     overflow-inline: scroll;
-
+    height: 750px !important;
 }
 
 .MuiFormControl-root label {

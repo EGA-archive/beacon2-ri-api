@@ -79,12 +79,11 @@ function IndividualsResults(props) {
             if (props.query !== null) {
 
                 if (props.query.includes(',')) {
+                    console.log("holi")
                     queryStringTerm = props.query.split(',')
                     console.log(queryStringTerm)
                     queryStringTerm.forEach((element, index) => {
-
                         element = element.trim()
-
                         if (element.includes('=') || element.includes('>') || element.includes('<') || element.includes('!') || element.includes('%')) {
 
                             if (element.includes('=')) {
@@ -121,19 +120,45 @@ function IndividualsResults(props) {
                             }
                             arrayFilter.push(filter2)
                         }
-
                     })
                 } else {
-                    const filter = {
-                        "id": props.query,
-                        "includeDescendantTerms": props.descendantTerm
+
+                    if (props.query.includes('=') || props.query.includes('>') || props.query.includes('<') || props.query.includes('!') || props.query.includes('%')) {
+                        if (props.query.includes('=')) {
+                            queryArray[0] = props.query.split('=')
+                            queryArray[0].push('=')
+                        }
+                        else if (props.query.includes('>')) {
+                            queryArray[0] = props.query.split('>')
+                            queryArray[0].push('>')
+                        } else if (props.query.includes('<')) {
+                            queryArray[0] = props.query.split('<')
+                            queryArray[0].push('<')
+                        } else if (props.query.includes('!')) {
+                            queryArray[0] = props.query.split('!')
+                            queryArray[0].push('!')
+                        } else {
+                            queryArray[0] = props.query.split('%')
+                            queryArray[0].push('%')
+                        }
+
+                        const alphaNumFilter = {
+                            "id": queryArray[0][0],
+                            "operator": queryArray[0][2],
+                            "value": queryArray[0][1],
+                        }
+                        arrayFilter.push(alphaNumFilter)
+
+                    } else {
+                        const filter = {
+                            "id": props.query
+                        }
+                        arrayFilter.push(filter)
                     }
-                    arrayFilter.push(filter)
+
 
                 }
 
-
-                console.log(queryArray)
 
             }
 
@@ -183,7 +208,7 @@ function IndividualsResults(props) {
 
                     //   const headers = { 'Content-type': 'application/json', "Access-Control-Allow-Origin": "*" }
                     //res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals/", jsonData1, { headers: headers })
-                    res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals/", jsonData1)
+                    res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals", jsonData1)
 
                     // res = await axios.post("http://localhost:5050/api/individuals", jsonData1, { headers: headers })
                     console.log(res)
@@ -208,7 +233,7 @@ function IndividualsResults(props) {
                             }
 
                         })
-
+            
                         setNumberResults(res.data.responseSummary.numTotalResults)
                         setBoolean(res.data.responseSummary.exists)
                     }
@@ -235,40 +260,48 @@ function IndividualsResults(props) {
                     jsonData2 = JSON.stringify(jsonData2)
                     console.log(jsonData2)
 
-                    res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals/", jsonData2)
+                    res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals", jsonData2)
                     console.log(res)
                     setTimeOut(true)
 
-                    if (res.data.response.responseSummary.exists === false) {
+                    if (res.data.responseSummary.numTotalResults < 1 || res.data.responseSummary.numTotalResults === undefined) {
                         setError("No results. Please check the query and retry")
                         setNumberResults(0)
                         setBoolean(false)
                     } else {
+                        console.log(res.data.responseSummary.numTotalResults)
+                        setNumberResults(res.data.responseSummary.numTotalResults)
+                        setBoolean(res.data.responseSummary.exists)
 
                         res.data.response.resultSets.forEach((element, index) => {
 
-                            res.data.response.element.results.forEach((element2, index2) => {
+                            if (res.data.response.resultSets[index].resultsCount > 0) {
 
-                                let arrayResult = [res.data.response.resultSets[index].beaconId, res.data.response.resultSets[index].results[index2]]
-                                results.push(arrayResult)
-                            })
-    
-                            setNumberResults(res.data.responseSummary.numTotalResults)
-                            setBoolean(res.data.responseSummary.exists)
-    
+                                console.log(res.data.response.resultSets[index].results.length)
+                                res.data.response.resultSets[index].results.forEach((element2, index2) => {
+                                    let arrayResult = [res.data.response.resultSets[index].beaconId, res.data.response.resultSets[index].results[index2]]
+                                    results.push(arrayResult)
+                                    console.log(arrayResult)
+                                })
+
+                                console.log(results)
+                            }
+
+
+
                         })
-                  
+
 
                     }
                 }
 
             } catch (error) {
-                setTimeOut(true)
-                setError("No results found. Please check the query and retry")
+                console.log(error)
+
             }
         };
         apiCall();
-    }, [skipTrigger, limitTrigger])
+    }, [])
 
 
 
