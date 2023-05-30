@@ -34,9 +34,7 @@ org_info = ''
 #
 # Project info
 #
-description = (r"This <a href='https://beacon-project.io/'>Beacon</a> "
-               r"is based on the GA4GH Beacon "
-               r"<a href='https://github.com/ga4gh-beacon/specification-v2/blob/master/beacon.yaml'>v2.0</a>")
+description = r"This Beacon is based on synthetic data hosted at the <a href='https://ega-archive.org/datasets/EGAD00001003338'>EGA</a>. The dataset contains 2504 samples including genetic data based on 1K Genomes data, and 76 individual attributes and phenotypic data derived from UKBiobank."
 version = 'v2.0'
 welcome_url = 'https://beacon.ega-archive.org/'
 alternative_url = 'https://beacon.ega-archive.org/api'
@@ -63,7 +61,7 @@ ga4gh_service_type_version = '1.0'
 beacon_handovers = [
     {
         'handoverType': {
-            'id': 'CUSTOM',
+            'id': 'CUSTOM:000001',
             'label': 'Project description'
         },
         'note': 'Project description',

@@ -34,6 +34,7 @@ export default function SignInForm() {
     }
 
     const handleSubmit = async (e) => {
+
         try {
 
 
@@ -91,6 +92,7 @@ export default function SignInForm() {
             }
         } catch (error) {
             setError("User not found")
+
         }
     }
 
