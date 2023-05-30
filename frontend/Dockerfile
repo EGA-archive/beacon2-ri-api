@@ -9,4 +9,5 @@ ENV PATH /usr/src/app/node_modules/.bin:$PATH
 # install app dependencies
 COPY package.json .
 COPY yarn.lock .
+
 RUN yarn install --production
