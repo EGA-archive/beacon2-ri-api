@@ -1,7 +1,6 @@
 import '../App.css';
 
 import FilteringTermsIndividuals from './FilteringTermsIndividuals';
-import Individuals2 from './Individual2';
 import Cohorts from './Cohorts';
 
 import ResultsDatasets from './ResultsDatasets';
@@ -51,6 +50,8 @@ function LayoutIndividuals(props) {
 
     const [showFilteringTerms, setShowFilteringTerms] = useState(false)
     const [filteringTerms, setFilteringTerms] = useState(false)
+
+    const [showVariants, setShowVariants] = useState(false)
 
     const [trigger, setTrigger] = useState(false)
     const { storeToken, refreshToken, getStoredToken, authenticateUser, setExpirationTime, setExpirationTimeRefresh } = useContext(AuthContext);
@@ -181,15 +182,15 @@ function LayoutIndividuals(props) {
         console.log(ID)
         console.log(valueFree)
         console.log(operator)
-        if (ID!=='' && valueFree!== '' && operator!==''){
-            if (query !== null){
-                setQuery(query+','+`${ID}${operator}${valueFree}`)
-            } if (query === null){
+        if (ID !== '' && valueFree !== '' && operator !== '') {
+            if (query !== null) {
+                setQuery(query + ',' + `${ID}${operator}${valueFree}`)
+            } if (query === null) {
                 setQuery(`${ID}${operator}${valueFree}`)
             }
-           
+
         }
-        
+
     }
 
 
@@ -314,7 +315,7 @@ function LayoutIndividuals(props) {
     const handleExQueries = () => {
         if (props.collection === 'Individuals') {
             setExampleQ(['Weight>100', 'NCIT:C16352', 'geographicOrigin=%land%', 'geographicOrigin!England', 'NCIT:C42331'])
-        } else if (props.collection === 'Variant'){
+        } else if (props.collection === 'Variant') {
             setExampleQ(['22 : 16050310 - 16050740', '22 : 16050074 A > G', 'start=16050074&end=16050075&referenceBases=A&alternateBases=G'])
         }
     }
@@ -389,6 +390,7 @@ function LayoutIndividuals(props) {
         } else if (props.collection === "Variant") {
             setPlaceholder('chr : pos ref > alt, chr: start-end')
             setExtraIndividuals(false)
+            setShowVariants(true)
         } else if (props.collection === "Analyses") {
             setPlaceholder('chr : pos ref > alt')
             setExtraIndividuals(false)
@@ -595,7 +597,7 @@ function LayoutIndividuals(props) {
                                                 })}
                                             </select>}
                                     </div>
-                                <button onClick={handdleInclude}>Include</button>
+                                    <button onClick={handdleInclude}>Include</button>
                                 </div>
 
                                 <div className="bulbExample">
@@ -686,6 +688,76 @@ function LayoutIndividuals(props) {
                             </div>
                         </div>}
                     </div>}
+                {showVariants && <div>
+                    <div className='variantsContainer'>
+
+                        <div className='moduleVariants'>
+
+                            <label className='labelVariantsTittle'>Sequence queries</label>
+                            <div>
+                                <label className='labelVariants'>Reference name*</label>
+                                <input className='inputVariants' type='text'></input>
+                            </div>
+                            <div>
+                                <label className='labelVariants'>Start (single value)*</label>
+                                <input className='inputVariants' type='text'></input>
+                            </div>
+                            <div>
+                                <label className='labelVariants'>alternateBases*</label>
+                                <input className='inputVariants' type='text'></input>
+                            </div>
+                            <div>
+                                <label className='labelVariants'>referenceBases*</label>
+                                <input className='inputVariants' type='text'></input>
+                            </div>
+                        </div>
+                        <div className='moduleVariants'>
+                            <label className='labelVariantsTittle'>Range queries</label>
+                            <div>
+                                <label className='labelVariants'>Reference name*</label>
+                                <input className='inputVariants' type='text'></input>
+                            </div>
+                            <div>
+                                <label className='labelVariants'>Start (single value)*</label>
+                                <input className='inputVariants' type='text'></input>
+                            </div>
+                            <div>
+                                <label className='labelVariants' >End (single value)*</label>
+                                <input className='inputVariants' type='text'></input>
+                            </div>
+                            <div>
+                                <label className='labelVariants'>Variant type:</label>
+                                <input className='inputVariants' type='text'></input> </div>
+                            <div>
+                                <label className='labelVariants'>alternateBases:</label>
+                                <input className='inputVariants' type='text'></input></div>
+                            <div>
+                                <label className='labelVariants'>Aminoacid Change:</label>
+                                <input className='inputVariants' type='text'></input>
+                            </div>
+                        </div>
+                        <div className='moduleVariants'>
+                            <label className='labelVariantsTittle'>Gene ID queries</label>
+                            <div>
+                                <label className='labelVariants' >Gene ID*</label>
+                                <input className='inputVariants' type='text'></input>
+                            </div>
+                            <div>
+                                <label className='labelVariants'>Variant type:</label>
+                                <input className='inputVariants' type='text'></input></div>
+                            <div>
+                                <label className='labelVariants'>alternateBases:</label>
+                                <input className='inputVariants' type='text'></input></div>
+                            <div>
+                                <label className='labelVariants'>Aminoacid Change:</label>
+                                <input className='inputVariants' type='text'></input>
+                            </div>
+                        </div>
+                    </div>
+                    <div className='DivButtonVariants'>
+                        <button className='buttonVariants'>SUBMIT</button>
+                    </div>
+                </div>}
 
             </nav>
 

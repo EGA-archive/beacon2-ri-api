@@ -29,7 +29,8 @@ html {
 
 .searchButton:hover {
   background: linear-gradient(356deg, #cee3e7 50%, #daecf0 80%);
-  border-radius: 10px;
+  border-radius: 4px;
+  margin-left: 22px;
 }
 
 .newSearchButton:hover {
@@ -160,6 +161,69 @@ html {
   flex-direction: column;
   align-content: center;
   align-items: center;
+}
+
+.variantsContainer{
+  width: 100vw;
+  display: flex;
+  margin-top: 23px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.inputVariants{
+  height: 14px;
+  cursor: pointer;
+  border: 1.5px solid #dfdfdf;
+  border-radius: 2px;
+  margin-bottom: 34px;
+}
+
+.labelVariants{
+  font-size: 13px;
+  margin-bottom: 28px;
+  margin-right: 4px;
+  margin-left: 18px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+.labelVariantsTittle{
+  font-size: 16px;
+  margin-bottom: 27px;
+  color: #d36d00;
+  margin-right: 4px;
+  margin-left: 18px;
+  font-feature-settings: "smcp", "c2sc";
+  font-variant-caps: all-small-caps;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+.DivButtonVariants{
+  width: 100vw;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -23px;
+}
+
+.buttonVariants{
+  margin-right: 139px;
+  margin-bottom: 20px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 1px, rgba(179, 179, 179, 0.22) 0px 1px 1px;
+  padding: 7px;
+}
+
+.buttonVariants:hover{
+  margin-right: 119px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  color:rgb(118, 151, 228);
+ 
+}
+
+
+.moduleVariants{
+  display: flex;
+  flex-direction: column;
 }
 
 .divFlex {
