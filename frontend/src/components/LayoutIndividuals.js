@@ -454,7 +454,6 @@ function LayoutIndividuals(props) {
     const onSubmitCohorts = () => {
         setResults('Cohorts')
         props.setShowGraphs(true)
-        props.setLogged(!props.logged)
     }
 
     function search(e) {

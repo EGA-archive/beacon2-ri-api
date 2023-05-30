@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 function Cohorts(props) {
 
-  const API_ENDPOINT = "https://beacons.bsc.es/beacon-network/v2.0.0/cohorts"
+  const API_ENDPOINT = "https://beacons.bsc.es/beacon-network/v2.0.0/cohorts/"
 
   const [error, setError] = useState(false)
   const navigate = useNavigate();
@@ -16,7 +16,8 @@ function Cohorts(props) {
 
   const [showGraphs, setShowGraphs] = useState(false)
 
-  const [logged, setLogged] = useState(false)
+  const [showReset, setReset] = useState(false)
+  const [response, setResponse] = useState('')
 
   const [labelsDiseases, setLabelsDiseases] = useState([])
   const [labelsEthnicities, setLabelsEthnicities] = useState([])
@@ -30,10 +31,13 @@ function Cohorts(props) {
   const [selectedFilter, setSelectedFilter] = useState('')
   const [valueToFilter, setSelectedValue] = useState('')
 
-  const handleClick = () => {
-    setLogged(!logged)
-    setShowGraphs(false)
-  }
+  const [showEthFiltered, setShowEth] = useState(false)
+  const [showEthFiltered2, setShowEth2] = useState(false)
+
+  const [showDisFiltered, setShowDis] = useState(false)
+  const [showDisFiltered2, setShowDis2] = useState(false)
+
+
 
   const handleSelectedFilter = (e) => {
     setSelectedFilter(e.target.value)
@@ -41,28 +45,18 @@ function Cohorts(props) {
 
   const handleSelectedValue = (e) => {
     setSelectedValue(e.target.value)
+    console.log(e.target.value)
   }
 
-  const submitFilters = (e) => {
-    let res = ''
-    if (selectedFilter === 'dis_eth') {
-      res = dis_eth.valueToFilter
-    } else if (selectedFilter === 'dis_sex') {
-      res = dis_sex.valueToFilter
-    } else if (selectedFilter === 'eth_sex') {
-      res = eth_sex.valueToFilter
-    } else if (selectedFilter === 'eth_dis') {
-      res = eth_dis.valueToFilter
-    } else {
-      res = ''
-    }
-
+  useEffect(() => {
     let values = []
     let labels = []
-    if (res !== '') {
-      values = Object.values(res)
-      labels = Object.keys(res)
+    if (response !== '') {
+      values = Object.values(response)
+      labels = Object.keys(response)
     }
+    console.log(values)
+    console.log(labels)
 
     if (values.length > 0 && labels.length > 0) {
       var options = {
@@ -71,20 +65,93 @@ function Cohorts(props) {
           type: 'pie'
         },
         title: {
-          text: 'Filtered graphic',
-
+          text: valueToFilter,
         },
         series: values,
         labels: labels,
       }
 
-      var chartFiltered = new ApexCharts(document.querySelector("#chartFiltered"), options);
-      chartFiltered.render()
+      console.log(options)
+
+      if (selectedFilter === 'dis_eth') {
+
+        var chartFiltered = new ApexCharts(document.querySelector("#chartFilteredDisease"), options);
+        chartFiltered.render()
+      } else if (selectedFilter === 'dis_sex') {
+
+        var chartFiltered = new ApexCharts(document.querySelector("#chartFilteredDisease2"), options);
+
+        chartFiltered.render()
+      }
+      else if (selectedFilter === 'eth_dis') {
+
+        var chartFiltered = new ApexCharts(document.querySelector("#chartFilteredEthnicity"), options);
+
+        chartFiltered.render()
+      } else if (selectedFilter === 'eth_sex') {
+
+        var chartFiltered = new ApexCharts(document.querySelector("#chartFilteredEthnicity2"), options);
+        chartFiltered.render()
+      }
+
     }
 
 
+  }, [response])
+  
+  const submitFilters = (e) => {
+    console.log("hola")
+    
+    if (selectedFilter === 'dis_eth') {
+      setShowDis2(false)
+      setShowEth2(false)
+      setShowEth(false)
+      setShowDis(true)
+      if (dis_eth[valueToFilter] !== null && dis_eth[valueToFilter] !== undefined ){
+        setResponse(dis_eth[`${valueToFilter}`])
+      } else {
+        setError('Not found')
+      }
+     
+    } else if (selectedFilter === 'dis_sex') {
+      setShowDis(false)
+      setShowEth2(false)
+      setShowEth(false)
+      setShowDis2(true)
+      if (dis_sex[valueToFilter] !== null && dis_sex[valueToFilter]!== undefined){
+        setResponse(dis_sex[`${valueToFilter}`])
+      } else{
+        setError('Not found')
+      }
+    
+    } else if (selectedFilter === 'eth_sex') {
+      setShowDis2(false)
+      setShowDis(false)
+      setShowEth(false)
+      setShowEth2(true)
+      if (eth_sex[valueToFilter] !== null && eth_sex[valueToFilter] !== undefined) {
+        setResponse(eth_sex[`${valueToFilter}`])
+      } else {
+        setError('Not found')
+      }
+      
 
+    } else if (selectedFilter === 'eth_dis') {
+      setShowDis2(false)
+      setShowDis(false)
+      setShowEth2(false)
+      setShowEth(true)
+      if (eth_dis[valueToFilter] !== null && eth_dis[valueToFilter] !== undefined){
+        setResponse(eth_dis[`${valueToFilter}`])
+      } else{
+        setError('Not found')
+      }
+
+    }
+  
+   
   }
+
 
   useEffect(() => {
     const apiCall = async () => {
@@ -106,13 +173,15 @@ function Cohorts(props) {
         const diseases_sex = res.data.response.collections[i].collectionEvents[0].eventDiseases.distribution.diseases_sex
         setDisEth(diseases_eth)
         setDisSex(diseases_sex)
-
-        const ethnicities_dis = res.data.response.collections[i].collectionEvents[0].eventEthnicities.distribution.ethnicities_diseases
+        console.log(diseases_eth)
+        console.log(diseases_sex)
+        const ethnicities_dis = res.data.response.collections[i].collectionEvents[0].eventEthnicities.distribution.ethnicities_disease
         const ethnicities_sex = res.data.response.collections[i].collectionEvents[0].eventEthnicities.distribution.ethnicities_sex
 
         setEthDis(ethnicities_dis)
         setEthSex(ethnicities_sex)
-
+        console.log(ethnicities_dis)
+        console.log(ethnicities_sex)
 
         setNameCohort(res.data.response.collections[i].name)
         console.log(geoData)
@@ -130,7 +199,9 @@ function Cohorts(props) {
 
         const valuesDiseases = Object.values(diseasesData)
         const labelsDiseases = Object.keys(diseasesData)
+
         setLabelsDiseases(labelsDiseases)
+
 
         var optionsSex = {
 
@@ -263,50 +334,29 @@ function Cohorts(props) {
       }
     }
     apiCall()
-  }, [logged])
+  }, [])
 
   return (
 
     <div>
-        {showGraphs === true && <button className="back" onClick={handleClick}><h2>Back to Cohorts search</h2></button>}
-        {showGraphs === false && <LayoutIndividuals collection={'Cohorts'} setShowGraphs={setShowGraphs} setLogged={setLogged} logged={logged} />}
-        <h1>Filters</h1>
-        <label for="filters">Select an option to filter</label>
-        <select name="filters" id="filtersSelect" onChange={handleSelectedFilter}>
-          <option value=''></option>
-          <option value='eth_sex'>Ethnicities by sex</option>
-          <option value='eth_dis'>Ethnicities by disease</option>
-          <option value='dis_eth'>Diseases by ethnicity</option>
-          <option value='dis_sex'>Diseases by sex</option>
-        </select>
-        {selectedFilter === 'dis_eth' &&
-          <div>
-            <label for="diseases">Select the disease:</label>
-            <select name="diseases" id="diseasesSelect" onChange={handleSelectedValue}>
-              <option value=''></option>
-              {labelsDiseases.map(element => {
-                return (
-                  <option value={element}>{element}</option>
-                )
-              })}
-            </select>
-          </div>
-        }
-        {selectedFilter === 'dis_sex' &&
-          <div>
-            <label for="diseases">Select the disease:</label>
-            <select name="diseases" id="diseasesSelect2" onChange={handleSelectedValue}>
-              <option value=''></option>
-              {labelsDiseases.map(element => {
-                return (
-                  <option value={element}>{element}</option>
-                )
-              })}
-            </select>
-          </div>}
 
-        {selectedFilter === 'eth_sex' &&
-          <div>
+      {showGraphs === false && <LayoutIndividuals collection={'Cohorts'} setShowGraphs={setShowGraphs} />}
+
+      {nameCohort !== '' && <h3>{nameCohort}</h3>}
+
+      <div className='chartsModule'>
+        <div id="chartSex"></div>
+        <div id="chartGeo"></div>
+        <hr></hr>
+        <div className='ethnicity'>
+          <div className='ethFilters'>
+            <label for="ethnicities">Filter:</label>
+            <select name="filters" id="filtersSelect" onChange={handleSelectedFilter}>
+              <option value=''></option>
+              <option value='eth_sex'>Ethnicities by sex</option>
+              <option value='eth_dis'>Ethnicities by disease</option>
+            </select>
+
             <label for="ethnicities">Select the ethnicity:</label>
             <select name="ethnicities" id="ethnicitiesSelect" onChange={handleSelectedValue}>
               <option value=''></option>
@@ -316,35 +366,48 @@ function Cohorts(props) {
                 )
               })}
             </select>
-          </div>}
-        {selectedFilter === 'eth_dis' &&
-          <div>
-            <label for="ethnicities">Select the ethnicity:</label>
+            <button className="buttonSubmit" onClick={submitFilters}>Submit</button>
+          </div>
+          {showEthFiltered &&
+            <div className="moduleFiltered">
+              <div id="chartFilteredEthnicity"></div>
+            </div>}
+          {showEthFiltered2 &&
+            <div className="moduleFiltered">
+              <div id="chartFilteredEthnicity2"></div>
+            </div>}
+          <div id="chartEthnicity"></div>
+        </div>
 
-            <select name="ethnicities" id="ethnicitiesSelect2" onChange={handleSelectedValue}>
+        <div className='diseases'>
+          <div className='diseasesFilters'>
+            <label for="ethnicities">Filter:</label>
+            <select name="filters" id="filtersSelect" onChange={handleSelectedFilter}>
               <option value=''></option>
-              {labelsEthnicities.map(element => {
+              <option value='dis_eth'>Diseases by ethnicity</option>
+              <option value='dis_sex'>Diseases by sex</option>
+            </select>
+
+            <select name="diseases" id="diseasesSelect" onChange={handleSelectedValue}>
+              <option value=''></option>
+              {labelsDiseases.map(element => {
                 return (
                   <option value={element}>{element}</option>
                 )
               })}
             </select>
-          </div>}
-
-        <button onClick={submitFilters}>Submit</button>
-    
-
-      {showGraphs === true &&
-        <div>
-          {nameCohort !== '' && <h3>{nameCohort}</h3>}
-          <div className='chartsModule'>
-            <div id="chartSex"></div>
-            <div id="chartGeo"></div>
-            <div id="chartEthnicity"></div>
-            <div id="chartDiseases"></div>
+            <button className="buttonSubmit" onClick={submitFilters}>Submit</button>
           </div>
-        </div>}
-
+          {showDisFiltered &&
+            <div className="moduleFiltered">
+              <div id="chartFilteredDisease"></div></div>}
+          {showDisFiltered2 &&
+            <div className="moduleFiltered">
+              <div id="chartFilteredDisease2"></div>
+            </div>}
+          <div id="chartDiseases"></div>
+        </div>
+      </div>
 
     </div>
   )
