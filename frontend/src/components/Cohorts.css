@@ -33,12 +33,11 @@
 }
 
 #chartFilteredEthnicity{
-    height: 700px !important;
     width: 700px !important;
     display: flex;
     align-items: center;
     justify-items: center;
-    margin-top: 2px;
+    margin-top: 20px;
 }
 
 #chartFilteredEthnicity2{
@@ -55,7 +54,7 @@
     align-items: center;
     justify-content: center;
     height: 417px;
-    margin-top: 60px;
+    margin-top: 20px;
 }
 
 #chartFilteredDisease{
@@ -104,7 +103,7 @@
 
 #filtersSelect{
     background: white;
-    border: 1px solid #8388ca;
+    border: 1.5px solid #8388ca;
     font-size: medium;
     border-radius: 5px;
     width: 150px;
@@ -120,7 +119,7 @@
 
 #ethnicitiesSelect{
     background: white;
-    border: 1px solid #8388ca;
+    border: 1.5px solid #8388ca;
     font-size: medium;
     border-radius: 5px;
     width: 200px;
@@ -135,7 +134,7 @@
 
 #diseasesSelect{
     background: white;
-    border: 1px solid #8388ca;
+    border: 1.5px solid #8388ca;
     font-size: medium;
     border-radius: 5px;
     width: 200px;
@@ -165,7 +164,7 @@
     font-variant-caps: all-petite-caps;
     font-size: 14px;
     cursor: pointer;
-    background-color: #f1f8ff;
+    background-color: #fefeff;
     border: solid 1px #f1f8ff;
     border-radius: 8px;
     padding: 5px;
@@ -201,10 +200,5 @@
     margin: 38px;
 }
 
-#chartFilteredDisease{
-    height: 1000px;
-}
 
-#chartFilteredEthnicity{
-    height: 1000px;
-}
+

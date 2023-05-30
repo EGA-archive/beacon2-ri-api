@@ -316,7 +316,7 @@ function FilteringTermsIndividuals(props) {
 
 
     return (
-        <div>
+        <div className="generalContainer">
             <TagBox
                 tags={state.list}
                 selected={selected}
@@ -324,7 +324,7 @@ function FilteringTermsIndividuals(props) {
                 removeTag={remove}
 
             />
-            {error && <h3>No filtering terms available. Please select a collection and retry</h3>}
+            {error && <h3>No filtering terms available. Please check your connection</h3>}
 
             {!error && <div className="tableWrapper">
 
@@ -349,10 +349,10 @@ function FilteringTermsIndividuals(props) {
                     </thead>
                     <thead className="thead2">
                         <tr>
-                            <th className="th2">term</th>
-                            <th className="th1">label</th>
-                            <th className="th1">type</th>
-                            <th className="th1">scope</th>
+                            <th className="th4">term</th>
+                            <th className="th5">label</th>
+                            <th className="th6">type</th>
+                            <th className="th7">scope</th>
                         </tr>
                     </thead>
                     {props.filteringTerms.data !== undefined && state.list !== "error" && state.list.map((term, index) => {

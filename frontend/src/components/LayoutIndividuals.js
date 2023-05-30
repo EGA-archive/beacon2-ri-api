@@ -314,6 +314,8 @@ function LayoutIndividuals(props) {
     const handleExQueries = () => {
         if (props.collection === 'Individuals') {
             setExampleQ(['Weight>100', 'NCIT:C16352', 'geographicOrigin=%land%', 'geographicOrigin!England', 'NCIT:C42331'])
+        } else if (props.collection === 'Variant'){
+            setExampleQ(['22 : 16050310 - 16050740', '22 : 16050074 A > G', 'start=16050074&end=16050075&referenceBases=A&alternateBases=G'])
         }
     }
 
@@ -385,7 +387,7 @@ function LayoutIndividuals(props) {
             setExtraIndividuals(false)
             setPlaceholder('Search for any cohort')
         } else if (props.collection === "Variant") {
-            setPlaceholder('chr : pos ref > alt')
+            setPlaceholder('chr : pos ref > alt, chr: start-end')
             setExtraIndividuals(false)
         } else if (props.collection === "Analyses") {
             setPlaceholder('chr : pos ref > alt')
