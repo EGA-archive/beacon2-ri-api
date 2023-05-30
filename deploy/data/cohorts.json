@@ -109,7 +109,7 @@
                   "African": {"female": 63, "male": 56},
                   "Any other Asian background": {"female": 61, "male": 59},
                   "Any other Black background": {"female": 54, "male": 50},
-                  "Any other mixed background": {"female": 48, "male": 44,
+                  "Any other mixed background": {"female": 48, "male": 44},
                   "Any other white background": {"female": 62, "male": 52},
                   "Asian or Asian British": {"female": 56, "male": 69},
                   "Bangladeshi": {"female": 45, "male": 51},
@@ -149,7 +149,7 @@
                "White and Asian": {"acute bronchitis": 7, "agranulocytosis": 7, "asthma": 7, "bipolar affective disorder": 7, "cardiomyopathy": 1, "dental caries": 9, "eating disorders": 5, "fibrosis and cirrhosis of liver": 2, "gastro-oesophageal reflux disease": 7, "haemorrhoids": 5, "influenza due to certain identified influenza virus": 8, "insulin-dependent diabetes mellitus": 6, "iron deficiency anaemia": 8, "multiple sclerosis": 4, "obesity": 5, "sarcoidosis": 9, "schizophrenia": 7, "thyroiditis": 8, "varicose veins of lower extremities": 4},
                "White and Black African": {"acute bronchitis": 5, "agranulocytosis": 5, "asthma": 6, "bipolar affective disorder": 6, "cardiomyopathy": 8, "dental caries": 5, "eating disorders": 7, "fibrosis and cirrhosis of liver": 7, "gastro-oesophageal reflux disease": 8, "haemorrhoids": 7, "influenza due to certain identified influenza virus": 9, "insulin-dependent diabetes mellitus": 10, "iron deficiency anaemia": 12, "multiple sclerosis": 5, "obesity": 7, "sarcoidosis": 5, "schizophrenia": 8, "thyroiditis": 3, "varicose veins of lower extremities": 5},
                "White and Black Caribbean": {"acute bronchitis": 6, "agranulocytosis": 4, "asthma": 9, "bipolar affective disorder": 11, "cardiomyopathy": 9, "dental caries": 10, "eating disorders": 6, "fibrosis and cirrhosis of liver": 5, "gastro-oesophageal reflux disease": 6, "haemorrhoids": 5, "influenza due to certain identified influenza virus": 4, "insulin-dependent diabetes mellitus": 6, "iron deficiency anaemia": 7, "multiple sclerosis": 5, "obesity": 5, "sarcoidosis": 10, "schizophrenia": 6, "thyroiditis": 5, "varicose veins of lower extremities": 6}
-           }
+           
            }
          },
            "eventGenders" : {
