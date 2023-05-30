@@ -28,7 +28,7 @@ When you have your authorization token, pass it in a header in your POST request
 
 This repository is made to work with mock LS AAI. It still has not been developed to work with real LS AAI. However, real LS AAI should inmediately work with only a couple of changes. In order to make it work with real LS AAI, please change the mock for the real LS AAI endpoints in the auth.py file inside permissions folder:
 ```bash
-idp_user_info  = idp_user_info = 'http://ls-aai-mock:8080/oidc/userinfo'
+idp_user_info  = 'http://ls-aai-mock:8080/oidc/userinfo'
 idp_introspection = 'http://ls-aai-mock:8080/oidc/introspect'
 ```
 Then, if the user is created in LS AAI, just add its permissions in permissions.yml file and you should have a beacon connecting to real LS AAI.
