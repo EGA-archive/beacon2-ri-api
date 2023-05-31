@@ -4,36 +4,52 @@
     flex-wrap: wrap;
     justify-content: center;
 }
+.logoBeacon{
+    width: 136px;
+    margin-top: 7px;
+}
+
+#descriptionEGA{
+    display: inline;
+    margin: 0px;
+}
 
 .datasetCard{
-    width: 460px;
-    margin: 9px;
-    margin-right: 24px;
-    margin-left: 24px;
-    border: 2px solid #3b9ad5;
+    width: 40vw;
+    margin: 30px;
+ 
+    /* border: 2px solid #3b9ad5; */
     padding: 16px;
     display: flex;
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(179, 179, 179, 0.22) 0px 10px 10px;
+    box-shadow:  rgba(0, 0, 0, 0.25) 0px 1px 3px, rgba(179, 179, 179, 0.22) 0px -4px 3px;
     align-items: center;
     align-content: center;
     flex-direction: column;
     background-color: white;
+    justify-content: flex-start;
+   
 
 }
 
+.tittle h2{
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+}
 
-p{
-    font-size: 14px;
+.datasetCard p{
+    font-size: 12px;
     font-weight: normal;
     color: rgb(61 60 60);
-    line-height: 23px;
+    line-height: 20px;
+    margin-top: -5px;
 }
 
-h1{
-    font-size: 18px;
+.tittle2 h1{
+    font-size: 14px;
     font-weight: normal;
     margin: 14px;
-    color: white;
+    color: #5d5454;
 }
 
 .line{
@@ -43,13 +59,43 @@ h1{
 
 .datasetCard a{
     margin: 10px;
+    font-size: 11px;
+    color: #0158aa;
 }
 
-.tittle{
-    width: 100%;
-    background: #4f85bc;
-    height: 80px;
+.datasetCard a:hover{
+    margin: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #539ce6;
+}
+
+.linksBeacons{
     display: flex;
+    margin-top: -3px;
+    margin-bottom: -3px;
+}
+.tittle{
+    width: 40vw;
+    background: #c8d4e6;
+    border-radius: 2px;
+    /* height: 80px; */
+    display: flex;
+    padding: 2px;
+    flex-direction: column;
+}
+
+.tittle h2{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    color: rgba(12, 16, 64, 0.606);
+    font-size: 12px;
+    font-weight: 600;
+
+}
+
+.tittle2{
+    display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
 }
@@ -61,4 +107,11 @@ h1{
     margin-left: 50px;
     margin-top: 15px;
     font-size: 16px;
+}
+
+.resultsRecord{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
 }

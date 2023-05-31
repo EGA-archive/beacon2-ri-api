@@ -10,6 +10,8 @@ function CrossQueries() {
     const [results, setResults] = useState('')
     const [arrayResults, setArrayResults] = useState([])
 
+    const [showSubmit, setShowSubmit] = useState(true)
+
     const handleChangeInitial = (e) => {
         setValueInitial(e.target.value)
     }
@@ -22,26 +24,43 @@ function CrossQueries() {
         setIdValue(e.target.value)
     }
 
+    const handleClick = () => {
+        setShowSubmit(true)
+        setResults('')
+        setIdValue('')
+        setValueFinal('')
+        setValueInitial('')
+        setError('')
+        setArrayResults([])
+    }
+
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setShowSubmit(false)
         try {
-            let res = await axios.get(`http://localhost:5050/api/${valueInitial}/${IdValue}/${valueFinal}`)
+            let res = await axios.get(`https://beacons.bsc.es/beacon-network/v2.0.0/${valueInitial}/${IdValue}/${valueFinal}`)
             console.log(res)
+            res.data.response.resultSets.forEach((element, index) => {
+                if (res.data.response.resultSets[index].results.length > 0) {
+                    setResults(res.data.response.resultSets[index].results)
 
-            if (res.data.response.resultSets[0].results.length > 0) {
-                setResults(res.data.response.resultSets[0].results)
-                
-                res.data.response.resultSets[0].results.forEach(element => {
-                    arrayResults.push(JSON.stringify(element, null, 2).replace('[', "").replace(']', ""))
-                });
-            } else {
-                setResults(null)
-            }
+                    res.data.response.resultSets[index].results.forEach(element => {
+                        arrayResults.push(JSON.stringify(element, null, 2).replace('[', "").replace(']', ""))
+                    });
+                    console.log(results)
+                    console.log(arrayResults)
+                } else {
+                    setResults(null)
+                }
+
+            })
+
+
 
 
         } catch (error) {
-            setError(error)
+            setError("Not found. Please retry")
             console.log(error)
         }
     }
@@ -76,17 +95,19 @@ function CrossQueries() {
                 </select>
             </label>
 
-            <button className="formButton">Submit</button>
+            {showSubmit && <button className="formButton">Submit</button>}
+            {error !== '' && results === '' && <h5>Not found. Please retry</h5>}
+            {results === null && <h5>Not found. Please retry</h5>}
 
         </form>
 
-        {error !== '' && <h5>ERROR! Please retry</h5>}
-        
-        {results === null && <h5>No results found</h5>}
-        {results !== null && results !== '' && arrayResults.map((result) => {
-            <p>{result}</p>
-        })}
+        {!showSubmit && <button className="formButton" onClick={handleClick}>New search</button>}
 
+        {results !== null && results !== '' &&
+            <div>
+                <pre className='preCrossQueries'><p>{arrayResults}</p></pre>
+            </div>
+        }
 
     </div>
 

@@ -119,7 +119,8 @@ services:
   # and we don't need a delay in-between. We can rely on the depends_on only.
 
   idp:
-    image: jboss/keycloak
+    #image: jboss/keycloak
+    image: sleighzy/keycloak
     hostname: idp
     container_name: idp
     environment:
@@ -139,6 +140,8 @@ services:
       #- KEYCLOAK_HOSTNAME=localhost
       #- KC_HOSTNAME_URL=https://beacon-network-test2.ega-archive.org
       #- KC_HOSTNAME_ADMIN_URL=https://beacon-network-test2.ega-archive.org
+      - KEYCLOAK_FRONTEND_URL=https://beacon-network-test2.ega-archive.org/auth/
+      - PROXY_ADDRESS_FORWARDING=true
     volumes:
       - ./beacon-realm.json:/tmp/beacon-realm.json
     ports:
@@ -165,7 +168,7 @@ services:
   frontend:
     build:
       context: ../frontend
-    command: [ "yarn", "start" ]
+    command: ["node", "/opt/yarn-v1.22.19/bin/yarn.js", "start" ]
     container_name: react
     depends_on:
       - beacon

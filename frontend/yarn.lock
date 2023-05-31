@@ -5447,7 +5447,11 @@ flat-cache@^3.0.4:
 
 flatted@^3.1.0, flatted@^3.2.7:
   version "3.2.7"
+<<<<<<< HEAD
+  resolved "https://registry.npmjs.org/flatted/-/flatted-3.2.7.tgz"
+=======
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.7.tgz#609f39207cb614b89d0765b477cb2d437fbf9787"
+>>>>>>> a3f03a3682aebf15586d1d7c82cc2c25024a9d35
   integrity sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==
 
 follow-redirects@^1.0.0, follow-redirects@^1.15.0:

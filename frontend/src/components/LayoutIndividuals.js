@@ -52,6 +52,7 @@ function LayoutIndividuals(props) {
     const [showFilteringTerms, setShowFilteringTerms] = useState(false)
     const [filteringTerms, setFilteringTerms] = useState(false)
 
+    const [trigger, setTrigger] = useState(false)
     const { storeToken, refreshToken, getStoredToken, authenticateUser, setExpirationTime, setExpirationTimeRefresh } = useContext(AuthContext);
 
 
@@ -67,6 +68,8 @@ function LayoutIndividuals(props) {
     const [counter, setCounter] = useState(0)
 
     const animatedComponents = makeAnimated();
+
+    const [resetSearch, setResetSearch] = useState(false)
 
     const [state, setstate] = useState({
         query: '',
@@ -123,7 +126,6 @@ function LayoutIndividuals(props) {
     }
 
 
-
     const handleIdChanges = (e) => {
         setShowIds(true)
         setId(e.target.value)
@@ -156,6 +158,15 @@ function LayoutIndividuals(props) {
 
     }
 
+    const handleSelectedId = (e) => {
+        setShowIds(false)
+        setId(e.target.value)
+        setstate({
+            query: e.target.value,
+            list: state.list
+        })
+    }
+
     const handleOperatorchange = (e) => {
         setOperator(e.target.value)
         console.log()
@@ -164,6 +175,21 @@ function LayoutIndividuals(props) {
 
     const handleValueChanges = (e) => {
         setValueFree(e.target.value)
+    }
+
+    const handdleInclude = (e) => {
+        console.log(ID)
+        console.log(valueFree)
+        console.log(operator)
+        if (ID!=='' && valueFree!== '' && operator!==''){
+            if (query !== null){
+                setQuery(query+','+`${ID}${operator}${valueFree}`)
+            } if (query === null){
+                setQuery(`${ID}${operator}${valueFree}`)
+            }
+           
+        }
+        
     }
 
 
@@ -217,7 +243,8 @@ function LayoutIndividuals(props) {
 
             try {
 
-                let res = await axios.get("http://localhost:5050/api/individuals/filtering_terms?limit=0")
+                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/individuals/filtering_terms?skip=0&limit=0")
+
                 setFilteringTerms(res)
                 setResults(null)
 
@@ -229,7 +256,47 @@ function LayoutIndividuals(props) {
 
             try {
 
-                let res = await axios.get("http://localhost:5050/api/cohorts/filtering_terms?limit=0")
+                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/individuals/filtering_terms?skip=0&limit=0")
+                setFilteringTerms(res)
+                setResults(null)
+
+            } catch (error) {
+                console.log(error)
+            }
+        } else if (props.collection === 'Variant') {
+            try {
+
+                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/g_variants/filtering_terms?skip=0&limit=0")
+                setFilteringTerms(res)
+                setResults(null)
+
+            } catch (error) {
+                console.log(error)
+            }
+        } else if (props.collection === 'Analyses') {
+            try {
+
+                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/analyses/filtering_terms?skip=0&limit=0")
+                setFilteringTerms(res)
+                setResults(null)
+
+            } catch (error) {
+                console.log(error)
+            }
+        } else if (props.collection === 'Runs') {
+            try {
+
+                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/runs/filtering_terms?skip=0&limit=0")
+                setFilteringTerms(res)
+                setResults(null)
+
+            } catch (error) {
+                console.log(error)
+            }
+        } else if (props.collection === 'Biosamples') {
+            try {
+
+                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/biosammples/filtering_terms?skip=0&limit=0")
                 setFilteringTerms(res)
                 setResults(null)
 
@@ -242,9 +309,6 @@ function LayoutIndividuals(props) {
         setShowFilteringTerms(true)
 
 
-    }
-
-    const handleFilteringTermsAll = async (e) => {
     }
 
     const handleExQueries = () => {
@@ -279,10 +343,13 @@ function LayoutIndividuals(props) {
         const fetchData = async () => {
 
             try {
-                let res = await axios.get("http://localhost:5050/api/individuals/filtering_terms?limit=0")
+                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/individuals/filtering_terms?skip=0&limit=0")
                 if (res !== null) {
                     res.data.response.filteringTerms.forEach(element => {
-                        arrayFilteringTerms.push(element.id)
+                        if (element.type !== "custom") {
+                            arrayFilteringTerms.push(element.id)
+                        }
+
                     })
 
                     setstate({
@@ -349,6 +416,30 @@ function LayoutIndividuals(props) {
         setExampleQ([])
 
 
+        setResetSearch(true)
+
+
+        if (query === '1' || query === '') {
+            setQuery(null)
+        }
+        if (props.collection === 'Individuals') {
+
+            setResults('Individuals')
+        }
+
+
+    }
+
+    const onSubmit2 = (event) => {
+
+        setPlaceholder("filtering term comma-separated, ID><=value");
+
+
+        setIsSub(!isSubmitted)
+
+        setExampleQ([])
+
+
         if (query === '1' || query === '') {
             setQuery(null)
         }
@@ -398,15 +489,15 @@ function LayoutIndividuals(props) {
                 }
             </div>
             <nav className="navbar">
-                {isSubmitted &&
-                    <div className="newSearch"><button className="newSearchButton" onClick={onSubmit} type="submit">NEW SEARCH</button></div>}
+
                 <div className="container-fluid">
 
                     {cohorts === false &&
                         <form className="d-flex" onSubmit={onSubmit}>
                             <input className="formSearch" type="search" placeholder={placeholder} value={query} onChange={(e) => search(e)} aria-label="Search" />
                             {!isSubmitted && <button className="searchButton" type="submit"><img className="searchIcon" src="./magnifier.png" alt='searchIcon'></img></button>}
-
+                            {isSubmitted &&
+                                <div className="newSearch"><button className="newSearchButton" onClick={onSubmit2} type="submit">NEW SEARCH</button></div>}
                         </form>}
 
                     {cohorts &&
@@ -442,7 +533,7 @@ function LayoutIndividuals(props) {
                                         return (<div id='exampleQueries'>
 
 
-                                            <button className="exampleQuery" onClick={() => { setPlaceholder(`${result}`); setQuery(`${result}`); setResults(null); setValue(`${result}`) }}  >{result}</button>
+                                            <button className="exampleQuery" onClick={() => { setPlaceholder(`${result}`); setQuery(`${result}`); setValue(`${result}`) }}  >{result}</button>
                                         </div>)
 
                                     })}
@@ -453,14 +544,7 @@ function LayoutIndividuals(props) {
                         {props.collection !== '' && <button className="filters" onClick={handleFilteringTerms}>
                             Filtering Terms
                         </button>}
-
-                        {props.collection === '' && <button className="filters" onClick={handleFilteringTermsAll}>
-                            Filtering terms of all collections
-                        </button>}
-
                     </div>
-
-
                 </div>
                 <hr></hr>
                 {showExtraIndividuals &&
@@ -478,34 +562,38 @@ function LayoutIndividuals(props) {
                                     <button className="helpButton" onClick={handleHelpModal1}><img className="questionLogo" src="./question.png" alt='questionIcon'></img></button>
                                 </div>
                                 <div className='alphanumContainer2'>
-                                    <div className="listTerms">
-                                        <label><h2>ID</h2></label>
-                                        <input className="IdForm" type="text" value={state.query} autoComplete='on' placeholder={"write and filter by ID"} onChange={(e) => handleIdChanges(e)} aria-label="ID" />
+                                    <div className='alphaIdModule'>
+                                        <div className="listTerms">
+                                            <label><h2>ID</h2></label>
 
+                                            <input className="IdForm" type="text" value={state.query} autoComplete='on' placeholder={"write and filter by ID"} onChange={(e) => handleIdChanges(e)} aria-label="ID" />
 
-                                        <div id="operator" >
+                                            <div id="operator" >
 
-                                            <select className="selectedOperator" onChange={handleOperatorchange} name="selectedOperator" >
-                                                <option value="=" >= </option>
-                                                <option value=">" >&lt;</option>
-                                                <option value="<" >&gt;</option>
-                                                <option value="!" >!</option>
-                                                <option value="%" >%</option>
-                                            </select>
+                                                <select className="selectedOperator" onChange={handleOperatorchange} name="selectedOperator" >
+                                                    <option value=''> </option>
+                                                    <option value="=" >= </option>
+                                                    <option value=">" >&lt;</option>
+                                                    <option value="<" >&gt;</option>
+                                                    <option value="!" >!</option>
+                                                    <option value="%" >%</option>
+                                                </select>
 
+                                            </div>
+
+                                            <label id="value"><h2>Value</h2></label>
+                                            <input className="ValueForm" type="text" autoComplete='on' placeholder={"free text/ value"} onChange={(e) => handleValueChanges(e)} aria-label="Value" />
                                         </div>
-
-                                        <label id="value"><h2>Value</h2></label>
-                                        <input className="ValueForm" type="text" autoComplete='on' placeholder={"free text/ value"} onChange={(e) => handleValueChanges(e)} aria-label="Value" />
+                                        {showIds && query !== '' &&
+                                            <select className="selectedId" onChange={handleSelectedId} name="selectedId" multiple >
+                                                {state.list.map(element => {
+                                                    return (
+                                                        <option value={element} >{element}</option>
+                                                    )
+                                                })}
+                                            </select>}
                                     </div>
-                                    {showIds && query !== '' &&
-                                        <ul className="ulIds">
-                                            {state.list.map(item => (
-                                                <li value={item}>
-                                                    {item}
-                                                </li>
-                                            ))}
-                                        </ul>}
+                                <button onClick={handdleInclude}>Include</button>
                                 </div>
 
                                 <div className="bulbExample">
@@ -626,17 +714,17 @@ function LayoutIndividuals(props) {
 
             <hr></hr>
             <div className="results">
-                {results === null && !showFilteringTerms && <ResultsDatasets />}
+                {results === null && !showFilteringTerms && <ResultsDatasets trigger={trigger} />}
                 {isSubmitted && results === 'Individuals' &&
                     <div>
                         <IndividualsResults query={query} resultSets={resultSet} ID={ID} operator={operator} valueFree={valueFree} descendantTerm={descendantTerm} similarity={similarity} isSubmitted={isSubmitted} />
                     </div>
                 }
-                {results === null && showFilteringTerms && <FilteringTermsIndividuals filteringTerms={filteringTerms} collection={props.collection} setPlaceholder={setPlaceholder} placeholder={placeholder} query={query} setQuery={setQuery}/>}
+                {results === null && showFilteringTerms && <FilteringTermsIndividuals filteringTerms={filteringTerms} collection={props.collection} setPlaceholder={setPlaceholder} placeholder={placeholder} query={query} setQuery={setQuery} />}
                 {cohorts && results === 'Cohorts' &&
 
                     <div>
-                        <Cohorts showCohorts={'show'} />
+                        <Cohorts />
                     </div>}
             </div>
 

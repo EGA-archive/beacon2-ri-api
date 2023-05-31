@@ -4,4 +4,5 @@ LICENSE
 README.md
 deploy/db
 tests
-
+node_modules
+frontend/node_modules
