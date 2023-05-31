@@ -40,6 +40,7 @@ thead {
 
 .th1 {
 
+    overflow-x: auto;
     display: flex;
     width: 45%;
     /* height: 100%; */
@@ -125,6 +126,7 @@ thead {
     margin-bottom: 12px;
     padding-left: 32px;
     padding-top: 10px;
+    overflow-x: auto;
     padding-bottom: 10px;
 }
 
