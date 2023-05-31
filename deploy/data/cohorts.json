@@ -5200,125 +5200,7 @@
             },
             "start" : {
                "iso8601duration" : "P18Y"
-            },
-                 "diseases_ethnicity" : {
-                  "acute bronchitis": {"African": 3, "Any other Asian background": 7, "Any other Black background": 5, "Any other mixed background": 6, "Any other white background": 6, "Asian or Asian British": 7, "Bangladeshi": 4, "Black or Black British": 10, "British": 1, "Caribbean": 7, "Chinese": 6, "Indian": 3, "Irish": 6, "Mixed": 3, "Other ethnic group": 5, "Pakistani": 9, "White": 9, "White and Asian": 7, "White and Black African": 5, "White and Black Caribbean": 6},
-                  "agranulocytosis": {"African": 4, "Any other Asian background": 5, "Any other Black background": 5, "Any other mixed background": 2, "Any other white background": 5, "Asian or Asian British": 7, "Bangladeshi": 4, "Black or Black British": 6, "British": 4, "Caribbean": 5, "Chinese": 4, "Indian": 5, "Irish": 4, "Mixed": 10, "Other ethnic group": 5, "Pakistani": 6, "White": 6, "White and Asian": 7, "White and Black African": 5, "White and Black Caribbean": 4},
-                  "asthma": {"African": 9, "Any other Asian background": 7, "Any other Black background": 2, "Any other mixed background": 5, "Any other white background": 8, "Asian or Asian British": 9, "Bangladeshi": 6, "Black or Black British": 3, "British": 5, "Caribbean": 10, "Chinese": 5, "Indian": 7, "Irish": 3, "Mixed": 15, "Other ethnic group": 7, "Pakistani": 1, "White": 3, "White and Asian": 7, "White and Black African": 6, "White and Black Caribbean": 9},
-                  "bipolar affective disorder": {"African": 2, "Any other Asian background": 6, "Any other Black background": 5, "Any other mixed background": 4, "Any other white background": 3, "Asian or Asian British": 4, "Bangladeshi": 3, "Black or Black British": 8, "British": 8, "Caribbean": 5, "Chinese": 6, "Indian": 10, "Irish": 11, "Mixed": 9, "Other ethnic group": 3, "Pakistani": 5, "White": 4, "White and Asian": 7, "White and Black African": 6, "White and Black Caribbean": 11},
-                  "cardiomyopathy": {"African": 8, "Any other Asian background": 7, "Any other Black background": 7, "Any other mixed background": 1, "Any other white background": 7, "Asian or Asian British": 10, "Bangladeshi": 1, "Black or Black British": 5, "British": 4, "Caribbean": 10, "Chinese": 8, "Indian": 4, "Irish": 4, "Mixed": 6, "Other ethnic group": 5, "Pakistani": 11, "White": 7, "White and Asian": 1, "White and Black African": 8, "White and Black Caribbean": 9},
-                  "dental caries": {"African": 7, "Any other Asian background": 3, "Any other Black background": 7, "Any other mixed background": 5, "Any other white background": 6, "Asian or Asian British": 2, "Bangladeshi": 5, "Black or Black British": 6, "British": 7, "Caribbean": 6, "Chinese": 6, "Indian": 6, "Irish": 7, "Mixed": 5, "Other ethnic group": 6, "Pakistani": 6, "White": 11, "White and Asian": 9, "White and Black African": 5, "White and Black Caribbean": 10},
-                  "eating disorders": {"African": 6, "Any other Asian background": 5, "Any other Black background": 3, "Any other mixed background": 4, "Any other white background": 6, "Asian or Asian British": 8, "Bangladeshi": 8, "Black or Black British": 8, "British": 7, "Caribbean": 8, "Chinese": 5, "Indian": 4, "Irish": 7, "Mixed": 7, "Other ethnic group": 2, "Pakistani": 7, "White": 8, "White and Asian": 5, "White and Black African": 7, "White and Black Caribbean": 6},
-                  "fibrosis and cirrhosis of liver": {"African": 5, "Any other Asian background": 2, "Any other Black background": 5, "Any other mixed background": 4, "Any other white background": 6, "Asian or Asian British": 9, "Bangladeshi": 6, "Black or Black British": 8, "British": 8, "Caribbean": 9, "Chinese": 3, "Indian": 4, "Irish": 5, "Mixed": 4, "Other ethnic group": 5, "Pakistani": 13, "White": 10, "White and Asian": 2, "White and Black African": 7, "White and Black Caribbean": 5},
-                  "gastro-oesophageal reflux disease": {"African": 5, "Any other Asian background": 7, "Any other Black background": 3, "Any other mixed background": 6, "Any other white background": 1, "Asian or Asian British": 8, "Bangladeshi": 2, "Black or Black British": 6, "British": 6, "Caribbean": 6, "Chinese": 4, "Indian": 12, "Irish": 8, "Mixed": 10, "Other ethnic group": 7, "Pakistani": 4, "White": 9, "White and Asian": 7, "White and Black African": 8, "White and Black Caribbean": 6},
-                  "haemorrhoids": {"African": 11, "Any other Asian background": 6, "Any other Black background": 1, "Any other mixed background": 4, "Any other white background": 6, "Asian or Asian British": 4, "Bangladeshi": 3, "Black or Black British": 6, "British": 8, "Caribbean": 10, "Chinese": 2, "Indian": 3, "Irish": 10, "Mixed": 12, "Other ethnic group": 4, "Pakistani": 4, "White": 4, "White and Asian": 5, "White and Black African": 7, "White and Black Caribbean": 5},
-                  "influenza due to certain identified influenza virus": {"African": 5, "Any other Asian background": 5, "Any other Black background": 6, "Any other mixed background": 4, "Any other white background": 6, "Asian or Asian British": 10, "Bangladeshi": 4, "Black or Black British": 7, "British": 5, "Caribbean": 2, "Chinese": 6, "Indian": 5, "Irish": 6, "Mixed": 9, "Other ethnic group": 6, "Pakistani": 8, "White": 5, "White and Asian": 8, "White and Black African": 9, "White and Black Caribbean": 4},
-                  "insulin-dependent diabetes mellitus": {"African": 11, "Any other Asian background": 6, "Any other Black background": 9, "Any other mixed background": 3, "Any other white background": 11, "Asian or Asian British": 8, "Bangladeshi": 4, "Black or Black British": 5, "British": 6, "Caribbean": 8, "Chinese": 6, "Indian": 13, "Irish": 8, "Mixed": 14, "Other ethnic group": 6, "Pakistani": 6, "White": 7, "White and Asian": 6, "White and Black African": 10, "White and Black Caribbean": 6},
-                  "iron deficiency anaemia": {"African": 9, "Any other Asian background": 5, "Any other Black background": 4, "Any other mixed background": 4, "Any other white background": 5, "Asian or Asian British": 8, "Bangladeshi": 3, "Black or Black British": 9, "British": 7, "Caribbean": 6, "Chinese": 6, "Indian": 3, "Irish": 4, "Mixed": 8, "Other ethnic group": 5, "Pakistani": 8, "White": 3, "White and Asian": 8, "White and Black African": 12, "White and Black Caribbean": 7},
-                  "multiple sclerosis": {"African": 6, "Any other Asian background": 7, "Any other Black background": 7, "Any other mixed background": 6, "Any other white background": 8, "Asian or Asian British": 6, "Bangladeshi": 2, "Black or Black British": 8, "British": 6, "Caribbean": 12, "Chinese": 3, "Indian": 5, "Irish": 3, "Mixed": 6, "Other ethnic group": 7, "Pakistani": 8, "White": 6, "White and Asian": 4, "White and Black African": 5, "White and Black Caribbean": 5},
-                  "obesity": {"African": 8, "Any other Asian background": 11, "Any other Black background": 7, "Any other mixed background": 5, "Any other white background": 5, "Asian or Asian British": 9, "Bangladeshi": 3, "Black or Black British": 8, "British": 3, "Caribbean": 7, "Chinese": 5, "Indian": 7, "Irish": 8, "Mixed": 7, "Other ethnic group": 4, "Pakistani": 6, "White": 4, "White and Asian": 5, "White and Black African": 7, "White and Black Caribbean": 5},
-                  "sarcoidosis": {"African": 6, "Any other Asian background": 9, "Any other Black background": 6, "Any other mixed background": 8, "Any other white background": 6, "Asian or Asian British": 4, "Bangladeshi": 4, "Black or Black British": 8, "British": 9, "Caribbean": 4, "Chinese": 6, "Indian": 8, "Irish": 6, "Mixed": 6, "Other ethnic group": 4, "Pakistani": 7, "White": 5, "White and Asian": 9, "White and Black African": 5, "White and Black Caribbean": 10},
-                  "schizophrenia": {"African": 5, "Any other Asian background": 11, "Any other Black background": 4, "Any other mixed background": 5, "Any other white background": 9, "Asian or Asian British": 8, "Bangladeshi": 7, "Black or Black British": 6, "British": 6, "Caribbean": 9, "Chinese": 4, "Indian": 4, "Irish": 5, "Mixed": 3, "Other ethnic group": 5, "Pakistani": 8, "White": 6, "White and Asian": 7, "White and Black African": 8, "White and Black Caribbean": 6},
-                  "thyroiditis": {"African": 8, "Any other Asian background": 7, "Any other Black background": 8, "Any other mixed background": 7, "Any other white background": 7, "Asian or Asian British": 5, "Bangladeshi": 1, "Black or Black British": 4, "British": 10, "Caribbean": 8, "Chinese": 7, "Indian": 5, "Irish": 5, "Mixed": 8, "Other ethnic group": 9, "Pakistani": 6, "White": 3, "White and Asian": 8, "White and Black African": 3, "White and Black Caribbean": 5},
-                  "varicose veins of lower extremities": {"African": 7, "Any other Asian background": 3, "Any other Black background": 7, "Any other mixed background": 4, "Any other white background": 2, "Asian or Asian British": 4, "Bangladeshi": 7, "Black or Black British": 7, "British": 8, "Caribbean": 3, "Chinese": 5, "Indian": 12, "Irish": 6, "Mixed": 6, "Other ethnic group": 8, "Pakistani": 8, "White": 10, "White and Asian": 4, "White and Black African": 5, "White and Black Caribbean": 6}
-                  
-                 },
-                 "diseases_sex" : {
-                  "acute bronchitis": {"female": 66, "male": 55},
-                  "agranulocytosis": {"female": 53, "male": 58},
-                  "asthma": {"female": 60, "male": 74},
-                  "bipolar affective disorder": {"female": 71, "male": 63},
-                  "cardiomyopathy": {"female": 79, "male": 54},
-                  "dental caries": {"female": 79, "male": 60},
-                  "eating disorders": {"female": 75, "male": 59},
-                  "fibrosis and cirrhosis of liver": {"female": 63, "male": 69},
-                  "gastro-oesophageal reflux disease": {"female": 63, "male": 77},
-                  "haemorrhoids": {"female": 58, "male": 69},
-                  "influenza due to certain identified influenza virus": {"female": 63, "male": 72},
-                  "insulin-dependent diabetes mellitus": {"female": 85, "male": 80},
-                  "iron deficiency anaemia": {"female": 66, "male": 76},
-                  "multiple sclerosis": {"female": 63, "male": 62},
-                  "obesity": {"female": 68, "male": 68},
-                  "sarcoidosis": {"female": 61, "male": 75},
-                  "schizophrenia": {"female": 73, "male": 65},
-                  "thyroiditis": {"female": 72, "male": 69},
-                  "varicose veins of lower extremities": {"female": 75, "male": 64}
-                  
-                 }
-              }
-           },
-           "eventEthnicities" : {
-              "availability" : true,
-              "availabilityCount" : 2287,
-              "distribution" : {
-                  "ethnicities" : {
-                     "African" : 119,
-                     "Any other Asian background" : 120,
-                     "Any other Black background" : 104,
-                     "Any other mixed background" : 92,
-                     "Any other white background" : 114,
-                     "Asian or Asian British" : 125,
-                     "Bangladeshi" : 96,
-                     "Black or Black British" : 131,
-                     "British" : 114,
-                     "Caribbean" : 127,
-                     "Chinese" : 100,
-                     "Indian" : 110,
-                     "Irish" : 111,
-                     "Mixed" : 127,
-                     "Other ethnic group" : 116,
-                     "Pakistani" : 115,
-                     "White" : 105,
-                     "White and Asian" : 114,
-                     "White and Black African" : 115,
-                     "White and Black Caribbean" : 132
-                  },
-                 "ethnicities_sex" : {
-                  "African": {"female": 63, "male": 56},
-                  "Any other Asian background": {"female": 61, "male": 59},
-                  "Any other Black background": {"female": 54, "male": 50},
-                  "Any other mixed background": {"female": 48, "male": 44},
-                  "Any other white background": {"female": 62, "male": 52},
-                  "Asian or Asian British": {"female": 56, "male": 69},
-                  "Bangladeshi": {"female": 45, "male": 51},
-                  "Black or Black British": {"female": 60, "male": 71},
-                  "British": {"female": 59, "male": 55},
-                  "Caribbean": {"female": 62, "male": 65},
-                  "Chinese": {"female": 52, "male": 48},
-                  "Indian": {"female": 58, "male": 52},
-                  "Irish": {"female": 57, "male": 54},
-                  "Mixed": {"female": 61, "male": 66},
-                  "Other ethnic group": {"female": 68, "male": 48},
-                  "Pakistani": {"female": 67, "male": 48},
-                  "White": {"female": 53, "male": 52},
-                  "White and Asian": {"female": 62, "male": 52},
-                  "White and Black African": {"female": 48, "male": 67},
-                  "White and Black Caribbean": {"female": 72, "male": 60}
-                 }
-              },
-              "ethnicities_disease" : {
-               "African": {"acute bronchitis": 3, "agranulocytosis": 4, "asthma": 9, "bipolar affective disorder": 2, "cardiomyopathy": 8, "dental caries": 7, "eating disorders": 6, "fibrosis and cirrhosis of liver": 5, "gastro-oesophageal reflux disease": 5, "haemorrhoids": 11, "influenza due to certain identified influenza virus": 5, "insulin-dependent diabetes mellitus": 11, "iron deficiency anaemia": 9, "multiple sclerosis": 6, "obesity": 8, "sarcoidosis": 6, "schizophrenia": 5, "thyroiditis": 8, "varicose veins of lower extremities": 7},
-               "Any other Asian background": {"acute bronchitis": 7, "agranulocytosis": 5, "asthma": 7, "bipolar affective disorder": 6, "cardiomyopathy": 7, "dental caries": 3, "eating disorders": 5, "fibrosis and cirrhosis of liver": 2, "gastro-oesophageal reflux disease": 7, "haemorrhoids": 6, "influenza due to certain identified influenza virus": 5, "insulin-dependent diabetes mellitus": 6, "iron deficiency anaemia": 5, "multiple sclerosis": 7, "obesity": 11, "sarcoidosis": 9, "schizophrenia": 11, "thyroiditis": 7, "varicose veins of lower extremities": 3},
-               "Any other Black background": {"acute bronchitis": 5, "agranulocytosis": 5, "asthma": 2, "bipolar affective disorder": 5, "cardiomyopathy": 7, "dental caries": 7, "eating disorders": 3, "fibrosis and cirrhosis of liver": 5, "gastro-oesophageal reflux disease": 3, "haemorrhoids": 1, "influenza due to certain identified influenza virus": 6, "insulin-dependent diabetes mellitus": 9, "iron deficiency anaemia": 4, "multiple sclerosis": 7, "obesity": 7, "sarcoidosis": 6, "schizophrenia": 4, "thyroiditis": 8, "varicose veins of lower extremities": 7},
-               "Any other mixed background": {"acute bronchitis": 6, "agranulocytosis": 2, "asthma": 5, "bipolar affective disorder": 4, "cardiomyopathy": 1, "dental caries": 5, "eating disorders": 4, "fibrosis and cirrhosis of liver": 4, "gastro-oesophageal reflux disease": 6, "haemorrhoids": 4, "influenza due to certain identified influenza virus": 4, "insulin-dependent diabetes mellitus": 3, "iron deficiency anaemia": 4, "multiple sclerosis": 6, "obesity": 5, "sarcoidosis": 8, "schizophrenia": 5, "thyroiditis": 7, "varicose veins of lower extremities": 4},
-               "Any other white background": {"acute bronchitis": 6, "agranulocytosis": 5, "asthma": 8, "bipolar affective disorder": 3, "cardiomyopathy": 7, "dental caries": 6, "eating disorders": 6, "fibrosis and cirrhosis of liver": 6, "gastro-oesophageal reflux disease": 1, "haemorrhoids": 6, "influenza due to certain identified influenza virus": 6, "insulin-dependent diabetes mellitus": 11, "iron deficiency anaemia": 5, "multiple sclerosis": 8, "obesity": 5, "sarcoidosis": 6, "schizophrenia": 9, "thyroiditis": 7, "varicose veins of lower extremities": 2},
-               "Asian or Asian British": {"acute bronchitis": 7, "agranulocytosis": 7, "asthma": 9, "bipolar affective disorder": 4, "cardiomyopathy": 10, "dental caries": 2, "eating disorders": 8, "fibrosis and cirrhosis of liver": 9, "gastro-oesophageal reflux disease": 8, "haemorrhoids": 4, "influenza due to certain identified influenza virus": 10, "insulin-dependent diabetes mellitus": 8, "iron deficiency anaemia": 8, "multiple sclerosis": 6, "obesity": 9, "sarcoidosis": 4, "schizophrenia": 8, "thyroiditis": 5, "varicose veins of lower extremities": 4},
-               "Bangladeshi": {"acute bronchitis": 4, "agranulocytosis": 4, "asthma": 6, "bipolar affective disorder": 3, "cardiomyopathy": 1, "dental caries": 5, "eating disorders": 8, "fibrosis and cirrhosis of liver": 6, "gastro-oesophageal reflux disease": 2, "haemorrhoids": 3, "influenza due to certain identified influenza virus": 4, "insulin-dependent diabetes mellitus": 4, "iron deficiency anaemia": 3, "multiple sclerosis": 2, "obesity": 3, "sarcoidosis": 4, "schizophrenia": 7, "thyroiditis": 1, "varicose veins of lower extremities": 7},
-               "Black or Black British": {"acute bronchitis": 10, "agranulocytosis": 6, "asthma": 3, "bipolar affective disorder": 8, "cardiomyopathy": 5, "dental caries": 6, "eating disorders": 8, "fibrosis and cirrhosis of liver": 8, "gastro-oesophageal reflux disease": 6, "haemorrhoids": 6, "influenza due to certain identified influenza virus": 7, "insulin-dependent diabetes mellitus": 5, "iron deficiency anaemia": 9, "multiple sclerosis": 8, "obesity": 8, "sarcoidosis": 8, "schizophrenia": 6, "thyroiditis": 4, "varicose veins of lower extremities": 7},
-               "British": {"acute bronchitis": 1, "agranulocytosis": 4, "asthma": 5, "bipolar affective disorder": 8, "cardiomyopathy": 4, "dental caries": 7, "eating disorders": 7, "fibrosis and cirrhosis of liver": 8, "gastro-oesophageal reflux disease": 6, "haemorrhoids": 8, "influenza due to certain identified influenza virus": 5, "insulin-dependent diabetes mellitus": 6, "iron deficiency anaemia": 7, "multiple sclerosis": 6, "obesity": 3, "sarcoidosis": 9, "schizophrenia": 6, "thyroiditis": 10, "varicose veins of lower extremities": 8},
-               "Caribbean": {"acute bronchitis": 7, "agranulocytosis": 5, "asthma": 10, "bipolar affective disorder": 5, "cardiomyopathy": 10, "dental caries": 6, "eating disorders": 8, "fibrosis and cirrhosis of liver": 9, "gastro-oesophageal reflux disease": 6, "haemorrhoids": 10, "influenza due to certain identified influenza virus": 2, "insulin-dependent diabetes mellitus": 8, "iron deficiency anaemia": 6, "multiple sclerosis": 12, "obesity": 7, "sarcoidosis": 4, "schizophrenia": 9, "thyroiditis": 8, "varicose veins of lower extremities": 3},
-               "Chinese": {"acute bronchitis": 6, "agranulocytosis": 4, "asthma": 5, "bipolar affective disorder": 6, "cardiomyopathy": 8, "dental caries": 6, "eating disorders": 5, "fibrosis and cirrhosis of liver": 3, "gastro-oesophageal reflux disease": 4, "haemorrhoids": 2, "influenza due to certain identified influenza virus": 6, "insulin-dependent diabetes mellitus": 6, "iron deficiency anaemia": 6, "multiple sclerosis": 3, "obesity": 5, "sarcoidosis": 6, "schizophrenia": 4, "thyroiditis": 7, "varicose veins of lower extremities": 5},
-               "Indian": {"acute bronchitis": 3, "agranulocytosis": 5, "asthma": 7, "bipolar affective disorder": 10, "cardiomyopathy": 4, "dental caries": 6, "eating disorders": 4, "fibrosis and cirrhosis of liver": 4, "gastro-oesophageal reflux disease": 12, "haemorrhoids": 3, "influenza due to certain identified influenza virus": 5, "insulin-dependent diabetes mellitus": 13, "iron deficiency anaemia": 3, "multiple sclerosis": 5, "obesity": 7, "sarcoidosis": 8, "schizophrenia": 4, "thyroiditis": 5, "varicose veins of lower extremities": 12},
-               "Irish": {"acute bronchitis": 6, "agranulocytosis": 4, "asthma": 3, "bipolar affective disorder": 11, "cardiomyopathy": 4, "dental caries": 7, "eating disorders": 7, "fibrosis and cirrhosis of liver": 5, "gastro-oesophageal reflux disease": 8, "haemorrhoids": 10, "influenza due to certain identified influenza virus": 6, "insulin-dependent diabetes mellitus": 8, "iron deficiency anaemia": 4, "multiple sclerosis": 3, "obesity": 8, "sarcoidosis": 6, "schizophrenia": 5, "thyroiditis": 5, "varicose veins of lower extremities": 6},
-               "Mixed": {"acute bronchitis": 3, "agranulocytosis": 10, "asthma": 15, "bipolar affective disorder": 9, "cardiomyopathy": 6, "dental caries": 5, "eating disorders": 7, "fibrosis and cirrhosis of liver": 4, "gastro-oesophageal reflux disease": 10, "haemorrhoids": 12, "influenza due to certain identified influenza virus": 9, "insulin-dependent diabetes mellitus": 14, "iron deficiency anaemia": 8, "multiple sclerosis": 6, "obesity": 7, "sarcoidosis": 6, "schizophrenia": 3, "thyroiditis": 8, "varicose veins of lower extremities": 6},
-               "Other ethnic group": {"acute bronchitis": 5, "agranulocytosis": 5, "asthma": 7, "bipolar affective disorder": 3, "cardiomyopathy": 5, "dental caries": 6, "eating disorders": 2, "fibrosis and cirrhosis of liver": 5, "gastro-oesophageal reflux disease": 7, "haemorrhoids": 4, "influenza due to certain identified influenza virus": 6, "insulin-dependent diabetes mellitus": 6, "iron deficiency anaemia": 5, "multiple sclerosis": 7, "obesity": 4, "sarcoidosis": 4, "schizophrenia": 5, "thyroiditis": 9, "varicose veins of lower extremities": 8},
-               "Pakistani": {"acute bronchitis": 9, "agranulocytosis": 6, "asthma": 1, "bipolar affective disorder": 5, "cardiomyopathy": 11, "dental caries": 6, "eating disorders": 7, "fibrosis and cirrhosis of liver": 13, "gastro-oesophageal reflux disease": 4, "haemorrhoids": 4, "influenza due to certain identified influenza virus": 8, "insulin-dependent diabetes mellitus": 6, "iron deficiency anaemia": 8, "multiple sclerosis": 8, "obesity": 6, "sarcoidosis": 7, "schizophrenia": 8, "thyroiditis": 6, "varicose veins of lower extremities": 8},
-               "White": {"acute bronchitis": 9, "agranulocytosis": 6, "asthma": 3, "bipolar affective disorder": 4, "cardiomyopathy": 7, "dental caries": 11, "eating disorders": 8, "fibrosis and cirrhosis of liver": 10, "gastro-oesophageal reflux disease": 9, "haemorrhoids": 4, "influenza due to certain identified influenza virus": 5, "insulin-dependent diabetes mellitus": 7, "iron deficiency anaemia": 3, "multiple sclerosis": 6, "obesity": 4, "sarcoidosis": 5, "schizophrenia": 6, "thyroiditis": 3, "varicose veins of lower extremities": 10},
-               "White and Asian": {"acute bronchitis": 7, "agranulocytosis": 7, "asthma": 7, "bipolar affective disorder": 7, "cardiomyopathy": 1, "dental caries": 9, "eating disorders": 5, "fibrosis and cirrhosis of liver": 2, "gastro-oesophageal reflux disease": 7, "haemorrhoids": 5, "influenza due to certain identified influenza virus": 8, "insulin-dependent diabetes mellitus": 6, "iron deficiency anaemia": 8, "multiple sclerosis": 4, "obesity": 5, "sarcoidosis": 9, "schizophrenia": 7, "thyroiditis": 8, "varicose veins of lower extremities": 4},
-               "White and Black African": {"acute bronchitis": 5, "agranulocytosis": 5, "asthma": 6, "bipolar affective disorder": 6, "cardiomyopathy": 8, "dental caries": 5, "eating disorders": 7, "fibrosis and cirrhosis of liver": 7, "gastro-oesophageal reflux disease": 8, "haemorrhoids": 7, "influenza due to certain identified influenza virus": 9, "insulin-dependent diabetes mellitus": 10, "iron deficiency anaemia": 12, "multiple sclerosis": 5, "obesity": 7, "sarcoidosis": 5, "schizophrenia": 8, "thyroiditis": 3, "varicose veins of lower extremities": 5},
-               "White and Black Caribbean": {"acute bronchitis": 6, "agranulocytosis": 4, "asthma": 9, "bipolar affective disorder": 11, "cardiomyopathy": 9, "dental caries": 10, "eating disorders": 6, "fibrosis and cirrhosis of liver": 5, "gastro-oesophageal reflux disease": 6, "haemorrhoids": 5, "influenza due to certain identified influenza virus": 4, "insulin-dependent diabetes mellitus": 6, "iron deficiency anaemia": 7, "multiple sclerosis": 5, "obesity": 5, "sarcoidosis": 10, "schizophrenia": 6, "thyroiditis": 5, "varicose veins of lower extremities": 6}
-           
-           }
+            }
          },
          "genders" : [
             {
@@ -5336,6 +5218,7 @@
                "label" : "UK"
             }
          ]
+      }
 ,
       "name" : "CINECA synthetic cohort UK1"
    }
