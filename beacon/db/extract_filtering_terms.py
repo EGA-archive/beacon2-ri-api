@@ -52,7 +52,6 @@ def get_ontology_field_name(ontology_id:str, term_id:str, collection:str):
         }
     }
     results = client.beacon.get_collection(collection).find(query).limit(1)
-    print(results)
     results = list(results)
     results = dumps(results)
     results = json.loads(results)
@@ -183,7 +182,6 @@ def insert_all_ontology_terms_used():
     print("Collections:", collections)
     for c_name in collections:
         terms_ids = find_ontology_terms_used(c_name)
-        print(terms_ids)
         terms = get_filtering_object(terms_ids, c_name)
         if len(terms) > 0:
             client.beacon.filtering_terms.insert_many(terms)
@@ -197,13 +195,25 @@ def find_ontology_terms_used(collection_name: str) -> List[Dict]:
     else:
         num_total=10000
     i=0
-    xs = client.beacon.get_collection(collection_name).find().skip(i).limit(10000)
-    for r in tqdm(xs, total=num_total):
-        matches = ONTOLOGY_REGEX.findall(str(r))
-        for ontology_id, term_id in matches:
-            term = ':'.join([ontology_id, term_id])
-            if term not in terms_ids:
-                terms_ids.append(term)
+    if count > 10000:
+        while i < 100001:
+            xs = client.beacon.get_collection(collection_name).find().skip(i).limit(10000)
+            for r in tqdm(xs, total=num_total):
+                matches = ONTOLOGY_REGEX.findall(str(r))
+                for ontology_id, term_id in matches:
+                    term = ':'.join([ontology_id, term_id])
+                    if term not in terms_ids:
+                        terms_ids.append(term)
+            i += 10000
+            print(i)
+    else:
+        xs = client.beacon.get_collection(collection_name).find().skip(0).limit(10000)
+        for r in tqdm(xs, total=num_total):
+            matches = ONTOLOGY_REGEX.findall(str(r))
+            for ontology_id, term_id in matches:
+                term = ':'.join([ontology_id, term_id])
+                if term not in terms_ids:
+                    terms_ids.append(term) 
 
     return terms_ids
 
