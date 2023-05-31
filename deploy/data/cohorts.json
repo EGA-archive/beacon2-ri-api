@@ -5200,7 +5200,7 @@
             },
             "start" : {
                "iso8601duration" : "P18Y"
-            }
+            },
                  "diseases_ethnicity" : {
                   "acute bronchitis": {"African": 3, "Any other Asian background": 7, "Any other Black background": 5, "Any other mixed background": 6, "Any other white background": 6, "Asian or Asian British": 7, "Bangladeshi": 4, "Black or Black British": 10, "British": 1, "Caribbean": 7, "Chinese": 6, "Indian": 3, "Irish": 6, "Mixed": 3, "Other ethnic group": 5, "Pakistani": 9, "White": 9, "White and Asian": 7, "White and Black African": 5, "White and Black Caribbean": 6},
                   "agranulocytosis": {"African": 4, "Any other Asian background": 5, "Any other Black background": 5, "Any other mixed background": 2, "Any other white background": 5, "Asian or Asian British": 7, "Bangladeshi": 4, "Black or Black British": 6, "British": 4, "Caribbean": 5, "Chinese": 4, "Indian": 5, "Irish": 4, "Mixed": 10, "Other ethnic group": 5, "Pakistani": 6, "White": 6, "White and Asian": 7, "White and Black African": 5, "White and Black Caribbean": 4},
@@ -5336,7 +5336,7 @@
                "label" : "UK"
             }
          ]
-      },
+,
       "name" : "CINECA synthetic cohort UK1"
    }
  ]
