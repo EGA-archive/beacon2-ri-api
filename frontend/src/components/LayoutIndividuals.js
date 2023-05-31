@@ -1,10 +1,10 @@
 import '../App.css';
 
 import FilteringTermsIndividuals from './FilteringTermsIndividuals';
-import Individuals2 from './Individual2';
 import Cohorts from './Cohorts';
 
 import ResultsDatasets from './ResultsDatasets';
+import VariantsResults from './VariantsResults';
 
 import Select from 'react-select'
 import React, { useState, useEffect } from 'react';
@@ -52,9 +52,12 @@ function LayoutIndividuals(props) {
     const [showFilteringTerms, setShowFilteringTerms] = useState(false)
     const [filteringTerms, setFilteringTerms] = useState(false)
 
+    const [showVariants, setShowVariants] = useState(false)
+
     const [trigger, setTrigger] = useState(false)
     const { storeToken, refreshToken, getStoredToken, authenticateUser, setExpirationTime, setExpirationTimeRefresh } = useContext(AuthContext);
 
+    const [showBar, setShowBar] = useState(true)
 
     const [isOpenModal1, setIsOpenModal1] = useState(false);
     const [isOpenModal2, setIsOpenModal2] = useState(false);
@@ -65,7 +68,25 @@ function LayoutIndividuals(props) {
     const [showExtraIndividuals, setExtraIndividuals] = useState(false)
     const [showOptions, setShowOptions] = useState(false)
 
-    const [counter, setCounter] = useState(0)
+    const [referenceName, setRefName] = useState('')
+    const [referenceName2, setRefName2] = useState('')
+    const [start, setStart] = useState('')
+    const [start2, setStart2] = useState('')
+    const [end, setEnd] = useState('')
+    const [variantType, setVariantType] = useState('')
+    const [variantType2, setVariantType2] = useState('')
+    const [alternateBases, setAlternateBases] = useState('')
+    const [alternateBases2, setAlternateBases2] = useState('')
+    const [referenceBases, setRefBases] = useState('')
+    const [referenceBases2, setRefBases2] = useState('')
+    const [aminoacid, setAminoacid] = useState('')
+    const [aminoacid2, setAminoacid2] = useState('')
+    const [geneID, setGeneId] = useState('')
+    const [assemblyId, setAssemblyId] = useState('')
+    const [assemblyId2, setAssemblyId2] = useState('')
+    const [assemblyId3, setAssemblyId3] = useState('')
+
+    const [hideForm, setHideForm] = useState(false)
 
     const animatedComponents = makeAnimated();
 
@@ -83,8 +104,9 @@ function LayoutIndividuals(props) {
 
     const [options, setOptions] = useState([
         { value: 'CINECA_synthetic_cohort_UK1', label: 'CINECA_synthetic_cohort_UK1' },
-        { value: 'Fake cohort 1', label: 'Fake cohort 1' },
-        { value: 'Fake cohort 2', label: 'Fake cohort 2' }
+        { value: 'pgx:cohort-oneKgenomes', label: 'pgx:cohort-oneKgenomes' },
+        { value: 'pgx:cohort-carriocordo2021heterogeneity', label: 'pgx:cohort-carriocordo2021heterogeneity' },
+        { value: 'pgx:cohort-2021progenetix', label: 'pgx:cohort-2021progenetix' }
     ])
 
     const [arrayFilteringTerms, setArrayFilteringTerms] = useState([])
@@ -181,18 +203,16 @@ function LayoutIndividuals(props) {
         console.log(ID)
         console.log(valueFree)
         console.log(operator)
-        if (ID!=='' && valueFree!== '' && operator!==''){
-            if (query !== null){
-                setQuery(query+','+`${ID}${operator}${valueFree}`)
-            } if (query === null){
+        if (ID !== '' && valueFree !== '' && operator !== '') {
+            if (query !== null) {
+                setQuery(query + ',' + `${ID}${operator}${valueFree}`)
+            } if (query === null) {
                 setQuery(`${ID}${operator}${valueFree}`)
             }
-           
+
         }
-        
+
     }
-
-
 
     const handleHelpModal1 = () => {
         setIsOpenModal1(true)
@@ -217,24 +237,14 @@ function LayoutIndividuals(props) {
     const handleHelpModal4 = () => {
         setIsOpenModal4(true)
     }
-    const handleCloseModal4 = () => {
-        setIsOpenModal4(false)
-    }
 
     const handleHelpModal5 = () => {
         setIsOpenModal5(true)
-    }
-    const handleCloseModal5 = () => {
-        setIsOpenModal5(false)
     }
 
     const handleHelpModal6 = () => {
         setIsOpenModal6(true)
     }
-    const handleCloseModal6 = () => {
-        setIsOpenModal6(false)
-    }
-
 
     const handleFilteringTerms = async (e) => {
 
@@ -314,11 +324,9 @@ function LayoutIndividuals(props) {
     const handleExQueries = () => {
         if (props.collection === 'Individuals') {
             setExampleQ(['Weight>100', 'NCIT:C16352', 'geographicOrigin=%land%', 'geographicOrigin!England', 'NCIT:C42331'])
+        } else if (props.collection === 'Variant') {
+            setExampleQ(['22 : 16050310 - 16050740', '22 : 16050074 A > G'])
         }
-    }
-
-    const handleExQueriesAlphaNum = () => {
-
     }
 
     const handleExtraSectionIndividuals = (e) => {
@@ -326,7 +334,73 @@ function LayoutIndividuals(props) {
         setShowButton(!showButton)
     }
 
+    const handleChangeStart = (e) => {
+        setStart(e.target.value)
+    }
+    const handleChangeStart2 = (e) => {
+        setStart2(e.target.value)
+    }
+    const handleChangeRefN2 = (e) => {
+        setRefName2(e.target.value)
+    }
+    const handleChangeAlternateB2 = (e) => {
+        setAlternateBases2(e.target.value)
+    }
+    const handleChangeAssembly2 = (e) => {
+        setAssemblyId2(e.target.value)
+    }
+    const handleChangeAssembly3 = (e) => {
+        setAssemblyId3(e.target.value)
+    }
 
+    const handleChangeAlternateB = (e) => {
+        setAlternateBases(e.target.value)
+    }
+
+    const handleChangeReferenceB = (e) => {
+        setRefBases(e.target.value)
+    }
+    const handleChangeReferenceB2 = (e) => {
+        setRefBases2(e.target.value)
+    }
+
+    const handleChangeRefN = (e) => {
+        setRefName(e.target.value)
+    }
+
+    const handleChangeEnd = (e) => {
+        setEnd(e.target.value)
+    }
+
+    const handleChangeVariantType = (e) => {
+        setVariantType(e.target.value)
+    }
+    const handleChangeVariantType2 = (e) => {
+        setVariantType2(e.target.value)
+    }
+
+    const handleChangeAminoacid = (e) => {
+        setAminoacid(e.target.value)
+    }
+    const handleChangeAminoacid2 = (e) => {
+        setAminoacid2(e.target.value)
+    }
+
+    const handleChangeGeneId = (e) => {
+        setGeneId(e.target.value)
+    }
+
+    const handleChangeAssembly = (e) => {
+        setAssemblyId(e.target.value)
+    }
+
+    const handleClick = () => {
+        setShowBar(!showBar)
+    }
+
+    const handleHideVariantsForm = (e) => {
+        setHideForm(false)
+    }
 
     useEffect(() => {
         //  const token = getStoredToken()
@@ -378,6 +452,7 @@ function LayoutIndividuals(props) {
         if (props.collection === 'Individuals') {
             setPlaceholder('filtering term comma-separated, ID><=value')
             setExtraIndividuals(true)
+
         } else if (props.collection === 'Biosamples') {
             setPlaceholder('key=value, key><=value, or filtering term comma-separated')
         } else if (props.collection === 'Cohorts') {
@@ -385,8 +460,10 @@ function LayoutIndividuals(props) {
             setExtraIndividuals(false)
             setPlaceholder('Search for any cohort')
         } else if (props.collection === "Variant") {
-            setPlaceholder('chr : pos ref > alt')
+            setPlaceholder('chr : pos ref > alt, chr: start-end')
             setExtraIndividuals(false)
+            setShowVariants(true)
+
         } else if (props.collection === "Analyses") {
             setPlaceholder('chr : pos ref > alt')
             setExtraIndividuals(false)
@@ -425,6 +502,8 @@ function LayoutIndividuals(props) {
         if (props.collection === 'Individuals') {
 
             setResults('Individuals')
+        } else if (props.collection === 'Variant') {
+            setResults('Variant')
         }
 
 
@@ -444,8 +523,9 @@ function LayoutIndividuals(props) {
             setQuery(null)
         }
         if (props.collection === 'Individuals') {
-
             setResults('Individuals')
+        } else if (props.collection === 'Variant') {
+            setResults('Variant')
         }
 
 
@@ -459,6 +539,14 @@ function LayoutIndividuals(props) {
     function search(e) {
         setQuery(e.target.value)
 
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setPlaceholder("filtering term comma-separated, ID><=value");
+        setIsSub(!isSubmitted)
+        setExampleQ([])
+        setResults('Variant')
     }
 
     return (
@@ -490,10 +578,10 @@ function LayoutIndividuals(props) {
             </div>
             <nav className="navbar">
 
-                <div className="container-fluid">
+                {showBar === true && <div className="container-fluid">
 
                     {cohorts === false &&
-                        <form className="d-flex" onSubmit={onSubmit}>
+                        showBar === true && <form className="d-flex" onSubmit={onSubmit}>
                             <input className="formSearch" type="search" placeholder={placeholder} value={query} onChange={(e) => search(e)} aria-label="Search" />
                             {!isSubmitted && <button className="searchButton" type="submit"><img className="searchIcon" src="./magnifier.png" alt='searchIcon'></img></button>}
                             {isSubmitted &&
@@ -517,13 +605,13 @@ function LayoutIndividuals(props) {
 
                         </div>}
 
-                </div>
+                </div>}
 
 
                 <div className="additionalOptions">
 
                     <div className="example">
-                        {cohorts === false && props.collection !== '' &&
+                        {cohorts === false && props.collection !== '' && showBar === true &&
                             <div className="bulbExample">
                                 <button className="exampleQueries" onClick={handleExQueries}>Query Examples</button>
                                 <img className="bulbLogo" src="../light-bulb.png" alt='bulbIcon'></img>
@@ -540,12 +628,13 @@ function LayoutIndividuals(props) {
                                 </div>
                             </div>
                         }
-
-                        {props.collection !== '' && <button className="filters" onClick={handleFilteringTerms}>
+                        {props.collection !== '' && showBar === true && <button className="filters" onClick={handleFilteringTerms}>
                             Filtering Terms
                         </button>}
                     </div>
                 </div>
+                {showVariants === true && showBar === true && <button className='modeVariants' onClick={handleClick}><h2 className='modeVariantsQueries'>Change to FORM mode</h2></button>}
+                {showVariants === true && showBar === false && <button className='modeVariants' onClick={handleClick}><h2 className='modeVariantsQueries'>Change to BAR mode</h2></button>}
                 <hr></hr>
                 {showExtraIndividuals &&
                     <div className="containerExtraSections">
@@ -573,8 +662,8 @@ function LayoutIndividuals(props) {
                                                 <select className="selectedOperator" onChange={handleOperatorchange} name="selectedOperator" >
                                                     <option value=''> </option>
                                                     <option value="=" >= </option>
-                                                    <option value=">" >&lt;</option>
-                                                    <option value="<" >&gt;</option>
+                                                    <option value="<" >&lt;</option>
+                                                    <option value=">" >&gt;</option>
                                                     <option value="!" >!</option>
                                                     <option value="%" >%</option>
                                                 </select>
@@ -593,7 +682,7 @@ function LayoutIndividuals(props) {
                                                 })}
                                             </select>}
                                     </div>
-                                <button onClick={handdleInclude}>Include</button>
+                                    <button className="buttonAlphanum" onClick={handdleInclude}>Include</button>
                                 </div>
 
                                 <div className="bulbExample">
@@ -684,6 +773,101 @@ function LayoutIndividuals(props) {
                             </div>
                         </div>}
                     </div>}
+                {hideForm=== true  && <button onClick={handleHideVariantsForm}><img className="arrowLogo" src="../arrow-down.png" alt='arrowIcon'/></button> }
+                {showVariants && showBar === false && hideForm=== false && <div>
+                    <form onSubmit={handleSubmit}>
+                        <div className='variantsContainer'>
+
+                            <div className='moduleVariants'>
+                                <label className='labelVariantsTittle'>Sequence queries</label>
+                                <div>
+                                    <label className='labelVariants'>Reference name</label>
+                                    <input className='inputVariants' type='text' value={referenceName} onChange={handleChangeRefN}></input>
+                                </div>
+                                <div>
+                                    <label className='labelVariants'>AssemblyID</label>
+                                    <input className='inputVariants' type='text' value={assemblyId} onChange={handleChangeAssembly}></input>
+                                </div>
+                                <div>
+                                    <label className='labelVariants'>Start (single value)*</label>
+                                    <input className='inputVariants' type='text' value={start} onChange={handleChangeStart}></input>
+                                </div>
+                                <div>
+                                    <label className='labelVariants'>alternateBases*</label>
+                                    <input className='inputVariants' type='text' value={alternateBases} onChange={handleChangeAlternateB}></input>
+                                </div>
+                                <div>
+                                    <label className='labelVariants'>referenceBases*</label>
+                                    <input className='inputVariants' type='text' value={referenceBases} onChange={handleChangeReferenceB}></input>
+                                </div>
+                                <div className='DivButtonVariants'>
+                                    <input className='buttonVariants' type="submit" value="Search" />
+                                </div>
+                            </div>
+                            <div className='moduleVariants'>
+                                <label className='labelVariantsTittle'>Range queries</label>
+                                <div>
+                                    <label className='labelVariants'>Reference name</label>
+                                    <input className='inputVariants' type='text' value={referenceName2} onChange={handleChangeRefN2}></input>
+                                </div>
+                                <div>
+                                    <label className='labelVariants'>AssemblyID</label>
+                                    <input className='inputVariants' type='text' value={assemblyId2} onChange={handleChangeAssembly2}></input>
+                                </div>
+                                <div>
+                                    <label className='labelVariants'>Start (single value)*</label>
+                                    <input className='inputVariants' type='text' value={start2} onChange={handleChangeStart2}></input>
+                                </div>
+                                <div>
+                                    <label className='labelVariants' >End (single value)*</label>
+                                    <input className='inputVariants' type='text' value={end} onChange={handleChangeEnd}></input>
+                                </div>
+                                <div>
+                                    <label className='labelVariants'>Variant type:</label>
+                                    <input className='inputVariants' type='text' value={variantType} onChange={handleChangeVariantType}></input> </div>
+                                <div><h3>OR</h3>
+                                    <label className='labelVariants'>alternateBases:</label>
+                                    <input className='inputVariants' type='text' value={alternateBases2} onChange={handleChangeAlternateB2}></input></div>
+                                <div>
+                                    <label className='labelVariants'>referenceBases:</label>
+                                    <input className='inputVariants' type='text' value={referenceBases2} onChange={handleChangeReferenceB2}></input></div>
+                                <div><h3>OR</h3>
+                                    <label className='labelVariants'>Aminoacid Change:</label>
+                                    <input className='inputVariants' type='text' value={aminoacid} onChange={handleChangeAminoacid}></input>
+                                </div>
+                                <div className='DivButtonVariants'>
+                                    <input className='buttonVariants' type="submit" value="Search" />
+                                </div>
+                            </div>
+                            <div className='moduleVariants'>
+                                <label className='labelVariantsTittle'>Gene ID queries</label>
+                                <div>
+                                    <label className='labelVariants' >Gene ID*</label>
+                                    <input className='inputVariants' type='text' value={geneID} onChange={handleChangeGeneId}></input>
+                                </div>
+                                <div>
+                                    <label className='labelVariants'>AssemblyID</label>
+                                    <input className='inputVariants' type='text' value={assemblyId3} onChange={handleChangeAssembly3}></input>
+                                </div>
+                                <div>
+                                    <label className='labelVariants'>Variant type:</label>
+                                    <input className='inputVariants' type='text' value={variantType2} onChange={handleChangeVariantType2}></input></div>
+                                <div><h3>OR</h3>
+                                    <label className='labelVariants'>alternateBases:</label>
+                                    <input className='inputVariants' type='text' value={alternateBases2} onChange={handleChangeAlternateB2}></input></div>
+                                <div><h3>OR</h3>
+                                    <label className='labelVariants'>Aminoacid Change:</label>
+                                    <input className='inputVariants' type='text' value={aminoacid2} onChange={handleChangeAminoacid2}></input>
+                                </div>
+                                <div className='DivButtonVariants'>
+                                    <input className='buttonVariants' type="submit" value="Search" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>}
 
             </nav>
 
@@ -718,6 +902,11 @@ function LayoutIndividuals(props) {
                 {isSubmitted && results === 'Individuals' &&
                     <div>
                         <IndividualsResults query={query} resultSets={resultSet} ID={ID} operator={operator} valueFree={valueFree} descendantTerm={descendantTerm} similarity={similarity} isSubmitted={isSubmitted} />
+                    </div>
+                }
+                {isSubmitted && results === 'Variant' &&
+                    <div>
+                        <VariantsResults query={query} setHideForm={setHideForm} showBar={showBar} aminoacid2={aminoacid2} assemblyId2={assemblyId2} assemblyId3={assemblyId3} alternateBases2={alternateBases2} isSubmitted={isSubmitted} variantType2={variantType2} start2={start2} referenceName2={referenceName2} referenceName={referenceName} assemblyId={assemblyId} start={start} end={end} variantType={variantType} alternateBases={alternateBases} referenceBases={referenceBases} referenceBases2={referenceBases2} aminoacid={aminoacid} geneID={geneID} />
                     </div>
                 }
                 {results === null && showFilteringTerms && <FilteringTermsIndividuals filteringTerms={filteringTerms} collection={props.collection} setPlaceholder={setPlaceholder} placeholder={placeholder} query={query} setQuery={setQuery} />}

@@ -67,7 +67,7 @@ function Cohorts(props) {
         title: {
           text: valueToFilter,
         },
-        colors: ['#4dc5ff', '#7DF9FF', '#8B0000','#AAFF00', '#98FB98', '#009E60', '#AF2BFF','#FF96EF', '#FF0000','#FF69B4','#13D3B6','#800080','#FA8072','#33b2df', '#546E7A', '#FEF300', '#2b908f', '#FE00FA',
+        colors: ['#4dc5ff', '#FF96EF','#7DF9FF', '#8B0000','#AAFF00', '#98FB98', '#009E60', '#AF2BFF', '#FF0000','#FF69B4','#13D3B6','#800080','#FA8072','#33b2df', '#546E7A', '#FEF300', '#2b908f', '#FE00FA',
         '#FE6800', '#69d2e7', '#13d8aa', '#A5978B', '#f9a3a4', '#FF4500', '#51f08e', '#b051f0',
         '#CCFF33', '#FF66CC', '#FF3333', '#6633CC', '#CD853F', '#3333FF', '#FF3333','#BF40BF','DF00F9', '38ED61','#FCF55F', '#00A9D1', '#041FCE','#B4B5BC', '#C1E701', '#FF8604'],
         series: values,
@@ -144,6 +144,7 @@ function Cohorts(props) {
       setShowDis(false)
       setShowEth2(false)
       setShowEth(true)
+      console.log(eth_dis)
       if (eth_dis[valueToFilter] !== null && eth_dis[valueToFilter] !== undefined){
         setResponse(eth_dis[`${valueToFilter}`])
       } else{
@@ -381,7 +382,7 @@ function Cohorts(props) {
             </div>}
           <div id="chartEthnicity"></div>
         </div>
-
+        <hr></hr>
         <div className='diseases'>
           <div className='diseasesFilters'>
             <label for="ethnicities">Filter:</label>
