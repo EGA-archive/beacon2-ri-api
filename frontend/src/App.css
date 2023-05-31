@@ -26,6 +26,33 @@ html {
   margin-left: 12px;
 }
 
+.modeVariantsQuery{
+  color: rgba(12, 16, 64, 0.606);
+    font-size: 16px;
+    font-variant-caps: all-petite-caps;
+}
+
+.modeVariants{
+  color: rgba(12, 16, 64, 0.606);
+  font-size: 16px;
+  font-variant-caps: all-petite-caps;
+}
+
+.modeVariants:hover{
+  color: white;
+  background-color: #e3eefe;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-radius: 3px;
+  margin-left: 20px;
+}
+
+.variantsFilters{
+  width: 20vw;
+  display: flex;
+  margin-left: 7%;
+}
+
 
 .searchButton:hover {
   background: linear-gradient(356deg, #cee3e7 50%, #daecf0 80%);
@@ -166,7 +193,6 @@ html {
 .variantsContainer{
   width: 100vw;
   display: flex;
-  margin-top: 23px;
   align-items: center;
   flex-wrap: wrap;
   justify-content: space-around;
@@ -174,7 +200,6 @@ html {
 
 .inputVariants{
   height: 14px;
-  cursor: pointer;
   border: 1.5px solid #dfdfdf;
   border-radius: 2px;
   margin-bottom: 34px;
@@ -210,6 +235,7 @@ html {
   margin-bottom: 20px;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 1px, rgba(179, 179, 179, 0.22) 0px 1px 1px;
   padding: 7px;
+  cursor: pointer;
 }
 
 .buttonVariants:hover{

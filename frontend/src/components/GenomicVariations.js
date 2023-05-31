@@ -1,4 +1,4 @@
-import './GenomicVariations.css';
+
 import '../App.css';
 
 import LayoutIndividuals from './LayoutIndividuals';
