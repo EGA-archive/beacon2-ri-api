@@ -44,12 +44,9 @@ function TableResultsIndividuals(props) {
                 stringEth = ''
             }
 
-
-
             let sex_id = ''
             let sex_label = ''
             let stringSex = ''
-
 
             if (element[1].sex !== '') {
                 sex_id = element[1].sex.id
@@ -129,7 +126,7 @@ function TableResultsIndividuals(props) {
 
             }
             console.log(element[0])
-            rows.push({ Beacon_Id: element[0], id: element[1].id + `_${index}`, ethnicity: stringEth, geographicOrigin: stringGeographic, interventionsOrProcedures: interventionsProcedures, measures: measuresJson, sex: stringSex, diseases: diseases })
+            rows.push({ Beacon_Id: element[0], id: element[1].id, ethnicity: stringEth, geographicOrigin: stringGeographic, interventionsOrProcedures: interventionsProcedures, measures: measuresJson, sex: stringSex, diseases: diseases })
 
         }
 
@@ -146,9 +143,6 @@ function TableResultsIndividuals(props) {
     )
 
 }
-
-
-
 
 
 export default TableResultsIndividuals;
