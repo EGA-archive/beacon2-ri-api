@@ -77,6 +77,7 @@ function LayoutIndividuals(props) {
     const [variantType2, setVariantType2] = useState('')
     const [alternateBases, setAlternateBases] = useState('')
     const [alternateBases2, setAlternateBases2] = useState('')
+    const [alternateBases3, setAlternateBases3] = useState('')
     const [referenceBases, setRefBases] = useState('')
     const [referenceBases2, setRefBases2] = useState('')
     const [aminoacid, setAminoacid] = useState('')
@@ -355,6 +356,10 @@ function LayoutIndividuals(props) {
 
     const handleChangeAlternateB = (e) => {
         setAlternateBases(e.target.value)
+    }
+
+    const handleChangeAlternateB3 = (e) => {
+        setAlternateBases3(e.target.value)
     }
 
     const handleChangeReferenceB = (e) => {
@@ -671,7 +676,7 @@ function LayoutIndividuals(props) {
                                             </div>
 
                                             <label id="value"><h2>Value</h2></label>
-                                            <input className="ValueForm" type="text" autoComplete='on' placeholder={"free text/ value"} onChange={(e) => handleValueChanges(e)} aria-label="Value" />
+                                            <input className="ValueForm" type="text" autoComplete='on' placeholder={"free text/ value"} onChange={handleValueChanges} aria-label="Value" />
                                         </div>
                                         {showIds && query !== '' &&
                                             <select className="selectedId" onChange={handleSelectedId} name="selectedId" multiple >
@@ -854,7 +859,7 @@ function LayoutIndividuals(props) {
                                     <input className='inputVariants' type='text' value={variantType2} onChange={handleChangeVariantType2}></input></div>
                                 <div><h3>OR</h3>
                                     <label className='labelVariants'>alternateBases:</label>
-                                    <input className='inputVariants' type='text' value={alternateBases2} onChange={handleChangeAlternateB2}></input></div>
+                                    <input className='inputVariants' type='text' value={alternateBases3} onChange={handleChangeAlternateB3}></input></div>
                                 <div><h3>OR</h3>
                                     <label className='labelVariants'>Aminoacid Change:</label>
                                     <input className='inputVariants' type='text' value={aminoacid2} onChange={handleChangeAminoacid2}></input>
@@ -906,7 +911,7 @@ function LayoutIndividuals(props) {
                 }
                 {isSubmitted && results === 'Variant' &&
                     <div>
-                        <VariantsResults query={query} setHideForm={setHideForm} showBar={showBar} aminoacid2={aminoacid2} assemblyId2={assemblyId2} assemblyId3={assemblyId3} alternateBases2={alternateBases2} isSubmitted={isSubmitted} variantType2={variantType2} start2={start2} referenceName2={referenceName2} referenceName={referenceName} assemblyId={assemblyId} start={start} end={end} variantType={variantType} alternateBases={alternateBases} referenceBases={referenceBases} referenceBases2={referenceBases2} aminoacid={aminoacid} geneID={geneID} />
+                        <VariantsResults query={query} setHideForm={setHideForm} showBar={showBar} aminoacid2={aminoacid2} assemblyId2={assemblyId2} assemblyId3={assemblyId3} alternateBases3={alternateBases3} alternateBases2={alternateBases2} isSubmitted={isSubmitted} variantType2={variantType2} start2={start2} referenceName2={referenceName2} referenceName={referenceName} assemblyId={assemblyId} start={start} end={end} variantType={variantType} alternateBases={alternateBases} referenceBases={referenceBases} referenceBases2={referenceBases2} aminoacid={aminoacid} geneID={geneID} />
                     </div>
                 }
                 {results === null && showFilteringTerms && <FilteringTermsIndividuals filteringTerms={filteringTerms} collection={props.collection} setPlaceholder={setPlaceholder} placeholder={placeholder} query={query} setQuery={setQuery} />}

@@ -21,7 +21,7 @@ function ResultsDatasets(props) {
                     resp.push(element)
                 });
                 setTrigger(true)
-
+                resp.reverse()
             } catch (error) {
                 console.log(error)
             }
