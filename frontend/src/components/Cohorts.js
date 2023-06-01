@@ -165,7 +165,7 @@ function Cohorts(props) {
         const res = await axios.get(API_ENDPOINT)
         console.log(res.data)
         console.log(res.data.response.collections)
-        let i = 11
+        let i = 2
         // for (var i = 0; i < res.data.response.collections.length; i++) {
         console.log(i)
         const sexs = res.data.response.collections[i].collectionEvents[0].eventGenders.distribution.genders
@@ -345,7 +345,7 @@ function Cohorts(props) {
     <div>
 
       {showGraphs === false && <LayoutIndividuals collection={'Cohorts'} setShowGraphs={setShowGraphs} />}
-
+   
       {nameCohort !== '' && <h3>{nameCohort}</h3>}
 
       <div className='chartsModule'>

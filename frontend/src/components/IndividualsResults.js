@@ -60,7 +60,7 @@ function IndividualsResults(props) {
 
             authenticateUser()
             const token = getStoredToken()
-            console.log(token)
+          
             if (token !== 'undefined') {
 
                 setLoginRequired(false)
@@ -153,31 +153,12 @@ function IndividualsResults(props) {
                         }
                         arrayFilter.push(filter)
                     }
-
-
                 }
-
 
             }
 
             try {
-                console.log(props.operator)
-                if (props.value !== '' && props.operator !== '' && props.ID !== '') {
-
-                    console.log("holiii")
-                    //alphanumerical query
-
-                    const alphaNumFilter = {
-                        "id": `${props.ID}`,
-                        "operator": `${props.operator}`,
-                        "value": `${props.value}`,
-                    }
-
-                    arrayFilter.push(alphaNumFilter)
-
-
-                }
-
+            
                 if (props.query === null) {
 
                     // show all individuals

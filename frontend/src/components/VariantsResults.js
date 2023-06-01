@@ -203,9 +203,9 @@ function VariantsResults(props) {
 
     return (
         <div>
-            <div>{logInRequired === true && <h3>{messageLogin}</h3>}
-                {error !== '' && <h3>Error! Please check the query and retry</h3>}
-            </div>
+            {logInRequired === true && <div className='variantsResultsError'><h3>{messageLogin}</h3></div>}
+                {error !== '' && <h5 className='variantsResultsError'>Please check the query and retry</h5>}
+            
             {logInRequired === false &&
                 <div>
                     <div className='selectGranularity'>
