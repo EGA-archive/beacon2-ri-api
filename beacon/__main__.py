@@ -62,7 +62,7 @@ def main(path=None):
     #)
 
     beacon = web.Application(
-        middlewares=[web.normalize_path_middleware(), middlewares.error_middleware, cors_middleware(origins=["https://beacon-network-test.ega-archive.org", "https://beacon-network-test2.ega-archive.org", "http://localhost:3000"])]
+        middlewares=[web.normalize_path_middleware(), middlewares.error_middleware, cors_middleware(origins=["https://beacon-network-test.ega-archive.org", "https://beacon-network-test2.ega-archive.org", "https://beacon-network-demo.ega-archive.org","https://beacon-network-demo2.ega-archive.org", "http://localhost:3000"])]
     )
 
 
@@ -112,6 +112,16 @@ def main(path=None):
             expose_headers="*",
             allow_methods=("POST", "PATCH", "GET", "OPTIONS"),
             allow_headers=DEFAULT_ALLOW_HEADERS),
+        "https://beacon-network-demo.ega-archive.org":
+            aiohttp_cors.ResourceOptions(allow_credentials=True,
+            expose_headers="*",
+            allow_methods=("POST", "PATCH", "GET", "OPTIONS"),
+            allow_headers=DEFAULT_ALLOW_HEADERS),
+        "https://beacon-network-demo2.ega-archive.org":
+            aiohttp_cors.ResourceOptions(allow_credentials=True,
+            expose_headers="*",
+            allow_methods=("POST", "PATCH", "GET", "OPTIONS"),
+            allow_headers=DEFAULT_ALLOW_HEADERS)
     })
 
     # Configure HTTPS (or not)
