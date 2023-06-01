@@ -5,10 +5,10 @@ import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 
 function TableResultsIndividuals(props) {
 
-
     const columns = [
-        { field: 'Beacon_Id', headerName: 'BeaconId', width: 300, headerClassName: 'super-app-theme--header' },
-        { field: 'id', headerName: 'Id', width: 150, headerClassName: 'super-app-theme--header' },
+        { field: 'id', headerName: 'Row', width: 100, headerClassName: 'super-app-theme--header' },
+        { field: 'IndividualId', headerName: 'Individual ID', width: 150, headerClassName: 'super-app-theme--header' },
+        { field: 'Beacon', headerName: 'Beacon ID', width: 340, headerClassName: 'super-app-theme--header' },
         { field: 'ethnicity', headerName: 'ethnicity', width: 240, headerClassName: 'super-app-theme--header' },
         { field: 'geographicOrigin', headerName: 'geographicOrigin', width: 250, headerClassName: 'super-app-theme--header' },
         { field: 'interventionsOrProcedures', headerName: 'interventionsOrProcedures', width: 350, headerClassName: 'super-app-theme--header' },
@@ -25,8 +25,8 @@ function TableResultsIndividuals(props) {
     const rows = []
     const ids = []
     props.results.forEach((element, index) => {
-
-    
+        console.log(element[0])
+            
         if (element[1] !== undefined) {
             console.log(element[0])
             let eth_id = ''
@@ -125,8 +125,8 @@ function TableResultsIndividuals(props) {
                 }
 
             }
-            console.log(element[0])
-            rows.push({ Beacon_Id: element[0], id: element[1].id, ethnicity: stringEth, geographicOrigin: stringGeographic, interventionsOrProcedures: interventionsProcedures, measures: measuresJson, sex: stringSex, diseases: diseases })
+           
+            rows.push({ id: index, IndividualId: element[1].id, Beacon: element[0], ethnicity: stringEth, geographicOrigin: stringGeographic, interventionsOrProcedures: interventionsProcedures, measures: measuresJson, sex: stringSex, diseases: diseases })
 
         }
 
