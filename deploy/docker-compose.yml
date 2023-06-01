@@ -140,6 +140,8 @@ services:
       #- KEYCLOAK_HOSTNAME=localhost
       #- KC_HOSTNAME_URL=https://beacon-network-test2.ega-archive.org
       #- KC_HOSTNAME_ADMIN_URL=https://beacon-network-test2.ega-archive.org
+      - KEYCLOAK_FRONTEND_URL=https://beacon-network-test2.ega-archive.org/auth/
+      - PROXY_ADDRESS_FORWARDING=true
     volumes:
       - ./beacon-realm.json:/tmp/beacon-realm.json
     ports:
