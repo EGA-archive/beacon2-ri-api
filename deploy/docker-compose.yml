@@ -177,16 +177,16 @@ services:
     volumes:
       - ../frontend:/usr/src/app
 
-  frontend2:
-    build:
-      context: ../frontend2
-    command: ["node", "/opt/yarn-v1.22.19/bin/yarn.js", "start" ]
-    container_name: react2
-    depends_on:
-      - beacon
-    ports:
-      - 3001:3001
-    volumes:
-      - ../frontend2:/usr/src/app
+  #frontend2:
+    #build:
+      #context: ../frontend2
+    #command: ["node", "/opt/yarn-v1.22.19/bin/yarn.js", "start" ]
+    #container_name: react2
+    #depends_on:
+    #  - beacon
+    #ports:
+    #  - 3001:3001
+    #volumes:
+    #  - ../frontend2:/usr/src/app
 
 
