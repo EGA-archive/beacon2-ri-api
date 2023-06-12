@@ -119,8 +119,8 @@ services:
   # and we don't need a delay in-between. We can rely on the depends_on only.
 
   idp:
-    #image: jboss/keycloak
-    image: sleighzy/keycloak
+    image: jboss/keycloak
+    #image: sleighzy/keycloak
     hostname: idp
     container_name: idp
     environment:
@@ -177,16 +177,16 @@ services:
     volumes:
       - ../frontend:/usr/src/app
 
-  #frontend2:
-    #build:
-      #context: ../frontend2
-    #command: ["node", "/opt/yarn-v1.22.19/bin/yarn.js", "start" ]
-    #container_name: react2
-    #depends_on:
-    #  - beacon
-    #ports:
-    #  - 3001:3001
-    #volumes:
-    #  - ../frontend2:/usr/src/app
+  frontend2:
+    build:
+      context: ../frontend2
+    command: ["node", "/opt/yarn-v1.22.19/bin/yarn.js", "start" ]
+    container_name: react2
+    depends_on:
+      - beacon
+    ports:
+      - 3001:3001
+    volumes:
+      - ../frontend2:/usr/src/app
 
 
