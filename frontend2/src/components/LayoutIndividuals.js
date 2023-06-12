@@ -469,9 +469,6 @@ function LayoutIndividuals(props) {
                     <a href="https://www.cineca-project.eu/">
                         <img className="cinecaLogo" src="./CINECA_logo.png" alt='cinecaLogo'></img>
                     </a>
-                    <a href="https://elixir-europe.org/">
-                        <img className="elixirLogo" src="./white-orange-logo.png" alt='elixirLogo'></img>
-                    </a>
                 </div>
             </div>
 
