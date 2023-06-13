@@ -2,7 +2,7 @@ import './Individuals.css';
 import '../App.css';
 import { useState, useEffect } from 'react';
 import axios from "axios";
-import { Switch } from '@mui/material';
+
 import { AuthContext } from './context/AuthContext';
 import { useContext } from 'react';
 
@@ -60,21 +60,19 @@ function IndividualsResults(props) {
 
             authenticateUser()
             const token = getStoredToken()
-            console.log(token)
+          
             if (token !== 'undefined') {
 
                 setLoginRequired(false)
             } else {
                 setMessageLogin("PLEASE CREATE AN ACCOUNT AND LOG IN FOR QUERYING")
-                console.log("ERROR")
+           
             }
 
             if (token === null) {
                 setLoginRequired(true)
                 setMessageLogin("PLEASE CREATE AN ACCOUNT AND LOG IN FOR QUERYING")
-                console.log("ERROR")
             }
-
 
             if (props.query !== null) {
 
@@ -155,31 +153,12 @@ function IndividualsResults(props) {
                         }
                         arrayFilter.push(filter)
                     }
-
-
                 }
-
 
             }
 
             try {
-                console.log(props.operator)
-                if (props.value !== '' && props.operator !== '' && props.ID !== '') {
-
-                    console.log("holiii")
-                    //alphanumerical query
-
-                    const alphaNumFilter = {
-                        "id": `${props.ID}`,
-                        "operator": `${props.operator}`,
-                        "value": `${props.value}`,
-                    }
-
-                    arrayFilter.push(alphaNumFilter)
-
-
-                }
-
+            
                 if (props.query === null) {
 
                     // show all individuals
