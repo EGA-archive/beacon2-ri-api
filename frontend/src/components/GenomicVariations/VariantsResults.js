@@ -1,13 +1,13 @@
 import './GenomicVariations.css';
-import './Individuals.css';
-import '../App.css';
+import '../Individuals/Individuals.css';
+import '../../App.css';
 import { useState, useEffect } from 'react';
 import axios from "axios";
 
-import { AuthContext } from './context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 import { useContext } from 'react';
 
-import TableResultsVariant from './TableResultsVariant';
+import TableResultsVariant from '../Results/VariantResults/TableResultsVariant';
 
 function VariantsResults(props) {
 
@@ -168,7 +168,7 @@ function VariantsResults(props) {
                     jsonData1 = JSON.stringify(jsonData1)
                     console.log(jsonData1)
                     //const headers = { 'Content-type': 'application/json', 'Authorization': `Bearer ${token}` }
-                    const res = await axios.post("https://ega-archive.org/test-beacon-apis/cineca/g_variants", jsonData1)
+                    const res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/g_variants", jsonData1)
                     if (res.data.responseSummary.numTotalResults < 1 || res.data.responseSummary.numTotalResults === undefined) {
                         setError("No results. Please check the query and retry")
                         setNumberResults(0)
@@ -180,13 +180,12 @@ function VariantsResults(props) {
                         setBoolean(res.data.responseSummary.exists)
                         console.log(res)
                         res.data.response.resultSets.forEach((element, index) => {
-
-                            let arrayResult = [res.data.response.resultSets[index]]
-                            results.push(arrayResult)
-                            console.log(arrayResult)
-                            console.log(results)
+                            res.data.response.resultSets[index].results.forEach((element2, index2) => {
+                                let arrayResult = [res.data.response.resultSets[index].beaconId, res.data.response.resultSets[index].results[index2]]
+                                results.push(arrayResult)
+                                console.log(arrayResult)
+                            })
                         })
-
                     }
                 }
 
@@ -204,8 +203,8 @@ function VariantsResults(props) {
     return (
         <div>
             {logInRequired === true && <div className='variantsResultsError'><h3>{messageLogin}</h3></div>}
-                {error !== '' && <h5 className='variantsResultsError'>Please check the query and retry</h5>}
-            
+            {error !== '' && <h5 className='variantsResultsError'>Please check the query and retry</h5>}
+
             {logInRequired === false &&
                 <div>
                     <div className='selectGranularity'>
@@ -222,7 +221,7 @@ function VariantsResults(props) {
                     <div className='resultsContainer'>
 
                         {show1 && boolean && <p className='p1'>YES</p>}
-                        {show1 && !boolean && <p className='p1'>N0</p>}
+                        {show1 && !boolean && <p className='p1'>NO</p>}
 
                         {show2 && numberResults !== 1 && <p className='p1'>{numberResults} &nbsp; Results</p>}
                         {show2 && numberResults === 1 && <p className='p1'>{numberResults} &nbsp; Result</p>}

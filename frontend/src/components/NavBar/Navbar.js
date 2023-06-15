@@ -1,9 +1,9 @@
 import { NavLink } from 'react-router-dom';
 
 import React, { useState } from 'react';
-import { AuthContext } from './context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 import { useContext } from 'react';
-import SignInForm from './SignInForm';
+import SignInForm from '../SignIn/SignInForm';
 import './Navbar.css';
 
 

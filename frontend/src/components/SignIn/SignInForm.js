@@ -1,12 +1,12 @@
-import './SignUpForm.css'
+import './SignInForm.css'
 import { NavLink } from 'react-router-dom';
 import { Router } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
 import React, { Component, useState } from 'react';
-import { AuthContext } from './context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from './Navbar';
+import Navbar from '../NavBar/Navbar';
 
 
 

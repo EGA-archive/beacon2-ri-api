@@ -1,14 +1,14 @@
-import '../App.css';
+import '../../App.css';
 
-import FilteringTermsIndividuals from './FilteringTermsIndividuals';
-import Cohorts from './Cohorts';
+import FilteringTermsIndividuals from '../FilteringTerms/FilteringTerms';
+import Cohorts from '../Cohorts/Cohorts';
 
-import ResultsDatasets from './ResultsDatasets';
-import VariantsResults from './VariantsResults';
+import ResultsDatasets from '../Datasets/ResultsDatasets';
+import VariantsResults from '../GenomicVariations/VariantsResults';
 
 import Select from 'react-select'
 import React, { useState, useEffect } from 'react';
-import { AuthContext } from './context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 import { useContext } from 'react';
 
 import Switch from '@mui/material/Switch';
@@ -19,10 +19,10 @@ import axios from "axios";
 import ReactModal from 'react-modal';
 import makeAnimated from 'react-select/animated';
 
-import IndividualsResults from './IndividualsResults';
+import IndividualsResults from '../Individuals/IndividualsResults';
 
-function LayoutIndividuals(props) {
-
+function Layout(props) {
+   console.log(props)
     const [error, setError] = useState(null)
 
     const [placeholder, setPlaceholder] = useState('')
@@ -68,6 +68,13 @@ function LayoutIndividuals(props) {
     const [showExtraIndividuals, setExtraIndividuals] = useState(false)
     const [showOptions, setShowOptions] = useState(false)
 
+
+    const [options, setOptions] = useState(
+        
+        props.options)
+
+  
+
     const [referenceName, setRefName] = useState('')
     const [referenceName2, setRefName2] = useState('')
     const [start, setStart] = useState('')
@@ -103,12 +110,6 @@ function LayoutIndividuals(props) {
 
     const [isSubmitted, setIsSub] = useState(false)
 
-    const [options, setOptions] = useState([
-        { value: 'CINECA_synthetic_cohort_UK1', label: 'CINECA_synthetic_cohort_UK1' },
-        { value: 'pgx:cohort-oneKgenomes', label: 'pgx:cohort-oneKgenomes' },
-        { value: 'pgx:cohort-carriocordo2021heterogeneity', label: 'pgx:cohort-carriocordo2021heterogeneity' },
-        { value: 'pgx:cohort-2021progenetix', label: 'pgx:cohort-2021progenetix' }
-    ])
 
     const [arrayFilteringTerms, setArrayFilteringTerms] = useState([])
 
@@ -146,6 +147,10 @@ function LayoutIndividuals(props) {
             setResultset("ALL")
         }
 
+    }
+
+    const triggerOptions = () => {
+        setOptions(options)
     }
 
 
@@ -408,17 +413,35 @@ function LayoutIndividuals(props) {
     }
 
     useEffect(() => {
-        //  const token = getStoredToken()
 
-        //  if (token === null) {
-        //    const timer = setTimeout(() => setPopUp(true), 1000);
-        //  setPopUp(false)
-        //            return () => clearTimeout(timer);
-        //      }
+        if (props.collection === 'Individuals') {
+            setPlaceholder('filtering term comma-separated, ID><=value')
+            setExtraIndividuals(true)
 
+        } else if (props.collection === 'Biosamples') {
+            setPlaceholder('key=value, key><=value, or filtering term comma-separated')
+        } else if (props.collection === 'Cohorts') {
+            setShowCohorts(true)
+            setExtraIndividuals(false)
+            setPlaceholder('Search for any cohort')
+        } else if (props.collection === "Variant") {
+            setPlaceholder('chr : pos ref > alt, chr: start-end')
+            setExtraIndividuals(false)
+            setShowVariants(true)
 
+        } else if (props.collection === "Analyses") {
+            setPlaceholder('chr : pos ref > alt')
+            setExtraIndividuals(false)
+        } else if (props.collection === "Runs") {
+            setPlaceholder('chr : pos ref > alt')
+            setExtraIndividuals(false)
+        } else if (props.collection === 'Datasets') {
+            setPlaceholder('Search for any cohort')
+            setExtraIndividuals(false)
+        } else {
+            setPlaceholder('')
+        }
 
-        // declare the data fetching function
         const fetchData = async () => {
 
             try {
@@ -449,40 +472,9 @@ function LayoutIndividuals(props) {
             .catch(console.error);
 
 
-
     }, [])
 
-    useEffect(() => {
-
-        if (props.collection === 'Individuals') {
-            setPlaceholder('filtering term comma-separated, ID><=value')
-            setExtraIndividuals(true)
-
-        } else if (props.collection === 'Biosamples') {
-            setPlaceholder('key=value, key><=value, or filtering term comma-separated')
-        } else if (props.collection === 'Cohorts') {
-            setShowCohorts(true)
-            setExtraIndividuals(false)
-            setPlaceholder('Search for any cohort')
-        } else if (props.collection === "Variant") {
-            setPlaceholder('chr : pos ref > alt, chr: start-end')
-            setExtraIndividuals(false)
-            setShowVariants(true)
-
-        } else if (props.collection === "Analyses") {
-            setPlaceholder('chr : pos ref > alt')
-            setExtraIndividuals(false)
-        } else if (props.collection === "Runs") {
-            setPlaceholder('chr : pos ref > alt')
-            setExtraIndividuals(false)
-        } else if (props.collection === 'Datasets') {
-            setPlaceholder('Search for any cohort')
-            setExtraIndividuals(false)
-        } else {
-            setPlaceholder('')
-        }
-
-    }, [])
+ 
 
 
     const onSubmit = async (event) => {
@@ -559,9 +551,9 @@ function LayoutIndividuals(props) {
             <div className="container2">
                 <button className="helpButton" onClick={handleHelpModal2}><img className="questionLogo2" src="./question.png" alt='questionIcon'></img><h5>Help for querying</h5></button>
                 <div className='logos'>
-                    <a href="https://www.cineca-project.eu/">
+                    {/* <a href="https://www.cineca-project.eu/">
                         <img className="cinecaLogo" src="./CINECA_logo.png" alt='cinecaLogo'></img>
-                    </a>
+                    </a> */}
                     <a href="https://elixir-europe.org/">
                         <img className="elixirLogo" src="./white-orange-logo.png" alt='elixirLogo'></img>
                     </a>
@@ -593,14 +585,16 @@ function LayoutIndividuals(props) {
                                 <div className="newSearch"><button className="newSearchButton" onClick={onSubmit2} type="submit">NEW SEARCH</button></div>}
                         </form>}
 
-                    {cohorts &&
+                    {cohorts && 
                         <div className="cohortsModule">
                             <Select
+                                onClick={triggerOptions}
                                 closeMenuOnSelect={false}
                                 components={animatedComponents}
-                                defaultValue={[options[0]]}
+                                defaultValue={[]}
                                 isMulti
                                 options={options}
+                            //onToggleCallback={onToggle3}
                             />
 
                             <form className="d-flex2" onSubmit={onSubmitCohorts}>
@@ -778,8 +772,8 @@ function LayoutIndividuals(props) {
                             </div>
                         </div>}
                     </div>}
-                {hideForm=== true  && <button onClick={handleHideVariantsForm}><img className="arrowLogo" src="../arrow-down.png" alt='arrowIcon'/></button> }
-                {showVariants && showBar === false && hideForm=== false && <div>
+                {hideForm === true && <button onClick={handleHideVariantsForm}><img className="arrowLogo" src="../arrow-down.png" alt='arrowIcon' /></button>}
+                {showVariants && showBar === false && hideForm === false && <div>
                     <form onSubmit={handleSubmit}>
                         <div className='variantsContainer'>
 
@@ -927,4 +921,4 @@ function LayoutIndividuals(props) {
     );
 }
 
-export default LayoutIndividuals;
+export default Layout;
