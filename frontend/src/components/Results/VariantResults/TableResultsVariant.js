@@ -6,13 +6,13 @@ function TableResultsIndividuals(props) {
     const [resultsJSON, setResultsJSON] = useState([])
     const [results, setResults] = useState('')
     useEffect(() => {
-        setResults(props.results)
-        props.results.forEach(element => {
+        
+        props.results.forEach((element,index) => {
 
             element.forEach(element2 => {
                 console.log(element2)
-                element2.results.forEach(element3 => {
-                    resultsJSON.push(JSON.stringify(element3, null, 2).replace('[', "").replace(']', ""))
+                element2[1].results.forEach(element3 => {
+                    resultsJSON.push([element2[0],JSON.stringify(element3, null, 2).replace('[', "").replace(']', "")])
                 })
 
 

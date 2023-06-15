@@ -3,7 +3,7 @@ import './FilteringTerms.css'
 import { TagBox } from 'react-tag-box'
 
 
-function FilteringTermsIndividuals(props) {
+function FilteringTerms(props) {
 
     console.log(props)
 
@@ -395,4 +395,4 @@ function FilteringTermsIndividuals(props) {
     )
 }
 
-export default FilteringTermsIndividuals
+export default FilteringTerms

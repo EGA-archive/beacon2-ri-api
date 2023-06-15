@@ -1,13 +1,6 @@
-import './SignUpForm.css'
+import './SignInForm.css'
 import { NavLink } from 'react-router-dom';
-import { Router, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { Route, Routes } from 'react-router-dom';
 import { Component } from 'react';
-import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import { AuthContext } from './context/AuthContext';
-import { useContext } from 'react';
 
 const apiURL = 'http://localhost:8080/auth/admin/realms/Beacon/users'
 const apiURL2 = 'http://localhost:8080/auth/realms/Beacon/protocol/openid-connect/token'
