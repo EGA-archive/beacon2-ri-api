@@ -41,12 +41,12 @@ def build_response_by_dataset(data, response_dict, num_total_results, qparams, f
     """"Fills the `response` part with the correct format in `results`"""
     list_of_responses=[]
     for k,v in response_dict.items():
+        LOG.debug(len(v))
         response = {
-            'id': '', # TODO: Set the name of the dataset/cohort
-            'setType': '', # TODO: Set the type of collection
-            'exists': num_total_results > 0,
-            'resultsCount': num_total_results,
-            'dataset': k,
+            'id': k, # TODO: Set the name of the dataset/cohort
+            'setType': 'dataset', # TODO: Set the type of collection
+            'exists': len(v) > 0,
+            'resultsCount': len(v),
             'results': v,
             # 'info': None,
             'resultsHandover': None,  # build_results_handover
@@ -113,26 +113,31 @@ def build_beacon_resultset_response_by_dataset(data,
 
     
     for dataset_dict in list_of_dataset_dicts:
-            for datas in dataset_dict['ids']:
-                    if isinstance(datas,str):
-                        dict_2={}
-                        dict_2['id']=datas
-                        dataset_id = dataset_dict['dataset']
-                        response_dict[dataset_id]=[]
-                        response_dict[dataset_id].append(dict_2)
-                        LOG.debug(response_dict)
+        datas = dataset_dict['ids']
+        biosample_list = datas[0]
+            #for datas in dataset_dict['ids']:
+        if isinstance(datas, str):
+            dict_2={}
+            dict_2['id']=datas
+            dataset_id = dataset_dict['dataset']
+            response_dict[dataset_id]=[]
+            response_dict[dataset_id].append(dict_2)
+            LOG.debug(response_dict)
 
-                    else:
-                        for doc in data:
-                            LOG.debug(isinstance(doc,dict))
-                            LOG.debug(doc)
-                            try:
-                                if doc['id'] in datas['biosampleIds']:
-                                    dataset_id = dataset_dict['dataset']
-                                    response_dict[dataset_id].append(doc)
-                            except Exception:
-                                pass
-                        LOG.debug(response_dict[dataset_id])
+        else:
+            for doc in data:
+                #LOG.debug(isinstance(doc,dict))
+                #LOG.debug(doc)
+                #convert doc to dict
+                try:
+                    if doc['id'] in biosample_list['biosampleIds']:
+                        dataset_id = dataset_dict['dataset']
+                        response_dict[dataset_id].append(doc)
+                    elif doc['id'] in biosample_list['individualIds']:
+                        dataset_id = dataset_dict['dataset']
+                        response_dict[dataset_id].append(doc)
+                except Exception:
+                    pass
 
 
     
@@ -141,7 +146,7 @@ def build_beacon_resultset_response_by_dataset(data,
         'responseSummary': build_response_summary(num_total_results > 0, num_total_results),
         # TODO: 'extendedInfo': build_extended_info(),
         'response': {
-            'resultSets': [build_response_by_dataset(data, response_dict, num_total_results, qparams, func_response_type)]
+            'resultSets': build_response_by_dataset(data, response_dict, num_total_results, qparams, func_response_type)
         },
         'beaconHandovers': conf.beacon_handovers,
     }
