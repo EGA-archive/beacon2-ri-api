@@ -1,3 +1,19 @@
+from datetime import date
+import datetime
+import glob
+import os
+
+
+def get_update_datetime():
+    # Path to the file
+    path = r"./*"
+    list_of_files = glob.glob(path)
+    latest_file = max(list_of_files, key=os.path.getctime)
+    # file modification timestamp of a file
+    m_time = os.path.getmtime(latest_file)
+    # convert timestamp into DateTime object
+    dt_m = datetime.datetime.fromtimestamp(m_time)
+    return dt_m
 """Beacon Configuration."""
 
 #
@@ -39,7 +55,7 @@ version = 'v2.0'
 welcome_url = 'https://beacon.ega-archive.org/'
 alternative_url = 'https://beacon.ega-archive.org/api'
 create_datetime = '2021-11-29T12:00:00.000000'
-update_datetime = ''
+update_datetime = get_update_datetime()
 # update_datetime will be created when initializing the beacon, using the ISO 8601 format
 
 #
