@@ -21,5 +21,5 @@ async def main():
     # Close the connection.
     #await conn.close()
 
-holaa = asyncio.get_event_loop().run_until_complete(main())
-print(holaa)
+hola = asyncio.get_event_loop().run_until_complete(main())
+print(hola)
