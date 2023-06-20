@@ -114,7 +114,10 @@ def build_beacon_resultset_response_by_dataset(data,
     
     for dataset_dict in list_of_dataset_dicts:
         datas = dataset_dict['ids']
-        biosample_list = datas[0]
+        try:
+            biosample_list = datas[0]
+        except Exception:
+            biosample_list = []
             #for datas in dataset_dict['ids']:
         if isinstance(datas, str):
             dict_2={}

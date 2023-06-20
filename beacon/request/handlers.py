@@ -5,6 +5,7 @@ from aiohttp import web
 from aiohttp.web_request import Request
 from bson import json_util
 from beacon import conf
+import yaml
 
 from beacon.request import ontologies
 from beacon.request.model import Granularity, RequestParams
@@ -148,7 +149,24 @@ def generic_handler(db_fn, request=None):
                     list_of_dataset_dicts.append(dict_dataset)
                 LOG.debug(list_of_dataset_dicts)
         else:
+            #write here code for public datasets
             list_of_dataset_dicts=[]
+            qparams.query.request_parameters = {}
+            qparams.query.request_parameters['datasets'] = '*******'
+            _, _, datasets = get_datasets(None, qparams)
+            beacon_datasets = [ r for r in datasets ]
+            with open("/beacon/beacon/request/public_datasets.yml", 'r') as stream:
+                public_datasets = yaml.safe_load(stream)
+            list_of_public_datasets= public_datasets['public_datasets']
+            LOG.debug(list_of_public_datasets)
+            for data_r in list_of_public_datasets:
+                dict_dataset = {}
+                dict_dataset['dataset']=data_r
+                dict_dataset['ids']=[ r['ids'] for r in beacon_datasets if r['id'] == data_r ]
+                list_of_dataset_dicts.append(dict_dataset)
+            LOG.debug(list_of_dataset_dicts)
+
+            
 
         qparams = RequestParams(**json_body).from_request(request)
         
