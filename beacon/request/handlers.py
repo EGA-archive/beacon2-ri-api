@@ -5,6 +5,7 @@ from aiohttp import web
 from aiohttp.web_request import Request
 from bson import json_util
 from beacon import conf
+import yaml
 
 from beacon.request import ontologies
 from beacon.request.model import Granularity, RequestParams
@@ -55,6 +56,9 @@ def generic_handler(db_fn, request=None):
         access_token = request.headers.get('Authorization')
         LOG.debug(access_token)
         if access_token is not None:
+            with open("/beacon/beacon/request/public_datasets.yml", 'r') as stream:
+                public_datasets = yaml.safe_load(stream)
+            list_of_public_datasets= public_datasets['public_datasets']
             try:
                 specific_datasets = qparams.query.request_parameters['datasets']
             except Exception:
@@ -68,11 +72,14 @@ def generic_handler(db_fn, request=None):
             LOG.debug(authenticated)
             LOG.debug(specific_datasets)
 
+
             specific_datasets_unauthorized = []
             specific_datasets_unauthorized_and_found = []
             bio_list = []
             search_and_authorized_datasets = []
             specific_search_datasets = []
+            for public_dataset in list_of_public_datasets:
+                authorized_datasets.append(public_dataset)
             # Get response
             if specific_datasets != []:
                 for element in authorized_datasets:
@@ -148,7 +155,24 @@ def generic_handler(db_fn, request=None):
                     list_of_dataset_dicts.append(dict_dataset)
                 LOG.debug(list_of_dataset_dicts)
         else:
+            #write here code for public datasets
             list_of_dataset_dicts=[]
+            qparams.query.request_parameters = {}
+            qparams.query.request_parameters['datasets'] = '*******'
+            _, _, datasets = get_datasets(None, qparams)
+            beacon_datasets = [ r for r in datasets ]
+            with open("/beacon/beacon/request/public_datasets.yml", 'r') as stream:
+                public_datasets = yaml.safe_load(stream)
+            list_of_public_datasets= public_datasets['public_datasets']
+            LOG.debug(list_of_public_datasets)
+            for data_r in list_of_public_datasets:
+                dict_dataset = {}
+                dict_dataset['dataset']=data_r
+                dict_dataset['ids']=[ r['ids'] for r in beacon_datasets if r['id'] == data_r ]
+                list_of_dataset_dicts.append(dict_dataset)
+            LOG.debug(list_of_dataset_dicts)
+
+            
 
         qparams = RequestParams(**json_body).from_request(request)
         
@@ -176,7 +200,7 @@ def generic_handler(db_fn, request=None):
             elif conf.max_beacon_granularity == Granularity.COUNT:
                 response = build_beacon_count_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
             else:
-                response = build_beacon_resultset_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
+                response = build_beacon_resultset_response_by_dataset(response_converted, list_of_dataset_dicts, count, qparams, lambda x, y: x, entity_schema)
                 
         return await json_stream(request, response)
 
