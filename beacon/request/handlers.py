@@ -56,6 +56,9 @@ def generic_handler(db_fn, request=None):
         access_token = request.headers.get('Authorization')
         LOG.debug(access_token)
         if access_token is not None:
+            with open("/beacon/beacon/request/public_datasets.yml", 'r') as stream:
+                public_datasets = yaml.safe_load(stream)
+            list_of_public_datasets= public_datasets['public_datasets']
             try:
                 specific_datasets = qparams.query.request_parameters['datasets']
             except Exception:
@@ -69,11 +72,14 @@ def generic_handler(db_fn, request=None):
             LOG.debug(authenticated)
             LOG.debug(specific_datasets)
 
+
             specific_datasets_unauthorized = []
             specific_datasets_unauthorized_and_found = []
             bio_list = []
             search_and_authorized_datasets = []
             specific_search_datasets = []
+            for public_dataset in list_of_public_datasets:
+                authorized_datasets.append(public_dataset)
             # Get response
             if specific_datasets != []:
                 for element in authorized_datasets:
