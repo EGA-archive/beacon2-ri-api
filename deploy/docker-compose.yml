@@ -119,8 +119,8 @@ services:
   # and we don't need a delay in-between. We can rely on the depends_on only.
 
   idp:
-    image: jboss/keycloak
-    #image: sleighzy/keycloak
+    #image: jboss/keycloak
+    image: sleighzy/keycloak
     hostname: idp
     container_name: idp
     environment:
@@ -137,11 +137,11 @@ services:
       - DB_DATABASE=keycloak
       #- DB_SCHEMA=public
       - KEYCLOAK_IMPORT=/tmp/beacon-realm.json -Dkeycloak.profile.feature.upload_scripts=enabled -Dkeycloak.profile.feature.token_exchange=enabled -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled
-      #- KEYCLOAK_HOSTNAME=localhost
+      - KEYCLOAK_HOSTNAME=localhost
       #- KC_HOSTNAME_URL=https://beacon-network-test2.ega-archive.org
       #- KC_HOSTNAME_ADMIN_URL=https://beacon-network-test2.ega-archive.org
-      - KEYCLOAK_FRONTEND_URL=https://beacon-network-test2.ega-archive.org/auth/
-      - PROXY_ADDRESS_FORWARDING=true
+      #- KEYCLOAK_FRONTEND_URL=https://beacon-network-test2.ega-archive.org/auth/
+      #- PROXY_ADDRESS_FORWARDING=true
     volumes:
       - ./beacon-realm.json:/tmp/beacon-realm.json
     ports:
