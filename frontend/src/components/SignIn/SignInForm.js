@@ -12,8 +12,8 @@ import Navbar from '../NavBar/Navbar';
 
 export default function SignInForm() {
 
-    const [userName, setUserName] = useState('')
-    const [password, setPassword] = useState('')
+    const [userName, setUserName] = useState('dummy_user')
+    const [password, setPassword] = useState('dummy_pw')
     const [error, setError] = useState('')
 
     const navigate = useNavigate();
@@ -22,7 +22,7 @@ export default function SignInForm() {
 
     const handleChange1 = (e) => {
         console.log(e.target.value)
-
+        
         setUserName(e.target.value)
 
     }
@@ -125,6 +125,7 @@ export default function SignInForm() {
                                 className="formFieldInput"
                                 placeholder="Enter your username"
                                 name="userName"
+                                value="dummy_user"
                                 onChange={e => { handleChange1(e) }}
                             />
                         </div>
@@ -138,6 +139,7 @@ export default function SignInForm() {
                                 className="formFieldInput"
                                 placeholder="Enter your password"
                                 name="password"
+                                value="dummy_pw"
                                 onChange={e => { handleChange2(e) }}
                             />
                         </div>
@@ -147,9 +149,7 @@ export default function SignInForm() {
 
                             <button className="formFieldButton"> Sign In</button>
 
-                            <NavLink to="/sign-up" className="formFieldLink">
-                                Create an account
-                            </NavLink>
+                         
                         </div>
                     </form>
                     {error !== '' && <h1>{error}</h1>}

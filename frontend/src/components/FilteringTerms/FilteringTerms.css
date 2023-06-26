@@ -22,12 +22,14 @@ thead {
     margin-right: 78px;
     font-size: 15px;
     width: 1102px;
+    overflow-y: scroll;    
 }
 
 .tableWrapper{
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow-y: scroll;
 }
 
 .generalContainer{
@@ -36,13 +38,14 @@ thead {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
 }
 
 .th1 {
 
     overflow-x: auto;
     display: flex;
-    width: 45%;
+    width: 55%;
     /* height: 100%; */
     /* justify-content: center; */
     margin-top: 12px;
@@ -119,7 +122,7 @@ thead {
 .th2 {
 
     display: flex;
-    width: 732px;
+    width: 568px;
     /* height: 100%; */
     /* justify-content: center; */
     margin-top: 12px;
@@ -160,7 +163,7 @@ thead {
 .th5 {
 
     display: flex;
-    width: 52%;
+    width: 77%;
     /* height: 100%; */
     /* justify-content: center; */
     margin-top: 12px;
@@ -173,32 +176,15 @@ thead {
 .th6 {
 
     display: flex;
-    width: 53%;
+    width: 74%;
     /* height: 100%; */
     /* justify-content: center; */
     margin-top: 12px;
     margin-bottom: 12px;
-    padding-left: 32px;
+    padding-left: 52px;
     padding-top: 10px;
     padding-bottom: 10px;
 }
-
-.th7 {
-
-    display: flex;
-    width: 44%;
-    /* height: 100%; */
-    /* justify-content: center; */
-    margin-top: 12px;
-    margin-bottom: 12px;
-    padding-left: 32px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-
-
-
-
 
 
 .select-checkbox {
@@ -209,8 +195,9 @@ thead {
 
 .searchTermInput {
     margin: 10px;
-    width: 224px;
+    width: 322px;
     height: 31px;
+    margin-left: 27px;
 }
 
 .searchTermInput1 {

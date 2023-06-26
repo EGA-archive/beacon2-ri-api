@@ -177,174 +177,226 @@ function Cohorts(props) {
 
             element.collectionEvents.forEach(element2 => {
 
-              if (Object.keys(element2).length !== 0 ) {
+              if (Object.keys(element2).length !== 0) {
 
                 console.log(element2)
+                let sexs = ''
+                let ethnicities = ''
+                let geoData = ''
+                let diseasesData = ''
+                let diseases_eth = ''
+                let diseases_sex = ''
+                let ethnicities_dis = ''
+                let ethnicities_sex = ''
+                let valuesSex = ''
+                let labelsSex = ''
+                let valuesEthnicities = ''
+                let labelsEthnicities = ''
+                let valuesGeo = ''
+                let labelsGeo = ''
+                let entriesGeo = ''
+                let valuesDiseases = ''
+                let labelsDiseases = ''
+
+
                 // for (var i = 0; i < res.data.response.collections.length; i++) {
+                if (element2.eventGenders !== undefined) {
+                  sexs = element2.eventGenders.distribution.genders
+                }
+                if (element2.eventEthnicities !== undefined) {
+                  ethnicities = element2.eventEthnicities.distribution.ethnicities
+                }
+                if (element2.eventLocations !== undefined) {
+                  geoData = element2.eventLocations.distribution.locations
+                }
+                if (element2.eventDiseases !== undefined) {
+                  diseasesData = element2.eventDiseases.distribution.diseases
+                  diseases_eth = element2.eventDiseases.distribution.diseases_ethnicity
+                  diseases_sex = element2.eventDiseases.distribution.diseases_sex
+                }
 
-                const sexs = element2.eventGenders.distribution.genders
-                const ethnicities = element2.eventEthnicities.distribution.ethnicities
-                const geoData = element2.eventLocations.distribution.locations
-                const diseasesData = element2.eventDiseases.distribution.diseases
+                if (diseases_eth !== '') {
+                  setDisEth(diseases_eth)
+                }
+                if (diseases_sex !== '') {
+                  setDisSex(diseases_sex)
+                }
 
-                const diseases_eth = element2.eventDiseases.distribution.diseases_ethnicity
-                const diseases_sex = element2.eventDiseases.distribution.diseases_sex
-                setDisEth(diseases_eth)
-                setDisSex(diseases_sex)
-                console.log(diseases_eth)
-                console.log(diseases_sex)
-                const ethnicities_dis = element2.eventEthnicities.distribution.ethnicities_disease
-                const ethnicities_sex = element2.eventEthnicities.distribution.ethnicities_sex
+                if (element2.eventEthnicities !== undefined) {
+                  ethnicities_dis = element2.eventEthnicities.distribution.ethnicities_disease
+                  ethnicities_sex = element2.eventEthnicities.distribution.ethnicities_sex
+                }
 
-                setEthDis(ethnicities_dis)
-                setEthSex(ethnicities_sex)
-                console.log(ethnicities_dis)
-                console.log(ethnicities_sex)
+                if (ethnicities_dis !== '') {
+                  setEthDis(ethnicities_dis)
+                }
+                if (ethnicities_sex !== '') {
+                  setEthSex(ethnicities_sex)
+                }
 
                 setNameCohort(element.name)
-                console.log(geoData)
 
-                const valuesSex = Object.values(sexs)
-                const labelsSex = Object.keys(sexs)
-
-                const valuesEthnicities = Object.values(ethnicities)
-                const labelsEthnicities = Object.keys(ethnicities)
-                setLabelsEthnicities(labelsEthnicities)
-
-                const valuesGeo = Object.values(geoData)
-                const labelsGeo = Object.keys(geoData)
-                const entriesGeo = Object.entries(geoData)
-
-                const valuesDiseases = Object.values(diseasesData)
-                const labelsDiseases = Object.keys(diseasesData)
-
-                setLabelsDiseases(labelsDiseases)
-
-
-                var optionsSex = {
-
-                  chart: {
-                    type: 'donut'
-                  },
-                  title: {
-                    text: 'Sex',
-                  },
-                  series: valuesSex,
-                  labels: labelsSex,
+                if (sexs !== '') {
+                  valuesSex = Object.values(sexs)
+                  labelsSex = Object.keys(sexs)
                 }
 
-                var chartSex = new ApexCharts(document.querySelector("#chartSex"), optionsSex);
-                chartSex.render();
+                if (ethnicities !== '') {
+                  valuesEthnicities = Object.values(ethnicities)
+                  labelsEthnicities = Object.keys(ethnicities)
+                }
 
-                var optionsEthnicity = {
-                  chart: {
-                    type: 'bar'
-                  },
-                  title: {
-                    text: 'Ethnicity',
-                    align: 'center',
-                    floating: true
-                  },
-                  series: [{
-                    name: 'Number of individuals',
-                    data: valuesEthnicities
-                  }],
-                  xaxis: {
-                    categories: labelsEthnicities
+                if (labelsEthnicities !== '') {
+                  setLabelsEthnicities(labelsEthnicities)
+                }
+
+
+                if (geoData !== '') {
+                  valuesGeo = Object.values(geoData)
+                  labelsGeo = Object.keys(geoData)
+                  entriesGeo = Object.entries(geoData)
+                }
+
+                if (diseasesData !== '') {
+                  valuesDiseases = Object.values(diseasesData)
+                  labelsDiseases = Object.keys(diseasesData)
+                }
+
+                if (labelsDiseases !== '') {
+                  setLabelsDiseases(labelsDiseases)
+                }
+
+                if (valuesSex !== '' && labelsSex !== '') {
+                  var optionsSex = {
+
+                    chart: {
+                      type: 'donut'
+                    },
+                    title: {
+                      text: 'Sex',
+                    },
+                    series: valuesSex,
+                    labels: labelsSex,
                   }
+
+                  var chartSex = new ApexCharts(document.querySelector("#chartSex"), optionsSex);
+                  chartSex.render();
                 }
 
-                var chartEthnicity = new ApexCharts(document.querySelector("#chartEthnicity"), optionsEthnicity);
-                chartEthnicity.render()
-
-                var optionsGeo = {
-
-                  chart: {
-                    type: 'pie'
-                  },
-                  title: {
-                    text: 'Geographical origin',
-
-                  },
-                  series: valuesGeo,
-                  labels: labelsGeo,
-                }
-
-                var chartGeo = new ApexCharts(document.querySelector("#chartGeo"), optionsGeo);
-                chartGeo.render()
-
-
-                var optionsDiseases = {
-                  series: [{
-                    data: valuesDiseases
-                  }],
-                  chart: {
-                    type: 'bar',
-                    height: 630
-                  },
-                  plotOptions: {
-                    bar: {
-                      barHeight: '100%',
-                      distributed: true,
-                      horizontal: true,
-                      dataLabels: {
-                        position: 'bottom'
-                      },
+                if (valuesEthnicities !== '' && labelsEthnicities !== '') {
+                  var optionsEthnicity = {
+                    chart: {
+                      type: 'bar'
+                    },
+                    title: {
+                      text: 'Ethnicity',
+                      align: 'center',
+                      floating: true
+                    },
+                    series: [{
+                      name: 'Number of individuals',
+                      data: valuesEthnicities
+                    }],
+                    xaxis: {
+                      categories: labelsEthnicities
                     }
-                  },
-                  colors: ['#33b2df', '#546E7A', '#FFD700', '#2b908f', '#DC143C',
-                    '#f48024', '#69d2e7', '#13d8aa', '#A5978B', '#f9a3a4', '#FF4500', '#51f08e', '#b051f0',
-                    '#CCFF33', '#FF66CC', '#FF3333', '#6633CC', '#CD853F', '#3333FF', '#FF3333'
-                  ],
-                  dataLabels: {
-                    enabled: true,
-                    textAnchor: 'start',
-                    style: {
+                  }
+
+                  var chartEthnicity = new ApexCharts(document.querySelector("#chartEthnicity"), optionsEthnicity);
+                  chartEthnicity.render()
+                }
+
+                if (valuesGeo !== '' && labelsGeo !== '') {
+                  var optionsGeo = {
+
+                    chart: {
+                      type: 'pie'
+                    },
+                    title: {
+                      text: 'Geographical origin',
+
+                    },
+                    series: valuesGeo,
+                    labels: labelsGeo,
+                  }
+
+                  var chartGeo = new ApexCharts(document.querySelector("#chartGeo"), optionsGeo);
+                  chartGeo.render()
+                }
+
+
+                if (valuesDiseases !== '' && labelsDiseases !== '') {
+                  var optionsDiseases = {
+                    series: [{
+                      data: valuesDiseases
+                    }],
+                    chart: {
+                      type: 'bar',
+                      height: 630
+                    },
+                    plotOptions: {
+                      bar: {
+                        barHeight: '100%',
+                        distributed: true,
+                        horizontal: true,
+                        dataLabels: {
+                          position: 'bottom'
+                        },
+                      }
+                    },
+                    colors: ['#33b2df', '#546E7A', '#FFD700', '#2b908f', '#DC143C',
+                      '#f48024', '#69d2e7', '#13d8aa', '#A5978B', '#f9a3a4', '#FF4500', '#51f08e', '#b051f0',
+                      '#CCFF33', '#FF66CC', '#FF3333', '#6633CC', '#CD853F', '#3333FF', '#FF3333'
+                    ],
+                    dataLabels: {
+                      enabled: true,
+                      textAnchor: 'start',
+                      style: {
+                        colors: ['#fff']
+                      },
+                      formatter: function (val, opt) {
+                        return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
+                      },
+                      offsetX: 0,
+                      dropShadow: {
+                        enabled: true
+                      }
+                    },
+                    stroke: {
+                      width: 1,
                       colors: ['#fff']
                     },
-                    formatter: function (val, opt) {
-                      return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
+                    xaxis: {
+                      categories: labelsDiseases,
                     },
-                    offsetX: 0,
-                    dropShadow: {
-                      enabled: true
-                    }
-                  },
-                  stroke: {
-                    width: 1,
-                    colors: ['#fff']
-                  },
-                  xaxis: {
-                    categories: labelsDiseases,
-                  },
-                  yaxis: {
-                    labels: {
-                      show: false
-                    }
-                  },
-                  title: {
-                    text: 'Diseases',
-                    align: 'center',
-                    floating: true
-                  },
-                  tooltip: {
-                    theme: 'dark',
-                    x: {
-                      show: false
+                    yaxis: {
+                      labels: {
+                        show: false
+                      }
                     },
-                    y: {
-                      title: {
-                        formatter: function () {
-                          return ''
+                    title: {
+                      text: 'Diseases',
+                      align: 'center',
+                      floating: true
+                    },
+                    tooltip: {
+                      theme: 'dark',
+                      x: {
+                        show: false
+                      },
+                      y: {
+                        title: {
+                          formatter: function () {
+                            return ''
+                          }
                         }
                       }
                     }
-                  }
-                };
+                  };
 
-                var chartDiseases = new ApexCharts(document.querySelector("#chartDiseases"), optionsDiseases);
-                chartDiseases.render()
-
+                  var chartDiseases = new ApexCharts(document.querySelector("#chartDiseases"), optionsDiseases);
+                  chartDiseases.render()
+                }
 
               }
             })

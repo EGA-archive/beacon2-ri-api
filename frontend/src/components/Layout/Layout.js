@@ -22,7 +22,7 @@ import makeAnimated from 'react-select/animated';
 import IndividualsResults from '../Individuals/IndividualsResults';
 
 function Layout(props) {
-   console.log(props)
+    console.log(props)
     const [error, setError] = useState(null)
 
     const [placeholder, setPlaceholder] = useState('')
@@ -68,12 +68,12 @@ function Layout(props) {
     const [showExtraIndividuals, setExtraIndividuals] = useState(false)
     const [showOptions, setShowOptions] = useState(false)
 
+    const [expansionSection, setExpansionSection] = useState(false)
 
     const [options, setOptions] = useState(
-        
+
         props.options)
 
-  
 
     const [referenceName, setRefName] = useState('')
     const [referenceName2, setRefName2] = useState('')
@@ -110,6 +110,7 @@ function Layout(props) {
 
     const [isSubmitted, setIsSub] = useState(false)
 
+    const [qeValue, setQEvalue] = useState('')
 
     const [arrayFilteringTerms, setArrayFilteringTerms] = useState([])
 
@@ -153,6 +154,9 @@ function Layout(props) {
         setOptions(options)
     }
 
+    const handleQEchanges = (e) => {
+        setQEvalue(e.target.value)
+    }
 
     const handleIdChanges = (e) => {
         setShowIds(true)
@@ -259,7 +263,7 @@ function Layout(props) {
 
             try {
 
-                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/individuals/filtering_terms?skip=0&limit=0")
+                let res = await axios.get("https://beacons.bsc.es/beacon-network/v2.0.0/individuals/filtering_terms")
 
                 setFilteringTerms(res)
                 setResults(null)
@@ -272,7 +276,7 @@ function Layout(props) {
 
             try {
 
-                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/individuals/filtering_terms?skip=0&limit=0")
+                let res = await axios.get("https://beacons.bsc.es/beacon-network/v2.0.0/cohorts/filtering_terms")
                 setFilteringTerms(res)
                 setResults(null)
 
@@ -282,7 +286,7 @@ function Layout(props) {
         } else if (props.collection === 'Variant') {
             try {
 
-                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/g_variants/filtering_terms?skip=0&limit=0")
+                let res = await axios.get("https://beacons.bsc.es/beacon-network/v2.0.0/g_variants/filtering_terms")
                 setFilteringTerms(res)
                 setResults(null)
 
@@ -292,7 +296,7 @@ function Layout(props) {
         } else if (props.collection === 'Analyses') {
             try {
 
-                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/analyses/filtering_terms?skip=0&limit=0")
+                let res = await axios.get("https://beacons.bsc.es/beacon-network/v2.0.0/analyses/filtering_terms")
                 setFilteringTerms(res)
                 setResults(null)
 
@@ -302,7 +306,7 @@ function Layout(props) {
         } else if (props.collection === 'Runs') {
             try {
 
-                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/runs/filtering_terms?skip=0&limit=0")
+                let res = await axios.get("https://beacons.bsc.es/beacon-network/v2.0.0/runs/filtering_terms")
                 setFilteringTerms(res)
                 setResults(null)
 
@@ -312,7 +316,7 @@ function Layout(props) {
         } else if (props.collection === 'Biosamples') {
             try {
 
-                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/biosammples/filtering_terms?skip=0&limit=0")
+                let res = await axios.get("https://beacons.bsc.es/beacon-network/v2.0.0/biosamples/filtering_terms")
                 setFilteringTerms(res)
                 setResults(null)
 
@@ -412,6 +416,20 @@ function Layout(props) {
         setHideForm(false)
     }
 
+    const handleQEclick = (e) => {
+        setExpansionSection(true)
+    }
+
+    const handleSubmitQE = async(e) => {
+        try {
+        
+        const res = await axios.get("http://goldorak.hesge.ch:8890/catalogue_explorer/HorizontalExpansionOls/?keywords=melanoma&ontology=mondo,ncit")
+        console.log(res)
+        } catch(error){
+            console.log(error)
+        }
+    }
+
     useEffect(() => {
 
         if (props.collection === 'Individuals') {
@@ -474,7 +492,7 @@ function Layout(props) {
 
     }, [])
 
- 
+
 
 
     const onSubmit = async (event) => {
@@ -575,17 +593,30 @@ function Layout(props) {
             </div>
             <nav className="navbar">
 
+                <div>
+                {expansionSection === false && 
+                    <button onClick={handleQEclick}><h2 className='queryExpansion'>Query expansion</h2></button>}
+                </div>
+                {expansionSection === true && <div className='qeSection'>
+                    <h2 className='qeSubmitH2'>Query expansion</h2>
+                    <input className="QEinput" type="text" value={qeValue} autoComplete='on' placeholder={"Type the keyword that you want to search"} onChange={(e) => handleQEchanges(e)} aria-label="ID" />
+                    <button onClick={handleSubmitQE}><h2 className='qeSubmit'>SUBMIT</h2></button>
+                </div>}
                 {showBar === true && <div className="container-fluid">
 
                     {cohorts === false &&
-                        showBar === true && <form className="d-flex" onSubmit={onSubmit}>
-                            <input className="formSearch" type="search" placeholder={placeholder} value={query} onChange={(e) => search(e)} aria-label="Search" />
-                            {!isSubmitted && <button className="searchButton" type="submit"><img className="searchIcon" src="./magnifier.png" alt='searchIcon'></img></button>}
-                            {isSubmitted &&
-                                <div className="newSearch"><button className="newSearchButton" onClick={onSubmit2} type="submit">NEW SEARCH</button></div>}
-                        </form>}
+                        showBar === true && <div>
+                            <form className="d-flex" onSubmit={onSubmit}>
+                                <input className="formSearch" type="search" placeholder={placeholder} value={query} onChange={(e) => search(e)} aria-label="Search" />
+                                {!isSubmitted && <button className="searchButton" type="submit"><img className="searchIcon" src="./magnifier.png" alt='searchIcon'></img></button>}
+                                {isSubmitted &&
+                                    <div className="newSearch"><button className="newSearchButton" onClick={onSubmit2} type="submit">NEW SEARCH</button></div>}
+                            </form>
 
-                    {cohorts && 
+                        </div>
+                    }
+
+                    {cohorts &&
                         <div className="cohortsModule">
                             <Select
                                 onClick={triggerOptions}
