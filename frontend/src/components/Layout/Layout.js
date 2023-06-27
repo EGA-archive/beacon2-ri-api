@@ -94,6 +94,8 @@ function Layout(props) {
     const [assemblyId2, setAssemblyId2] = useState('')
     const [assemblyId3, setAssemblyId3] = useState('')
 
+    const [selectedCohort, setSelectedCohort] = useState('')
+
     const [hideForm, setHideForm] = useState(false)
 
     const animatedComponents = makeAnimated();
@@ -111,6 +113,10 @@ function Layout(props) {
     const [isSubmitted, setIsSub] = useState(false)
 
     const [qeValue, setQEvalue] = useState('')
+    const [ontologyValue, setOntologyValue] = useState('')
+
+    const [resultsQEexact, setResultsQEexact]= useState([])
+    const [matchesQE, setMatchesQE] = useState([])
 
     const [arrayFilteringTerms, setArrayFilteringTerms] = useState([])
 
@@ -154,8 +160,17 @@ function Layout(props) {
         setOptions(options)
     }
 
+    const handleChangeCohorts = (selectedOption) => {
+        setSelectedCohort(selectedOption);
+    }
+
     const handleQEchanges = (e) => {
-        setQEvalue(e.target.value)
+
+        setQEvalue(e.target.value.trim())
+    }
+
+    const handleOntologyChanges = (e) => {
+        setOntologyValue(e.target.value.trim())
     }
 
     const handleIdChanges = (e) => {
@@ -420,12 +435,44 @@ function Layout(props) {
         setExpansionSection(true)
     }
 
-    const handleSubmitQE = async(e) => {
+    const handleSubmitQE = async (e) => {
         try {
-        
-        const res = await axios.get("http://goldorak.hesge.ch:8890/catalogue_explorer/HorizontalExpansionOls/?keywords=melanoma&ontology=mondo,ncit")
-        console.log(res)
-        } catch(error){
+            if (ontologyValue !== '' && qeValue !== '') {
+                setError(null)
+                const res = await axios.get(`http://goldorak.hesge.ch:8890/catalogue_explorer/HorizontalExpansionOls/?keywords=${qeValue}&ontology=${ontologyValue}`)
+             
+                const arrayResults = res.data.response.ols[qeValue].search_term_expansion
+                console.log(arrayResults)
+                arrayResults.forEach(element => {
+                    if (element.label.trim().toLowerCase === qeValue.toLowerCase){
+                        //exact match
+                        resultsQEexact.push(element)
+                    }
+                })
+
+                const res2 = await axios.get(`http://goldorak.hesge.ch:8890/catalogue_explorer/HorizontalExpansionOls/?keywords=${qeValue}&ontology=$`)
+
+                if (resultsQEexact.length > 0){
+                    resultsQEexact.forEach(element => {
+                        
+                        arrayFilteringTerms.forEach(element2 => {
+
+                            if (element.obo_id.toLowerCase().trim() === element2.toLowerCase().trim()){
+                                matchesQE.push(element2)
+                                console.log("FOUND A MATCH")
+                            }
+                        })
+                      
+
+                    })
+                }
+
+            } else {
+                setError("Please write the keyword and at least one ontology")
+            }
+
+        } catch (error) {
+            setError("NOT FOUND")
             console.log(error)
         }
     }
@@ -469,6 +516,7 @@ function Layout(props) {
                         if (element.type !== "custom") {
                             arrayFilteringTerms.push(element.id)
                         }
+                       
 
                     })
 
@@ -592,16 +640,26 @@ function Layout(props) {
                 }
             </div>
             <nav className="navbar">
-
                 <div>
-                {expansionSection === false && 
-                    <button onClick={handleQEclick}><h2 className='queryExpansion'>Query expansion</h2></button>}
+                    {expansionSection === false && cohorts === false &&
+                        <button onClick={handleQEclick}><h2 className='queryExpansion'>Query expansion</h2></button>}
                 </div>
-                {expansionSection === true && <div className='qeSection'>
-                    <h2 className='qeSubmitH2'>Query expansion</h2>
-                    <input className="QEinput" type="text" value={qeValue} autoComplete='on' placeholder={"Type the keyword that you want to search"} onChange={(e) => handleQEchanges(e)} aria-label="ID" />
-                    <button onClick={handleSubmitQE}><h2 className='qeSubmit'>SUBMIT</h2></button>
+                {expansionSection === true && <div>
+                    <button onClick={() => setExpansionSection(false)}>
+                        <img className="hideQE" src="../hide.png" alt='hideIcon'></img></button>
+                    <div>
+                        <div className='qeSection'>
+                            <h2 className='qeSubmitH2'>Query expansion</h2>
+                            <input className="QEinput" type="text" value={qeValue} autoComplete='on' placeholder={"Type the keyword that you want to search"} onChange={(e) => handleQEchanges(e)} aria-label="ID" />
+                            <input className="QEinput2" type="text" value={ontologyValue} autoComplete='on' placeholder={"Type the ontologies to include in the search comma-separated: e.g., mondo,ncit"} onChange={(e) => handleOntologyChanges(e)} aria-label="ID" />
+                            <button onClick={handleSubmitQE}><h2 className='qeSubmit'>SUBMIT</h2></button>
+                        </div>
+                        {error !== null && <h6 className='errorQE'>{error}</h6>}
+                    </div>
+
                 </div>}
+
+
                 {showBar === true && <div className="container-fluid">
 
                     {cohorts === false &&
@@ -625,6 +683,8 @@ function Layout(props) {
                                 defaultValue={[]}
                                 isMulti
                                 options={options}
+                                onChange={handleChangeCohorts}
+                                autoFocus={true}
                             //onToggleCallback={onToggle3}
                             />
 
@@ -943,7 +1003,7 @@ function Layout(props) {
                 {cohorts && results === 'Cohorts' &&
 
                     <div>
-                        <Cohorts />
+                        <Cohorts selectedCohort={selectedCohort} />
                     </div>}
             </div>
 
