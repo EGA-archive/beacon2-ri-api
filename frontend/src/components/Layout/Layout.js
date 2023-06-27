@@ -94,8 +94,6 @@ function Layout(props) {
     const [assemblyId2, setAssemblyId2] = useState('')
     const [assemblyId3, setAssemblyId3] = useState('')
 
-    const [selectedCohort, setSelectedCohort] = useState('')
-
     const [hideForm, setHideForm] = useState(false)
 
     const animatedComponents = makeAnimated();
@@ -115,6 +113,8 @@ function Layout(props) {
     const [qeValue, setQEvalue] = useState('')
     const [ontologyValue, setOntologyValue] = useState('')
 
+    const [selectedCohortsAux, setSelectedCohortsAux] = useState([])
+    
     const [resultsQEexact, setResultsQEexact]= useState([])
     const [matchesQE, setMatchesQE] = useState([])
 
@@ -160,8 +160,11 @@ function Layout(props) {
         setOptions(options)
     }
 
+
     const handleChangeCohorts = (selectedOption) => {
-        setSelectedCohort(selectedOption);
+        setSelectedCohortsAux([])
+        selectedCohortsAux.push(selectedOption)
+        props.setSelectedCohorts(selectedCohortsAux)
     }
 
     const handleQEchanges = (e) => {
@@ -596,6 +599,7 @@ function Layout(props) {
 
     const onSubmitCohorts = () => {
         setResults('Cohorts')
+      
         props.setShowGraphs(true)
     }
 
@@ -1000,11 +1004,7 @@ function Layout(props) {
                     </div>
                 }
                 {results === null && showFilteringTerms && <FilteringTermsIndividuals filteringTerms={filteringTerms} collection={props.collection} setPlaceholder={setPlaceholder} placeholder={placeholder} query={query} setQuery={setQuery} />}
-                {cohorts && results === 'Cohorts' &&
-
-                    <div>
-                        <Cohorts selectedCohort={selectedCohort} />
-                    </div>}
+             
             </div>
 
         </div>
