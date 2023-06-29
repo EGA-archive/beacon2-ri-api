@@ -1,12 +1,12 @@
 import './Individuals.css';
-import '../App.css';
+import '../../App.css';
 import { useState, useEffect } from 'react';
 import axios from "axios";
 
-import { AuthContext } from './context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 import { useContext } from 'react';
 
-import TableResultsIndividuals from './TableResultsIndividuals';
+import TableResultsIndividuals from '../Results/IndividualsResults/TableResultsIndividuals';
 
 function IndividualsResults(props) {
 
@@ -344,7 +344,7 @@ function IndividualsResults(props) {
                         <div className='resultsContainer'>
 
                             {show1 && boolean && <p className='p1'>YES</p>}
-                            {show1 && !boolean && <p className='p1'>N0</p>}
+                            {show1 && !boolean && <p className='p1'>NO</p>}
 
                             {show2 && numberResults !== 1 && <p className='p1'>{numberResults} &nbsp; Results</p>}
                             {show2 && numberResults === 1 && <p className='p1'>{numberResults} &nbsp; Result</p>}

@@ -1,14 +1,14 @@
-import '../App.css';
+import '../../App.css';
 
-import FilteringTermsIndividuals from './FilteringTermsIndividuals';
-import Cohorts from './Cohorts';
+import FilteringTermsIndividuals from '../FilteringTerms/FilteringTerms';
+import Cohorts from '../Cohorts/Cohorts';
 
-import ResultsDatasets from './ResultsDatasets';
-import VariantsResults from './VariantsResults';
+import ResultsDatasets from '../Datasets/ResultsDatasets';
+import VariantsResults from '../GenomicVariations/VariantsResults';
 
 import Select from 'react-select'
 import React, { useState, useEffect } from 'react';
-import { AuthContext } from './context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 import { useContext } from 'react';
 
 import Switch from '@mui/material/Switch';
@@ -19,10 +19,11 @@ import axios from "axios";
 import ReactModal from 'react-modal';
 import makeAnimated from 'react-select/animated';
 
-import IndividualsResults from './IndividualsResults';
+import IndividualsResults from '../Individuals/IndividualsResults';
+import { LinearProgress } from '@mui/material';
 
-function LayoutIndividuals(props) {
-
+function Layout(props) {
+    console.log(props)
     const [error, setError] = useState(null)
 
     const [placeholder, setPlaceholder] = useState('')
@@ -68,6 +69,13 @@ function LayoutIndividuals(props) {
     const [showExtraIndividuals, setExtraIndividuals] = useState(false)
     const [showOptions, setShowOptions] = useState(false)
 
+    const [expansionSection, setExpansionSection] = useState(false)
+
+    const [options, setOptions] = useState(
+
+        props.options)
+
+
     const [referenceName, setRefName] = useState('')
     const [referenceName2, setRefName2] = useState('')
     const [start, setStart] = useState('')
@@ -100,17 +108,22 @@ function LayoutIndividuals(props) {
 
     const [checked, setChecked] = useState(true)
     const [checked2, setChecked2] = useState(false)
+    const [checked3, setChecked3] = useState(false)
 
     const [isSubmitted, setIsSub] = useState(false)
 
-    const [options, setOptions] = useState([
-        { value: 'CINECA_synthetic_cohort_UK1', label: 'CINECA_synthetic_cohort_UK1' },
-        { value: 'pgx:cohort-oneKgenomes', label: 'pgx:cohort-oneKgenomes' },
-        { value: 'pgx:cohort-carriocordo2021heterogeneity', label: 'pgx:cohort-carriocordo2021heterogeneity' },
-        { value: 'pgx:cohort-2021progenetix', label: 'pgx:cohort-2021progenetix' }
-    ])
+    const [qeValue, setQEvalue] = useState('')
+    const [ontologyValue, setOntologyValue] = useState('')
+
+    const [selectedCohortsAux, setSelectedCohortsAux] = useState([])
+
+    const [resultsQEexact, setResultsQEexact] = useState([])
+    const [matchesQE, setMatchesQE] = useState([])
+    const [showQEresults, setShowQEresults] = useState(false)
+    const [showQEfirstResults, setShowQEfirstResults] = useState(false)
 
     const [arrayFilteringTerms, setArrayFilteringTerms] = useState([])
+    const [arrayFilteringTermsQE, setArrayFilteringTermsQE] = useState([])
 
     const [showIds, setShowIds] = useState(false)
 
@@ -148,6 +161,29 @@ function LayoutIndividuals(props) {
 
     }
 
+    const triggerOptions = () => {
+        setOptions(options)
+    }
+
+
+    const handleChangeCohorts = (selectedOption) => {
+        setSelectedCohortsAux([])
+        selectedCohortsAux.push(selectedOption)
+        props.setSelectedCohorts(selectedCohortsAux)
+    }
+
+    const handleQEchanges = (e) => {
+
+        setQEvalue(e.target.value.trim())
+    }
+
+    const handleNewQEsearch = () => {
+        setShowQEresults(false)
+    }
+
+    const handleOntologyChanges = (e) => {
+        setOntologyValue(e.target.value.trim())
+    }
 
     const handleIdChanges = (e) => {
         setShowIds(true)
@@ -210,7 +246,6 @@ function LayoutIndividuals(props) {
             } if (query === null) {
                 setQuery(`${ID}${operator}${valueFree}`)
             }
-
         }
 
     }
@@ -254,10 +289,14 @@ function LayoutIndividuals(props) {
 
             try {
 
-                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/individuals/filtering_terms?skip=0&limit=0")
-
-                setFilteringTerms(res)
-                setResults(null)
+                let res = await axios.get("https://beacons.bsc.es/beacon-network/v2.0.0/individuals/filtering_terms")
+                console.log(res)
+                if (res.data.response.filteringTerms !== undefined) {
+                    setFilteringTerms(res)
+                    setResults(null)
+                } else {
+                    setError("No filtering terms now available")
+                }
 
 
             } catch (error) {
@@ -267,7 +306,7 @@ function LayoutIndividuals(props) {
 
             try {
 
-                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/individuals/filtering_terms?skip=0&limit=0")
+                let res = await axios.get("https://beacons.bsc.es/beacon-network/v2.0.0/cohorts/filtering_terms")
                 setFilteringTerms(res)
                 setResults(null)
 
@@ -277,7 +316,7 @@ function LayoutIndividuals(props) {
         } else if (props.collection === 'Variant') {
             try {
 
-                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/g_variants/filtering_terms?skip=0&limit=0")
+                let res = await axios.get("https://beacons.bsc.es/beacon-network/v2.0.0/g_variants/filtering_terms")
                 setFilteringTerms(res)
                 setResults(null)
 
@@ -287,7 +326,7 @@ function LayoutIndividuals(props) {
         } else if (props.collection === 'Analyses') {
             try {
 
-                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/analyses/filtering_terms?skip=0&limit=0")
+                let res = await axios.get("https://beacons.bsc.es/beacon-network/v2.0.0/analyses/filtering_terms")
                 setFilteringTerms(res)
                 setResults(null)
 
@@ -297,7 +336,7 @@ function LayoutIndividuals(props) {
         } else if (props.collection === 'Runs') {
             try {
 
-                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/runs/filtering_terms?skip=0&limit=0")
+                let res = await axios.get("https://beacons.bsc.es/beacon-network/v2.0.0/runs/filtering_terms")
                 setFilteringTerms(res)
                 setResults(null)
 
@@ -307,7 +346,7 @@ function LayoutIndividuals(props) {
         } else if (props.collection === 'Biosamples') {
             try {
 
-                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/biosammples/filtering_terms?skip=0&limit=0")
+                let res = await axios.get("https://beacons.bsc.es/beacon-network/v2.0.0/biosamples/filtering_terms")
                 setFilteringTerms(res)
                 setResults(null)
 
@@ -407,50 +446,111 @@ function LayoutIndividuals(props) {
         setHideForm(false)
     }
 
-    useEffect(() => {
-        //  const token = getStoredToken()
+    const handleQEclick = (e) => {
+        setExpansionSection(true)
+    }
 
-        //  if (token === null) {
-        //    const timer = setTimeout(() => setPopUp(true), 1000);
-        //  setPopUp(false)
-        //            return () => clearTimeout(timer);
-        //      }
+    const handleSubmitQE = async (e) => {
+        try {
+            if (ontologyValue !== '' && qeValue !== '') {
+
+                resultsQEexact.splice(0, resultsQEexact.length)
+                setError(null)
+                const res = await axios.get(`http://goldorak.hesge.ch:8890/catalogue_explorer/HorizontalExpansionOls/?keywords=${qeValue}&ontology=${ontologyValue.toLowerCase()}`)
+                console.log(res)
+                let arrayResults = []
+                if (res.data.response.ols[qeValue] !== undefined) {
+                    arrayResults = res.data.response.ols[qeValue].search_term_expansion
+                    if (arrayResults.length < 1) {
+                        setError("Not found. Please check the keyword and ontologies and retry")
+                    }
+
+                } else {
+                    arrayResults = res.data.response.ols[qeValue.toLowerCase()].search_term_expansion
+                }
+
+                console.log(arrayResults)
+                arrayResults.forEach(element => {
+                    if (element.label.trim().toLowerCase() === qeValue.toLowerCase()) {
+                        //exact match
+                        console.log(qeValue.toLowerCase)
+                        console.log(element.label.trim().toLowerCase)
+                        resultsQEexact.push(element)
+                    }
+                })
+
+
+                if (resultsQEexact.length > 0) {
+                    setShowQEfirstResults(true)
+                 
+                    resultsQEexact.forEach(element => {
+                       
+                        arrayFilteringTermsQE.forEach(element2 => {
+
+                            if (element2.label) {
+                                if (element.obo_id.toLowerCase().trim() === element2.id.toLowerCase().trim()) {
+                                    setError(null)
+                                    matchesQE.splice(0, matchesQE.length)
+                                    matchesQE.push(element2.id)
+                                    console.log(matchesQE)
+                                    console.log("FOUND A MATCH")
+                                    setShowQEresults(true)
+                                }
+                            }
+                        
+                        })
 
 
 
-        // declare the data fetching function
-        const fetchData = async () => {
 
-            try {
-                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/individuals/filtering_terms?skip=0&limit=0")
-                if (res !== null) {
-                    res.data.response.filteringTerms.forEach(element => {
-                        if (element.type !== "custom") {
-                            arrayFilteringTerms.push(element.id)
-                        }
 
-                    })
-
-                    setstate({
-                        query: '',
-                        list: arrayFilteringTerms
                     })
                 }
-            } catch (error) {
-                console.log(error)
+
+            } else {
+                setError("Please write the keyword and at least one ontology")
             }
 
+        } catch (error) {
+            setError("NOT FOUND")
+            console.log(error)
+        }
+    }
 
+    const handleCheckQE = (e) => {
+        if (e.target.checked === true) {
+            if (query !== null && query !== '') {
+                console.log(query)
+                setQuery(query + ',' + e.target.value)
+            } else {
+                setQuery(e.target.value)
+            }
+        } else if (e.target.checked === false) {
+            console.log(query)
+            let varQuery = ''
+            if (query.includes(',' + e.target.value)) {
+                varQuery = query.replace(',' + e.target.value, '')
+            } else if (query.includes(e.target.value + ',')) {
+                varQuery = query.replace(e.target.value + ',', '')
+            } else {
+                varQuery = query.replace(e.target.value, '')
+            }
+            setQuery(varQuery)
         }
 
-        // call the function
-        fetchData()
-            // make sure to catch any error
-            .catch(console.error);
 
 
+    }
 
-    }, [])
+    const handleForward = () => {
+        setShowQEfirstResults(false)
+        setShowQEresults(false)
+    }
+    
+    const handleNext = () => {
+        setShowQEfirstResults(false)
+        setShowQEresults(true)
+    }
 
     useEffect(() => {
 
@@ -482,7 +582,41 @@ function LayoutIndividuals(props) {
             setPlaceholder('')
         }
 
+        const fetchData = async () => {
+
+            try {
+                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/individuals/filtering_terms?skip=0&limit=0")
+                if (res !== null) {
+                    res.data.response.filteringTerms.forEach(element => {
+                        if (element.type !== "custom") {
+                            arrayFilteringTerms.push(element.id)
+                            arrayFilteringTermsQE.push(element)
+                        }
+
+
+                    })
+
+                    setstate({
+                        query: '',
+                        list: arrayFilteringTerms
+                    })
+                }
+            } catch (error) {
+                console.log(error)
+            }
+
+
+        }
+
+        // call the function
+        fetchData()
+            // make sure to catch any error
+            .catch(console.error);
+
+
     }, [])
+
+
 
 
     const onSubmit = async (event) => {
@@ -538,6 +672,7 @@ function LayoutIndividuals(props) {
 
     const onSubmitCohorts = () => {
         setResults('Cohorts')
+
         props.setShowGraphs(true)
     }
 
@@ -562,9 +697,9 @@ function LayoutIndividuals(props) {
                     <a href="https://www.cineca-project.eu/">
                         <img className="cinecaLogo" src="./CINECA_logo.png" alt='cinecaLogo'></img>
                     </a>
-                    <a href="https://elixir-europe.org/">
+                    {/* <a href="https://elixir-europe.org/">
                         <img className="elixirLogo" src="./white-orange-logo.png" alt='elixirLogo'></img>
-                    </a>
+                    </a>*/}
                 </div>
             </div>
 
@@ -582,25 +717,82 @@ function LayoutIndividuals(props) {
                 }
             </div>
             <nav className="navbar">
+                <div>
+                    {expansionSection === false && cohorts === false &&
+                        <button onClick={handleQEclick}><h2 className='queryExpansion'>Query expansion</h2></button>}
+                </div>
+                {expansionSection === true && <div>
+                    <button onClick={() => setExpansionSection(false)}>
+                        <img className="hideQE" src="../hide.png" alt='hideIcon'></img></button>
+                    <div>
+                        {showQEresults === false && showQEfirstResults === false &&<div className='qeSection'>
+                            <h2 className='qeSubmitH2'>Horizontal query expansion</h2>
+                            <input className="QEinput" type="text" value={qeValue} autoComplete='on' placeholder={"Type ONE keyword (what you want to search): e.g., melanoma"} onChange={(e) => handleQEchanges(e)} aria-label="ID" />
+                            <input className="QEinput2" type="text" value={ontologyValue} autoComplete='on' placeholder={"Type the ontologies to include in the search comma-separated: e.g., mondo,ncit"} onChange={(e) => handleOntologyChanges(e)} aria-label="ID" />
+                            <button onClick={handleSubmitQE}><h2 className='qeSubmit'>SUBMIT</h2></button>
+                        </div>}
+                        {showQEfirstResults === true && <div className='qeSection'>
+                            <h2 className='qeSubmitH2'>Horizontal query expansion</h2>
+                           
+                            {ontologyValue.includes(',') && <p className='textQE2'>Results found of <b>exactly {qeValue} </b> keyword from <b>{ontologyValue.toUpperCase()}</b> ontologies:</p>}
+                            {!ontologyValue.includes(',') && <p className='textQE2'>Results found of <b>exactly {qeValue} </b> keyword from <b>{ontologyValue.toUpperCase()}</b> ontology:</p>}
+                            {resultsQEexact.map((element) => {
+                                return (
+                                    <div>
+                                        <li className="qeListItem">{element.obo_id}</li>
+                                    </div>
+                                )
+                            })}
+                             <button onClick={handleForward} className='forwardButton'>FORWARD</button>
+                            <button onClick={handleNext} className='nextButton'>SEARCH IN FILTERING TERMS</button>
+                        </div>}
+                        {showQEresults === true && showQEfirstResults === false && <div className='qeSection'>
+                            <h2 className='qeSubmitH2'>Horizontal query expansion</h2>
+                            {matchesQE.length > 0 && <p className='textQE'>We looked for all the ontology terms derived from the typed keyword <b>"{qeValue}" </b> that are part of the Beacon Network <b>filtering terms</b>. You can select them so that they are automatically copied to your query:</p>}
+                            {matchesQE.length === 0 && <h5>Unfortunately the keyword is not among the current filtering terms</h5>}
+                            {matchesQE.map((element) => {
+                                return (
+                                    <div className='divCheckboxQE'>
+                                        <label className='labelQE'><input onChange={handleCheckQE} className='inputCheckbox' type='checkbox' value={element} />{element}</label>
+                                    </div>
+                                )
+
+
+                            })}
+                            <button onClick={handleNewQEsearch}><h2 className='newQEsearch'>New QE search</h2></button>
+                        </div>}
+                        {error !== null && <h6 className='errorQE'>{error}</h6>}
+                    </div>
+
+                </div>}
+
 
                 {showBar === true && <div className="container-fluid">
 
                     {cohorts === false &&
-                        showBar === true && <form className="d-flex" onSubmit={onSubmit}>
-                            <input className="formSearch" type="search" placeholder={placeholder} value={query} onChange={(e) => search(e)} aria-label="Search" />
-                            {!isSubmitted && <button className="searchButton" type="submit"><img className="searchIcon" src="./magnifier.png" alt='searchIcon'></img></button>}
-                            {isSubmitted &&
-                                <div className="newSearch"><button className="newSearchButton" onClick={onSubmit2} type="submit">NEW SEARCH</button></div>}
-                        </form>}
+                        showBar === true && <div>
+                            <form className="d-flex" onSubmit={onSubmit}>
+                                <input className="formSearch" type="search" placeholder={placeholder} value={query} onChange={(e) => search(e)} aria-label="Search" />
+                                {!isSubmitted && <button className="searchButton" type="submit"><img className="searchIcon" src="./magnifier.png" alt='searchIcon'></img></button>}
+                                {isSubmitted &&
+                                    <div className="newSearch"><button className="newSearchButton" onClick={onSubmit2} type="submit">NEW SEARCH</button></div>}
+                            </form>
+
+                        </div>
+                    }
 
                     {cohorts &&
                         <div className="cohortsModule">
                             <Select
+                                onClick={triggerOptions}
                                 closeMenuOnSelect={false}
                                 components={animatedComponents}
-                                defaultValue={[options[0]]}
+                                defaultValue={[]}
                                 isMulti
                                 options={options}
+                                onChange={handleChangeCohorts}
+                                autoFocus={true}
+                            //onToggleCallback={onToggle3}
                             />
 
                             <form className="d-flex2" onSubmit={onSubmitCohorts}>
@@ -778,8 +970,8 @@ function LayoutIndividuals(props) {
                             </div>
                         </div>}
                     </div>}
-                {hideForm=== true  && <button onClick={handleHideVariantsForm}><img className="arrowLogo" src="../arrow-down.png" alt='arrowIcon'/></button> }
-                {showVariants && showBar === false && hideForm=== false && <div>
+                {hideForm === true && <button onClick={handleHideVariantsForm}><img className="arrowLogo" src="../arrow-down.png" alt='arrowIcon' /></button>}
+                {showVariants && showBar === false && hideForm === false && <div>
                     <form onSubmit={handleSubmit}>
                         <div className='variantsContainer'>
 
@@ -915,11 +1107,7 @@ function LayoutIndividuals(props) {
                     </div>
                 }
                 {results === null && showFilteringTerms && <FilteringTermsIndividuals filteringTerms={filteringTerms} collection={props.collection} setPlaceholder={setPlaceholder} placeholder={placeholder} query={query} setQuery={setQuery} />}
-                {cohorts && results === 'Cohorts' &&
 
-                    <div>
-                        <Cohorts />
-                    </div>}
             </div>
 
         </div>
@@ -927,4 +1115,4 @@ function LayoutIndividuals(props) {
     );
 }
 
-export default LayoutIndividuals;
+export default Layout;
