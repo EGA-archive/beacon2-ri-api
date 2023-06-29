@@ -20,6 +20,7 @@ import ReactModal from 'react-modal';
 import makeAnimated from 'react-select/animated';
 
 import IndividualsResults from '../Individuals/IndividualsResults';
+import { LinearProgress } from '@mui/material';
 
 function Layout(props) {
     console.log(props)
@@ -107,6 +108,7 @@ function Layout(props) {
 
     const [checked, setChecked] = useState(true)
     const [checked2, setChecked2] = useState(false)
+    const [checked3, setChecked3] = useState(false)
 
     const [isSubmitted, setIsSub] = useState(false)
 
@@ -114,11 +116,14 @@ function Layout(props) {
     const [ontologyValue, setOntologyValue] = useState('')
 
     const [selectedCohortsAux, setSelectedCohortsAux] = useState([])
-    
-    const [resultsQEexact, setResultsQEexact]= useState([])
+
+    const [resultsQEexact, setResultsQEexact] = useState([])
     const [matchesQE, setMatchesQE] = useState([])
+    const [showQEresults, setShowQEresults] = useState(false)
+    const [showQEfirstResults, setShowQEfirstResults] = useState(false)
 
     const [arrayFilteringTerms, setArrayFilteringTerms] = useState([])
+    const [arrayFilteringTermsQE, setArrayFilteringTermsQE] = useState([])
 
     const [showIds, setShowIds] = useState(false)
 
@@ -170,6 +175,10 @@ function Layout(props) {
     const handleQEchanges = (e) => {
 
         setQEvalue(e.target.value.trim())
+    }
+
+    const handleNewQEsearch = () => {
+        setShowQEresults(false)
     }
 
     const handleOntologyChanges = (e) => {
@@ -237,7 +246,6 @@ function Layout(props) {
             } if (query === null) {
                 setQuery(`${ID}${operator}${valueFree}`)
             }
-
         }
 
     }
@@ -282,9 +290,13 @@ function Layout(props) {
             try {
 
                 let res = await axios.get("https://beacons.bsc.es/beacon-network/v2.0.0/individuals/filtering_terms")
-
-                setFilteringTerms(res)
-                setResults(null)
+                console.log(res)
+                if (res.data.response.filteringTerms !== undefined) {
+                    setFilteringTerms(res)
+                    setResults(null)
+                } else {
+                    setError("No filtering terms now available")
+                }
 
 
             } catch (error) {
@@ -441,31 +453,56 @@ function Layout(props) {
     const handleSubmitQE = async (e) => {
         try {
             if (ontologyValue !== '' && qeValue !== '') {
+
+                resultsQEexact.splice(0, resultsQEexact.length)
                 setError(null)
-                const res = await axios.get(`http://goldorak.hesge.ch:8890/catalogue_explorer/HorizontalExpansionOls/?keywords=${qeValue}&ontology=${ontologyValue}`)
-             
-                const arrayResults = res.data.response.ols[qeValue].search_term_expansion
+                const res = await axios.get(`http://goldorak.hesge.ch:8890/catalogue_explorer/HorizontalExpansionOls/?keywords=${qeValue}&ontology=${ontologyValue.toLowerCase()}`)
+                console.log(res)
+                let arrayResults = []
+                if (res.data.response.ols[qeValue] !== undefined) {
+                    arrayResults = res.data.response.ols[qeValue].search_term_expansion
+                    if (arrayResults.length < 1) {
+                        setError("Not found. Please check the keyword and ontologies and retry")
+                    }
+
+                } else {
+                    arrayResults = res.data.response.ols[qeValue.toLowerCase()].search_term_expansion
+                }
+
                 console.log(arrayResults)
                 arrayResults.forEach(element => {
-                    if (element.label.trim().toLowerCase === qeValue.toLowerCase){
+                    if (element.label.trim().toLowerCase() === qeValue.toLowerCase()) {
                         //exact match
+                        console.log(qeValue.toLowerCase)
+                        console.log(element.label.trim().toLowerCase)
                         resultsQEexact.push(element)
                     }
                 })
 
-                const res2 = await axios.get(`http://goldorak.hesge.ch:8890/catalogue_explorer/HorizontalExpansionOls/?keywords=${qeValue}&ontology=$`)
 
-                if (resultsQEexact.length > 0){
+                if (resultsQEexact.length > 0) {
+                    setShowQEfirstResults(true)
+                 
                     resultsQEexact.forEach(element => {
-                        
-                        arrayFilteringTerms.forEach(element2 => {
+                       
+                        arrayFilteringTermsQE.forEach(element2 => {
 
-                            if (element.obo_id.toLowerCase().trim() === element2.toLowerCase().trim()){
-                                matchesQE.push(element2)
-                                console.log("FOUND A MATCH")
+                            if (element2.label) {
+                                if (element.obo_id.toLowerCase().trim() === element2.id.toLowerCase().trim()) {
+                                    setError(null)
+                                    matchesQE.splice(0, matchesQE.length)
+                                    matchesQE.push(element2.id)
+                                    console.log(matchesQE)
+                                    console.log("FOUND A MATCH")
+                                    setShowQEresults(true)
+                                }
                             }
+                        
                         })
-                      
+
+
+
+
 
                     })
                 }
@@ -478,6 +515,41 @@ function Layout(props) {
             setError("NOT FOUND")
             console.log(error)
         }
+    }
+
+    const handleCheckQE = (e) => {
+        if (e.target.checked === true) {
+            if (query !== null && query !== '') {
+                console.log(query)
+                setQuery(query + ',' + e.target.value)
+            } else {
+                setQuery(e.target.value)
+            }
+        } else if (e.target.checked === false) {
+            console.log(query)
+            let varQuery = ''
+            if (query.includes(',' + e.target.value)) {
+                varQuery = query.replace(',' + e.target.value, '')
+            } else if (query.includes(e.target.value + ',')) {
+                varQuery = query.replace(e.target.value + ',', '')
+            } else {
+                varQuery = query.replace(e.target.value, '')
+            }
+            setQuery(varQuery)
+        }
+
+
+
+    }
+
+    const handleForward = () => {
+        setShowQEfirstResults(false)
+        setShowQEresults(false)
+    }
+    
+    const handleNext = () => {
+        setShowQEfirstResults(false)
+        setShowQEresults(true)
     }
 
     useEffect(() => {
@@ -518,8 +590,9 @@ function Layout(props) {
                     res.data.response.filteringTerms.forEach(element => {
                         if (element.type !== "custom") {
                             arrayFilteringTerms.push(element.id)
+                            arrayFilteringTermsQE.push(element)
                         }
-                       
+
 
                     })
 
@@ -599,7 +672,7 @@ function Layout(props) {
 
     const onSubmitCohorts = () => {
         setResults('Cohorts')
-      
+
         props.setShowGraphs(true)
     }
 
@@ -621,12 +694,12 @@ function Layout(props) {
             <div className="container2">
                 <button className="helpButton" onClick={handleHelpModal2}><img className="questionLogo2" src="./question.png" alt='questionIcon'></img><h5>Help for querying</h5></button>
                 <div className='logos'>
-                    {/* <a href="https://www.cineca-project.eu/">
+                    <a href="https://www.cineca-project.eu/">
                         <img className="cinecaLogo" src="./CINECA_logo.png" alt='cinecaLogo'></img>
-                    </a> */}
-                    <a href="https://elixir-europe.org/">
-                        <img className="elixirLogo" src="./white-orange-logo.png" alt='elixirLogo'></img>
                     </a>
+                    {/* <a href="https://elixir-europe.org/">
+                        <img className="elixirLogo" src="./white-orange-logo.png" alt='elixirLogo'></img>
+                    </a>*/}
                 </div>
             </div>
 
@@ -652,12 +725,42 @@ function Layout(props) {
                     <button onClick={() => setExpansionSection(false)}>
                         <img className="hideQE" src="../hide.png" alt='hideIcon'></img></button>
                     <div>
-                        <div className='qeSection'>
-                            <h2 className='qeSubmitH2'>Query expansion</h2>
-                            <input className="QEinput" type="text" value={qeValue} autoComplete='on' placeholder={"Type the keyword that you want to search"} onChange={(e) => handleQEchanges(e)} aria-label="ID" />
+                        {showQEresults === false && showQEfirstResults === false &&<div className='qeSection'>
+                            <h2 className='qeSubmitH2'>Horizontal query expansion</h2>
+                            <input className="QEinput" type="text" value={qeValue} autoComplete='on' placeholder={"Type ONE keyword (what you want to search): e.g., melanoma"} onChange={(e) => handleQEchanges(e)} aria-label="ID" />
                             <input className="QEinput2" type="text" value={ontologyValue} autoComplete='on' placeholder={"Type the ontologies to include in the search comma-separated: e.g., mondo,ncit"} onChange={(e) => handleOntologyChanges(e)} aria-label="ID" />
                             <button onClick={handleSubmitQE}><h2 className='qeSubmit'>SUBMIT</h2></button>
-                        </div>
+                        </div>}
+                        {showQEfirstResults === true && <div className='qeSection'>
+                            <h2 className='qeSubmitH2'>Horizontal query expansion</h2>
+                           
+                            {ontologyValue.includes(',') && <p className='textQE2'>Results found of <b>exactly {qeValue} </b> keyword from <b>{ontologyValue.toUpperCase()}</b> ontologies:</p>}
+                            {!ontologyValue.includes(',') && <p className='textQE2'>Results found of <b>exactly {qeValue} </b> keyword from <b>{ontologyValue.toUpperCase()}</b> ontology:</p>}
+                            {resultsQEexact.map((element) => {
+                                return (
+                                    <div>
+                                        <li className="qeListItem">{element.obo_id}</li>
+                                    </div>
+                                )
+                            })}
+                             <button onClick={handleForward} className='forwardButton'>FORWARD</button>
+                            <button onClick={handleNext} className='nextButton'>SEARCH IN FILTERING TERMS</button>
+                        </div>}
+                        {showQEresults === true && showQEfirstResults === false && <div className='qeSection'>
+                            <h2 className='qeSubmitH2'>Horizontal query expansion</h2>
+                            {matchesQE.length > 0 && <p className='textQE'>We looked for all the ontology terms derived from the typed keyword <b>"{qeValue}" </b> that are part of the Beacon Network <b>filtering terms</b>. You can select them so that they are automatically copied to your query:</p>}
+                            {matchesQE.length === 0 && <h5>Unfortunately the keyword is not among the current filtering terms</h5>}
+                            {matchesQE.map((element) => {
+                                return (
+                                    <div className='divCheckboxQE'>
+                                        <label className='labelQE'><input onChange={handleCheckQE} className='inputCheckbox' type='checkbox' value={element} />{element}</label>
+                                    </div>
+                                )
+
+
+                            })}
+                            <button onClick={handleNewQEsearch}><h2 className='newQEsearch'>New QE search</h2></button>
+                        </div>}
                         {error !== null && <h6 className='errorQE'>{error}</h6>}
                     </div>
 
@@ -1004,7 +1107,7 @@ function Layout(props) {
                     </div>
                 }
                 {results === null && showFilteringTerms && <FilteringTermsIndividuals filteringTerms={filteringTerms} collection={props.collection} setPlaceholder={setPlaceholder} placeholder={placeholder} query={query} setQuery={setQuery} />}
-             
+
             </div>
 
         </div>

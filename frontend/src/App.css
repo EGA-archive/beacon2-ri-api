@@ -290,9 +290,33 @@ html {
   align-items: center;
 }
 
+.qeSection h5{
+  color: rgb(209, 66, 66);
+  font-weight: bold;
+  width: fit-content;
+}
+.qeSection h5:hover{
+  color: rgb(209, 66, 66);
+  font-weight: bold;
+  width: fit-content;
+}
+
 .qeSubmit {
   margin-left: 10px;
-  margin-top: 30px;
+  margin-top: 44px;
+}
+
+.newQEsearch {
+  border: solid;
+  padding: 6px;
+  border-radius: 2px;
+  margin-top: 95px;
+  margin-left: 66px;
+}
+
+.newQEsearch:hover {
+  color:#1abc9c;
+  margin-left: 74px;
 }
 
 .hideQE {
@@ -310,7 +334,7 @@ html {
 }
 
 .qeSubmitH2 {
-  margin-right: 80px;
+
   margin-top: 2px;
   margin-top: -72px;
   text-decoration: underline;
@@ -325,25 +349,88 @@ html {
 
 
 .QEinput {
-  margin-left: -14vw;
-  width: 347px;
+  margin-left: -12vw;
+  width: 427px;
   border: 2px solid 8985c1;
   margin-top: 30px;
-  margin-bottom: 5px;
   height: 25px;
-  font-size: 13px;
+  font-size: 14.5px;
   padding: 3px;
   margin-right: 1px;
 }
 
+.divCheckboxQE input {
+  margin-right: 6px;
+  height: 16px;
+  width: 16px;
+  accent-color: #1abc9c;
+  cursor: pointer;
+}
+
+.divCheckboxQE input:hover {
+  margin-right: 6px;
+  height: 16px;
+  width: 16px;
+  accent-color: #3fa18e;
+}
+
+.labelQE {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+  margin-left: 11px;
+  font-size: 15px;
+  font-family: system-ui;
+}
+
+
+.textQE {
+  width: 50vw;
+  line-height: 1.5;
+  font-size: 14px;
+}
+.textQE2 {
+  width: fit-content;
+  line-height: 1.5;
+  font-size: 14px;
+  padding-right: 30px
+}
+
+.nextButton{
+  margin-top: 94px;
+  margin-left: 12px;
+  font-weight: 500;
+}
+
+.forwardButton{
+  margin-top: 94px;
+  margin-left: 76px;
+  font-weight: 500;
+}
+
+.qeListItem{
+  margin:14px;
+}
+
+
+.nextButton:hover{
+  font-size: 14px;
+  color: #1abc9c;
+}
+
+.forwardButton:hover{
+  font-size: 14px;
+  color: #1abc9c;
+}
 
 .QEinput2 {
   width: 527px;
   border: 2px solid 8985c1;
   margin-top: 30px;
-  margin-bottom: 5px;
   height: 25px;
-  font-size: 13px;
+  font-size: 14.5px;
   padding: 3px;
   margin-left: 10px;
 }
@@ -352,9 +439,7 @@ html {
 .queryExpansion:hover {
   border: solid;
   padding: 12px;
-  margin-bottom: 37px;
   border-radius: 8px;
-  margin-left: 10px;
   background-color: #eaf5fc;
 }
 
@@ -434,11 +519,12 @@ html {
 
 
 .cinecaLogo {
-  /* width: 400px; */
-  height: 49px;
+
+  height: 51px;
   align-items: center;
-  margin-top: 30px;
-  margin-right: 20px;
+  margin-top: 55px;
+  margin-bottom: 30px;
+  margin-right: 42px;
 }
 
 .container1 a {
