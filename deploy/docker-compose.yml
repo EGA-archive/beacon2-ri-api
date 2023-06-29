@@ -168,6 +168,7 @@ services:
   frontend:
     build:
       context: ../frontend
+    #command: ["yarn", "node", "/opt/yarn-v1.22.19/bin/yarn.js", "start" ]
     command: ["node", "/opt/yarn-v1.22.19/bin/yarn.js", "start" ]
     container_name: react
     depends_on:
@@ -180,7 +181,7 @@ services:
   frontend2:
     build:
       context: ../frontend2
-    command: ["node", "/opt/yarn-v1.22.19/bin/yarn.js", "start" ]
+    command: ["node", "/opt/yarn-v1.22.19/bin/yarn.js", "start"]
     container_name: react2
     depends_on:
       - beacon
