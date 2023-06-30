@@ -482,21 +482,20 @@ function Layout(props) {
 
                 if (resultsQEexact.length > 0) {
                     setShowQEfirstResults(true)
-                 
+                    matchesQE.splice(0, matchesQE.length)
+                    console.log(resultsQEexact)
                     resultsQEexact.forEach(element => {
-                       
+                        console.log(element)
                         arrayFilteringTermsQE.forEach(element2 => {
 
-                            if (element2.label) {
                                 if (element.obo_id.toLowerCase().trim() === element2.id.toLowerCase().trim()) {
                                     setError(null)
-                                    matchesQE.splice(0, matchesQE.length)
                                     matchesQE.push(element2.id)
                                     console.log(matchesQE)
                                     console.log("FOUND A MATCH")
                                     setShowQEresults(true)
                                 }
-                            }
+                            
                         
                         })
 
@@ -694,10 +693,10 @@ function Layout(props) {
             <div className="container2">
                 <button className="helpButton" onClick={handleHelpModal2}><img className="questionLogo2" src="./question.png" alt='questionIcon'></img><h5>Help for querying</h5></button>
                 <div className='logos'>
-                    <a href="https://www.cineca-project.eu/">
+                    <a href="https://www.cineca-project.eu/" target="_blank">
                         <img className="cinecaLogo" src="./CINECA_logo.png" alt='cinecaLogo'></img>
                     </a>
-                    {/* <a href="https://elixir-europe.org/">
+                    {/* <a href="https://elixir-europe.org/" target="_blank">
                         <img className="elixirLogo" src="./white-orange-logo.png" alt='elixirLogo'></img>
                     </a>*/}
                 </div>
@@ -736,10 +735,10 @@ function Layout(props) {
                            
                             {ontologyValue.includes(',') && <p className='textQE2'>Results found of <b>exactly {qeValue} </b> keyword from <b>{ontologyValue.toUpperCase()}</b> ontologies:</p>}
                             {!ontologyValue.includes(',') && <p className='textQE2'>Results found of <b>exactly {qeValue} </b> keyword from <b>{ontologyValue.toUpperCase()}</b> ontology:</p>}
-                            {resultsQEexact.map((element) => {
+                            {resultsQEexact.map((element,index) => {
                                 return (
                                     <div>
-                                        <li className="qeListItem">{element.obo_id}</li>
+                                        <li className="qeListItem" key={index}>{element.obo_id}</li>
                                     </div>
                                 )
                             })}
@@ -748,7 +747,7 @@ function Layout(props) {
                         </div>}
                         {showQEresults === true && showQEfirstResults === false && <div className='qeSection'>
                             <h2 className='qeSubmitH2'>Horizontal query expansion</h2>
-                            {matchesQE.length > 0 && <p className='textQE'>We looked for all the ontology terms derived from the typed keyword <b>"{qeValue}" </b> that are part of the Beacon Network <b>filtering terms</b>. You can select them so that they are automatically copied to your query:</p>}
+                            {matchesQE.length > 0 && <p className='textQE'>We looked for all the ontology terms derived from the typed keyword <b>"{qeValue}" </b> that are part of the Beacon Network <b>filtering terms</b>. You can select them so that they are automatically copied to your query. Please be aware that if you want to look for individuals <b>with either one ontology or the other </b>you have to do different searches <b>for now.</b> In other words, one ontology term at a time. If you included all ontologies in a unique search you would be looking for individuals with several {qeValue} ontology terms in the same document, which does not makes much sense.</p>}
                             {matchesQE.length === 0 && <h5>Unfortunately the keyword is not among the current filtering terms</h5>}
                             {matchesQE.map((element) => {
                                 return (
