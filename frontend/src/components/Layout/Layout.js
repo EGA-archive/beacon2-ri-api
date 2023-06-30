@@ -742,7 +742,7 @@ function Layout(props) {
                                     </div>
                                 )
                             })}
-                             <button onClick={handleForward} className='forwardButton'>FORWARD</button>
+                             <button onClick={handleForward} className='forwardButton'>RETURN</button>
                             <button onClick={handleNext} className='nextButton'>SEARCH IN FILTERING TERMS</button>
                         </div>}
                         {showQEresults === true && showQEfirstResults === false && <div className='qeSection'>
