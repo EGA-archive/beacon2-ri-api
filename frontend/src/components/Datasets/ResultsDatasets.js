@@ -49,26 +49,26 @@ function ResultsDatasets(props) {
                         </div>
                         <hr className='line'></hr>
                         {result.meta.beaconId === 'org.ega-archive.ga4gh-approval-beacon-test' && <p>
-                        This Beacon is based on synthetic data hosted at the <a id="descriptionEGA" href='https://ega-archive.org/datasets/EGAD00001003338'>EGA</a>. The dataset contains 2504 samples including genetic data based on 1K Genomes data, and 76 individual attributes and phenotypic data derived from UKBiobank.
+                        This Beacon is based on synthetic data hosted at the <a id="descriptionEGA" href='https://ega-archive.org/datasets/EGAD00001003338' target="_blank">EGA</a>. The dataset contains 2504 samples including genetic data based on 1K Genomes data, and 76 individual attributes and phenotypic data derived from UKBiobank.
                         </p>}
                         {result.meta.beaconId !== 'org.ega-archive.ga4gh-approval-beacon-test' && <p>{result.response.description}</p>}
                         <div className="linksBeacons">
                             {result.meta.beaconId === 'org.ega-archive.ga4gh-approval-beacon-test' &&
-                                <a href="https://ega-archive.org/test-beacon-apis/cineca">Beacon API</a>}
+                                <a href="https://ega-archive.org/test-beacon-apis/cineca" target="_blank">Beacon API</a>}
                             {result.meta.beaconId === 'es.elixir.bsc.beacon' &&
-                                <a href="https://beacons.bsc.es/beacon/v2.0.0/">Beacon API</a>}
+                                <a href="https://beacons.bsc.es/beacon/v2.0.0/" target="_blank">Beacon API</a>}
                             {result.meta.beaconId === 'org.progenetix' &&
-                                <a href="https://beacon.progenetix.org/">Beacon API</a>}
+                                <a href="https://beacon.progenetix.org/" target="_blank">Beacon API</a>}
                             {result.meta.beaconId !== 'es.elixir.bsc.beacon' && result.meta.beaconId !== 'org.progenetix'  && result.meta.beaconId !== 'org.ega-archive.ga4gh-approval-beacon-test' &&
-                                <a href={result.response.alternativeUrl}>Beacon API</a>}
+                                <a href={result.response.alternativeUrl} target="_blank">Beacon API</a>}
                             {result.meta.beaconId === 'es.elixir.bsc.beacon' &&
-                                <a href="https://www.bsc.es/">Visit us</a>}
+                                <a href="https://www.bsc.es/" target="_blank">Visit us</a>}
                             {result.meta.beaconId !== 'es.elixir.bsc.beacon' &&
-                                <a href={result.response.organization.welcomeUrl}>Visit us</a>}
+                                <a href={result.response.organization.welcomeUrl} target="_blank">Visit us</a>}
                             {result.meta.beaconId !== 'es.elixir.bsc.beacon' &&
-                                <a href={result.response.organization.contactUrl}>Contact us</a>}
+                                <a href={result.response.organization.contactUrl} target="_blank">Contact us</a>}
                             {result.meta.beaconId === 'es.elixir.bsc.beacon' &&
-                                <a href="mailto:info@bsc.es">Contact us</a>}
+                                <a href="mailto:info@bsc.es" target="_blank">Contact us</a>}
                         </div>
                     </div>
                 )
