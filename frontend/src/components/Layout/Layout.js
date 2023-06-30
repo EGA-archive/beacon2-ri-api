@@ -482,21 +482,20 @@ function Layout(props) {
 
                 if (resultsQEexact.length > 0) {
                     setShowQEfirstResults(true)
-                 
+                    matchesQE.splice(0, matchesQE.length)
+                    console.log(resultsQEexact)
                     resultsQEexact.forEach(element => {
-                       
+                        console.log(element)
                         arrayFilteringTermsQE.forEach(element2 => {
 
-                            if (element2.label) {
                                 if (element.obo_id.toLowerCase().trim() === element2.id.toLowerCase().trim()) {
                                     setError(null)
-                                    matchesQE.splice(0, matchesQE.length)
                                     matchesQE.push(element2.id)
                                     console.log(matchesQE)
                                     console.log("FOUND A MATCH")
                                     setShowQEresults(true)
                                 }
-                            }
+                            
                         
                         })
 
@@ -736,10 +735,10 @@ function Layout(props) {
                            
                             {ontologyValue.includes(',') && <p className='textQE2'>Results found of <b>exactly {qeValue} </b> keyword from <b>{ontologyValue.toUpperCase()}</b> ontologies:</p>}
                             {!ontologyValue.includes(',') && <p className='textQE2'>Results found of <b>exactly {qeValue} </b> keyword from <b>{ontologyValue.toUpperCase()}</b> ontology:</p>}
-                            {resultsQEexact.map((element) => {
+                            {resultsQEexact.map((element,index) => {
                                 return (
                                     <div>
-                                        <li className="qeListItem">{element.obo_id}</li>
+                                        <li className="qeListItem" key={index}>{element.obo_id}</li>
                                     </div>
                                 )
                             })}
