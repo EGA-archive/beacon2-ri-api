@@ -3,7 +3,7 @@ import './FilteringTerms.css'
 import { TagBox } from 'react-tag-box'
 
 
-function FilteringTermsIndividuals(props) {
+function FilteringTerms(props) {
 
     console.log(props)
 
@@ -62,8 +62,6 @@ function FilteringTermsIndividuals(props) {
         if (props.query === '') {
             props.setQuery('filtering term comma-separated, ID><=value')
         }
-
-
     }
 
 
@@ -161,9 +159,6 @@ function FilteringTermsIndividuals(props) {
 
             list: results
         })
-
-
-
     }
 
     const handleChange3 = (e) => {
@@ -190,46 +185,11 @@ function FilteringTermsIndividuals(props) {
 
             list: results
         })
-
-
-
-    }
-
-
-
-    const handleChange4 = (e) => {
-
-
-        const results = props.filteringTerms.data.response.filteringTerms.filter(post => {
-            console.log(post)
-            if (e.target.value === "") {
-                return props.filteringTerms.data.response.filteringTerms
-            } else {
-                if (post.scope !== undefined) {
-                    if (post.scope.toLowerCase().includes(e.target.value.toLowerCase())) {
-                        return post
-                    }
-                } else {
-                    if (post.scope.toLowerCase().includes(e.target.value.toLowerCase())) {
-                        return post
-                    }
-                }
-            }
-
-        })
-        setstate({
-
-            list: results
-        })
-
-
-
     }
 
 
 
     const handleCheck = (e) => {
-
 
         const alreadySelected = selected.filter(term => term.label === e.target.value)
 
@@ -281,7 +241,7 @@ function FilteringTermsIndividuals(props) {
 
 
             } else {
-                console.log("asdsd")
+              
                 if ((e.target.value !== props.query && props.query !== '')) {
 
                     stringQuery = `${props.query},` + e.target.value
@@ -342,17 +302,12 @@ function FilteringTermsIndividuals(props) {
                             <th className="search-box sorting" tabIndex="0" aria-controls="DataTables_Table_0" rowSpan="1" colSpan="2" aria-sort="ascending" aria-label=": activate to sort column descending"><form><input className="searchTermInput" type="search" value={state.query3} onChange={handleChange3} placeholder="Search by type" /></form></th>
 
                         </tr>
-                        <tr className="search-tr">
-                            <th className="search-box sorting" tabIndex="0" aria-controls="DataTables_Table_0" rowSpan="1" colSpan="2" aria-sort="ascending" aria-label=": activate to sort column descending"><form><input className="searchTermInput" type="search" value={state.query4} onChange={handleChange4} placeholder="Search by scope" /></form></th>
-
-                        </tr>
                     </thead>
                     <thead className="thead2">
                         <tr>
                             <th className="th4">term</th>
                             <th className="th5">label</th>
                             <th className="th6">type</th>
-                            <th className="th7">scope</th>
                         </tr>
                     </thead>
                     {props.filteringTerms.data !== undefined && state.list !== "error" && state.list.map((term, index) => {
@@ -366,23 +321,17 @@ function FilteringTermsIndividuals(props) {
                                         {term.id}</td>
                                     {term.label !== '' ? <td className="th1">{term.label}</td> : <td className="th1">-</td>}
                                     <td className="th1">{term.type}</td>
-                                    <td className="th1">{term.scope}</td>
                                 </tr>}
                                 {index % 2 == !0 && <tr className="terms2">
                                     <td className="th2"> {(term.type=== "ontology" || term.type === "custom") &&  <input className="select-checkbox" onClick={handleCheck} type="checkbox" id="includeTerm" name="term" value={term.id} />}
                                         {term.id}</td>
                                     {term.label !== '' ? <td className="th1">{term.label}</td> : <td className="th1">-</td>}
                                     <td className="th1">{term.type}</td>
-                                    <td className="th1">{term.scope}</td>
+                        
                                 </tr>}
 
 
                             </tbody>
-
-
-
-
-
 
                         </>
                         )
@@ -395,4 +344,4 @@ function FilteringTermsIndividuals(props) {
     )
 }
 
-export default FilteringTermsIndividuals
+export default FilteringTerms

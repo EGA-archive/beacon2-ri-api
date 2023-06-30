@@ -26,19 +26,19 @@ html {
   margin-left: 12px;
 }
 
-.modeVariantsQuery{
-  color: rgba(12, 16, 64, 0.606);
-    font-size: 16px;
-    font-variant-caps: all-petite-caps;
-}
-
-.modeVariants{
+.modeVariantsQuery {
   color: rgba(12, 16, 64, 0.606);
   font-size: 16px;
   font-variant-caps: all-petite-caps;
 }
 
-.modeVariants:hover{
+.modeVariants {
+  color: rgba(12, 16, 64, 0.606);
+  font-size: 16px;
+  font-variant-caps: all-petite-caps;
+}
+
+.modeVariants:hover {
   color: white;
   background-color: #e3eefe;
   padding-left: 5px;
@@ -47,7 +47,7 @@ html {
   margin-left: 20px;
 }
 
-.variantsFilters{
+.variantsFilters {
   width: 20vw;
   display: flex;
   margin-left: 7%;
@@ -71,12 +71,6 @@ html {
   display: flex;
   align-items: center;
 }
-
-.searchButton2:hover {
-  background: linear-gradient(356deg, #cee3e7 50%, #daecf0 80%);
-  border-radius: 14px;
-}
-
 
 
 .switchDescendants {
@@ -183,14 +177,19 @@ html {
   margin-left: 4px;
 }
 
+.forwardIcon:hover {
+  margin-left: 12px;
+}
+
 .navbar {
   display: flex;
   flex-direction: column;
   align-content: center;
   align-items: center;
+  margin-top: -48px;
 }
 
-.variantsContainer{
+.variantsContainer {
   width: 100vw;
   display: flex;
   align-items: center;
@@ -198,7 +197,7 @@ html {
   justify-content: space-around;
 }
 
-.inputVariants{
+.inputVariants {
   height: 18px;
   border: 1.5px solid #dfdfdf;
   border-radius: 2px;
@@ -206,7 +205,7 @@ html {
   font-size: 14.5px;
 }
 
-.labelVariants{
+.labelVariants {
   font-size: 13.5px;
   margin-bottom: 18px;
   margin-right: 4px;
@@ -214,7 +213,7 @@ html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
-.labelVariantsTittle{
+.labelVariantsTittle {
   font-size: 16px;
   margin-bottom: 27px;
   color: #d36d00;
@@ -224,20 +223,21 @@ html {
   font-variant-caps: all-small-caps;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
-.DivButtonVariants{
+
+.DivButtonVariants {
   width: 100%;
   display: flex;
   justify-content: flex-end;
   margin-top: -23px;
 }
 
-.buttonAlphanum{
+.buttonAlphanum {
   font-variant-caps: all-small-caps;
   font-size: 14px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
-.buttonAlphanum:hover{
+.buttonAlphanum:hover {
   font-variant-caps: all-small-caps;
   font-weight: 600;
   color: #d36d00;
@@ -245,17 +245,205 @@ html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
-.moduleVariants h3{
+.moduleVariants h3 {
   margin-top: -14px;
-    color: #e16e00;
-    text-transform: uppercase;
-    /* margin-left: 40px; */
-    /* margin-top: 17px; */
-    font-size: 12px;
+  color: #e16e00;
+  text-transform: uppercase;
+  /* margin-left: 40px; */
+  /* margin-top: 17px; */
+  font-size: 12px;
 
 }
 
-.buttonVariants{
+.errorQE {
+  color: rgb(209, 66, 66);
+  font-size: 12.5px;
+  font-weight: bold;
+  margin-top: -71px;
+  /* margin: 9px; */
+  display: flex;
+  /* display: block; */
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 50px;
+}
+
+.queryExpansion {
+  padding: 12px;
+  margin-bottom: 33px;
+  border-radius: 5px;
+  border: solid;
+  margin-top: 0px;
+}
+
+.qeSection {
+  background: #d5dce7;
+  padding: 20px;
+  margin-bottom: 44px;
+  margin-top: 10px;
+  height: 112px;
+  border-radius: 2px;
+  width: 100vw;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.qeSection h5{
+  color: rgb(209, 66, 66);
+  font-weight: bold;
+  width: fit-content;
+}
+.qeSection h5:hover{
+  color: rgb(209, 66, 66);
+  font-weight: bold;
+  width: fit-content;
+}
+
+.qeSubmit {
+  margin-left: 10px;
+  margin-top: 44px;
+}
+
+.newQEsearch {
+  border: solid;
+  padding: 6px;
+  border-radius: 2px;
+  margin-top: 95px;
+  margin-left: 66px;
+}
+
+.newQEsearch:hover {
+  color:#1abc9c;
+  margin-left: 74px;
+}
+
+.hideQE {
+  width: 25px;
+  margin-right: 30px;
+  margin-left: 30px;
+  margin-bottom: -60px;
+}
+
+.hideQE:hover {
+  width: 25px;
+  margin-right: 40px;
+  margin-left: 30px;
+  margin-bottom: -67px;
+}
+
+.qeSubmitH2 {
+
+  margin-top: 2px;
+  margin-top: -72px;
+  text-decoration: underline;
+  padding: 20px;
+  text-underline-position: under;
+}
+
+.qeSubmit:hover {
+  margin-left: 10px;
+  color: #51a1cf;
+}
+
+
+.QEinput {
+  margin-left: -12vw;
+  width: 427px;
+  border: 2px solid 8985c1;
+  margin-top: 30px;
+  height: 25px;
+  font-size: 14.5px;
+  padding: 3px;
+  margin-right: 1px;
+}
+
+.divCheckboxQE input {
+  margin-right: 6px;
+  height: 16px;
+  width: 16px;
+  accent-color: #1abc9c;
+  cursor: pointer;
+}
+
+.divCheckboxQE input:hover {
+  margin-right: 6px;
+  height: 16px;
+  width: 16px;
+  accent-color: #3fa18e;
+}
+
+.labelQE {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+  margin-left: 11px;
+  font-size: 15px;
+  font-family: system-ui;
+}
+
+
+.textQE {
+  width: 50vw;
+  line-height: 1.5;
+  font-size: 14px;
+}
+.textQE2 {
+  width: fit-content;
+  line-height: 1.5;
+  font-size: 14px;
+  padding-right: 30px
+}
+
+.nextButton{
+  margin-top: 94px;
+  margin-left: 12px;
+  font-weight: 500;
+}
+
+.forwardButton{
+  margin-top: 94px;
+  margin-left: 76px;
+  font-weight: 500;
+}
+
+.qeListItem{
+  margin:14px;
+}
+
+
+.nextButton:hover{
+  font-size: 14px;
+  color: #1abc9c;
+}
+
+.forwardButton:hover{
+  font-size: 14px;
+  color: #1abc9c;
+}
+
+.QEinput2 {
+  width: 527px;
+  border: 2px solid 8985c1;
+  margin-top: 30px;
+  height: 25px;
+  font-size: 14.5px;
+  padding: 3px;
+  margin-left: 10px;
+}
+
+
+.queryExpansion:hover {
+  border: solid;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: #eaf5fc;
+}
+
+.buttonVariants {
   margin-top: 12px;
   margin-bottom: 20px;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 1px, rgba(179, 179, 179, 0.22) 0px 1px 1px;
@@ -263,17 +451,17 @@ html {
   cursor: pointer;
 }
 
-.buttonVariants:hover{
+.buttonVariants:hover {
   margin-top: 12px;
   margin-right: -9px;
   margin-bottom: 20px;
   font-weight: 600;
-  color:rgb(118, 151, 228);
- 
+  color: rgb(118, 151, 228);
+
 }
 
 
-.moduleVariants{
+.moduleVariants {
   display: flex;
   flex-direction: column;
 }
@@ -331,11 +519,12 @@ html {
 
 
 .cinecaLogo {
-  /* width: 400px; */
-  height: 49px;
+
+  height: 51px;
   align-items: center;
-  margin-top: 30px;
-  margin-right: 20px;
+  margin-top: 55px;
+  margin-bottom: 30px;
+  margin-right: 42px;
 }
 
 .container1 a {
@@ -346,8 +535,14 @@ html {
 }
 
 .elixirLogo {
-  height: 86px;
+  height: 100px;
   margin-top: 29px;
+  margin-right: 12px;
+}
+
+.comming_message {
+  margin: 80px;
+  font-size: 18px;
 }
 
 select {
@@ -391,7 +586,7 @@ select {
   width: 239px;
 }
 
-.selectedId option{
+.selectedId option {
   padding: 3px;
   width: 230px;
 }
