@@ -747,7 +747,7 @@ function Layout(props) {
                         </div>}
                         {showQEresults === true && showQEfirstResults === false && <div className='qeSection'>
                             <h2 className='qeSubmitH2'>Horizontal query expansion</h2>
-                            {matchesQE.length > 0 && <p className='textQE'>We looked for all the ontology terms derived from the typed keyword <b>"{qeValue}" </b> that are part of the Beacon Network <b>filtering terms</b>. You can select them so that they are automatically copied to your query:</p>}
+                            {matchesQE.length > 0 && <p className='textQE'>We looked for all the ontology terms derived from the typed keyword <b>"{qeValue}" </b> that are part of the Beacon Network <b>filtering terms</b>. You can select them so that they are automatically copied to your query. Please be aware that if you want to look for individuals <b>with either one ontology or the other </b>you have to do different searches <b>for now.</b> In other words, one ontology term at a time. If you included all ontologies in a unique search you would be looking for individuals with several {qeValue} ontology terms in the same document, which does not makes much sense.</p>}
                             {matchesQE.length === 0 && <h5>Unfortunately the keyword is not among the current filtering terms</h5>}
                             {matchesQE.map((element) => {
                                 return (
