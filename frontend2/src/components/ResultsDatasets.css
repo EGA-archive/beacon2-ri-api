@@ -5,8 +5,8 @@
     justify-content: center;
 }
 .logoBeacon{
-    width: 136px;
     margin-top: 7px;
+    height: 64px;
 }
 
 #descriptionEGA{
