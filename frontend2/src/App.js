@@ -17,8 +17,14 @@ import SignInForm from './components/SignInForm';
 import SignUpForm from './components/SignUpForm';
 import ResultsDatasets from './components/ResultsDatasets';
 import CrossQueries from './components/CrossQueries';
+import { useAuth } from 'oidc-react';
+
 
 function App() {
+
+
+  //console.log(auth.userData.access_token)
+
   return (
     <div className="App">
       <Navbar />
@@ -34,7 +40,7 @@ function App() {
         <Route path='/members' element={<ResultsDatasets />} />
         <Route path='/history' element={<History />} />
         <Route path='/sign-up' element={<SignUpForm />} />
-        <Route path="/sign-in" element={<SignInForm />} />
+        <Route path="/sign-in"  element={<SignInForm />} />
         <Route path="/cross-queries" element={<CrossQueries />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
