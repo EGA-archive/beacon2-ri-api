@@ -283,11 +283,18 @@ html {
   margin-top: 10px;
   height: 112px;
   border-radius: 2px;
-  width: 100vw;
   display: flex;
   align-content: center;
   justify-content: center;
   align-items: center;
+}
+
+.containerQE2{
+  width: 100vw;
+}
+
+.expansionContainer{
+  width: 100vw;
 }
 
 .qeSection h5{
@@ -321,9 +328,6 @@ html {
 
 .hideQE {
   width: 25px;
-  margin-right: 30px;
-  margin-left: 30px;
-  margin-bottom: -60px;
 }
 
 .hideQE:hover {

@@ -450,13 +450,13 @@ function Layout(props) {
         setExpansionSection(true)
     }
 
-    const handleSubmitQE = async (e) => {
+    const handleSubmitQE = async (e) => { 
         try {
             if (ontologyValue !== '' && qeValue !== '') {
 
                 resultsQEexact.splice(0, resultsQEexact.length)
                 setError(null)
-                const res = await axios.get(`http://goldorak.hesge.ch:8890/catalogue_explorer/HorizontalExpansionOls/?keywords=${qeValue}&ontology=${ontologyValue.toLowerCase()}`)
+                const res = await axios.get(`https://cineca-query-expansion.text-analytics.ch/catalogue_explorer/HorizontalExpansionOls/?keywords=${qeValue}&ontology=${ontologyValue.toLowerCase()}`)
                 console.log(res)
                 let arrayResults = []
                 if (res.data.response.ols[qeValue] !== undefined) {
