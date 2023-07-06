@@ -723,7 +723,7 @@ function Layout(props) {
                 {expansionSection === true && <div>
                     <button onClick={() => setExpansionSection(false)}>
                         <img className="hideQE" src="../hide.png" alt='hideIcon'></img></button>
-                    <div>
+                    <div className='expansionContainer2'>
                         {showQEresults === false && showQEfirstResults === false &&<div className='qeSection'>
                             <h2 className='qeSubmitH2'>Horizontal query expansion</h2>
                             <input className="QEinput" type="text" value={qeValue} autoComplete='on' placeholder={"Type ONE keyword (what you want to search): e.g., melanoma"} onChange={(e) => handleQEchanges(e)} aria-label="ID" />
