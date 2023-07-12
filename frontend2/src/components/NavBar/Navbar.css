@@ -1,0 +1,197 @@
+.navB{
+    display: flex;
+    width: 100vw;
+    position: relative;
+    height: 57px;
+    background-color: #34495e;
+    font-size: 0;
+}
+
+.nav2 {
+    width: 70%;
+    display: flex;
+    justify-content: flex-start;
+}
+.nav3 {
+    width: 30%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.nav2 a {
+	line-height: 57px;
+	height: 100%;
+	font-size: 12px;
+	display: inline-block;
+	position: relative;
+	z-index: 1;
+	text-decoration: none;
+	text-transform: uppercase;
+	text-align: center;
+	color: white;
+	cursor: pointer;
+}
+
+.nav3 a {
+	line-height: 57px;
+	height: 100%;
+	font-size: 12px;
+	display: inline-block;
+	position: relative;
+	z-index: 1;
+	text-decoration: none;
+	text-transform: uppercase;
+	text-align: center;
+	color: white;
+	cursor: pointer;
+}
+
+.navB .animation {
+	position: absolute;
+	height: 100%;
+	top: 0;
+	z-index: 0;
+	transition: all .5s ease 0s;
+	border-radius: 8px;
+}
+
+.Individuals2 {
+	width: 120px;
+    background-color: #1abc9c;
+}
+
+.Individuals {
+	width: 120px;
+}
+
+.Biosamples2{
+	width: 120px;
+    background-color: #e74c3c;
+}
+.Biosamples{
+	width: 120px;
+}
+
+.Variants {
+	width: 120px;
+}
+
+.Variants2 {
+	width: 120px;
+    background-color: #3498db;
+}
+
+.Runs {
+	width: 120px;
+}
+.Runs2 {
+	width: 120px;
+    background-color: #9b59b6;
+}
+
+.Analyses{
+    width: 120px;
+}
+.Analyses2{
+    width: 120px;
+    background-color: #e67e22;
+}
+
+.Cohorts{
+    width: 120px;
+}
+.Cohorts2{
+    width: 120px;
+    background-color: #5be57b;
+}
+
+
+.Cross-queries{
+    width: 120px;
+}
+
+.Cross-queries2{
+    width: 120px;
+    background-color: #d4c223;
+}
+
+.Members{
+    width: 220px;
+}
+
+.Members2{
+    width: 220px;
+    background-color: #4961b8;
+}
+
+.Sign-in{
+    width: 120px;
+}
+.Sign-in2{
+    width: 120px;
+    background-color: #e575dd;
+}
+
+.Members:hover~.animation {
+	width: 200px;
+	right: 130px;
+	background-color: #4961b8;
+}
+.Sign-in:hover~.animation {
+	width: 120px;
+	right: 0px;
+	background-color: #e575dd;
+}
+
+.Individuals:hover~.animation {
+	width: 120px !important;
+	left: 0px !important;
+	background-color: #1abc9c !important;
+}
+.Biosamples:hover~.animation {
+	width: 120px;
+	left: 120px;
+	background-color: #e74c3c;
+}
+
+.Variants:hover~.animation {
+	width: 120px;
+	left: 240px;
+	background-color: #3498db;
+}
+
+.Runs:hover~.animation {
+	width: 120px;
+	left: 360px;
+	background-color: #9b59b6;
+}
+.Analyses:hover~.animation {
+	width: 120px;
+	left: 480px;
+	background-color: #e67e22;
+}
+.Cohorts:hover~.animation {
+	width: 120px;
+	left: 600px;
+	background-color: #5be57b;
+}
+.Cross-queries:hover~.animation {
+	width: 120px;
+	left: 720px;
+	background-color: #d4c223;
+}
+
+
+button {
+    background: none;
+    box-shadow: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:focus,
+  input:focus {
+    outline: 0;
+  }
+  
+

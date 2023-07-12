@@ -28,7 +28,7 @@ services:
     image: beacon2ri/training_ui:v0.1
     hostname: beacon_training_ui    
     ports:
-      - 9000:9000
+      - 9000:8080
     networks:
       - beacon-priv
 
@@ -119,7 +119,8 @@ services:
   # and we don't need a delay in-between. We can rely on the depends_on only.
 
   idp:
-    image: jboss/keycloak
+    #image: jboss/keycloak
+    image: sleighzy/keycloak
     hostname: idp
     container_name: idp
     environment:
@@ -137,10 +138,14 @@ services:
       #- DB_SCHEMA=public
       - KEYCLOAK_IMPORT=/tmp/beacon-realm.json -Dkeycloak.profile.feature.upload_scripts=enabled -Dkeycloak.profile.feature.token_exchange=enabled -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled
       - KEYCLOAK_HOSTNAME=localhost
+      #- KC_HOSTNAME_URL=https://beacon-network-test2.ega-archive.org
+      #- KC_HOSTNAME_ADMIN_URL=https://beacon-network-test2.ega-archive.org
+      #- KEYCLOAK_FRONTEND_URL=https://beacon-network-test2.ega-archive.org/auth/
+      #- PROXY_ADDRESS_FORWARDING=true
     volumes:
       - ./beacon-realm.json:/tmp/beacon-realm.json
     ports:
-      - "8000:8000"
+      - "8080:8080"
       - "9991:8443"
     networks:
       - pub
@@ -159,3 +164,29 @@ services:
     networks:
       - idp-priv 
       - my-app-network
+  
+  frontend:
+    build:
+      context: ../frontend
+    command: ["node", "/opt/yarn-v1.22.19/bin/yarn.js", "start" ]
+    container_name: react
+    depends_on:
+      - beacon
+    ports:
+      - 3000:3000
+    volumes:
+      - ../frontend:/usr/src/app
+
+  frontend2:
+    build:
+      context: ../frontend2
+    command: ["node", "/opt/yarn-v1.22.19/bin/yarn.js", "start" ]
+    container_name: react2
+    depends_on:
+      - beacon
+    ports:
+      - 3001:3001
+    volumes:
+      - ../frontend2:/usr/src/app
+
+

@@ -22,12 +22,12 @@ LOG = logging.getLogger(__name__)
 
 
 idp_client_id     = 'permissions'
-idp_client_secret = 'c0285717-1bfb-4b32-b01d-d663470ce7c4'
+idp_client_secret = 'bcFFbN3N8bVDTStnyeTIszusq7pSoBrn'
 #idp_user_info = 'http://localhost:8080/oidc/userinfo'
-idp_user_info = 'http://ls-aai-mock:8080/oidc/userinfo'
-#idp_user_info  = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
-idp_introspection = 'http://ls-aai-mock:8080/oidc/introspect'
-#idp_introspection = 'http://idp:8000/auth/realms/Beacon/protocol/openid-connect/token/introspect'
+#idp_user_info = 'http://ls-aai-mock:8080/oidc/userinfo'
+idp_user_info  = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
+#idp_introspection = 'http://ls-aai-mock:8080/oidc/introspect'
+idp_introspection = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/token/introspect'
 #idp_user_info     = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
 #idp_introspection = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/token/introspect'
 

@@ -44,13 +44,14 @@ class MyProgressBar:
         else:
             self.pbar.finish()
 
+
 def get_ontology_field_name(ontology_id:str, term_id:str, collection:str):
     query = {
         '$text': {
             '$search': '\"' + ontology_id + ":" + term_id + '\"'
         }
     }
-    results = client.beacon.get_collection(collection).find(query)
+    results = client.beacon.get_collection(collection).find(query).limit(1)
     results = list(results)
     results = dumps(results)
     results = json.loads(results)
@@ -189,14 +190,34 @@ def find_ontology_terms_used(collection_name: str) -> List[Dict]:
     print(collection_name)
     terms_ids = []
     count = client.beacon.get_collection(collection_name).estimated_document_count()
-    xs = client.beacon.get_collection(collection_name).find()
-    for r in tqdm(xs, total=count):
-        matches = ONTOLOGY_REGEX.findall(str(r))
-        for ontology_id, term_id in matches:
-            term = ':'.join([ontology_id, term_id])
-            if term not in terms_ids:
-                terms_ids.append(term)
+    if count < 10000:
+        num_total=count
+    else:
+        num_total=10000
+    i=0
+    if count > 10000:
+        while i < 100001:
+            xs = client.beacon.get_collection(collection_name).find().skip(i).limit(10000)
+            for r in tqdm(xs, total=num_total):
+                matches = ONTOLOGY_REGEX.findall(str(r))
+                for ontology_id, term_id in matches:
+                    term = ':'.join([ontology_id, term_id])
+                    if term not in terms_ids:
+                        terms_ids.append(term)
+            i += 10000
+            print(i)
+    else:
+        xs = client.beacon.get_collection(collection_name).find().skip(0).limit(10000)
+        for r in tqdm(xs, total=num_total):
+            matches = ONTOLOGY_REGEX.findall(str(r))
+            for ontology_id, term_id in matches:
+                term = ':'.join([ontology_id, term_id])
+                if term not in terms_ids:
+                    terms_ids.append(term) 
+
     return terms_ids
+
+
 
 def get_filtering_object(terms_ids: list, collection_name: str):
     terms = []
@@ -247,6 +268,34 @@ def get_filtering_object(terms_ids: list, collection_name: str):
                                         #'count': get_ontology_term_count(collection_name, onto),
                                         'scope': collection_name                    
                                     })
+                    if label == 'Weight':
+                        terms.append({
+                                                'type': 'alphanumeric',
+                                                'id': label,
+                                                'label': ontology_label,
+                                                # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
+                                                #'count': get_ontology_term_count(collection_name, onto),
+                                                'scope': collection_name
+                                            })
+                    if label == 'BMI':
+                        terms.append({
+                                                'type': 'alphanumeric',
+                                                'id': label,
+                                                'label': ontology_label,
+                                                # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
+                                                #'count': get_ontology_term_count(collection_name, onto),
+                                                'scope': collection_name
+                                            })
+                    if label == 'Height-standing':
+                        terms.append({
+                                                'type': 'alphanumeric',
+                                                'id': label,
+                                                'label': ontology_label,
+                                                # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
+                                                #'count': get_ontology_term_count(collection_name, onto),
+                                                'scope': collection_name
+                                            })
+
                 print(terms)
         except Exception:
             pass
@@ -257,7 +306,15 @@ def get_filtering_object(terms_ids: list, collection_name: str):
         for item in list_of_ontologies:
             f.write(item+"\n")
     f.close()
-    return terms
+    seen = set()
+    new_l = []
+    for d in terms:
+        t = tuple(sorted(d.items()))
+        if t not in seen:
+            seen.add(t)
+            new_l.append(d)
+
+    return new_l
 
 
 def get_alphanumeric_term_count(collection_name: str, key: str) -> int:
