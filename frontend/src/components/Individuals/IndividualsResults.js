@@ -3,8 +3,7 @@ import '../../App.css';
 import { useState, useEffect } from 'react';
 import axios from "axios";
 
-import { AuthContext } from '../context/AuthContext';
-import { useContext } from 'react';
+import { useAuth } from 'oidc-react';
 
 import TableResultsIndividuals from '../Results/IndividualsResults/TableResultsIndividuals';
 
@@ -35,44 +34,30 @@ function IndividualsResults(props) {
 
     const [skipTrigger, setSkipTrigger] = useState(0)
     const [limitTrigger, setLimitTrigger] = useState(0)
-
-    const { getStoredToken, authenticateUser } = useContext(AuthContext);
-
+    
     const [queryArray, setQueryArray] = useState([])
     const [arrayFilter, setArrayFilter] = useState([])
 
-    const [checked, setChecked] = useState(false)
-
-    const API_ENDPOINT = "https://beacons.bsc.es/beacon-network/v2.0.0/individuals/"
-
     let queryStringTerm = ''
 
-    let keyTerm = []
-    let resultsAux = []
-    let obj = {}
     let res = ""
 
+    const auth = useAuth();
+    const isAuthenticated = auth.userData?.id_token ? true : false;
+    console.log(isAuthenticated)
 
     useEffect(() => {
         console.log(props.query)
 
         const apiCall = async () => {
 
-            authenticateUser()
-            const token = getStoredToken()
-          
-            if (token !== 'undefined') {
-
+            if (isAuthenticated) {
                 setLoginRequired(false)
             } else {
-                setMessageLogin("PLEASE CREATE AN ACCOUNT AND LOG IN FOR QUERYING")
-           
+                setLoginRequired(true)
+                setMessageLogin("PLEASE CREATE AN ACCOUNT AND LOG IN FOR QUERYING")     
             }
 
-            if (token === null) {
-                setLoginRequired(true)
-                setMessageLogin("PLEASE CREATE AN ACCOUNT AND LOG IN FOR QUERYING")
-            }
 
             if (props.query !== null) {
 
@@ -182,14 +167,12 @@ function IndividualsResults(props) {
                     jsonData1 = JSON.stringify(jsonData1)
                     console.log(jsonData1)
 
-                    const headers = { 'Content-type': 'application/json', 'Authorization': `Bearer ${token}` }
+                    const token = auth.userData.access_token
+                    console.log(token)
+                    const headers = { 'Content-type': 'application/json', 'Authorization': `Bearer ${token}`} 
+    
+                    res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals/", jsonData1, { headers: headers })
 
-
-                    //   const headers = { 'Content-type': 'application/json', "Access-Control-Allow-Origin": "*" }
-                    //res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals/", jsonData1, { headers: headers })
-                    res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals", jsonData1)
-
-                    // res = await axios.post("http://localhost:5050/api/individuals", jsonData1, { headers: headers })
                     console.log(res)
                     setTimeOut(true)
 
@@ -239,7 +222,12 @@ function IndividualsResults(props) {
                     jsonData2 = JSON.stringify(jsonData2)
                     console.log(jsonData2)
 
-                    res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals", jsonData2)
+                    const token = auth.userData.access_token
+                    console.log(token)
+                    const headers = { 'Content-type': 'application/json', 'Authorization': `Bearer ${token}`} 
+    
+                    res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals", jsonData2, { headers: headers })
+                    
                     console.log(res)
                     setTimeOut(true)
 
@@ -266,10 +254,7 @@ function IndividualsResults(props) {
                                 console.log(results)
                             }
 
-
-
                         })
-
 
                     }
                 }
