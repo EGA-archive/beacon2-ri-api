@@ -3,25 +3,32 @@ import { NavLink } from 'react-router-dom';
 import React, { useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useContext } from 'react';
-import SignInForm from '../SignIn/SignInForm';
+import { useAuth } from 'oidc-react';
 import './Navbar.css';
-
 
 function Navbar() {
 
     const [selected, setIsSelected] = useState('')
     const [openModal1, setIsOpenModal1] = useState(false)
 
-    const { isLoggedIn, setIsLoggedIn, logOutUser, authenticateUser, getStoredToken } = useContext(AuthContext);
+    const { isLoggedIn, setIsLoggedIn, logOutUser } = useContext(AuthContext);
+    const auth = useAuth();
+
+    const isAuthenticated = auth.userData?.id_token ? true : false;
+    if (isAuthenticated) {
+        setIsLoggedIn(true)
+    } else {
+        setIsLoggedIn(false)
+    }
 
     const handleHelpModal1 = () => {
         setIsOpenModal1(true)
     }
-    const logOut = (e) => {
 
-        logOutUser()
+    const handleClik = () => {
+        console.log('hejek')
         setIsLoggedIn(false)
-        console.log(isLoggedIn)
+        auth.signOut()
     }
 
     return (
@@ -58,7 +65,7 @@ function Navbar() {
                 <div class="animation nav2"></div>
             </nav>
             <nav className='nav3'>
-                <NavLink 
+                <NavLink
                     to="/members"
                     className={({ isActive }) => (isActive ? 'Members2' : 'Members')}
                 >Network members</NavLink>
@@ -66,18 +73,17 @@ function Navbar() {
                     <NavLink exact
                         to="/sign-in"
                         className={({ isActive }) => (isActive ? 'Sign-in2' : 'Sign-in')}
-                    >Sign in</NavLink>}
+                    > <img className="ls-login-image" src='../ls-login.png' alt="ls-login-image" /></NavLink>}
                 {isLoggedIn &&
                     <NavLink exact
-                        to="/sign-in"
-                        className={({ isActive }) => (isActive ? 'Sign-in2' : 'Sign-in')}
-                    onClick={logOut}>Log out</NavLink>}
+                        to="/individuals"
+                        className={({ isActive }) => (isActive ? 'Sign-in4' : 'Sign-in3')}
+                        onClick={handleClik}><img className="ls-login-image2" src='../logout.png' alt="ls-login-image2" />Log out</NavLink>}
 
                 <div class="animation nav3"></div>
             </nav>
 
         </div>
-
 
     )
 }

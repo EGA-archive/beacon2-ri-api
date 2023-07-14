@@ -14,6 +14,7 @@ import Navbar from './components/NavBar/Navbar';
 import SignInForm from './components/SignIn/SignInForm';
 import ResultsDatasets from './components/Datasets/ResultsDatasets';
 import CrossQueries from './components/CrossQueries/CrossQueries';
+import LoggedIn from './components/SignIn/LoggedIn';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path='/cohorts' element={<Cohorts />} />
         <Route path='/members' element={<ResultsDatasets />} />
         <Route path="/sign-in" element={<SignInForm />} />
+        <Route path="/loggedOut" element={<LoggedIn />} />
         <Route path="/cross-queries" element={<CrossQueries />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
