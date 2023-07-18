@@ -139,6 +139,9 @@ def build_beacon_resultset_response_by_dataset(data,
                     elif doc['id'] in biosample_list['individualIds']:
                         dataset_id = dataset_dict['dataset']
                         response_dict[dataset_id].append(doc)
+                    else:
+                        data.remove(doc)
+                        data=list(dict.fromkeys(data))
                 except Exception:
                     pass
 
