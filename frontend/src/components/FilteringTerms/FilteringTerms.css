@@ -1,0 +1,225 @@
+.search-box {
+    margin: 10px;
+    width: 100%;
+}
+
+.search-tr {
+    display: flex;
+    width: 40%;
+}
+
+
+thead {
+    display: flex;
+    border-bottom: solid 1px #e1e1e1;
+}
+
+.table {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-left: 78px;
+    margin-right: 78px;
+    font-size: 15px;
+    width: 1102px;
+    overflow-y: scroll;    
+}
+
+.tableWrapper{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-y: scroll;
+}
+
+.generalContainer{
+    width: 70vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.th1 {
+
+    overflow-x: auto;
+    display: flex;
+    width: 55%;
+    /* height: 100%; */
+    /* justify-content: center; */
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding-left: 32px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.tag-box input {
+    display: none !important;
+    ;
+}
+
+.tag-box{
+    width: 100vw;
+}
+
+.tag-box ul {
+    display: flex !important;
+    flex-wrap: wrap !important;
+}
+
+.tag-box ul {
+    background: white !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    z-index: 0 !important;
+
+    /* padding: 26px; */
+    width: 100vw !important;
+    /* z-index: 1010; */
+    /* position: absolute; */
+    /* padding: 26px; */
+    /* width: 242px; */
+}
+
+.tag-box-pills li {
+    margin-bottom: -4px !important;
+    ;
+    margin-left: 10px !important;
+    ;
+    margin-right: 3px !important;
+    ;
+    box-sizing: border-box !important;
+    ;
+    border-radius: 5px !important;
+    ;
+    /* box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.15); */
+    padding: 3px;
+    ;
+    background-color: rgb(239 239 239) !important;
+    ;
+    cursor: text !important;
+    ;
+    height: auto !important;
+    ;
+    overflow-y: visible !important;
+    ;
+    overflow-x: hidden !important;
+    ;
+    font-size: 14px !important;
+    ;
+    padding: 3px !important;
+    ;
+    margin-top: 6px !important;
+    ;
+}
+
+.tag-box-pill button {
+    font-size: 14px;
+}
+
+.th2 {
+
+    display: flex;
+    width: 568px;
+    /* height: 100%; */
+    /* justify-content: center; */
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding-left: 32px;
+    padding-top: 10px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+
+.th3 {
+
+    display: flex;
+    width: 25%;
+    /* height: 100%; */
+    /* justify-content: center; */
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding-left: 32px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.th4 {
+
+    display: flex;
+    width: 832px !important;
+    /* height: 100%; */
+    /* justify-content: center; */
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding-left: 32px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.th5 {
+
+    display: flex;
+    width: 77%;
+    /* height: 100%; */
+    /* justify-content: center; */
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding-left: 32px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.th6 {
+
+    display: flex;
+    width: 74%;
+    /* height: 100%; */
+    /* justify-content: center; */
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding-left: 52px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+
+.select-checkbox {
+    position: absolute;
+    margin-top: 6px;
+    margin-left: -57px;
+}
+
+.searchTermInput {
+    margin: 10px;
+    width: 322px;
+    height: 31px;
+    margin-left: 27px;
+}
+
+.searchTermInput1 {
+    margin: 10px;
+    width: 310px;
+    height: 31px;
+}
+
+
+tr {
+    display: flex;
+    width: 104%;
+}
+
+.terms1 {
+    background-color: #f2f2f2;
+}
+
+.checkbox {
+    margin-right: -25px;
+}
+
+.checkbox2 {
+    border: none;
+}

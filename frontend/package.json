@@ -20,6 +20,7 @@
     "flatted": "^3.2.7",
     "formik": "2.2.9",
     "jquery": "^3.6.4",
+    "oidc-react": "^3.2.2",
     "prettyjson": "^1.2.5",
     "react": "^18.2.0",
     "react-bootstrap": "2.6.0",
