@@ -37,12 +37,12 @@ routes = [
 
     web.get('/api/cohorts', collection_handler(db_fn=cohorts.get_cohorts)),
     web.get('/api/cohorts/filtering_terms', filtering_terms_handler(db_fn=cohorts.get_filtering_terms_of_cohort)),
-    web.get('/api/cohorts/{id}', collection_handler(db_fn=cohorts.get_cohort_with_id)),
+    web.get('/api/cohorts/{id}', generic_handler(db_fn=cohorts.get_cohort_with_id)),
     web.get('/api/cohorts/{id}/individuals', generic_handler(db_fn=cohorts.get_individuals_of_cohort)),
 
     web.get('/api/datasets', collection_handler(db_fn=datasets.get_datasets)),
     web.get('/api/datasets/filtering_terms', filtering_terms_handler(db_fn=datasets.get_filtering_terms_of_dataset)),
-    web.get('/api/datasets/{id}', collection_handler(db_fn=datasets.get_dataset_with_id)),
+    web.get('/api/datasets/{id}', generic_handler(db_fn=datasets.get_dataset_with_id)),
     web.get('/api/datasets/{id}/g_variants', generic_handler(db_fn=datasets.get_variants_of_dataset)),
     web.get('/api/datasets/{id}/biosamples', generic_handler(db_fn=datasets.get_biosamples_of_dataset)),
     web.get('/api/datasets/{id}/individuals', generic_handler(db_fn=datasets.get_individuals_of_dataset)),
