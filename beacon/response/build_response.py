@@ -117,8 +117,6 @@ def build_beacon_resultset_response_by_dataset(data,
     for doc in data:
         for dataset_dict in list_of_dataset_dicts:
             try:
-                LOG.debug(doc)
-                LOG.debug(entity_schema)
                 if str(entity_schema) == 'DefaultSchemas.GENOMICVARIATIONS':
                     for element in doc['caseLevelData']:
                         if element['biosampleId'] in dataset_dict['ids'][0]['biosampleIds']:
