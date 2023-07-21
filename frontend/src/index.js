@@ -25,8 +25,7 @@ const oidcConfig = {
   automaticSilentRenew: true,
   redirectUri:
     process.env.NODE_ENV === 'development'
-      ? 'http://localhost:3000/'
-      : 'https://cobraz.github.io/example-oidc-react',
+      && 'https://beacon-network-demo.ega-archive.org/',
   scope: 'openid profile email ga4gh_passport_v1 offline_access',
   revokeAccessTokenOnSignout: true
 };

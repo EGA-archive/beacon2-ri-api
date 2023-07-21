@@ -297,6 +297,13 @@ html {
   width: 100vw;
 }
 
+.resultsOptions{
+  display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+}
+
 .qeSection h5{
   color: rgb(209, 66, 66);
   font-weight: bold;
