@@ -192,14 +192,12 @@ function VariantsResults(props) {
                 setError(error)
             }
 
-
-
         }
         apiCall();
     }, [])
 
     return (
-        <div>
+        <div className='resultsOptions'>
             {logInRequired === true && <div className='variantsResultsError'><h3>{messageLogin}</h3></div>}
             {error !== '' && <h5 className='variantsResultsError'>Please check the query and retry</h5>}
 

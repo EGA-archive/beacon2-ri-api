@@ -34,7 +34,7 @@ function IndividualsResults(props) {
 
     const [skipTrigger, setSkipTrigger] = useState(0)
     const [limitTrigger, setLimitTrigger] = useState(0)
-    
+
     const [queryArray, setQueryArray] = useState([])
     const [arrayFilter, setArrayFilter] = useState([])
 
@@ -226,8 +226,8 @@ function IndividualsResults(props) {
                     console.log(token)
                     const headers = { 'Content-type': 'application/json', 'Authorization': `Bearer ${token}`} 
     
-                    res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals", jsonData2, { headers: headers })
-                    
+                   // res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals/", jsonData2, { headers: headers })
+                   res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals", jsonData2, { headers: headers })
                     console.log(res)
                     setTimeOut(true)
 
