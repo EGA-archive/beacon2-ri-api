@@ -11,7 +11,7 @@ const LoggedIn = () => {
       </div>
     );
   }
-  return <div>Not logged in! Try to refresh to be redirected to Google.</div>;
+  return <div>Not logged in! Try to refresh to be redirected to LifeScience.</div>;
 };
 
 export default LoggedIn;
