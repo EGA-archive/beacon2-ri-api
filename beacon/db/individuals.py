@@ -46,15 +46,17 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
     LOG.debug("Request parameters len = {}".format(len(qparams.query.request_parameters)))
     v_list=[]
     for k, v in qparams.query.request_parameters.items():
+        LOG.debug(k)
         if k == 'filters':
             if 'genomicVariations' in v:
+                LOG.debug("yes")
                 listing = v.split('"')
                 value_list = listing[1].split('.')
                 value_equal = value_list[1]
                 final_list = value_equal.split('=')
                 final_value = final_list[1]
                 query["$and"] = []
-                collection = 'genomicVariations'
+                collection = 'g_variants'
                 query["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
                     id=VARIANTS_PROPERTY_MAP[final_list[0]],
                     value=final_value
@@ -66,20 +68,23 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                 qparams.query.pagination.skip,
                 count
             )
+                biosample_IDS =[]
+                query_2={}
+                query_2["$or"] = []
                 for doc in docs:
-                    LOG.debug(doc)
-            if ',' in v:
-                v_list =v.split(',')
-                LOG.debug(v_list)
-            else:
-                v_list.append(v)
-            LOG.debug(v_list)
-            for id in v_list:
-                v_dict={}
-                v_dict['id']=id
-                qparams.query.filters.append(v_dict)
+                    caseLevelData = doc['caseLevelData']
+                    for case in caseLevelData:
+                        #LOG.debug(case["biosampleId"])
+                        if case["biosampleId"] not in biosample_IDS:
+                            biosample_IDS.append(case["biosampleId"])
+                            query_2["$or"].append({'id': case["biosampleId"]})
+
+                LOG.debug(query_2)
+                        
+                
+
         
-    return query
+    return query_2
 
 
 def get_individuals(entry_id: Optional[str], qparams: RequestParams):
