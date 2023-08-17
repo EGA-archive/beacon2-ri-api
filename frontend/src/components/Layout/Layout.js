@@ -498,11 +498,6 @@ function Layout(props) {
                             
                         
                         })
-
-
-
-
-
                     })
                 }
 
@@ -536,8 +531,6 @@ function Layout(props) {
             }
             setQuery(varQuery)
         }
-
-
 
     }
 
@@ -591,7 +584,6 @@ function Layout(props) {
                             arrayFilteringTerms.push(element.id)
                             arrayFilteringTermsQE.push(element)
                         }
-
 
                     })
 
@@ -951,21 +943,10 @@ function Layout(props) {
                                                     />
                                                     <h3>True</h3>
                                                 </div>
-
                                             </div>
-
-
-
-
                                         </div>
-
-
                                     </div>
-
-
-
                                 </form>
-
                             </div>
                         </div>}
                     </div>}
