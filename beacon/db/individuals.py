@@ -44,9 +44,10 @@ def include_resultset_responses(query: Dict[str, List[dict]], qparams: RequestPa
 
 def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParams):
     LOG.debug("Request parameters len = {}".format(len(qparams.query.request_parameters)))
-    v_list=[]
+    query_2={}
     for k, v in qparams.query.request_parameters.items():
         LOG.debug(k)
+        
         if k == 'filters':
             if 'genomicVariations' in v:
                 LOG.debug("yes")
@@ -69,7 +70,7 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                 count
             )
                 biosample_IDS =[]
-                query_2={}
+
                 query_2["$or"] = []
                 for doc in docs:
                     caseLevelData = doc['caseLevelData']
