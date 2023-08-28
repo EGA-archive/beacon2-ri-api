@@ -191,7 +191,7 @@ def get_runs_of_dataset(entry_id: Optional[str], qparams: RequestParams):
     return schema, count, docs
 
 
-def get_analyses_of_dataset(entry_id: Optional[str], qparams: RequestParams, allowed_ids: list):
+def get_analyses_of_dataset(entry_id: Optional[str], qparams: RequestParams):
     collection = 'datasets'
     query = apply_filters({}, qparams.query.filters, collection)
     query = query_id(query, entry_id)
