@@ -173,7 +173,7 @@ def generic_handler(db_fn, request=None):
                 dict_dataset['dataset']=data_r
                 dict_dataset['ids']=[ r['ids'] for r in beacon_datasets if r['id'] == data_r ]
                 list_of_dataset_dicts.append(dict_dataset)
-            LOG.debug(list_of_dataset_dicts)
+            #LOG.debug(list_of_dataset_dicts)
 
             
 

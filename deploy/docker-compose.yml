@@ -150,6 +150,7 @@ services:
     networks:
       - pub
       - idp-priv 
+      - my-app-network
     depends_on:
       - idp-db
 
