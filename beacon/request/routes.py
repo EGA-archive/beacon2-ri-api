@@ -55,11 +55,11 @@ routes = [
 
     web.get('/api/g_variants', generic_handler(db_fn=g_variants.get_variants)),
     web.get('/api/g_variants/filtering_terms', filtering_terms_handler(db_fn=g_variants.get_filtering_terms_of_genomicvariation)),
-    web.get('/api/g_variants/{variantInternalId}', generic_handler(db_fn=g_variants.get_variant_with_id)),
-    web.get('/api/g_variants/{variantInternalId}/biosamples', generic_handler(db_fn=g_variants.get_biosamples_of_variant)),
-    web.get('/api/g_variants/{variantInternalId}/individuals', generic_handler(db_fn=g_variants.get_individuals_of_variant)),
-    web.get('/api/g_variants/{variantInternalId}/runs', generic_handler(db_fn=g_variants.get_runs_of_variant)),
-    web.get('/api/g_variants/{variantInternalId}/analyses', generic_handler(db_fn=g_variants.get_analyses_of_variant)),
+    web.get('/api/g_variants/{id}', generic_handler(db_fn=g_variants.get_variant_with_id)),
+    web.get('/api/g_variants/{id}/biosamples', generic_handler(db_fn=g_variants.get_biosamples_of_variant)),
+    web.get('/api/g_variants/{id}/individuals', generic_handler(db_fn=g_variants.get_individuals_of_variant)),
+    web.get('/api/g_variants/{id}/runs', generic_handler(db_fn=g_variants.get_runs_of_variant)),
+    web.get('/api/g_variants/{id}/analyses', generic_handler(db_fn=g_variants.get_analyses_of_variant)),
 
 
     web.get('/api/individuals', generic_handler(db_fn=individuals.get_individuals)),
@@ -116,11 +116,11 @@ routes = [
 
     web.post('/api/g_variants', generic_handler(db_fn=g_variants.get_variants)),
     web.post('/api/g_variants/filtering_terms', filtering_terms_handler(db_fn=g_variants.get_filtering_terms_of_genomicvariation)),
-    web.post('/api/g_variants/{variantInternalId}', generic_handler(db_fn=g_variants.get_variant_with_id)),
-    web.post('/api/g_variants/{variantInternalId}/biosamples', generic_handler(db_fn=g_variants.get_biosamples_of_variant)),
-    web.post('/api/g_variants/{variantInternalId}/individuals', generic_handler(db_fn=g_variants.get_individuals_of_variant)),
-    web.post('/api/g_variants/{variantInternalId}/runs', generic_handler(db_fn=g_variants.get_runs_of_variant)),
-    web.post('/api/g_variants/{variantInternalId}/analyses', generic_handler(db_fn=g_variants.get_analyses_of_variant)),
+    web.post('/api/g_variants/{id}', generic_handler(db_fn=g_variants.get_variant_with_id)),
+    web.post('/api/g_variants/{id}/biosamples', generic_handler(db_fn=g_variants.get_biosamples_of_variant)),
+    web.post('/api/g_variants/{id}/individuals', generic_handler(db_fn=g_variants.get_individuals_of_variant)),
+    web.post('/api/g_variants/{id}/runs', generic_handler(db_fn=g_variants.get_runs_of_variant)),
+    web.post('/api/g_variants/{id}/analyses', generic_handler(db_fn=g_variants.get_analyses_of_variant)),
 
     web.post('/api/individuals', generic_handler(db_fn=individuals.get_individuals)),
     web.post('/api/individuals/filtering_terms', filtering_terms_handler(db_fn=individuals.get_filtering_terms_of_individual)),
