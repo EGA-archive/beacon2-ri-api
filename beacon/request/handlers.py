@@ -181,6 +181,8 @@ def generic_handler(db_fn, request=None):
         
 
         entry_id = request.match_info.get('id', None)
+        if entry_id == None:
+            entry_id = request.match_info.get('variantInternalId', None)
         entity_schema, count, records = db_fn(entry_id, qparams)
         LOG.debug(entity_schema)
 
