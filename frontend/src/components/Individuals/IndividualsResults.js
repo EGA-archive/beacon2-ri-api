@@ -235,7 +235,7 @@ function IndividualsResults (props) {
 
           //res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals/", jsonData2, { headers: headers })
           res = await axios.post(
-            'https://beacons.bsc.es/beacon-network/v2.0.0/individuals/',
+            'https://beacons.bsc.es/beacon-network/v2.0.0/individuals/?skip=0&limit=0',
             jsonData2
           )
 
