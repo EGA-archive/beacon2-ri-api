@@ -612,12 +612,12 @@ function Layout(props) {
             <div className="container2">
                 <button className="helpButton" onClick={handleHelpModal2}><img className="questionLogo2" src="./question.png" alt='questionIcon'></img><h5>Help for querying</h5></button>
                 <div className='logos'>
-                    <a href="https://www.cineca-project.eu/" target="_blank">
+                     {/* <a href="https://www.cineca-project.eu/" target="_blank">
                         <img className="cinecaLogo" src="./CINECA_logo.png" alt='cinecaLogo'></img>
-                    </a>
-                    {/* <a href="https://elixir-europe.org/" target="_blank">
+                    </a> */}
+                   <a href="https://elixir-europe.org/" target="_blank">
                         <img className="elixirLogo" src="./white-orange-logo.png" alt='elixirLogo'></img>
-                    </a>*/}
+                    </a>
                 </div>
             </div>
 
