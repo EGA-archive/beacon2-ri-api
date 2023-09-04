@@ -59,10 +59,8 @@ RUN groupadd beacon                              && \
     chown -R beacon:beacon /var/log/supervisord  && \
     chmod +x /usr/local/bin/entrypoint.sh
 
-ENV PATH="/root/.cargo/bin:${PATH}"
-RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 
 WORKDIR /beacon
-RUN cargo install beacon-verifier
-USER 0
+
+USER beacon
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

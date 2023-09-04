@@ -335,26 +335,3 @@ def build_filtering_terms_response(data,
     }
     return beacon_response
 
-
-def build_beacon_verifier_response(data, qparams, func_response_type, authorized_datasets=None):
-    if authorized_datasets is None:
-        authorized_datasets = []
-
-    url_dict = qparams.query.request_parameters
-    url = url_dict["verifier_url"]
-    LOG.debug(url)
-    command = 'beacon-verifier ' + url
-    try:
-        bash = subprocess.check_output(command, shell=True)
-    except subprocess.CalledProcessError as e:
-        bash = e.output
-
-
-    beacon_response = {
-        'meta': build_meta(qparams, None, Granularity.RECORD),
-        'response': {
-            'verifier': str(bash)
-    }
-    }
-
-    return beacon_response
