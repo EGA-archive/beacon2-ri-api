@@ -67,36 +67,10 @@ function FilteringTerms(props) {
     }
 
     const handleIdChanges = (e) => {
-        setShowIds(true)
+        
         setId(e.target.value)
-        const results = arrayFilteringTerms.filter(post => {
-
-            if (e.target.value === "") {
-                return arrayFilteringTerms
-            } else {
-                if (post !== undefined) {
-                    if (post.toLowerCase().includes(e.target.value.toLowerCase())) {
-                        return post
-                    }
-                } else {
-                    if (post.toLowerCase().includes(e.target.value.toLowerCase())) {
-                        return post
-                    }
-                }
-            }
-
-        })
-        setstate({
-            query: e.target.value,
-            list: results
-        })
-
-        if (e.target.value === '') {
-            setShowIds(false)
-        }
-
-
     }
+
     const handleOperatorchange = (e) => {
         setOperator(e.target.value)
         console.log()
@@ -118,14 +92,6 @@ function FilteringTerms(props) {
         }
 
     }
-    const handleSelectedId = (e) => {
-        setShowIds(false)
-        setId(e.target.value)
-        setstate({
-            query: e.target.value,
-            list: state.list
-        })
-    }
 
     const [operator, setOperator] = useState("")
     const [valueFree, setValueFree] = useState("")
@@ -135,9 +101,7 @@ function FilteringTerms(props) {
 
     const [ID, setId] = useState("")
 
-    const [showIds, setShowIds] = useState(false)
-
-    const [arrayFilteringTerms, setArrayFilteringTerms] = useState([])
+   
 
     useEffect(() => {
         if (state.list === "error") {
@@ -374,7 +338,7 @@ function FilteringTerms(props) {
         console.log(e.target)
         console.log(e.target.value)
         if (e.target.checked === false){
-            let newValueChosen = valueChosen.filter(valor => valor !== e.target.value); // will return ['A', 'C']
+            let newValueChosen = valueChosen.filter(valor => valor !== e.target.value)
             setValueChosen(newValueChosen)
         } else{
             valueChosen.push(e.target.value)
@@ -475,7 +439,7 @@ function FilteringTerms(props) {
                                               <div className="listTerms">
                                                   <label><h2>ID</h2></label>
       
-                                                  <input className="IdForm" type="text" value={state.query} autoComplete='on' placeholder={"write and filter by ID"} onChange={(e) => handleIdChanges(e)} aria-label="ID" />
+                                                  <input className="IdForm" type="text" value={term.id} autoComplete='on' placeholder={"write and filter by ID"} onChange={handleIdChanges} aria-label="ID" />
       
                                                   <div id="operator" >
       
@@ -493,14 +457,7 @@ function FilteringTerms(props) {
                                                   <label id="value"><h2>Value</h2></label>
                                                   <input className="ValueForm" type="text" autoComplete='on' placeholder={"free text/ value"} onChange={handleValueChanges} aria-label="Value" />
                                               </div>
-                                              {showIds && props.query !== '' &&
-                                                  <select className="selectedId" onChange={handleSelectedId} name="selectedId" multiple >
-                                                      {state.list.map(element => {
-                                                          return (
-                                                              <option value={element} >{element}</option>
-                                                          )
-                                                      })}
-                                                  </select>}
+                                             
                                           </div>
                                           <button className="buttonAlphanum" onClick={handdleInclude}>Include</button>
                                       </div>
@@ -513,7 +470,7 @@ function FilteringTerms(props) {
                                               <div className="listTerms">
                                                   <label><h2>ID</h2></label>
       
-                                                  <input className="IdForm" type="text" value={state.query} autoComplete='on' placeholder={"write and filter by ID"} onChange={(e) => handleIdChanges(e)} aria-label="ID" />
+                                                  <input className="IdForm" type="text" value={term.id} autoComplete='on' placeholder={"write and filter by ID"} onChange={handleIdChanges} aria-label="ID" />
       
                                                   <div id="operator" >
       
@@ -531,14 +488,7 @@ function FilteringTerms(props) {
                                                   <label id="value"><h2>Value</h2></label>
                                                   <input className="ValueForm" type="text" autoComplete='on' placeholder={"free text/ value"} onChange={handleValueChanges} aria-label="Value" />
                                               </div>
-                                              {showIds && props.query !== '' &&
-                                                  <select className="selectedId" onChange={handleSelectedId} name="selectedId" multiple >
-                                                      {state.list.map(element => {
-                                                          return (
-                                                              <option value={element} >{element}</option>
-                                                          )
-                                                      })}
-                                                  </select>}
+                                             
                                           </div>
                                           <button className="buttonAlphanum" onClick={handdleInclude}>Include</button>
                                       </div>
