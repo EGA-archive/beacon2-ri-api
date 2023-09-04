@@ -112,6 +112,7 @@ function TableResultsIndividuals (props) {
 
   useEffect(() => {
   
+      console.log(props.results)
       setRows([])
       setIds([])
       console.log(rows)
