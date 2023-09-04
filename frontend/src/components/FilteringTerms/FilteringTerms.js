@@ -17,6 +17,8 @@ function FilteringTerms(props) {
 
     const [tags, setTags] = useState([])
 
+    const [alphaNumSection, setAlphanum] = useState(false)
+
     const [results, setResults] = useState('')
 
     const [state, setstate] = useState({
@@ -64,6 +66,78 @@ function FilteringTerms(props) {
         }
     }
 
+    const handleIdChanges = (e) => {
+        setShowIds(true)
+        setId(e.target.value)
+        const results = arrayFilteringTerms.filter(post => {
+
+            if (e.target.value === "") {
+                return arrayFilteringTerms
+            } else {
+                if (post !== undefined) {
+                    if (post.toLowerCase().includes(e.target.value.toLowerCase())) {
+                        return post
+                    }
+                } else {
+                    if (post.toLowerCase().includes(e.target.value.toLowerCase())) {
+                        return post
+                    }
+                }
+            }
+
+        })
+        setstate({
+            query: e.target.value,
+            list: results
+        })
+
+        if (e.target.value === '') {
+            setShowIds(false)
+        }
+
+
+    }
+    const handleOperatorchange = (e) => {
+        setOperator(e.target.value)
+        console.log()
+    }
+
+    const [valueChosen, setValueChosen] = useState([])
+
+ 
+    const handdleInclude = (e) => {
+        console.log(ID)
+        console.log(valueFree)
+        console.log(operator)
+        if (ID !== '' && valueFree !== '' && operator !== '') {
+            if (props.query !== null) {
+                props.setQuery(props.query + ',' + `${ID}${operator}${valueFree}`)
+            } if (props.query === null) {
+                props.setQuery(`${ID}${operator}${valueFree}`)
+            }
+        }
+
+    }
+    const handleSelectedId = (e) => {
+        setShowIds(false)
+        setId(e.target.value)
+        setstate({
+            query: e.target.value,
+            list: state.list
+        })
+    }
+
+    const [operator, setOperator] = useState("")
+    const [valueFree, setValueFree] = useState("")
+    const handleValueChanges = (e) => {
+        setValueFree(e.target.value)
+    }
+
+    const [ID, setId] = useState("")
+
+    const [showIds, setShowIds] = useState(false)
+
+    const [arrayFilteringTerms, setArrayFilteringTerms] = useState([])
 
     useEffect(() => {
         if (state.list === "error") {
@@ -133,19 +207,13 @@ function FilteringTerms(props) {
     }
 
     const handleChange2 = (e) => {
-
-
         const results = props.filteringTerms.data.response.filteringTerms.filter(post => {
             console.log(post)
             if (post.label !== '' && post.label !== undefined) {
                 if (e.target.value === '') {
                     return props.filteringTerms.data.response.filteringTerms
                 } else {
-                    if (post.label !== 'undefined') {
-                        if (post.label.toLowerCase().includes(e.target.value.toLowerCase())) {
-                            return post
-                        }
-                    } else {
+                    if (post.label !== undefined) {
                         if (post.label.toLowerCase().includes(e.target.value.toLowerCase())) {
                             return post
                         }
@@ -187,94 +255,138 @@ function FilteringTerms(props) {
         })
     }
 
+    const handleChange4 = (e) => {
+
+        const results = props.filteringTerms.data.response.filteringTerms.filter(post => {
+            console.log(post)
+            if (e.target.value === "") {
+                return props.filteringTerms.data.response.filteringTerms
+            } else {
+                if (post.scopes !== undefined) {
+                    var returnedPosts = []
+                    post.scopes.forEach(element => {
+                        if (element.toLowerCase().includes(e.target.value.toLowerCase())) {
+                            returnedPosts.push(post)
+                        }
+                    })
+                    if (returnedPosts.length > 0) {
+                        return (returnedPosts)
+                    }
+
+                }
+            }
+        })
+        setstate({
+
+            list: results
+        })
+    }
 
 
     const handleCheck = (e) => {
+        console.log(e.target.value)
+        let infoValue = e.target.value.split(',')
+        console.log(infoValue[2])
+        if (infoValue[1].toLowerCase() !== 'alphanumeric') {
 
-        const alreadySelected = selected.filter(term => term.label === e.target.value)
+            const alreadySelected = selected.filter(term => term.label === infoValue[0])
 
-        if (alreadySelected.length !== 0) {
+            if (alreadySelected.length !== 0) {
 
-            setSelected(selected.filter(t => t.value !== e.target.value))
-        } else {
-
-       //     for (let i = 0; i < tags.length; i++) {
-
-             //   console.log(tags[i])
-
-             //   if (tags[i].label === e.target.value) {
-
-                    const newTag = {
-                        label: e.target.value,
-                        value: e.target.value
-                    }
-                    console.log(newTag)
-                    selected.push(newTag)
-
-           //     }
-                console.log(selected)
-      //      }
-
-        }
-
-        if (props.query !== null) {
-            let stringQuery = ''
-            if (props.query.includes(',')) {
-
-                let arrayTerms = props.query.split(',')
-                arrayTerms.forEach(element => {
-
-                    if (element === e.target.value) {
-                        stringQuery = props.query
-                    } else {
-                        stringQuery = props.query + ',' + e.target.value
-                    }
-
-                })
-
-                if (stringQuery === '' || stringQuery === ',') {
-                    props.setQuery('filtering term comma-separated, ID><=value')
-                } else {
-
-                    props.setQuery(stringQuery)
-                }
-
-
+                setSelected(selected.filter(t => t.value !== infoValue[0]))
             } else {
-              
-                if ((e.target.value !== props.query && props.query !== '')) {
 
-                    stringQuery = `${props.query},` + e.target.value
-                    props.setQuery(stringQuery)
-                } else if ((e.target.value !== props.query && props.query === '')) {
-                    stringQuery = `${props.query}` + e.target.value
-                    props.setQuery(stringQuery)
+                //     for (let i = 0; i < tags.length; i++) {
+
+                //   console.log(tags[i])
+
+                //   if (tags[i].label === e.target.value) {
+
+                const newTag = {
+                    label: infoValue[0],
+                    value: infoValue[0]
                 }
+                console.log(newTag)
+                selected.push(newTag)
+
+                //     }
+                console.log(selected)
+                //      }
+
             }
 
-        } else {
-            let stringQuery = e.target.value
-            props.setQuery(stringQuery)
+            if (props.query !== null) {
+                let stringQuery = ''
+                if (props.query.includes(',')) {
+
+                    let arrayTerms = props.query.split(',')
+                    arrayTerms.forEach(element => {
+
+                        if (element === infoValue[0]) {
+                            stringQuery = props.query
+                        } else {
+                            stringQuery = props.query + ',' + infoValue[0]
+                        }
+
+                    })
+
+                    if (stringQuery === '' || stringQuery === ',') {
+                        props.setQuery('filtering term comma-separated, ID><=value')
+                    } else {
+
+                        props.setQuery(stringQuery)
+                    }
+
+
+                } else {
+
+                    if ((infoValue[0] !== props.query && props.query !== '')) {
+
+                        stringQuery = `${props.query},` + infoValue[0]
+                        props.setQuery(stringQuery)
+                    } else if ((infoValue[0] !== props.query && props.query === '')) {
+                        stringQuery = `${props.query}` + infoValue[0]
+                        props.setQuery(stringQuery)
+                    }
+                }
+
+            } else {
+                let stringQuery = infoValue[0]
+                props.setQuery(stringQuery)
+            }
+
+
+            console.log(state.list)
+            const filteredItems = state.list.filter(item => item.id !== infoValue[0])
+            e.target.checked = false
+
+            setstate({
+                query: '',
+                list: filteredItems
+            })
+            setTrigger(true)
+            console.log(state.list)
+
         }
+    }
 
-
-        console.log(state.list)
-        const filteredItems = state.list.filter(item => item.id !== e.target.value)
-        e.target.checked = false
-
+    const handleCheck2 = (e) => {
+        console.log(e.target)
+        console.log(e.target.value)
+        if (e.target.checked === false){
+            let newValueChosen = valueChosen.filter(valor => valor !== e.target.value); // will return ['A', 'C']
+            setValueChosen(newValueChosen)
+        } else{
+            valueChosen.push(e.target.value)
+        }
+       
         setstate({
             query: '',
-            list: filteredItems
+            list: state.list
         })
-        setTrigger(true)
-        console.log(state.list)
-
     }
 
     console.log(state.list)
-
-
-
     return (
         <div className="generalContainer">
             <TagBox
@@ -288,7 +400,7 @@ function FilteringTerms(props) {
 
             {!error && <div className="tableWrapper">
 
-                <table className="table">
+                <table id="table">
                     <thead className="thead1">
                         <tr className="search-tr">
                             <th className="search-box sorting" tabIndex="0" aria-controls="DataTables_Table_0" rowSpan="1" colSpan="2" aria-sort="ascending" aria-label=": activate to sort column descending"><form><input className="searchTermInput1" type="search" value={state.query} onChange={handleChange} placeholder="Search term" /></form></th>
@@ -296,11 +408,12 @@ function FilteringTerms(props) {
                         </tr>
                         <tr className="search-tr">
                             <th className="search-box sorting" tabIndex="0" aria-controls="DataTables_Table_0" rowSpan="1" colSpan="2" aria-sort="ascending" aria-label=": activate to sort column descending"><form><input className="searchTermInput" type="search" value={state.query2} onChange={handleChange2} placeholder="Search label" /></form></th>
-
                         </tr>
                         <tr className="search-tr">
                             <th className="search-box sorting" tabIndex="0" aria-controls="DataTables_Table_0" rowSpan="1" colSpan="2" aria-sort="ascending" aria-label=": activate to sort column descending"><form><input className="searchTermInput" type="search" value={state.query3} onChange={handleChange3} placeholder="Search by type" /></form></th>
-
+                        </tr>
+                        <tr className="search-tr">
+                            <th className="search-box sorting" tabIndex="0" aria-controls="DataTables_Table_0" rowSpan="1" colSpan="2" aria-sort="ascending" aria-label=": activate to sort column descending"><form><input className="searchTermInput" type="search" value={state.query4} onChange={handleChange4} placeholder="Search by scope" /></form></th>
                         </tr>
                     </thead>
                     <thead className="thead2">
@@ -308,31 +421,130 @@ function FilteringTerms(props) {
                             <th className="th4">term</th>
                             <th className="th5">label</th>
                             <th className="th6">type</th>
+                            <th className="th7">scopes</th>
                         </tr>
                     </thead>
                     {props.filteringTerms.data !== undefined && state.list !== "error" && state.list.map((term, index) => {
                         return (<>
-
-
                             <tbody>
 
                                 {index % 2 === 0 && <tr className="terms1">
-                                    <td className="th2"> {(term.type=== "ontology" || term.type === "custom") && <input className="select-checkbox" onClick={handleCheck} type="checkbox" id='includeTerm' name="term" value={term.id} />}
-                                        {term.id}</td>
+                                    {term.type.toLowerCase() !== 'alphanumeric' &&
+                                    <td className="th2"> <input className="select-checkbox" onClick={handleCheck} type="checkbox" id={term.id} name={term.id} value={[term.id, term.type, index]} />
+                                        {term.id}
+                                    </td>}
+                                    {term.type.toLowerCase() === 'alphanumeric' &&
+                                    <td className="th2"> <input className="select-checkbox" onClick={handleCheck2} type="checkbox" id={term.id} name={term.id} value={term.id} />
+                                        {term.id}
+                                    </td>}
                                     {term.label !== '' ? <td className="th1">{term.label}</td> : <td className="th1">-</td>}
-                                    <td className="th1">{term.type}</td>
+                                    <td className="th1">{term.type}
+                                        </td>
+                                    <td className="th1">
+                                        {term.scopes.map((term2, index) => {
+                                            return (
+                                                index < term.scopes.length - 1 ? term2 + '' + ',' : term2 + ''
+                                            )
+                                        })}
+                                    </td>
+                                 
                                 </tr>}
                                 {index % 2 == !0 && <tr className="terms2">
-                                    <td className="th2"> {(term.type=== "ontology" || term.type === "custom") &&  <input className="select-checkbox" onClick={handleCheck} type="checkbox" id="includeTerm" name="term" value={term.id} />}
-                                        {term.id}</td>
+                                    {term.type.toLowerCase() !== 'alphanumeric' &&
+                                        <td className="th2"> <input className="select-checkbox" onClick={handleCheck} type="checkbox" id={term.id} name={term.id} value={[term.id, term.type, index]} />
+                                            {term.id}</td>}
+                                    {term.type.toLowerCase() === 'alphanumeric' &&
+                                    <td className="th2"> <input className="select-checkbox" onClick={handleCheck2} type="checkbox" id={term.id} name={term.id} value={term.id} />
+                                        {term.id}</td>}
                                     {term.label !== '' ? <td className="th1">{term.label}</td> : <td className="th1">-</td>}
                                     <td className="th1">{term.type}</td>
-                        
+                                    <td className="th1">
+                                        {term.scopes.map((term2, index) => {
+                                            return (
+                                                index < term.scopes.length - 1 ? term2 + '' + ',' : term2 + ''
+
+                                            )
+                                        })}
+                                    </td>
                                 </tr>}
-
-
+                                
+                                {index % 2 ==!0 && term.type.toLowerCase() === 'alphanumeric' &&  valueChosen.includes(term.id) &&
+                                    <tr className="terms2">
+                                      <div className='alphanumContainer2'>
+                                          <div className='alphaIdModule'>
+                                              <div className="listTerms">
+                                                  <label><h2>ID</h2></label>
+      
+                                                  <input className="IdForm" type="text" value={state.query} autoComplete='on' placeholder={"write and filter by ID"} onChange={(e) => handleIdChanges(e)} aria-label="ID" />
+      
+                                                  <div id="operator" >
+      
+                                                      <select className="selectedOperator" onChange={handleOperatorchange} name="selectedOperator" >
+                                                          <option value=''> </option>
+                                                          <option value="=" >= </option>
+                                                          <option value="<" >&lt;</option>
+                                                          <option value=">" >&gt;</option>
+                                                          <option value="!" >!</option>
+                                                          <option value="%" >%</option>
+                                                      </select>
+      
+                                                  </div>
+      
+                                                  <label id="value"><h2>Value</h2></label>
+                                                  <input className="ValueForm" type="text" autoComplete='on' placeholder={"free text/ value"} onChange={handleValueChanges} aria-label="Value" />
+                                              </div>
+                                              {showIds && props.query !== '' &&
+                                                  <select className="selectedId" onChange={handleSelectedId} name="selectedId" multiple >
+                                                      {state.list.map(element => {
+                                                          return (
+                                                              <option value={element} >{element}</option>
+                                                          )
+                                                      })}
+                                                  </select>}
+                                          </div>
+                                          <button className="buttonAlphanum" onClick={handdleInclude}>Include</button>
+                                      </div>
+                                  </tr>
+                                }
+                                 {index % 2 ===0 && term.type.toLowerCase() === 'alphanumeric' && valueChosen.includes(term.id) &&
+                                    <tr className="terms1">
+                                      <div className='alphanumContainer2'>
+                                          <div className='alphaIdModule'>
+                                              <div className="listTerms">
+                                                  <label><h2>ID</h2></label>
+      
+                                                  <input className="IdForm" type="text" value={state.query} autoComplete='on' placeholder={"write and filter by ID"} onChange={(e) => handleIdChanges(e)} aria-label="ID" />
+      
+                                                  <div id="operator" >
+      
+                                                      <select className="selectedOperator" onChange={handleOperatorchange} name="selectedOperator" >
+                                                          <option value=''> </option>
+                                                          <option value="=" >= </option>
+                                                          <option value="<" >&lt;</option>
+                                                          <option value=">" >&gt;</option>
+                                                          <option value="!" >!</option>
+                                                          <option value="%" >%</option>
+                                                      </select>
+      
+                                                  </div>
+      
+                                                  <label id="value"><h2>Value</h2></label>
+                                                  <input className="ValueForm" type="text" autoComplete='on' placeholder={"free text/ value"} onChange={handleValueChanges} aria-label="Value" />
+                                              </div>
+                                              {showIds && props.query !== '' &&
+                                                  <select className="selectedId" onChange={handleSelectedId} name="selectedId" multiple >
+                                                      {state.list.map(element => {
+                                                          return (
+                                                              <option value={element} >{element}</option>
+                                                          )
+                                                      })}
+                                                  </select>}
+                                          </div>
+                                          <button className="buttonAlphanum" onClick={handdleInclude}>Include</button>
+                                      </div>
+                                  </tr>
+                                }
                             </tbody>
-
                         </>
                         )
                     })
