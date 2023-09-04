@@ -99,51 +99,76 @@ def build_beacon_resultset_response_by_dataset(data,
                                     num_total_results,
                                     qparams: RequestParams,
                                     func_response_type,
-                                    entity_schema: DefaultSchemas):
+                                    entity_schema: DefaultSchemas,
+                                    start_record,
+                                    finish_record):
     """"
     Transform data into the Beacon response format.
     """
     response_dict={}
-    LOG.debug(list_of_dataset_dicts)
-
+    #LOG.debug(list_of_dataset_dicts)
+    dataset_ids_list = []
+    
     for dataset_dict in list_of_dataset_dicts:
         dataset_id = dataset_dict['dataset']
         response_dict[dataset_id] = []
+        dataset_ids_list.append(dataset_id)
+    
+    for doc in data:
+        for dataset_dict in list_of_dataset_dicts:
+            try:
+                if str(entity_schema) == 'DefaultSchemas.GENOMICVARIATIONS':
+                    for element in doc['caseLevelData']:
+                        if element['biosampleId'] in dataset_dict['ids'][0]['biosampleIds']:
+                            dataset_id = dataset_dict['dataset']
+                            response_dict[dataset_id].append(doc)
+                        elif element['biosampleId'] in dataset_dict['ids'][0]['individualIds']:
+                            dataset_id = dataset_dict['dataset']
+                            response_dict[dataset_id].append(doc)
+                elif str(entity_schema) == 'DefaultSchemas.ANALYSES':
+                        if doc['biosampleId'] in dataset_dict['ids'][0]['biosampleIds']:
+                            dataset_id = dataset_dict['dataset']
+                            response_dict[dataset_id].append(doc)
+                        elif doc['individualId'] in dataset_dict['ids'][0]['individualIds']:
+                            dataset_id = dataset_dict['dataset']
+                            response_dict[dataset_id].append(doc)
+                elif str(entity_schema) == 'DefaultSchemas.RUNS':
+                        if doc['biosampleId'] in dataset_dict['ids'][0]['biosampleIds']:
+                            dataset_id = dataset_dict['dataset']
+                            response_dict[dataset_id].append(doc)
+                        elif doc['individualId'] in dataset_dict['ids'][0]['individualIds']:
+                            dataset_id = dataset_dict['dataset']
+                            response_dict[dataset_id].append(doc)
+                else:
+                        if doc['id'] in dataset_dict['ids'][0]['biosampleIds']:
+                            dataset_id = dataset_dict['dataset']
+                            response_dict[dataset_id].append(doc)
+                        elif doc['id'] in dataset_dict['ids'][0]['individualIds']:
+                            dataset_id = dataset_dict['dataset']
+                            response_dict[dataset_id].append(doc)
+            except Exception as e:
+                LOG.debug(e)
+    length_to_rest=0
+    for dataset_id in dataset_ids_list:
+        finish_record = finish_record - length_to_rest
+        length_response = len(response_dict[dataset_id])
+        LOG.debug(length_response)
+        LOG.debug(finish_record)
+        LOG.debug(start_record)
+
+        if length_response >= finish_record:
+            response_dict[dataset_id] = response_dict[dataset_id][start_record:finish_record]
+            length_to_rest = len(response_dict[dataset_id])
+        elif length_response > start_record:
+            response_dict[dataset_id] = response_dict[dataset_id][start_record:length_response]
+            start_record = 0
+            length_to_rest = len(response_dict[dataset_id])
+        else:
+            start_record = start_record - len(response_dict[dataset_id])
+        
+        
         
 
-    
-    for dataset_dict in list_of_dataset_dicts:
-        datas = dataset_dict['ids']
-        try:
-            biosample_list = datas[0]
-        except Exception:
-            biosample_list = []
-            #for datas in dataset_dict['ids']:
-        if isinstance(datas, str):
-            dict_2={}
-            dict_2['id']=datas
-            dataset_id = dataset_dict['dataset']
-            response_dict[dataset_id]=[]
-            response_dict[dataset_id].append(dict_2)
-            LOG.debug(response_dict)
-
-        else:
-            for doc in data:
-                #LOG.debug(isinstance(doc,dict))
-                #LOG.debug(doc)
-                #convert doc to dict
-                try:
-                    if doc['id'] in biosample_list['biosampleIds']:
-                        dataset_id = dataset_dict['dataset']
-                        response_dict[dataset_id].append(doc)
-                    elif doc['id'] in biosample_list['individualIds']:
-                        dataset_id = dataset_dict['dataset']
-                        response_dict[dataset_id].append(doc)
-                except Exception:
-                    pass
-
-
-    
     beacon_response = {
         'meta': build_meta(qparams, entity_schema, Granularity.RECORD),
         'responseSummary': build_response_summary(num_total_results > 0, num_total_results),
