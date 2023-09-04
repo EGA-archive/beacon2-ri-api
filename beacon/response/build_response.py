@@ -139,6 +139,14 @@ def build_beacon_resultset_response_by_dataset(data,
                         elif doc['individualId'] in dataset_dict['ids'][0]['individualIds']:
                             dataset_id = dataset_dict['dataset']
                             response_dict[dataset_id].append(doc)
+                elif str(entity_schema) == 'DefaultSchemas.DATASETS':
+                        if doc['id'] == dataset_dict['dataset']:
+                            dataset_id = dataset_dict['dataset']
+                            response_dict[dataset_id].append(doc)
+                elif str(entity_schema) == 'DefaultSchemas.COHORTS':
+                        if doc['id'] == dataset_dict['dataset']:
+                            dataset_id = dataset_dict['dataset']
+                            response_dict[dataset_id].append(doc)
                 else:
                         if doc['id'] in dataset_dict['ids'][0]['biosampleIds']:
                             dataset_id = dataset_dict['dataset']
@@ -147,7 +155,8 @@ def build_beacon_resultset_response_by_dataset(data,
                             dataset_id = dataset_dict['dataset']
                             response_dict[dataset_id].append(doc)
             except Exception as e:
-                LOG.debug(e)
+                dataset_id = dataset_dict['dataset']
+                response_dict[dataset_id].append(doc)
     length_to_rest=0
     for dataset_id in dataset_ids_list:
         finish_record = finish_record - length_to_rest

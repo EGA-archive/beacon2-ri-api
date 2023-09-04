@@ -173,7 +173,7 @@ def generic_handler(db_fn, request=None):
                 dict_dataset['dataset']=data_r
                 dict_dataset['ids']=[ r['ids'] for r in beacon_datasets if r['id'] == data_r ]
                 list_of_dataset_dicts.append(dict_dataset)
-            LOG.debug(list_of_dataset_dicts)
+            #LOG.debug(list_of_dataset_dicts)
 
             
 
@@ -181,6 +181,8 @@ def generic_handler(db_fn, request=None):
         
 
         entry_id = request.match_info.get('id', None)
+        if entry_id == None:
+            entry_id = request.match_info.get('variantInternalId', None)
         entity_schema, count, records = db_fn(entry_id, qparams)
         LOG.debug(entity_schema)
 

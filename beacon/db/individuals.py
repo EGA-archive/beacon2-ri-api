@@ -13,6 +13,22 @@ from bson import json_util
 LOG = logging.getLogger(__name__)
 
 
+VARIANTS_PROPERTY_MAP = {
+    "assemblyId": "_position.assemblyId",
+    "Chromosome": "_position.refseqId",
+    "start": "_position.start",
+    "end": "_position.end",
+    "referenceBases": "variation.referenceBases",
+    "alternateBases": "variation.alternateBases",
+    "variantType": "variation.variantType",
+    "variantMinLength": None,
+    "variantMaxLength": None,
+    "mateName": None,
+    "gene": "molecularAttributes.geneIds",
+    "aachange": "molecularAttributes.aminoacidChanges"
+}
+
+
 def include_resultset_responses(query: Dict[str, List[dict]], qparams: RequestParams):
     LOG.debug("Include Resultset Responses = {}".format(qparams.query.include_resultset_responses))
     include = qparams.query.include_resultset_responses
@@ -28,20 +44,48 @@ def include_resultset_responses(query: Dict[str, List[dict]], qparams: RequestPa
 
 def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParams):
     LOG.debug("Request parameters len = {}".format(len(qparams.query.request_parameters)))
-    v_list=[]
+    query_2={}
     for k, v in qparams.query.request_parameters.items():
+        LOG.debug(k)
+        
         if k == 'filters':
-            if ',' in v:
-                v_list =v.split(',')
-                LOG.debug(v_list)
-            else:
-                v_list.append(v)
-            LOG.debug(v_list)
-            for id in v_list:
-                v_dict={}
-                v_dict['id']=id
-                qparams.query.filters.append(v_dict)
-    return query
+            if 'genomicVariations' in v:
+                LOG.debug("yes")
+                listing = v.split('"')
+                value_list = listing[1].split('.')
+                value_equal = value_list[1]
+                final_list = value_equal.split('=')
+                final_value = final_list[1]
+                query["$and"] = []
+                collection = 'g_variants'
+                query["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
+                    id=VARIANTS_PROPERTY_MAP[final_list[0]],
+                    value=final_value
+                ), collection))
+                count = get_count(client.beacon.genomicVariations, query)
+                docs = get_documents(
+                client.beacon.genomicVariations,
+                query,
+                qparams.query.pagination.skip,
+                count
+            )
+                biosample_IDS =[]
+
+                query_2["$or"] = []
+                for doc in docs:
+                    caseLevelData = doc['caseLevelData']
+                    for case in caseLevelData:
+                        #LOG.debug(case["biosampleId"])
+                        if case["biosampleId"] not in biosample_IDS:
+                            biosample_IDS.append(case["biosampleId"])
+                            query_2["$or"].append({'id': case["biosampleId"]})
+
+                LOG.debug(query_2)
+                        
+                
+
+        
+    return query_2
 
 
 def get_individuals(entry_id: Optional[str], qparams: RequestParams):
