@@ -8,28 +8,37 @@
     width: 40%;
 }
 
-
 thead {
     display: flex;
     border-bottom: solid 1px #e1e1e1;
+    z-index: 2;
+    background-color: white;
 }
 
-.table {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
+.thead1{
+    position: sticky;
+    top:0px;
+    z-index: 2;
+}
+
+.thead2{
+    position: sticky;
+    top: 73.6px;
+    z-index: 2;
+}
+
+#table {
     margin-left: 78px;
     margin-right: 78px;
     font-size: 15px;
-    width: 1102px;
-    overflow-y: scroll;    
+    width: 90%;
+    height: 70vh;
 }
 
 .tableWrapper{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow-y: scroll;
+   height: 70vh;
+    width: 90vw;
+    overflow: scroll;
 }
 
 .generalContainer{
@@ -42,10 +51,8 @@ thead {
 }
 
 .th1 {
-
-    overflow-x: auto;
     display: flex;
-    width: 55%;
+    width: 50%;
     /* height: 100%; */
     /* justify-content: center; */
     margin-top: 12px;
@@ -53,6 +60,7 @@ thead {
     padding-left: 32px;
     padding-top: 10px;
     padding-bottom: 10px;
+    overflow: auto;
 }
 
 .tag-box input {
@@ -74,13 +82,6 @@ thead {
     display: flex !important;
     flex-wrap: wrap !important;
     z-index: 0 !important;
-
-    /* padding: 26px; */
-    width: 100vw !important;
-    /* z-index: 1010; */
-    /* position: absolute; */
-    /* padding: 26px; */
-    /* width: 242px; */
 }
 
 .tag-box-pills li {
@@ -120,9 +121,8 @@ thead {
 }
 
 .th2 {
-
     display: flex;
-    width: 568px;
+    width: 50%;
     /* height: 100%; */
     /* justify-content: center; */
     margin-top: 12px;
@@ -131,13 +131,14 @@ thead {
     padding-top: 10px;
     overflow-x: auto;
     padding-bottom: 10px;
+    align-items: center;
 }
 
 
 .th3 {
 
     display: flex;
-    width: 25%;
+    width: 50%;
     /* height: 100%; */
     /* justify-content: center; */
     margin-top: 12px;
@@ -150,7 +151,7 @@ thead {
 .th4 {
 
     display: flex;
-    width: 832px !important;
+    width: 50%;
     /* height: 100%; */
     /* justify-content: center; */
     margin-top: 12px;
@@ -163,7 +164,7 @@ thead {
 .th5 {
 
     display: flex;
-    width: 77%;
+    width: 50%;
     /* height: 100%; */
     /* justify-content: center; */
     margin-top: 12px;
@@ -174,9 +175,8 @@ thead {
 }
 
 .th6 {
-
     display: flex;
-    width: 74%;
+    width: 50%;
     /* height: 100%; */
     /* justify-content: center; */
     margin-top: 12px;
@@ -186,30 +186,41 @@ thead {
     padding-bottom: 10px;
 }
 
+.th7 {
+    display: flex;
+    width: 50%;
+    /* height: 100%; */
+    /* justify-content: center; */
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding-left: 29px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 
 .select-checkbox {
-    position: absolute;
-    margin-top: 6px;
-    margin-left: -57px;
+    cursor: pointer;
 }
+
+
 
 .searchTermInput {
     margin: 10px;
-    width: 322px;
+    width: 90%;
     height: 31px;
-    margin-left: 27px;
 }
 
 .searchTermInput1 {
     margin: 10px;
-    width: 310px;
+    width: 90%;
     height: 31px;
 }
 
 
 tr {
     display: flex;
-    width: 104%;
+    width: 100%;
 }
 
 .terms1 {

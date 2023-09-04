@@ -28,10 +28,32 @@
     background-color: white;
     justify-content: flex-start;
    
+}
 
+
+.datasetCardResults{
+    width: 20vw;
+    margin: 11px;
+    /* border: 2px solid #3b9ad5; */
+    padding: 3px;
+    display: flex;
+    box-shadow: 1(0, 0, 0, -0.75) 0px 1px 0px, rgba(1, 1, 2, 12) 0px 1 3px;
+    align-items: center;
+    align-content: center;
+    flex-direction: column;
+    background-color: #ebebeb;
+    justify-content: flex-start;
+    border-radius: 2px;
+   
 }
 
 .tittle h2{
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+}
+
+.tittleResults h2{
     display: flex;
     /* align-items: center; */
     justify-content: center;
@@ -41,6 +63,13 @@
     font-size: 12px;
     font-weight: normal;
     color: rgb(61 60 60);
+    line-height: 20px;
+    margin-top: -5px;
+}
+.datasetCardResults p{
+    font-size: 12px;
+    font-weight: normal;
+    background-color: #fbf9f9;
     line-height: 20px;
     margin-top: -5px;
 }
@@ -63,12 +92,25 @@
     color: #0158aa;
 }
 
+.datasetCardResults a{
+    margin: 10px;
+    font-size: 11px;
+    color: #0158aa;
+}
+
 .datasetCard a:hover{
     margin: 10px;
     font-size: 11px;
     font-weight: 600;
     color: #539ce6;
 }
+.datasetCardResults a:hover{
+    margin: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #539ce6;
+}
+
 
 .linksBeacons{
     display: flex;
@@ -85,7 +127,25 @@
     flex-direction: column;
 }
 
+.tittleResults{
+    width: 20vw;
+    background: white;
+    border-radius: 2px;
+    /* height: 80px; */
+    display: flex;
+    padding: 2px;
+    flex-direction: column;
+}
+
 .tittle h2{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    color: rgba(12, 16, 64, 0.606);
+    font-size: 12px;
+    font-weight: 600;
+
+}
+
+.tittleResults h2{
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     color: rgba(12, 16, 64, 0.606);
     font-size: 12px;

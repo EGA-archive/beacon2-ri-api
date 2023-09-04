@@ -185,70 +185,6 @@ function Layout(props) {
         setOntologyValue(e.target.value.trim())
     }
 
-    const handleIdChanges = (e) => {
-        setShowIds(true)
-        setId(e.target.value)
-        const results = arrayFilteringTerms.filter(post => {
-
-            if (e.target.value === "") {
-                return arrayFilteringTerms
-            } else {
-                if (post !== undefined) {
-                    if (post.toLowerCase().includes(e.target.value.toLowerCase())) {
-                        return post
-                    }
-                } else {
-                    if (post.toLowerCase().includes(e.target.value.toLowerCase())) {
-                        return post
-                    }
-                }
-            }
-
-        })
-        setstate({
-            query: e.target.value,
-            list: results
-        })
-
-        if (e.target.value === '') {
-            setShowIds(false)
-        }
-
-
-    }
-
-    const handleSelectedId = (e) => {
-        setShowIds(false)
-        setId(e.target.value)
-        setstate({
-            query: e.target.value,
-            list: state.list
-        })
-    }
-
-    const handleOperatorchange = (e) => {
-        setOperator(e.target.value)
-        console.log()
-    }
-
-
-    const handleValueChanges = (e) => {
-        setValueFree(e.target.value)
-    }
-
-    const handdleInclude = (e) => {
-        console.log(ID)
-        console.log(valueFree)
-        console.log(operator)
-        if (ID !== '' && valueFree !== '' && operator !== '') {
-            if (query !== null) {
-                setQuery(query + ',' + `${ID}${operator}${valueFree}`)
-            } if (query === null) {
-                setQuery(`${ID}${operator}${valueFree}`)
-            }
-        }
-
-    }
 
     const handleHelpModal1 = () => {
         setIsOpenModal1(true)
@@ -355,9 +291,7 @@ function Layout(props) {
             }
         }
 
-
         setShowFilteringTerms(true)
-
 
     }
 
@@ -450,7 +384,7 @@ function Layout(props) {
         setExpansionSection(true)
     }
 
-    const handleSubmitQE = async (e) => { 
+    const handleSubmitQE = async (e) => {
         try {
             if (ontologyValue !== '' && qeValue !== '') {
 
@@ -464,7 +398,6 @@ function Layout(props) {
                     if (arrayResults.length < 1) {
                         setError("Not found. Please check the keyword and ontologies and retry")
                     }
-
                 } else {
                     arrayResults = res.data.response.ols[qeValue.toLowerCase()].search_term_expansion
                 }
@@ -487,16 +420,13 @@ function Layout(props) {
                     resultsQEexact.forEach(element => {
                         console.log(element)
                         arrayFilteringTermsQE.forEach(element2 => {
-
-                                if (element.obo_id.toLowerCase().trim() === element2.id.toLowerCase().trim()) {
-                                    setError(null)
-                                    matchesQE.push(element2.id)
-                                    console.log(matchesQE)
-                                    console.log("FOUND A MATCH")
-                                    setShowQEresults(true)
-                                }
-                            
-                        
+                            if (element.obo_id.toLowerCase().trim() === element2.id.toLowerCase().trim()) {
+                                setError(null)
+                                matchesQE.push(element2.id)
+                                console.log(matchesQE)
+                                console.log("FOUND A MATCH")
+                                setShowQEresults(true)
+                            }
                         })
                     })
                 }
@@ -531,14 +461,13 @@ function Layout(props) {
             }
             setQuery(varQuery)
         }
-
     }
 
     const handleForward = () => {
         setShowQEfirstResults(false)
         setShowQEresults(false)
     }
-    
+
     const handleNext = () => {
         setShowQEfirstResults(false)
         setShowQEresults(true)
@@ -606,8 +535,6 @@ function Layout(props) {
 
 
     }, [])
-
-
 
 
     const onSubmit = async (event) => {
@@ -716,7 +643,7 @@ function Layout(props) {
                     <button onClick={() => setExpansionSection(false)}>
                         <img className="hideQE" src="../hide.png" alt='hideIcon'></img></button>
                     <div className='expansionContainer2'>
-                        {showQEresults === false && showQEfirstResults === false &&<div className='qeSection'>
+                        {showQEresults === false && showQEfirstResults === false && <div className='qeSection'>
                             <h2 className='qeSubmitH2'>Horizontal query expansion</h2>
                             <input className="QEinput" type="text" value={qeValue} autoComplete='on' placeholder={"Type ONE keyword (what you want to search): e.g., melanoma"} onChange={(e) => handleQEchanges(e)} aria-label="ID" />
                             <input className="QEinput2" type="text" value={ontologyValue} autoComplete='on' placeholder={"Type the ontologies to include in the search comma-separated: e.g., mondo,ncit"} onChange={(e) => handleOntologyChanges(e)} aria-label="ID" />
@@ -724,17 +651,17 @@ function Layout(props) {
                         </div>}
                         {showQEfirstResults === true && <div className='qeSection'>
                             <h2 className='qeSubmitH2'>Horizontal query expansion</h2>
-                           
+
                             {ontologyValue.includes(',') && <p className='textQE2'>Results found of <b>exactly {qeValue} </b> keyword from <b>{ontologyValue.toUpperCase()}</b> ontologies:</p>}
                             {!ontologyValue.includes(',') && <p className='textQE2'>Results found of <b>exactly {qeValue} </b> keyword from <b>{ontologyValue.toUpperCase()}</b> ontology:</p>}
-                            {resultsQEexact.map((element,index) => {
+                            {resultsQEexact.map((element, index) => {
                                 return (
                                     <div>
                                         <li className="qeListItem" key={index}>{element.obo_id}</li>
                                     </div>
                                 )
                             })}
-                             <button onClick={handleForward} className='forwardButton'>RETURN</button>
+                            <button onClick={handleForward} className='forwardButton'>RETURN</button>
                             <button onClick={handleNext} className='nextButton'>SEARCH IN FILTERING TERMS</button>
                         </div>}
                         {showQEresults === true && showQEfirstResults === false && <div className='qeSection'>
@@ -747,7 +674,6 @@ function Layout(props) {
                                         <label className='labelQE'><input onChange={handleCheckQE} className='inputCheckbox' type='checkbox' value={element} />{element}</label>
                                     </div>
                                 )
-
 
                             })}
                             <button onClick={handleNewQEsearch}><h2 className='newQEsearch'>New QE search</h2></button>
@@ -795,7 +721,6 @@ function Layout(props) {
 
                 </div>}
 
-
                 <div className="additionalOptions">
 
                     <div className="example">
@@ -819,6 +744,23 @@ function Layout(props) {
                         {props.collection !== '' && showBar === true && <button className="filters" onClick={handleFilteringTerms}>
                             Filtering Terms
                         </button>}
+                        <div className='resultSetsDiv'>
+                            <label><h2>Include Resultset Responses</h2></label>
+                            <MultiSwitch
+                                texts={["HIT", "MISS", "NONE", "ALL"]}
+                                selectedSwitch={0}
+                                bgColor={"white"}
+                                onToggleCallback={onToggle2}
+                                fontColor={"black"}
+                                selectedFontColor={"white"}
+                                border="0"
+                                selectedSwitchColor="#e29348"
+                                borderWidth="1"
+                                height={"23px"}
+                                fontSize={"12px"}
+                                eachSwitchWidth={55}
+                            ></MultiSwitch>
+                        </div>
                     </div>
                 </div>
                 {showVariants === true && showBar === true && <button className='modeVariants' onClick={handleClick}><h2 className='modeVariantsQueries'>Change to FORM mode</h2></button>}
@@ -832,79 +774,11 @@ function Layout(props) {
                             <button className="arrowButton" onClick={handleExtraSectionIndividuals}><img className="arrowLogo" src="../arrow-up.png" alt='arrowUpIcon'></img></button>}
                         {showOptions && <div className='extraSections'>
 
-                            <div className='alphanumContainer'>
-
-                                <div className='tittleAlph'>
-                                    <h2>Alphanumerical and numerical queries</h2>
-                                    <button className="helpButton" onClick={handleHelpModal1}><img className="questionLogo" src="./question.png" alt='questionIcon'></img></button>
-                                </div>
-                                <div className='alphanumContainer2'>
-                                    <div className='alphaIdModule'>
-                                        <div className="listTerms">
-                                            <label><h2>ID</h2></label>
-
-                                            <input className="IdForm" type="text" value={state.query} autoComplete='on' placeholder={"write and filter by ID"} onChange={(e) => handleIdChanges(e)} aria-label="ID" />
-
-                                            <div id="operator" >
-
-                                                <select className="selectedOperator" onChange={handleOperatorchange} name="selectedOperator" >
-                                                    <option value=''> </option>
-                                                    <option value="=" >= </option>
-                                                    <option value="<" >&lt;</option>
-                                                    <option value=">" >&gt;</option>
-                                                    <option value="!" >!</option>
-                                                    <option value="%" >%</option>
-                                                </select>
-
-                                            </div>
-
-                                            <label id="value"><h2>Value</h2></label>
-                                            <input className="ValueForm" type="text" autoComplete='on' placeholder={"free text/ value"} onChange={handleValueChanges} aria-label="Value" />
-                                        </div>
-                                        {showIds && query !== '' &&
-                                            <select className="selectedId" onChange={handleSelectedId} name="selectedId" multiple >
-                                                {state.list.map(element => {
-                                                    return (
-                                                        <option value={element} >{element}</option>
-                                                    )
-                                                })}
-                                            </select>}
-                                    </div>
-                                    <button className="buttonAlphanum" onClick={handdleInclude}>Include</button>
-                                </div>
-
-                                <div className="bulbExample">
-                                    <button className="exampleQueries" onClick={handleExQueries}>Query Examples</button>
-                                    <img className="bulbLogo" src="../light-bulb.png" alt='bulbIcon'></img>
-
-                                </div>
-
-                            </div>
-
-                            <div className='advContainer'>
+                         <div className='advContainer'>
                                 <form className='advSearchForm' onSubmit={onSubmit}>
 
                                     <div>
                                         <div className='resultset'>
-
-                                            <div className="advSearch-module">
-                                                <button className="helpButton2" onClick={handleHelpModal4}><img className="questionLogo" src="./question.png" alt='questionIcon'></img></button>
-                                                <label><h2>Include Resultset Responses</h2></label>
-                                                <MultiSwitch
-                                                    texts={["HIT", "MISS", "NONE", "ALL"]}
-                                                    selectedSwitch={0}
-                                                    bgColor={"white"}
-                                                    onToggleCallback={onToggle2}
-                                                    fontColor={"black"}
-                                                    selectedFontColor={"white"}
-                                                    border="0"
-                                                    selectedSwitchColor="#e29348"
-                                                    borderWidth="1"
-                                                    height={"23px"}
-                                                    fontSize={"12px"}
-                                                    eachSwitchWidth={55}
-                                                ></MultiSwitch>
-                                            </div>
 
                                             <div className="advSearch-module">
                                                 <button className="helpButton2" onClick={handleHelpModal5}><img className="questionLogo" src="./question.png" alt='questionIcon'></img></button>
@@ -958,24 +832,24 @@ function Layout(props) {
                             <div className='moduleVariants'>
                                 <label className='labelVariantsTittle'>Sequence queries</label>
                                 <div>
-                                    <label className='labelVariants'>Reference name</label>
-                                    <input className='inputVariants' type='text' value={referenceName} onChange={handleChangeRefN}></input>
+                                    <label className='labelVariants'>AssemblyID*</label>
+                                    <input className='inputVariants' type='text' value={assemblyId} onChange={handleChangeAssembly}></input>
                                 </div>
                                 <div>
-                                    <label className='labelVariants'>AssemblyID</label>
-                                    <input className='inputVariants' type='text' value={assemblyId} onChange={handleChangeAssembly}></input>
+                                    <label className='labelVariants'>Reference name*</label>
+                                    <input className='inputVariants' type='text' value={referenceName} onChange={handleChangeRefN}></input>
                                 </div>
                                 <div>
                                     <label className='labelVariants'>Start (single value)*</label>
                                     <input className='inputVariants' type='text' value={start} onChange={handleChangeStart}></input>
                                 </div>
                                 <div>
-                                    <label className='labelVariants'>alternateBases*</label>
-                                    <input className='inputVariants' type='text' value={alternateBases} onChange={handleChangeAlternateB}></input>
+                                    <label className='labelVariants'>referenceBases</label>
+                                    <input className='inputVariants' type='text' value={referenceBases} onChange={handleChangeReferenceB}></input>
                                 </div>
                                 <div>
-                                    <label className='labelVariants'>referenceBases*</label>
-                                    <input className='inputVariants' type='text' value={referenceBases} onChange={handleChangeReferenceB}></input>
+                                    <label className='labelVariants'>alternateBases*</label>
+                                    <input className='inputVariants' type='text' value={alternateBases} onChange={handleChangeAlternateB}></input>
                                 </div>
                                 <div className='DivButtonVariants'>
                                     <input className='buttonVariants' type="submit" value="Search" />
@@ -984,12 +858,12 @@ function Layout(props) {
                             <div className='moduleVariants'>
                                 <label className='labelVariantsTittle'>Range queries</label>
                                 <div>
-                                    <label className='labelVariants'>Reference name</label>
-                                    <input className='inputVariants' type='text' value={referenceName2} onChange={handleChangeRefN2}></input>
+                                    <label className='labelVariants'>AssemblyID*</label>
+                                    <input className='inputVariants' type='text' value={assemblyId2} onChange={handleChangeAssembly2}></input>
                                 </div>
                                 <div>
-                                    <label className='labelVariants'>AssemblyID</label>
-                                    <input className='inputVariants' type='text' value={assemblyId2} onChange={handleChangeAssembly2}></input>
+                                    <label className='labelVariants'>Reference name*</label>
+                                    <input className='inputVariants' type='text' value={referenceName2} onChange={handleChangeRefN2}></input>
                                 </div>
                                 <div>
                                     <label className='labelVariants'>Start (single value)*</label>
@@ -1003,11 +877,16 @@ function Layout(props) {
                                     <label className='labelVariants'>Variant type:</label>
                                     <input className='inputVariants' type='text' value={variantType} onChange={handleChangeVariantType}></input> </div>
                                 <div><h3>OR</h3>
-                                    <label className='labelVariants'>alternateBases:</label>
-                                    <input className='inputVariants' type='text' value={alternateBases2} onChange={handleChangeAlternateB2}></input></div>
-                                <div>
-                                    <label className='labelVariants'>referenceBases:</label>
-                                    <input className='inputVariants' type='text' value={referenceBases2} onChange={handleChangeReferenceB2}></input></div>
+                                    <div className='basesSection'>
+                                        <div className='referenceBasesContainer'>
+                                            <label className='labelVariants'>referenceBases:</label>
+                                            <input className='inputVariants' type='text' value={referenceBases2} onChange={handleChangeReferenceB2}></input>
+                                        </div>
+                                        <div>
+                                            <label className='labelVariants'>alternateBases:</label>
+                                            <input className='inputVariants' type='text' value={alternateBases2} onChange={handleChangeAlternateB2}></input></div>
+                                    </div>
+                                </div>
                                 <div><h3>OR</h3>
                                     <label className='labelVariants'>Aminoacid Change:</label>
                                     <input className='inputVariants' type='text' value={aminoacid} onChange={handleChangeAminoacid}></input>
@@ -1029,13 +908,6 @@ function Layout(props) {
                                 <div>
                                     <label className='labelVariants'>Variant type:</label>
                                     <input className='inputVariants' type='text' value={variantType2} onChange={handleChangeVariantType2}></input></div>
-                                <div><h3>OR</h3>
-                                    <label className='labelVariants'>alternateBases:</label>
-                                    <input className='inputVariants' type='text' value={alternateBases3} onChange={handleChangeAlternateB3}></input></div>
-                                <div><h3>OR</h3>
-                                    <label className='labelVariants'>Aminoacid Change:</label>
-                                    <input className='inputVariants' type='text' value={aminoacid2} onChange={handleChangeAminoacid2}></input>
-                                </div>
                                 <div className='DivButtonVariants'>
                                     <input className='buttonVariants' type="submit" value="Search" />
                                 </div>

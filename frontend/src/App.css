@@ -44,13 +44,18 @@ html {
   padding-left: 5px;
   padding-right: 5px;
   border-radius: 3px;
-  margin-left: 20px;
+  margin-left: 10px;
 }
 
 .variantsFilters {
   width: 20vw;
   display: flex;
   margin-left: 7%;
+}
+
+.resultSetsDiv {
+  display: flex;
+  margin-left: 13px;
 }
 
 
@@ -195,6 +200,7 @@ html {
   align-items: center;
   flex-wrap: wrap;
   justify-content: space-around;
+  margin-top: 10px;
 }
 
 .inputVariants {
@@ -289,27 +295,28 @@ html {
   align-items: center;
 }
 
-.expansionContainer2{
+.expansionContainer2 {
   width: 100vw;
 }
 
-.expansionContainer{
+.expansionContainer {
   width: 100vw;
 }
 
-.resultsOptions{
+.resultsOptions {
   display: flex;
-    flex-direction: column;
-    /* justify-content: center; */
-    align-items: center;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-items: center;
 }
 
-.qeSection h5{
+.qeSection h5 {
   color: rgb(209, 66, 66);
   font-weight: bold;
   width: fit-content;
 }
-.qeSection h5:hover{
+
+.qeSection h5:hover {
   color: rgb(209, 66, 66);
   font-weight: bold;
   width: fit-content;
@@ -329,19 +336,17 @@ html {
 }
 
 .newQEsearch:hover {
-  color:#1abc9c;
+  color: #1abc9c;
   margin-left: 74px;
 }
 
 .hideQE {
   width: 25px;
+  margin-left: 10px;
 }
 
 .hideQE:hover {
-  width: 25px;
-  margin-right: 40px;
-  margin-left: 30px;
-  margin-bottom: -67px;
+  width: 27px;
 }
 
 .qeSubmitH2 {
@@ -402,6 +407,7 @@ html {
   line-height: 1.5;
   font-size: 14px;
 }
+
 .textQE2 {
   width: fit-content;
   line-height: 1.5;
@@ -409,29 +415,29 @@ html {
   padding-right: 30px
 }
 
-.nextButton{
+.nextButton {
   margin-top: 94px;
   margin-left: 12px;
   font-weight: 500;
 }
 
-.forwardButton{
+.forwardButton {
   margin-top: 94px;
   margin-left: 76px;
   font-weight: 500;
 }
 
-.qeListItem{
-  margin:14px;
+.qeListItem {
+  margin: 14px;
 }
 
 
-.nextButton:hover{
+.nextButton:hover {
   font-size: 14px;
   color: #1abc9c;
 }
 
-.forwardButton:hover{
+.forwardButton:hover {
   font-size: 14px;
   color: #1abc9c;
 }
@@ -450,7 +456,7 @@ html {
 .queryExpansion:hover {
   border: solid;
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 4px;
   background-color: #eaf5fc;
 }
 
@@ -469,6 +475,18 @@ html {
   font-weight: 600;
   color: rgb(118, 151, 228);
 
+}
+
+.basesSection {
+  margin-bottom: 30px;
+  border: solid 1px #dadada;
+  margin-top: 25px;
+  box-shadow: rgba(207, 192, 192, 0.15) 1.4px 1.4px 2.2px;
+}
+
+
+.referenceBasesContainer {
+  margin-top: 27px;
 }
 
 
@@ -655,11 +673,7 @@ hr {
 
 .bulbExample {
   display: flex;
-  margin-left: 17px;
-  margin-bottom: 10px;
-  margin-top: 3px;
   align-items: center;
-  margin-right: 20px;
 }
 
 .exampleQuery:hover {
@@ -745,19 +759,16 @@ hr {
 .additionalOptions {
   width: 100vw;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
 }
 
 
 .example {
-
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 14px;
-  /* margin-bottom: -1px; */
-  margin-left: 233px;
 }
 
 .extraSections {
@@ -915,7 +926,6 @@ h5 {
 .filters {
   padding: 4px;
   cursor: pointer;
-  margin-bottom: 10px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   text-transform: uppercase;
   font-size: 12px;

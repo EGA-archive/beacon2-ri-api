@@ -82,7 +82,7 @@ function VariantsResults(props) {
                     
                     const token = auth.userData.access_token
                     console.log(token)
-                    const headers = { 'Content-type': 'application/json', 'Authorization': `Bearer ${token}` }
+                    const headers = { 'Authorization': `Bearer ${token}` }
                     const res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/g_variants", jsonData1, {headers: headers})
                 } else {
                     //   referenceName={referenceName} start={start} end={end} variantType={variantType} alternateBases={alternateBases} referenceBases={referenceBases} aminoacid={aminoacid} geneID={geneID} />
@@ -164,7 +164,7 @@ function VariantsResults(props) {
  
                     const token = auth.userData.access_token
                     console.log(token)
-                    const headers = { 'Content-type': 'application/json', 'Authorization': `Bearer ${token}`} 
+                    const headers = { 'Authorization': `Bearer ${token}`} 
                     const res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/g_variants", jsonData1, {headers: headers})
 
                     if (res.data.responseSummary.numTotalResults < 1 || res.data.responseSummary.numTotalResults === undefined) {
