@@ -1,60 +1,130 @@
 .super-app-theme--header {
-    background-color: rgb(215, 220, 222);
-
+  background-color: rgb(215, 220, 222);
 }
 
-.pre{
-    display: 'block';
-    padding: '10px 30px';
-    margin: '0';
-    overflow: 'scroll';
-    cursor: pointer;
-    overscroll-behavior: contain;
-    overflow-inline: scroll;
-    
+.pre {
+  display: 'block';
+  padding: '10px 30px';
+  margin: '0';
+  overflow: 'scroll';
+  cursor: pointer;
+  overscroll-behavior: contain;
+  overflow-inline: scroll;
 }
 
+h6 {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: normal;
+  color: rgb(26, 131, 128);
+  font-weight: bold;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 3px;
+  font-size: 14px;
+}
+
+h5 {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: normal;
+  color: rgb(209, 45, 20);
+  font-weight: bold;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 3px;
+  font-size: 14px;
+}
+
+h7 {
+    text-transform: uppercase;
+    /* margin-left: 40px; */
+    /* margin-top: 17px; */
+    font-size: 14px;
+    color: rgba(12, 16, 64, 0.606);
+    margin-left: 10px;
+    font-weight: bold;
+    margin-top: 8px;
+    margin-bottom: 2px;
+}
+
+h7:hover {
+    text-transform: uppercase;
+    /* margin-left: 40px; */
+    /* margin-top: 17px; */
+    font-size: 14px;
+    color: rgb(118, 151, 228);
+    margin-left: 10px;
+    font-weight: bold;
+    margin-top: 8px;
+    margin-bottom: 2px;
+}
+
+h1{
+    margin-left: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
 
 .MuiDataGrid-root {
-
-    margin-left: 70px;
-    margin-top: 5px;
-    width: 88vw;
-    margin-right: 5px;
-    overflow-inline: scroll;
-    height: 750px !important;
+  margin-left: 70px;
+  margin-top: 5px;
+  width: 88vw;
+  margin-right: 5px;
+  overflow-inline: scroll;
+  height: 750px !important;
 }
 
 .MuiFormControl-root label {
-
-    visibility: hidden;
-    margin: 10px;
+  visibility: hidden;
+  margin: 10px;
 }
 
 .cardTableButton {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    align-content: center;
-    width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  width: 100vw;
 }
-
 
 .MuiDataGrid-cellContent {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-right: 40px;
-    white-space: pre;
-    overflow-y: scroll !important;
-    overflow-x: scroll !important;
-    height: 200px;
-    font-size: 12px;
-    text-overflow:clip !important;
-    overflow-inline: scroll;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 40px;
+  white-space: pre;
+  overflow-y: scroll !important;
+  overflow-x: scroll !important;
+  height: 200px;
+  font-size: 12px;
+  text-overflow: clip !important;
+  overflow-inline: scroll;
 }
 
-.MuiDataGrid-root{
-    margin-left: 5px;
+.MuiDataGrid-root {
+  margin-left: 5px;
 }
 
-
+.containerBeaconResults {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    /* width: 98vw; */
+    /* margin-right: 26px; */
+    align-content: center;
+    flex-wrap: wrap;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 12px;
+    align-items: center;
+}
