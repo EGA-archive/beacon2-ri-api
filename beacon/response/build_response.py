@@ -343,11 +343,17 @@ def build_beacon_verifier_response(data, qparams, func_response_type, authorized
     url_dict = qparams.query.request_parameters
     url = url_dict["verifier_url"]
     LOG.debug(url)
-    command = 'beacon-verifier ' + url
+    path = "/beacon/beacon/db/verifier.txt"
+    with open(path, 'w') as f:
+        f.write(url)
+    f.close()
+    
+    command = 'python /beacon/beacon/db/verifier.py'
     try:
         bash = subprocess.check_output(command, shell=True)
     except subprocess.CalledProcessError as e:
         bash = e.output
+    
 
 
     beacon_response = {
