@@ -136,5 +136,5 @@ routes = [
     web.post('/api/runs/{id}/g_variants', generic_handler(db_fn=runs.get_variants_of_run)),
     web.post('/api/runs/{id}/analyses', generic_handler(db_fn=runs.get_analyses_of_run)),
 
-    web.post('/api/verifier', verifier_handler),
+    web.post('/api/verifier', info.verifier_handler),
 ]
