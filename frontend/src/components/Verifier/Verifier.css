@@ -1,0 +1,85 @@
+.NavlinkVerifier {
+  display: flex;
+  align-content: center;
+  /* justify-content: center; */
+  /* margin-right: 20px; */
+  /* width: 100%; */
+  width: 150px;
+  /* text-underline-offset: 2px; */
+  align-items: center;
+  text-underline-offset: 2px;
+}
+
+.container1 a {
+  width: 17%;
+  display: flex;
+  align-content: center;
+  justify-content: flex-start;
+  text-underline-offset: 2px;
+  font-weight: 500;
+}
+
+.container1 a:hover {
+  color: #8985c1;
+  margin: 0px !important;
+}
+
+h8 {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  margin: 54px;
+  font-size: 16px;
+}
+
+.inputVerifierUrl {
+  width: 606px;
+  height: 24px;
+  border: 1px solid #80848e;
+}
+
+.verifierContainer {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.submitButton {
+  margin-left: 5px;
+}
+
+.submitButton:hover {
+  color: #467bd7;
+}
+
+.messageContainer {
+  margin-top: 6px;
+}
+
+.messageContainer h1 {
+  font-style: oblique;
+  font-weight: 400;
+}
+
+.resultsContainerVerifier {
+  margin-top: 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+h10 {
+  color: #df0a0a;
+  font-weight: 400;
+  margin-top: 10px;
+}
+
+.errorMessage {
+  margin-top: 5px;
+  border: solid 0.4px #f9eeee;
+  padding: 7px;
+}
