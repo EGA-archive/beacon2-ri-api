@@ -10,7 +10,7 @@ from pathlib import Path
 from owlready2 import OwlReadyOntologyParsingError
 from tqdm import tqdm
 from typing import Dict, Optional, Set, List
-from beacon.db import client
+from beacon.omop import client
 from beacon import conf
 import owlready2
 import logging

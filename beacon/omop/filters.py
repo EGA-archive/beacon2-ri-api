@@ -4,10 +4,10 @@ import re
 import dataclasses
 from copy import deepcopy
 
-from beacon.request import ontologies
+# from beacon.request import ontologies
 from beacon.request.model import AlphanumericFilter, CustomFilter, OntologyFilter, Operator, Similarity
-from beacon.db.utils import get_documents
-from beacon.db import client
+from beacon.omop.utils import get_documents
+from beacon.omop import client
 
 import obonet
 

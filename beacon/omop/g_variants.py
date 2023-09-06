@@ -1,10 +1,10 @@
 import logging
 from typing import Dict, List, Optional
-from beacon.db.filters import apply_alphanumeric_filter, apply_filters
-from beacon.db.schemas import DefaultSchemas
-from beacon.db.utils import query_id, query_ids, get_count, get_documents, get_cross_query, get_cross_query_variants, get_filtering_documents
+from beacon.omop.filters import apply_alphanumeric_filter, apply_filters
+from beacon.omop.schemas import DefaultSchemas
+from beacon.omop.utils import query_id, query_ids, get_count, get_documents, get_cross_query, get_cross_query_variants, get_filtering_documents
 from beacon.request.model import AlphanumericFilter, Operator, RequestParams
-from beacon.db import client
+from beacon.omop import client
 import json
 from bson import json_util
 from aiohttp import web

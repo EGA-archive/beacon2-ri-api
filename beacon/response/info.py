@@ -14,7 +14,7 @@ and their associated metadata.
 import logging
 import json
 from aiohttp.web_request import Request
-from beacon.db.datasets import get_datasets
+from beacon.omop.datasets import get_datasets
 from beacon.request import RequestParams
 from beacon.response.build_response import build_beacon_info_response
 from beacon.utils.auth import resolve_token

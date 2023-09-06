@@ -7,7 +7,7 @@ from bson import json_util
 from beacon import conf
 import yaml
 
-from beacon.request import ontologies
+# from beacon.request import ontologies
 from beacon.request.model import Granularity, RequestParams
 from beacon.response.build_response import (
     build_beacon_resultset_response,
@@ -18,7 +18,7 @@ from beacon.response.build_response import (
     build_beacon_resultset_response_by_dataset
 )
 from beacon.utils.stream import json_stream
-from beacon.db.datasets import get_datasets
+from beacon.omop.datasets import get_datasets
 from beacon.utils.auth import resolve_token
 
 LOG = logging.getLogger(__name__)
@@ -164,14 +164,14 @@ def generic_handler(db_fn, request=None):
             qparams.query.request_parameters['datasets'] = '*******'
             _, _, datasets = get_datasets(None, qparams)
             beacon_datasets = [ r for r in datasets ]
-            with open("/beacon/beacon/request/public_datasets.yml", 'r') as stream:
+            with open("beacon/request/public_datasets.yml", 'r') as stream:
                 public_datasets = yaml.safe_load(stream)
             list_of_public_datasets= public_datasets['public_datasets']
             LOG.debug(list_of_public_datasets)
             for data_r in list_of_public_datasets:
                 dict_dataset = {}
                 dict_dataset['dataset']=data_r
-                dict_dataset['ids']=[ r['ids'] for r in beacon_datasets if r['id'] == data_r ]
+                # dict_dataset['ids']=[ r['ids'] for r in beacon_datasets if r['id'] == data_r ]
                 list_of_dataset_dicts.append(dict_dataset)
             #LOG.debug(list_of_dataset_dicts)
 

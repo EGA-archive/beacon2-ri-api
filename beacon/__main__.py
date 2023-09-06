@@ -18,10 +18,10 @@ from aiohttp_middlewares import cors_middleware
 from aiohttp_middlewares.cors import DEFAULT_ALLOW_HEADERS
 
 from beacon import conf, load_logger
-from beacon.request import ontologies
+# from beacon.request import ontologies
 from beacon.response import middlewares
 from beacon.request.routes import routes
-from beacon.db import client
+from beacon.omop import client
 
 LOG = logging.getLogger(__name__)
 

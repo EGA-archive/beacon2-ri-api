@@ -1,14 +1,19 @@
 from typing import Optional
 from typing import Dict, List, Optional
-from beacon.db.filters import apply_filters
-from beacon.db.schemas import DefaultSchemas
-from beacon.db.utils import query_id, get_count, get_documents, get_cross_query
+from beacon.omop.filters import apply_filters
+from beacon.omop.schemas import DefaultSchemas
+from beacon.omop.utils import query_id, get_count, get_documents, get_cross_query
 from beacon.request.model import RequestParams
-from beacon.db import client
+from beacon.omop import client
 
 import logging
 
 LOG = logging.getLogger(__name__)
+
+import aiosql
+from pathlib import Path
+queries_file = Path(__file__).parent / "sql" / "datasets.sql"
+dataset_queries = aiosql.from_path(queries_file, "psycopg2")
 
 def include_resultset_responses(query: Dict[str, List[dict]], qparams: RequestParams):
     LOG.debug("Include Resultset Responses = {}".format(qparams.query.include_resultset_responses))
@@ -58,13 +63,20 @@ def get_datasets(entry_id: Optional[str], qparams: RequestParams):
     query = apply_request_parameters({}, qparams)
     #query = apply_filters({}, qparams.query.filters, collection)
     schema = DefaultSchemas.DATASETS
-    count = get_count(client.beacon.datasets, query)
-    docs = get_documents(
-        client.beacon.datasets,
-        query,
-        qparams.query.pagination.skip,
-        qparams.query.pagination.limit
-    )
+    # count = get_count(client.beacon.datasets, query)
+    count = 1
+    # docs = get_documents(
+    #     client.beacon.datasets,
+    #     query,
+    #     qparams.query.pagination.skip,
+    #     qparams.query.pagination.limit
+    # )
+    records = dataset_queries.get_dataset_info(client)
+    for record in records:
+        labelDataset = record[0]
+        idDataset = record[1]
+    docs = [{"id" : idDataset,"name" : labelDataset}]
+
     return schema, count, docs
 
 

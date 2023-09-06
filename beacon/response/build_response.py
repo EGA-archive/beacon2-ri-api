@@ -1,7 +1,7 @@
 from typing import Optional
 
 from beacon import conf
-from beacon.db.schemas import DefaultSchemas
+from beacon.omop.schemas import DefaultSchemas
 from beacon.request import RequestParams
 from beacon.request.model import Granularity
 

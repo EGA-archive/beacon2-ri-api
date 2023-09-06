@@ -4,7 +4,7 @@ from aiohttp import ClientSession, web
 
 import asyncio
 
-from beacon.db.datasets import filter_public_datasets
+from beacon.omop.datasets import filter_public_datasets
 from ..conf import permissions_url
 
 LOG = logging.getLogger(__name__)

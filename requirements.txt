@@ -4,6 +4,7 @@
 # Obviously, sessions do not work then, and Openid Connect auth.py code is broken
 aiohttp==3.8.1
 aiohttp-cors==0.7.0
+aiosql==8.0
 asyncpg~=0.24.0
 pyyaml~=6.0.1
 cryptography==39.0.1
@@ -32,4 +33,4 @@ urllib3==1.26.13
 #torch==1.11.0
 obonet==0.3.1
 networkx==2.8.8
-
+psycopg2-binary

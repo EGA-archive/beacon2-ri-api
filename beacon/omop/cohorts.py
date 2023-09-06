@@ -1,10 +1,10 @@
 import logging
 from typing import Optional
-from beacon.db.filters import apply_filters
-from beacon.db.schemas import DefaultSchemas
-from beacon.db.utils import query_id, get_count, get_documents, get_cross_query, get_filtering_documents
+from beacon.omop.filters import apply_filters
+from beacon.omop.schemas import DefaultSchemas
+from beacon.omop.utils import query_id, get_count, get_documents, get_cross_query, get_filtering_documents
 from beacon.request.model import RequestParams
-from beacon.db import client
+from beacon.omop import client
 
 LOG = logging.getLogger(__name__)
 

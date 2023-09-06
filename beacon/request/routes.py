@@ -1,6 +1,6 @@
 from aiohttp import web
 
-from beacon.db import analyses, biosamples, cohorts, datasets, g_variants, individuals, runs, filtering_terms
+from beacon.omop import biosamples, cohorts, datasets, g_variants, individuals, filtering_terms
 from beacon.request.handlers import collection_handler, generic_handler, filtering_terms_handler
 from beacon.response import framework, info, service_info
 
@@ -23,17 +23,12 @@ routes = [
     # GET
     ########################################
 
-    web.get('/api/analyses', generic_handler(db_fn=analyses.get_analyses)),
-    web.get('/api/analyses/filtering_terms', filtering_terms_handler(db_fn=analyses.get_filtering_terms_of_analyse)),
-    web.get('/api/analyses/{id}', generic_handler(db_fn=analyses.get_analysis_with_id)),
-    web.get('/api/analyses/{id}/g_variants', generic_handler(db_fn=analyses.get_variants_of_analysis)),
-
     web.get('/api/biosamples', generic_handler(db_fn=biosamples.get_biosamples)),
     web.get('/api/biosamples/filtering_terms', filtering_terms_handler(db_fn=biosamples.get_filtering_terms_of_biosample)),
     web.get('/api/biosamples/{id}', generic_handler(db_fn=biosamples.get_biosample_with_id)),
-    web.get('/api/biosamples/{id}/g_variants', generic_handler(db_fn=biosamples.get_variants_of_biosample)),
-    web.get('/api/biosamples/{id}/analyses', generic_handler(db_fn=biosamples.get_analyses_of_biosample)),
-    web.get('/api/biosamples/{id}/runs', generic_handler(db_fn=biosamples.get_runs_of_biosample)),
+    # web.get('/api/biosamples/{id}/g_variants', generic_handler(db_fn=biosamples.get_variants_of_biosample)),
+    # web.get('/api/biosamples/{id}/analyses', generic_handler(db_fn=biosamples.get_analyses_of_biosample)),
+    # web.get('/api/biosamples/{id}/runs', generic_handler(db_fn=biosamples.get_runs_of_biosample)),
 
     web.get('/api/cohorts', collection_handler(db_fn=cohorts.get_cohorts)),
     web.get('/api/cohorts/filtering_terms', filtering_terms_handler(db_fn=cohorts.get_filtering_terms_of_cohort)),
@@ -70,29 +65,17 @@ routes = [
     web.get('/api/individuals/{id}/runs', generic_handler(db_fn=individuals.get_runs_of_individual)),
     web.get('/api/individuals/{id}/analyses', generic_handler(db_fn=individuals.get_analyses_of_individual)),
 
-    web.get('/api/runs', generic_handler(db_fn=runs.get_runs)),
-    web.get('/api/runs/filtering_terms', filtering_terms_handler(db_fn=runs.get_filtering_terms_of_run)),
-    web.get('/api/runs/{id}', generic_handler(db_fn=runs.get_run_with_id)),
-    web.get('/api/runs/{id}/g_variants', generic_handler(db_fn=runs.get_variants_of_run)),
-    web.get('/api/runs/{id}/analyses', generic_handler(db_fn=runs.get_analyses_of_run)),
-
-
-
     ########################################
     # POST
     ########################################
     web.post('/api', info.handler),
-    web.post('/api/analyses', generic_handler(db_fn=analyses.get_analyses)),
-    web.post('/api/analyses/filtering_terms', filtering_terms_handler(db_fn=analyses.get_filtering_terms_of_analyse)),
-    web.post('/api/analyses/{id}', generic_handler(db_fn=analyses.get_analysis_with_id)),
-    web.post('/api/analyses/{id}/g_variants', generic_handler(db_fn=analyses.get_variants_of_analysis)),
 
     web.post('/api/biosamples', generic_handler(db_fn=biosamples.get_biosamples)),
     web.post('/api/biosamples/filtering_terms', filtering_terms_handler(db_fn=biosamples.get_filtering_terms_of_biosample)),
     web.post('/api/biosamples/{id}', generic_handler(db_fn=biosamples.get_biosample_with_id)),
-    web.post('/api/biosamples/{id}/g_variants', generic_handler(db_fn=biosamples.get_variants_of_biosample)),
-    web.post('/api/biosamples/{id}/analyses', generic_handler(db_fn=biosamples.get_analyses_of_biosample)),
-    web.post('/api/biosamples/{id}/runs', generic_handler(db_fn=biosamples.get_runs_of_biosample)),
+    # web.post('/api/biosamples/{id}/g_variants', generic_handler(db_fn=biosamples.get_variants_of_biosample)),
+    # web.post('/api/biosamples/{id}/analyses', generic_handler(db_fn=biosamples.get_analyses_of_biosample)),
+    # web.post('/api/biosamples/{id}/runs', generic_handler(db_fn=biosamples.get_runs_of_biosample)),
 
     web.post('/api/cohorts', collection_handler(db_fn=cohorts.get_cohorts)),
     web.post('/api/cohorts/filtering_terms', filtering_terms_handler(db_fn=cohorts.get_filtering_terms_of_cohort)),
@@ -130,11 +113,5 @@ routes = [
     web.post('/api/individuals/{id}/runs', generic_handler(db_fn=individuals.get_runs_of_individual)),
     web.post('/api/individuals/{id}/analyses', generic_handler(db_fn=individuals.get_analyses_of_individual)),
 
-    web.post('/api/runs', generic_handler(db_fn=runs.get_runs)),
-    web.post('/api/runs/filtering_terms', filtering_terms_handler(db_fn=runs.get_filtering_terms_of_run)),
-    web.post('/api/runs/{id}', generic_handler(db_fn=runs.get_run_with_id)),
-    web.post('/api/runs/{id}/g_variants', generic_handler(db_fn=runs.get_variants_of_run)),
-    web.post('/api/runs/{id}/analyses', generic_handler(db_fn=runs.get_analyses_of_run)),
-
-    web.post('/api/verifier', verifier_handler),
+    # web.post('/api/verifier', verifier_handler),
 ]
