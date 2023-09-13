@@ -96,15 +96,21 @@ class RequestParams(CamelModel):
                     self.query.pagination.limit = int(v)
                 elif k == "includeResultsetResponses":
                     self.query.include_resultset_responses = IncludeResultsetResponses(v)
+                elif k == "filters":
+                    self.query.filters.append(v)
                 else:
                     self.query.request_parameters[k] = v
         return self
 
     def summary(self):
         list_of_filters=[]
-        for item in self.query.filters:
-            for k,v in item.items():
-                list_of_filters.append(v)
+        if type(self.query.filters) is list:    # GET filters
+            for item in self.query.filters:
+                list_of_filters.append(item)
+        else:                                   # POST filters
+            for item in self.query.filters:
+                for k,v in item.items():
+                    list_of_filters.append(v)
         return {
             "apiVersion": self.meta.api_version,
             "requestedSchemas": self.meta.requested_schemas,
