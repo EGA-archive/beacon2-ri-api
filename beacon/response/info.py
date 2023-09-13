@@ -32,7 +32,7 @@ async def handler(request: Request):
     _, _, datasets = get_datasets(None, qparams)
     beacon_datasets = [ r for r in datasets ]
         
-    all_datasets = [ r['_id'] for r in beacon_datasets]
+    all_datasets = [ r['id'] for r in beacon_datasets]
     specific_datasets = [ r['id'] for r in beacon_datasets]
     LOG.debug(specific_datasets)
 
