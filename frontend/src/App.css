@@ -58,13 +58,6 @@ html {
   margin-left: 13px;
 }
 
-
-.searchButton:hover {
-  background: linear-gradient(356deg, #cee3e7 50%, #daecf0 80%);
-  border-radius: 4px;
-  margin-left: 22px;
-}
-
 .newSearchButton:hover {
   color: #4fb5f0;
 }
@@ -76,7 +69,6 @@ html {
   display: flex;
   align-items: center;
 }
-
 
 .switchDescendants {
   display: flex;
@@ -109,7 +101,6 @@ html {
   height: 35px;
 }
 
-
 .form-select {
   margin-right: 3px;
   cursor: pointer;
@@ -138,8 +129,6 @@ html {
 .newSearch {
   display: flex;
 }
-
-
 
 .chosen-value {
   background: white;
@@ -174,7 +163,10 @@ html {
 
 .searchIcon {
   width: 34px;
-
+  margin-top: -1px;
+}
+.searchIcon:hover {
+  width: 40px;
 }
 
 .forwardIcon {
@@ -216,7 +208,9 @@ html {
   margin-bottom: 18px;
   margin-right: 4px;
   margin-left: 18px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
 }
 
 .labelVariantsTittle {
@@ -225,9 +219,11 @@ html {
   color: #d36d00;
   margin-right: 4px;
   margin-left: 18px;
-  font-feature-settings: "smcp", "c2sc";
+  font-feature-settings: 'smcp', 'c2sc';
   font-variant-caps: all-small-caps;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
 }
 
 .DivButtonVariants {
@@ -240,7 +236,9 @@ html {
 .buttonAlphanum {
   font-variant-caps: all-small-caps;
   font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
 }
 
 .buttonAlphanum:hover {
@@ -248,7 +246,9 @@ html {
   font-weight: 600;
   color: #d36d00;
   font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
 }
 
 .moduleVariants h3 {
@@ -258,7 +258,6 @@ html {
   /* margin-left: 40px; */
   /* margin-top: 17px; */
   font-size: 12px;
-
 }
 
 .errorQE {
@@ -350,7 +349,6 @@ html {
 }
 
 .qeSubmitH2 {
-
   margin-top: 2px;
   margin-top: -72px;
   text-decoration: underline;
@@ -362,7 +360,6 @@ html {
   margin-left: 10px;
   color: #51a1cf;
 }
-
 
 .QEinput {
   margin-left: -12vw;
@@ -401,7 +398,6 @@ html {
   font-family: system-ui;
 }
 
-
 .textQE {
   width: 50vw;
   line-height: 1.5;
@@ -412,7 +408,7 @@ html {
   width: fit-content;
   line-height: 1.5;
   font-size: 14px;
-  padding-right: 30px
+  padding-right: 30px;
 }
 
 .nextButton {
@@ -430,7 +426,6 @@ html {
 .qeListItem {
   margin: 14px;
 }
-
 
 .nextButton:hover {
   font-size: 14px;
@@ -452,7 +447,6 @@ html {
   margin-left: 10px;
 }
 
-
 .queryExpansion:hover {
   border: solid;
   padding: 12px;
@@ -463,7 +457,8 @@ html {
 .buttonVariants {
   margin-top: 12px;
   margin-bottom: 20px;
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 1px, rgba(179, 179, 179, 0.22) 0px 1px 1px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 1px,
+    rgba(179, 179, 179, 0.22) 0px 1px 1px;
   padding: 7px;
   cursor: pointer;
 }
@@ -474,7 +469,6 @@ html {
   margin-bottom: 20px;
   font-weight: 600;
   color: rgb(118, 151, 228);
-
 }
 
 .basesSection {
@@ -484,11 +478,9 @@ html {
   box-shadow: rgba(207, 192, 192, 0.15) 1.4px 1.4px 2.2px;
 }
 
-
 .referenceBasesContainer {
   margin-top: 27px;
 }
-
 
 .moduleVariants {
   display: flex;
@@ -505,7 +497,7 @@ html {
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex-wrap: wrap
+  flex-wrap: wrap;
 }
 
 .container2 {
@@ -514,10 +506,11 @@ html {
   margin-bottom: 40px;
 }
 
-.NavlinkVerifier{
+.NavlinkVerifier {
   color: #3fa18e;
+  width: 172px;
 }
-.NavlinkVerifier:hover{
+.NavlinkVerifier:hover {
   margin: 0px !important;
 }
 
@@ -532,10 +525,7 @@ html {
   margin-bottom: 10px;
 }
 
-
-
 .advContainer {
-
   display: flex;
   width: 50vw;
   /* flex-direction: column; */
@@ -545,7 +535,6 @@ html {
   justify-content: center;
 }
 
-
 .alphanumContainer2 {
   display: flex;
   justify-content: center;
@@ -553,9 +542,7 @@ html {
   margin-bottom: 12px;
 }
 
-
 .cinecaLogo {
-
   height: 51px;
   align-items: center;
   margin-top: 55px;
@@ -567,8 +554,8 @@ html {
   display: flex;
   align-content: center;
   justify-content: center;
-  width: 100%;
-  text-underline-offset: 2px;
+  text-underline-offset: 4px;
+  align-items: center;
 }
 
 .elixirLogo {
@@ -583,7 +570,6 @@ html {
 }
 
 select {
-
   background: white;
   border: 2px solid #e66f0f;
   font-size: medium;
@@ -598,7 +584,6 @@ select {
   align-items: center !important;
   justify-content: center !important;
 }
-
 
 .alphaIdModule {
   display: flex;
@@ -627,13 +612,11 @@ select {
   width: 230px;
 }
 
-
 .selectedId option:hover {
   background: #f6a558;
   width: 230px;
   padding: 3px;
 }
-
 
 .results {
   display: flex;
@@ -673,7 +656,9 @@ hr {
   background-color: #ffffff;
   color: #4d4b4b;
   cursor: pointer;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
   text-transform: uppercase;
   font-size: 12px;
 }
@@ -697,8 +682,6 @@ hr {
   margin-left: 20px;
 }
 
-
-
 .logos {
   display: flex;
   width: 100vw;
@@ -709,7 +692,6 @@ hr {
   margin-bottom: -11px;
   margin-top: -16px;
 }
-
 
 .helpButton:hover {
   color: #86d2ff;
@@ -729,12 +711,10 @@ hr {
   flex-direction: column;
 }
 
-
 .questionLogo {
   width: 17px;
   margin-left: 8px;
 }
-
 
 .questionLogo:hover {
   background: linear-gradient(356deg, #6ac5ff 50%, #86d2ff 80%);
@@ -769,12 +749,12 @@ hr {
   align-items: center;
 }
 
-
 .example {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 14px;
+  margin-top: 30px;
+  margin-bottom: 10px;
 }
 
 .extraSections {
@@ -784,9 +764,7 @@ hr {
   flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
-
 }
-
 
 .exampleQuery {
   border: none;
@@ -796,7 +774,6 @@ hr {
 }
 
 .exampleQueriesAlph {
-
   display: flex;
 }
 
@@ -804,7 +781,6 @@ hr {
   margin-bottom: 10px;
   font-size: 14px;
 }
-
 
 #exampleQueries {
   border: none;
@@ -822,12 +798,11 @@ hr {
   padding: 7px;
   box-shadow: 0px 1px 2px #a3a0a0;
   border-radius: 3px;
-  font-feature-settings: "pcap", "c2pc", "pcap";
+  font-feature-settings: 'pcap', 'c2pc', 'pcap';
   font-variant: all-petite-caps;
   font-size: 17px;
   cursor: pointer;
   height: 36%;
-
 }
 
 .AdvSearchDiv {
@@ -839,10 +814,10 @@ hr {
   background: #86d2ff;
 }
 
-
-
 h5 {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
   text-transform: uppercase;
   font-size: 11px;
   font-weight: normal;
@@ -857,13 +832,130 @@ h5 {
 .advSearchModule {
   display: flex;
   width: 100%;
-  flex-direction: column-reverse
+  flex-direction: column-reverse;
 }
 
 .advSearch-module {
   display: flex;
   align-items: center;
-  margin-top: 8px;
+}
+
+.loader2 {
+  width: 50vw;
+  height: 10vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#ld3 {
+  position: relative;
+  animation: outercontainer 4s linear infinite;
+}
+#ld3 div {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+#ld3 div:nth-child(1) {
+  top: 20px;
+  background: #4ac985;
+  animation: ld3_div1 2s linear infinite;
+}
+#ld3 div:nth-child(2) {
+  top: -20px;
+  background: #156d9c;
+  animation: ld3_div2 2s linear infinite;
+}
+#ld3 div:nth-child(3) {
+  left: 20px;
+  background: #f39237;
+  animation: ld3_div4 2s linear infinite;
+}
+#ld3 div:nth-child(4) {
+  left: -20px;
+  background: #ced414;
+  animation: ld3_div3 2s linear infinite;
+}
+
+@keyframes outercontainer {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes ld3_div1 {
+  0% {
+    top: 20px;
+  }
+  25% {
+    top: 0;
+  }
+  50% {
+    top: 20px;
+  }
+  75% {
+    top: 0;
+  }
+  100% {
+    top: 20px;
+  }
+}
+@keyframes ld3_div2 {
+  0% {
+    top: -20px;
+  }
+  25% {
+    top: 0;
+  }
+  50% {
+    top: -20px;
+  }
+  75% {
+    top: 0;
+  }
+  100% {
+    top: -20px;
+  }
+}
+@keyframes ld3_div3 {
+  0% {
+    left: -20px;
+  }
+  25% {
+    left: 0;
+  }
+  50% {
+    left: -20px;
+  }
+  75% {
+    left: 0;
+  }
+  100% {
+    left: -20px;
+  }
+}
+@keyframes ld3_div4 {
+  0% {
+    left: 20px;
+  }
+  25% {
+    left: 0;
+  }
+  50% {
+    left: 20px;
+  }
+  75% {
+    left: 0;
+  }
+  100% {
+    left: 20px;
+  }
 }
 
 #similarityCheck {
@@ -885,7 +977,6 @@ h5 {
   overflow: auto;
 }
 
-
 .ValueForm {
   background: white;
   border: 2px solid rgba(12, 16, 64, 0.606);
@@ -895,7 +986,6 @@ h5 {
   width: 16%;
   height: 12px;
   border-radius: 4px;
-
 }
 
 #operator {
@@ -906,7 +996,6 @@ h5 {
   align-items: center;
   /* margin-top: -40px; */
   width: 80px;
-
 }
 
 .operator {
@@ -928,17 +1017,17 @@ h5 {
   width: 246px;
 }
 
-
 .filters {
   padding: 4px;
   cursor: pointer;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
   text-transform: uppercase;
   font-size: 12px;
 }
 
 .filters:hover {
-
   color: rgb(118, 151, 228);
 }
 
@@ -963,10 +1052,7 @@ h5 {
   padding: 4px;
 }
 
-
-
 @media (max-width: 800px) {
-
   .container1 a {
     display: flex;
     align-content: center;
@@ -974,11 +1060,8 @@ h5 {
     width: 70%;
   }
 
-
   .searchButton {
     height: 30px;
     cursor: pointer;
   }
-
-
 }

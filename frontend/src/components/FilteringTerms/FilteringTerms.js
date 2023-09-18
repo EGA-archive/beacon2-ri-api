@@ -84,6 +84,7 @@ function FilteringTerms(props) {
         console.log(valueFree)
         console.log(operator)
         if (ID !== '' && valueFree !== '' && operator !== '') {
+            console.log("hola")
             if (props.query !== null) {
                 props.setQuery(props.query + ',' + `${ID}${operator}${valueFree}`)
             } if (props.query === null) {
@@ -342,6 +343,7 @@ function FilteringTerms(props) {
             setValueChosen(newValueChosen)
         } else{
             valueChosen.push(e.target.value)
+            setId(e.target.value)
         }
        
         setstate({

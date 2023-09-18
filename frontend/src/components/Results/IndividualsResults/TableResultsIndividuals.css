@@ -1,5 +1,7 @@
+
+
 .super-app-theme--header {
-  background-color: rgb(215, 220, 222);
+  background-color: rgb(168 206 221);
 }
 
 .pre {
@@ -83,11 +85,19 @@ h1{
   margin-right: 5px;
   overflow-inline: scroll;
   height: 750px !important;
+  overflow: scroll;
 }
+
+.MuiDataGrid-root .MuiDataGrid-columnHeaderDraggableContainer{
+  width: fit-content !important;
+  height: 100%;
+}
+
 
 .MuiFormControl-root label {
   visibility: hidden;
   margin: 10px;
+  overflow: scroll;
 }
 
 .cardTableButton {
@@ -109,10 +119,23 @@ h1{
   font-size: 12px;
   text-overflow: clip !important;
   overflow-inline: scroll;
+  overflow: scroll;
 }
 
 .MuiDataGrid-root {
   margin-left: 5px;
+  overflow: scroll;
+}
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 5px;
+  height: 3px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background-color: rgba(223, 202, 202, 0.5);
+  -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
 }
 
 .containerBeaconResults {
@@ -127,4 +150,5 @@ h1{
     margin-right: 10px;
     margin-top: 12px;
     align-items: center;
+    overflow: scroll;
 }

@@ -273,6 +273,7 @@ function IndividualsResults (props) {
         }
       } catch (error) {
         setError('Error. Please retry')
+        setTimeOut(false)
         console.log(error)
       }
     }
@@ -313,11 +314,16 @@ function IndividualsResults (props) {
   return (
     <div>
       {timeOut === false && (
-        <div class='ring'>
-          <span></span>
+        <div className='loaderLogo'>
+          <div className='loader2'>
+            <div id='ld3'>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
         </div>
       )}
-
       {logInRequired === false && (
         <div>
           {error && <h3>{error}</h3>}
