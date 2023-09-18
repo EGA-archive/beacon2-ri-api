@@ -59,8 +59,6 @@ RUN groupadd beacon                              && \
     chown -R beacon:beacon /var/log/supervisord  && \
     chmod +x /usr/local/bin/entrypoint.sh
 
-
 WORKDIR /beacon
-
 USER beacon
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

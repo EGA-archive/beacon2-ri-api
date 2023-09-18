@@ -16,7 +16,7 @@ import json
 from aiohttp.web_request import Request
 from beacon.db.datasets import get_datasets
 from beacon.request import RequestParams
-from beacon.response.build_response import build_beacon_info_response, build_beacon_verifier_response
+from beacon.response.build_response import build_beacon_info_response
 from beacon.utils.auth import resolve_token
 from beacon.utils.stream import json_stream
 from bson import json_util
