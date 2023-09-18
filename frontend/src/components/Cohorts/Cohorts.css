@@ -200,5 +200,27 @@
     margin: 38px;
 }
 
+h12{
+    color: #7fb68c;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-left: 40px;
+    margin-top: 106px;
+    font-size: 14px;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    FONT-SIZE: 18px;
+    border: solid #eaeaea;
+    background: #f4f4f4;
+    width: -moz-fit-content;
+    width: fit-content;
+    border-radius: 5px;
+    padding: 35px;
+}
 
-
+.graphsDiv{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

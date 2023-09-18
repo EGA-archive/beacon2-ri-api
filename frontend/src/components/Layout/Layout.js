@@ -111,7 +111,8 @@ function Layout (props) {
 
   const [checked, setChecked] = useState(true)
   const [checked2, setChecked2] = useState(false)
-  const [checked3, setChecked3] = useState(false)
+ 
+  const [timeOut, setTimeOut]= useState(true)
 
   const [isSubmitted, setIsSub] = useState(false)
 
@@ -214,11 +215,13 @@ function Layout (props) {
   }
 
   const handleFilteringTerms = async e => {
+    setTimeOut(false)
     if (props.collection === 'Individuals') {
       try {
         let res = await axios.get(
           'https://beacons.bsc.es/beacon-network/v2.0.0/individuals/filtering_terms'
         )
+        setTimeOut(true)
         console.log(res)
         if (res.data.response.filteringTerms !== undefined) {
           setFilteringTerms(res)
@@ -234,6 +237,7 @@ function Layout (props) {
         let res = await axios.get(
           'https://beacons.bsc.es/beacon-network/v2.0.0/cohorts/filtering_terms'
         )
+        setTimeOut(true)
         setFilteringTerms(res)
         setResults(null)
       } catch (error) {
@@ -254,6 +258,7 @@ function Layout (props) {
         let res = await axios.get(
           'https://beacons.bsc.es/beacon-network/v2.0.0/analyses/filtering_terms'
         )
+        setTimeOut(true)
         setFilteringTerms(res)
         setResults(null)
       } catch (error) {
@@ -264,6 +269,7 @@ function Layout (props) {
         let res = await axios.get(
           'https://beacons.bsc.es/beacon-network/v2.0.0/runs/filtering_terms'
         )
+        setTimeOut(true)
         setFilteringTerms(res)
         setResults(null)
       } catch (error) {
@@ -274,6 +280,7 @@ function Layout (props) {
         let res = await axios.get(
           'https://beacons.bsc.es/beacon-network/v2.0.0/biosamples/filtering_terms'
         )
+        setTimeOut(true)
         setFilteringTerms(res)
         setResults(null)
       } catch (error) {
@@ -934,16 +941,6 @@ function Layout (props) {
                     <div>
                       <div className='resultset'>
                         <div className='advSearch-module'>
-                          <button
-                            className='helpButton2'
-                            onClick={handleHelpModal5}
-                          >
-                            <img
-                              className='questionLogo'
-                              src='./question.png'
-                              alt='questionIcon'
-                            ></img>
-                          </button>
                           <label>
                             <h2>Similarity</h2>
                           </label>
@@ -972,16 +969,6 @@ function Layout (props) {
                           )}
                         </div>
                         <div className='advSearch-module'>
-                          <button
-                            className='helpButton2'
-                            onClick={handleHelpModal6}
-                          >
-                            <img
-                              className='questionLogo'
-                              src='./question.png'
-                              alt='questionIcon'
-                            ></img>
-                          </button>
                           <label>
                             <h2>Include Descendant Terms</h2>
                           </label>
@@ -1245,6 +1232,17 @@ function Layout (props) {
 
       <hr></hr>
       <div className='results'>
+      {timeOut === false && (
+        <div className='loaderLogo'>
+          <div className='loader2'>
+            <div id='ld3'>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </div>
+      )}
         {results === null && !showFilteringTerms && (
           <ResultsDatasets trigger={trigger} />
         )}
@@ -1290,7 +1288,7 @@ function Layout (props) {
             />
           </div>
         )}
-        {results === null && showFilteringTerms && (
+        {results === null && timeOut === true && showFilteringTerms && (
           <FilteringTermsIndividuals
             filteringTerms={filteringTerms}
             collection={props.collection}
@@ -1300,6 +1298,7 @@ function Layout (props) {
             setQuery={setQuery}
           />
         )}
+        {timeOut === false }
       </div>
     </div>
   )
