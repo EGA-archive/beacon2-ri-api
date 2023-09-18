@@ -172,8 +172,6 @@ services:
     #command: ["yarn", "node", "/opt/yarn-v1.22.19/bin/yarn.js", "start" ]
     command: ["node", "/opt/yarn-v1.22.19/bin/yarn.js", "start" ]
     container_name: react
-    depends_on:
-      - beacon
     ports:
       - 3000:3000
     volumes:
