@@ -10,7 +10,7 @@ and their associated metadata.
 * ``/service-info`` GA4GH
 
 """
-
+import subprocess
 import logging
 import json
 from aiohttp.web_request import Request

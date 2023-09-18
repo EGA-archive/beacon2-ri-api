@@ -514,6 +514,13 @@ html {
   margin-bottom: 40px;
 }
 
+.NavlinkVerifier{
+  color: #3fa18e;
+}
+.NavlinkVerifier:hover{
+  margin: 0px !important;
+}
+
 .alphanumContainer {
   display: flex;
   width: 50vw;
@@ -560,7 +567,8 @@ html {
   display: flex;
   align-content: center;
   justify-content: center;
-  margin-right: 20px;
+  width: 100%;
+  text-underline-offset: 2px;
 }
 
 .elixirLogo {
@@ -590,7 +598,6 @@ select {
   align-items: center !important;
   justify-content: center !important;
 }
-
 
 
 .alphaIdModule {
@@ -687,7 +694,6 @@ hr {
 .helpButton {
   display: flex;
   align-items: center;
-  width: 188px;
   margin-left: 20px;
 }
 

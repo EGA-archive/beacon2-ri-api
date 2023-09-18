@@ -1,5 +1,5 @@
 from typing import Optional
-
+import subprocess
 from beacon import conf
 from beacon.db.schemas import DefaultSchemas
 from beacon.request import RequestParams
@@ -334,3 +334,4 @@ def build_filtering_terms_response(data,
         'beaconHandovers': conf.beacon_handovers,
     }
     return beacon_response
+

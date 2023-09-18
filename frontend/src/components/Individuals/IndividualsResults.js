@@ -10,7 +10,7 @@ import TableResultsIndividuals from '../Results/IndividualsResults/TableResultsI
 function IndividualsResults (props) {
   const [showLayout, setShowLayout] = useState(false)
 
-  const [beaconsList, setBeaconsList] = useState ([])
+  const [beaconsList, setBeaconsList] = useState([])
 
   const [error, setError] = useState(false)
   const [response, setResponse] = useState(null)
@@ -57,7 +57,6 @@ function IndividualsResults (props) {
 
       if (props.query !== null) {
         if (props.query.includes(',')) {
-    
           queryStringTerm = props.query.split(',')
           console.log(queryStringTerm)
           queryStringTerm.forEach((element, index) => {
@@ -151,7 +150,6 @@ function IndividualsResults (props) {
         })
 
         beaconsList.reverse()
-     
 
         if (props.query === null) {
           // show all individuals
@@ -180,7 +178,7 @@ function IndividualsResults (props) {
 
           //res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals/", jsonData1, { headers: headers })
           res = await axios.post(
-            'https://beacons.bsc.es/beacon-network/v2.0.0/individuals/',
+            'https://beacons.bsc.es/beacon-network/v2.0.0/individuals/?skip=0&limit=0',
             jsonData1
           )
 
@@ -314,6 +312,12 @@ function IndividualsResults (props) {
   }
   return (
     <div>
+      {timeOut === false && (
+        <div class='ring'>
+          <span></span>
+        </div>
+      )}
+
       {logInRequired === false && (
         <div>
           {error && <h3>{error}</h3>}
@@ -338,7 +342,8 @@ function IndividualsResults (props) {
             {show3 && !error && (
               <div>
                 <TableResultsIndividuals
-                  results={results}   beaconsList={beaconsList}
+                  results={results}
+                  beaconsList={beaconsList}
                 ></TableResultsIndividuals>
               </div>
             )}
