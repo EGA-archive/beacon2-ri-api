@@ -54,7 +54,7 @@ function ResultsDatasets(props) {
                         {result.meta.beaconId !== 'org.ega-archive.ga4gh-approval-beacon-test' && <p>{result.response.description}</p>}
                         <div className="linksBeacons">
                             {result.meta.beaconId === 'org.ega-archive.ga4gh-approval-beacon-test' &&
-                                <a href="https://ega-archive.org/test-beacon-apis/cineca" target="_blank">Beacon API</a>}
+                                <a href="https://beacon-apis-test.ega-archive.org/api" target="_blank">Beacon API</a>}
                             {result.meta.beaconId === 'es.elixir.bsc.beacon' &&
                                 <a href="https://beacons.bsc.es/beacon/v2.0.0/" target="_blank">Beacon API</a>}
                             {result.meta.beaconId === 'org.progenetix' &&

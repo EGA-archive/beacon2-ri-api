@@ -584,7 +584,7 @@ function Layout(props) {
         const fetchData = async () => {
 
             try {
-                let res = await axios.get("https://ega-archive.org/test-beacon-apis/cineca/individuals/filtering_terms?skip=0&limit=0")
+                let res = await axios.get("https://beacon-apis-test.ega-archive.org/api/individuals/filtering_terms?skip=0&limit=0")
                 if (res !== null) {
                     res.data.response.filteringTerms.forEach(element => {
                         if (element.type !== "custom") {
