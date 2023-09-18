@@ -501,34 +501,57 @@ function Layout (props) {
       setPlaceholder('')
     }
 
-    const fetchData = async () => {
-      try {
-        let res = await axios.get(
-          'https://ega-archive.org/test-beacon-apis/cineca/individuals/filtering_terms?skip=0&limit=0'
-        )
-        if (res !== null) {
-          res.data.response.filteringTerms.forEach(element => {
-            if (element.type !== 'custom') {
-              arrayFilteringTerms.push(element.id)
-              arrayFilteringTermsQE.push(element)
-            }
-          })
 
-          setstate({
-            query: '',
-            list: arrayFilteringTerms
-          })
+    useEffect(() => {
+
+        if (props.collection === 'Individuals') {
+            setPlaceholder('filtering term comma-separated, ID><=value')
+            setExtraIndividuals(true)
+
+        } else if (props.collection === 'Biosamples') {
+            setPlaceholder('key=value, key><=value, or filtering term comma-separated')
+        } else if (props.collection === 'Cohorts') {
+            setShowCohorts(true)
+            setExtraIndividuals(false)
+            setPlaceholder('Search for any cohort')
+        } else if (props.collection === "Variant") {
+            setPlaceholder('chr : pos ref > alt, chr: start-end')
+            setExtraIndividuals(false)
+            setShowVariants(true)
+
+        } else if (props.collection === "Analyses") {
+            setPlaceholder('chr : pos ref > alt')
+            setExtraIndividuals(false)
+        } else if (props.collection === "Runs") {
+            setPlaceholder('chr : pos ref > alt')
+            setExtraIndividuals(false)
+        } else if (props.collection === 'Datasets') {
+            setPlaceholder('Search for any cohort')
+            setExtraIndividuals(false)
+        } else {
+            setPlaceholder('')
         }
-      } catch (error) {
-        console.log(error)
-      }
-    }
 
-    // call the function
-    fetchData()
-      // make sure to catch any error
-      .catch(console.error)
-  }, [])
+        const fetchData = async () => {
+
+            try {
+                let res = await axios.get("https://beacon-apis-test.ega-archive.org/api/individuals/filtering_terms?skip=0&limit=0")
+                if (res !== null) {
+                    res.data.response.filteringTerms.forEach(element => {
+                        if (element.type !== "custom") {
+                            arrayFilteringTerms.push(element.id)
+                            arrayFilteringTermsQE.push(element)
+                        }
+
+                    })
+
+                    setstate({
+                        query: '',
+                        list: arrayFilteringTerms
+                    })
+                }
+            } catch (error) {
+                console.log(error)
 
   const onSubmit = async event => {
     event.preventDefault()
