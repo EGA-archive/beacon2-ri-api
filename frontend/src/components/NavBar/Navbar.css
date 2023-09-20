@@ -146,19 +146,17 @@
 }
 
 .Sign-in6 {
-  width: 160px;
-  left: 8px;
+  width: 140px;
 }
 
 .Sign-in5 {
-  width: 160px;
-  left: 8px;
+  width: 140px;
   background-color: #7a9f9f;
 }
 
 .Sign-in6:hover ~ .animation {
-  width: 135px;
-  right: 0px;
+  width: 120px;
+  right: 6px;
   background-color: #7a9f9f;
 }
 
@@ -204,8 +202,6 @@
 
 .ls-login-image {
   width: 146px;
-  margin-right: 10px;
-  margin-left: 10px;
 }
 
 .nav3 .Sign-in {
@@ -214,6 +210,8 @@
   justify-content: center;
   align-content: center;
   width: fit-content;
+  margin-right: 10px;
+  margin-left: 10px;
 }
 
 .nav3 .Sign-in2 {
@@ -226,7 +224,7 @@
 
 .Members:hover ~ .animation {
   width: 180px;
-  right: 310px;
+  right: 305px;
   background-color: #4961b8;
 }
 
@@ -237,8 +235,8 @@
 }
 
 .Sign-in:hover ~ .animation {
-  width: 186px;
-  right: 128px;
+  width: 176px;
+  right: 120px;
   background-color: #e575dd;
 }
 

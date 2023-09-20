@@ -1,7 +1,12 @@
-import '../../App.css';
+import '../../App.css'
+import Layout from '../Layout/Layout'
 
-function Biosamples(){
-    return (<><h2 className="comming_message">Comming soon...</h2></>)
+function Biosamples () {
+  return (
+    <div>
+      <Layout collection={'Biosamples'} />
+    </div>
+  )
 }
 
 export default Biosamples
