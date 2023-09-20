@@ -79,8 +79,6 @@ function Layout (props) {
   const [showExtraIndividuals, setExtraIndividuals] = useState(false)
   const [showOptions, setShowOptions] = useState(false)
 
-
-
   const [options, setOptions] = useState(props.options)
 
   const [referenceName, setRefName] = useState('')
@@ -120,11 +118,9 @@ function Layout (props) {
 
   const [isSubmitted, setIsSub] = useState(false)
 
-
   const [selectedCohortsAux, setSelectedCohortsAux] = useState([])
 
   const [arrayFilteringTerms, setArrayFilteringTerms] = useState([])
- 
 
   const [showIds, setShowIds] = useState(false)
 
@@ -166,7 +162,6 @@ function Layout (props) {
     selectedCohortsAux.push(selectedOption)
     props.setSelectedCohorts(selectedCohortsAux)
   }
-
 
   const handleCloseModal1 = () => {
     setIsOpenModal1(false)
@@ -389,7 +384,6 @@ function Layout (props) {
     setExpansionSection(true)
   }
 
- 
   useEffect(() => {
     if (props.collection === 'Individuals') {
       setPlaceholder('filtering term comma-separated, ID><=value')
@@ -557,12 +551,19 @@ function Layout (props) {
       <nav className='navbar'>
         <div>
           {expansionSection === false && cohorts === false && (
-            <button onClick={handleQEclick}>
-              <h2 className='queryExpansion'>Query expansion</h2>
+            <button onClick={handleQEclick} className='btn-3'>
+              <span className='spanQE'>Query expansion</span>
             </button>
           )}
         </div>
-        {expansionSection === true && <HorizontalExpansion arrayFilteringTermsQE={arrayFilteringTermsQE} query={query} setQuery={setQuery} setExpansionSection={setExpansionSection} />}
+        {expansionSection === true && (
+          <HorizontalExpansion
+            arrayFilteringTermsQE={arrayFilteringTermsQE}
+            query={query}
+            setQuery={setQuery}
+            setExpansionSection={setExpansionSection}
+          />
+        )}
 
         {showBar === true && (
           <div className='container-fluid'>
