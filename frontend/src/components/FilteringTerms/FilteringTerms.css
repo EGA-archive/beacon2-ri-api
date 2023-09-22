@@ -32,7 +32,6 @@ thead {
     margin-right: 78px;
     font-size: 15px;
     width: 90%;
-    height: 70vh;
 }
 
 .tableWrapper{
@@ -57,9 +56,8 @@ thead {
     /* justify-content: center; */
     margin-top: 12px;
     margin-bottom: 12px;
-    padding-left: 32px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px;
+    margin-left: 10px;
     overflow: auto;
 }
 

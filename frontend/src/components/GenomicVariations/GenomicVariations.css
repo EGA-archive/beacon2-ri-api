@@ -1,4 +1,5 @@
 .variantsResultsError{
-    margin:50px;
-   
+    margin: 37px;
+    display: flex;
+    justify-content: center;
 }
