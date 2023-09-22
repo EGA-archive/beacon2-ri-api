@@ -93,7 +93,10 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
         query_filtering={}
         query_filtering['$and']=[]
         dict_scope={}
-        dict_scope['scope']=collection
+        if collection == 'g_variants':
+            dict_scope['scope']='genomicVariations'
+        else:
+            dict_scope['scope']=collection
         query_filtering['$and'].append(dict_scope)
         dict_id={}
         dict_id['id']=filter.id
@@ -163,7 +166,10 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
         query_filtering={}
         query_filtering['$and']=[]
         dict_scope={}
-        dict_scope['scope']=collection
+        if collection == 'g_variants':
+            dict_scope['scope']='genomicVariations'
+        else:
+            dict_scope['scope']=collection
         query_filtering['$and'].append(dict_scope)
         dict_id={}
         dict_id['id']=filter.id
@@ -208,7 +214,10 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
         query_filtering={}
         query_filtering['$and']=[]
         dict_scope={}
-        dict_scope['scope']=collection
+        if collection == 'g_variants':
+            dict_scope['scope']='genomicVariations'
+        else:
+            dict_scope['scope']=collection
         query_filtering['$and'].append(dict_scope)
         dict_id={}
         dict_id['id']=filter.id
