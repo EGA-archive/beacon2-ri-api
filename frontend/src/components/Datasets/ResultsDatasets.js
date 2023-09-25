@@ -2,6 +2,7 @@
 import './ResultsDatasets.css'
 import axios from "axios";
 import { useState, useEffect } from 'react';
+import configData from "../../config.json";
 
 function ResultsDatasets(props) {
 
@@ -15,7 +16,7 @@ function ResultsDatasets(props) {
         const apiCall = async () => {
 
             try {
-                let res = await axios.get('https://beacons.bsc.es/beacon-network/v2.0.0/info')
+                let res = await axios.get(configData.API_URL +'/info')
                 console.log(res.data.responses)
                 res.data.responses.forEach(element => {
                     resp.push(element)

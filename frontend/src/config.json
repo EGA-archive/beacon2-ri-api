@@ -1,0 +1,4 @@
+{
+    "API_URL": "https://beacons.bsc.es/beacon-network/v2.0.0",
+    "REDIRECT_URL": "http://localhost:3000/"
+  }

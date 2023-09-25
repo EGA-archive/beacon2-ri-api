@@ -1,6 +1,7 @@
 import './CrossQueries.css';
 import axios from "axios";
 import { useState, useEffect } from 'react';
+import configData from "../../config.json";
 
 function CrossQueries() {
     const [valueInitial, setValueInitial] = useState('')
@@ -39,7 +40,7 @@ function CrossQueries() {
         e.preventDefault()
         setShowSubmit(false)
         try {
-            let res = await axios.get(`https://beacons.bsc.es/beacon-network/v2.0.0/${valueInitial}/${IdValue}/${valueFinal}`)
+            let res = await axios.get(configData.API_URL + `/${valueInitial}/${IdValue}/${valueFinal}`)
             console.log(res)
             res.data.response.resultSets.forEach((element, index) => {
                 if (res.data.response.resultSets[index].results.length > 0) {

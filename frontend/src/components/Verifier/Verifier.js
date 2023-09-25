@@ -1,6 +1,7 @@
 import './Verifier.css'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import configData from "../../config.json";
 
 function Verifier () {
   const [verifierUrl, setVerifierUrl] = useState('')
@@ -27,7 +28,7 @@ function Verifier () {
     e.preventDefault()
     try {
       let res = await axios.get(
-        `https://beacons.bsc.es/beacon-network/v2.0.0/validate?endpoint=${verifierUrl}`
+        configData.API_URL + `/validate?endpoint=${verifierUrl}`
       )
       console.log(res)
       let stringData = ''
