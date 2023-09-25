@@ -166,8 +166,8 @@ html {
   margin-top: -1px;
 }
 .searchIcon:hover {
-  width: 40px;
-  margin-top: -4px;
+  width: 37px;
+  margin-top: -3px;
 }
 
 .forwardIcon {
@@ -955,7 +955,6 @@ h5 {
     display: flex;
     align-content: center;
     justify-content: center;
-    width: 70%;
   }
 
   .searchButton {

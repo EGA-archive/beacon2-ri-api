@@ -60,6 +60,8 @@ function Layout (props) {
 
   const [showVariants, setShowVariants] = useState(false)
 
+  const [showResultsVariants, setShowResultsVariants] = useState(true)
+
   const [trigger, setTrigger] = useState(false)
   const {
     storeToken,
@@ -376,6 +378,7 @@ function Layout (props) {
 
   const handleClick = () => {
     setShowBar(!showBar)
+    setShowResultsVariants(false)
   }
 
   const handleHideVariantsForm = e => {
@@ -1060,6 +1063,8 @@ function Layout (props) {
           <div>
             <VariantsResults
               query={query}
+              resultSets={resultSet}
+              showResultsVariants={showResultsVariants}
               setHideForm={setHideForm}
               showBar={showBar}
               aminoacid2={aminoacid2}
