@@ -31,7 +31,12 @@ h6 {
   font-size: 14px;
 }
 
-h5 {
+h6:hover {
+  color: rgb(118, 151, 228);
+  font-weight: bold;
+}
+
+.tittleResults h5 {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;

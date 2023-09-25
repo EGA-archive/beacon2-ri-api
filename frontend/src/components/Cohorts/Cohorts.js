@@ -4,9 +4,10 @@ import axios from 'axios'
 import { useState, useEffect } from 'react'
 import Layout from '../Layout/Layout'
 import { NavLink, useNavigate } from 'react-router-dom'
+import configData from "../../config.json";
 
 function Cohorts (props) {
-  const API_ENDPOINT = 'https://beacons.bsc.es/beacon-network/v2.0.0/cohorts/'
+  const API_ENDPOINT = configData.API_URL + "/cohorts"
 
   const [error, setError] = useState(false)
   const navigate = useNavigate()
@@ -508,7 +509,7 @@ function Cohorts (props) {
     const fetchDataCohorts = async () => {
       try {
         let res = await axios.get(
-          'https://beacons.bsc.es/beacon-network/v2.0.0/cohorts/'
+         configData.API_URL + "/cohorts"
         )
 
         res.data.response.collections.forEach(element => {
