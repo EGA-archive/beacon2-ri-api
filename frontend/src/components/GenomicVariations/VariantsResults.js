@@ -22,6 +22,8 @@ function VariantsResults (props) {
   const [boolean, setBoolean] = useState(false)
   const [arrayFilter, setArrayFilter] = useState([])
 
+  const [showVariantsResults, setShowVariantsResults] = useState(false)
+
   let queryStringTerm = ''
   const handleTypeResults1 = () => {
     setShow1(true)
@@ -49,11 +51,13 @@ function VariantsResults (props) {
 
   useEffect(() => {
     const apiCall = async () => {
+    
       if (isAuthenticated) {
         setLoginRequired(false)
 
         try {
           if (props.showBar === true) {
+            setShowVariantsResults(true)
             if (props.query.includes(',')) {
               queryStringTerm = props.query.split(',')
 
@@ -110,9 +114,10 @@ function VariantsResults (props) {
               setError('No results found. Please retry')
             }
           } else {
+            setShowVariantsResults(false)
             //   referenceName={referenceName} start={start} end={end} variantType={variantType} alternateBases={alternateBases} referenceBases={referenceBases} aminoacid={aminoacid} geneID={geneID} />
             //    </div>
-
+       
             var requestParameters = {}
 
             if (props.referenceName !== '') {
@@ -232,62 +237,66 @@ function VariantsResults (props) {
       }
     }
     apiCall()
-  }, [])
+  }, [props.showBar])
 
   return (
-    <div className='resultsOptions'>
-      {logInRequired === true && (
-        <div className='variantsResultsError'>
-          <h3>{messageLogin}</h3>
-        </div>
-      )}
-      {timeOut === false && (
-        <div className='loaderLogo'>
-          <div className='loader2'>
-            <div id='ld3'>
-              <div></div>
-              <div></div>
-              <div></div>
-            </div>
-          </div>
-        </div>
-      )}
-      {logInRequired === false && timeOut && (
-        <div>
-          <div className='selectGranularity'>
-            <h4>Granularity:</h4>
-            <button className='typeResults' onClick={handleTypeResults1}>
-              <h5>Boolean</h5>
-            </button>
-            <button className='typeResults' onClick={handleTypeResults2}>
-              <h5>Count</h5>
-            </button>
-            <button className='typeResults' onClick={handleTypeResults3}>
-              <h5>Full response</h5>
-            </button>
-          </div>
-
-          {show3 && error === '' && (
-            <div>
-              <TableResultsVariant results={results}></TableResultsVariant>
+    <div>
+      {showVariantsResults === true && (
+        <div className='resultsOptions'>
+          {logInRequired === true && (
+            <div className='variantsResultsError'>
+              <h3>{messageLogin}</h3>
             </div>
           )}
+          {timeOut === false && (
+            <div className='loaderLogo'>
+              <div className='loader2'>
+                <div id='ld3'>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              </div>
+            </div>
+          )}
+          {logInRequired === false && timeOut && (
+            <div>
+              <div className='selectGranularity'>
+                <h4>Granularity:</h4>
+                <button className='typeResults' onClick={handleTypeResults1}>
+                  <h5>Boolean</h5>
+                </button>
+                <button className='typeResults' onClick={handleTypeResults2}>
+                  <h5>Count</h5>
+                </button>
+                <button className='typeResults' onClick={handleTypeResults3}>
+                  <h5>Full response</h5>
+                </button>
+              </div>
 
-          <div className='resultsContainer'>
-            {show1 && boolean && <p className='p1'>YES</p>}
-            {show1 && !boolean && <p className='p1'>NO</p>}
-            {show2 && numberResults !== 1 && (
-              <p className='p1'>{numberResults} &nbsp; Results</p>
-            )}
-            {show2 && numberResults === 1 && (
-              <p className='p1'>{numberResults} &nbsp; Result</p>
-            )}
-            {show3 && error !== '' && (
-              <h5 className='variantsResultsError'>
-                Please check the query and retry
-              </h5>
-            )}
-          </div>
+              {show3 && error === '' && (
+                <div>
+                  <TableResultsVariant results={results}></TableResultsVariant>
+                </div>
+              )}
+
+              <div className='resultsContainer'>
+                {show1 && boolean && <p className='p1'>YES</p>}
+                {show1 && !boolean && <p className='p1'>NO</p>}
+                {show2 && numberResults !== 1 && (
+                  <p className='p1'>{numberResults} &nbsp; Results</p>
+                )}
+                {show2 && numberResults === 1 && (
+                  <p className='p1'>{numberResults} &nbsp; Result</p>
+                )}
+                {show3 && error !== '' && (
+                  <h5 className='variantsResultsError'>
+                    Please check the query and retry
+                  </h5>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
