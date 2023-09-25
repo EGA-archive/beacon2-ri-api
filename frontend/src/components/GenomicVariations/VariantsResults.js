@@ -10,7 +10,7 @@ import TableResultsVariant from '../Results/VariantResults/TableResultsVariant'
 
 function VariantsResults (props) {
   const [error, setError] = useState('')
-
+  const [timeOut, setTimeOut] = useState(false)
   const [logInRequired, setLoginRequired] = useState(true)
   const [messageLogin, setMessageLogin] = useState('')
   const [results, setResults] = useState([])
@@ -89,15 +89,20 @@ function VariantsResults (props) {
               }
             }
             jsonData1 = JSON.stringify(jsonData1)
-
+            console.log(jsonData1)
             // const token = auth.userData.access_token
             // console.log(token)
             //const headers = { 'Authorization': `Bearer ${token}` }
             // const res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/g_variants", jsonData1, {headers: headers})
+            // const res = await axios.post(
+            // configData.API_URL + '/g_variants',
+            //jsonData1
+            // )
             const res = await axios.post(
-              configData.API_URL + '/g_variants',
+              'https://beacon-apis-test.ega-archive.org/api/g_variants',
               jsonData1
             )
+            setTimeOut(true)
             console.log(res)
             if (res.data.responseSummary.exists === false) {
               setBoolean(false)
@@ -217,6 +222,7 @@ function VariantsResults (props) {
             }
           }
         } catch (error) {
+          setTimeOut(true)
           console.log(error)
           setError(error)
         }
@@ -235,7 +241,18 @@ function VariantsResults (props) {
           <h3>{messageLogin}</h3>
         </div>
       )}
-      {logInRequired === false && (
+      {timeOut === false && (
+        <div className='loaderLogo'>
+          <div className='loader2'>
+            <div id='ld3'>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </div>
+      )}
+      {logInRequired === false && timeOut && (
         <div>
           <div className='selectGranularity'>
             <h4>Granularity:</h4>

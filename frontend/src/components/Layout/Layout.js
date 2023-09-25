@@ -1060,6 +1060,7 @@ function Layout (props) {
           <div>
             <VariantsResults
               query={query}
+              resultSets={resultSet}
               setHideForm={setHideForm}
               showBar={showBar}
               aminoacid2={aminoacid2}
