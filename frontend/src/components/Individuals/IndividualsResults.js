@@ -42,7 +42,8 @@ function IndividualsResults (props) {
 
   const auth = useAuth()
   const isAuthenticated = auth.userData?.id_token ? true : false
-  console.log(isAuthenticated)
+  
+ // const isAuthenticated = true
 
   useEffect(() => {
     console.log(props.query)
@@ -177,7 +178,7 @@ function IndividualsResults (props) {
 
           //res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals/", jsonData1, { headers: headers })
           res = await axios.post(
-            configData.API_URL + '/individuals/?skip=0&limit=0',
+            configData.API_URL + '/individuals',
             jsonData1
           )
 
@@ -232,7 +233,7 @@ function IndividualsResults (props) {
 
           //res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals/", jsonData2, { headers: headers })
           res = await axios.post(
-            configData.API_URL + '/individuals/?skip=0&limit=0',
+            configData.API_URL + '/individuals',
             jsonData2
           )
 

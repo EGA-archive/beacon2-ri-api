@@ -7,7 +7,6 @@ import ResultsDatasets from '../Datasets/ResultsDatasets'
 import VariantsResults from '../GenomicVariations/VariantsResults'
 import HorizontalExpansion from '../QueryExpansion/HorizontalExpansion'
 
-import Select from 'react-select'
 import React, { useState, useEffect } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import { useContext } from 'react'
@@ -15,14 +14,14 @@ import { useContext } from 'react'
 import Switch from '@mui/material/Switch'
 import MultiSwitch from 'react-multi-switch-toggle'
 
-import configData from "../../config.json";
+import configData from '../../config.json'
 
 import axios from 'axios'
 
 import ReactModal from 'react-modal'
-import makeAnimated from 'react-select/animated'
 
 import IndividualsResults from '../Individuals/IndividualsResults'
+import CohortsModule from '../Cohorts/CohortsModule'
 
 function Layout (props) {
   console.log(props)
@@ -62,6 +61,8 @@ function Layout (props) {
 
   const [showResultsVariants, setShowResultsVariants] = useState(true)
 
+  const [triggerCohorts, setTriggerCohorts] = useState(true)
+
   const [trigger, setTrigger] = useState(false)
   const {
     storeToken,
@@ -82,8 +83,6 @@ function Layout (props) {
 
   const [showExtraIndividuals, setExtraIndividuals] = useState(false)
   const [showOptions, setShowOptions] = useState(false)
-
-  const [options, setOptions] = useState(props.options)
 
   const [referenceName, setRefName] = useState('')
   const [referenceName2, setRefName2] = useState('')
@@ -106,8 +105,6 @@ function Layout (props) {
 
   const [hideForm, setHideForm] = useState(false)
 
-  const animatedComponents = makeAnimated()
-
   const [resetSearch, setResetSearch] = useState(false)
 
   const [state, setstate] = useState({
@@ -121,8 +118,6 @@ function Layout (props) {
   const [timeOut, setTimeOut] = useState(true)
 
   const [isSubmitted, setIsSub] = useState(false)
-
-  const [selectedCohortsAux, setSelectedCohortsAux] = useState([])
 
   const [arrayFilteringTerms, setArrayFilteringTerms] = useState([])
 
@@ -155,16 +150,6 @@ function Layout (props) {
     } else {
       setResultset('ALL')
     }
-  }
-
-  const triggerOptions = () => {
-    setOptions(options)
-  }
-
-  const handleChangeCohorts = selectedOption => {
-    setSelectedCohortsAux([])
-    selectedCohortsAux.push(selectedOption)
-    props.setSelectedCohorts(selectedCohortsAux)
   }
 
   const handleCloseModal1 = () => {
@@ -260,9 +245,7 @@ function Layout (props) {
       }
     } else if (props.collection === 'Runs') {
       try {
-        let res = await axios.get(
-          configData.API_URL + '/runs/filtering_terms'
-        )
+        let res = await axios.get(configData.API_URL + '/runs/filtering_terms')
         setTimeOut(true)
         if (res.data.response.filteringTerms !== undefined) {
           setFilteringTerms(res)
@@ -390,6 +373,7 @@ function Layout (props) {
   }
 
   useEffect(() => {
+    
     if (props.collection === 'Individuals') {
       setPlaceholder('filtering term comma-separated, ID><=value')
       setExtraIndividuals(true)
@@ -483,12 +467,6 @@ function Layout (props) {
     } else if (props.collection === 'Variant') {
       setResults('Variant')
     }
-  }
-
-  const onSubmitCohorts = () => {
-    setResults('Cohorts')
-
-    props.setShowGraphs(true)
   }
 
   function search (e) {
@@ -606,34 +584,16 @@ function Layout (props) {
                 </form>
               </div>
             )}
-
-            {cohorts && (
-              <div className='cohortsModule'>
-                <Select
-                  onClick={triggerOptions}
-                  closeMenuOnSelect={false}
-                  components={animatedComponents}
-                  defaultValue={[]}
-                  isMulti
-                  options={options}
-                  onChange={handleChangeCohorts}
-                  autoFocus={true}
-                  //onToggleCallback={onToggle3}
+            {props.collection === 'Cohorts' &&
+             
+                <CohortsModule
+                  optionsCohorts={props.optionsCohorts}
+                  selectedCohorts={props.selectedCohorts}
+                  setSelectedCohorts={props.setSelectedCohorts}
+                  setShowGraphs={props.setShowGraphs}
                 />
-
-                <form className='d-flex2' onSubmit={onSubmitCohorts}>
-                  {results !== 'Cohorts' && (
-                    <button className='searchButton2' type='submit'>
-                      <img
-                        className='forwardIcon'
-                        src='./adelante.png'
-                        alt='searchIcon'
-                      ></img>
-                    </button>
-                  )}
-                </form>
-              </div>
-            )}
+              }
+        
           </div>
         )}
 
