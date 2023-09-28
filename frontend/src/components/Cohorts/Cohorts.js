@@ -4,15 +4,16 @@ import axios from 'axios'
 import { useState, useEffect } from 'react'
 import Layout from '../Layout/Layout'
 import { NavLink, useNavigate } from 'react-router-dom'
-import configData from "../../config.json";
+import configData from '../../config.json'
+import CohortsModule from './CohortsModule'
 
 function Cohorts (props) {
-  const API_ENDPOINT = configData.API_URL + "/cohorts"
+  const API_ENDPOINT = configData.API_URL + '/cohorts'
 
   const [error, setError] = useState(false)
   const navigate = useNavigate()
 
-  const [options, setOptions] = useState([])
+  const [optionsCohorts, setOptionsCohorts] = useState([])
 
   const [selectedCohorts, setSelectedCohorts] = useState([])
 
@@ -42,6 +43,8 @@ function Cohorts (props) {
 
   const [dataAvailable, setDataAvailable] = useState(false)
 
+  const [triggerLayout, setTriggerLayout] = useState(false)
+
   const handleSelectedFilter = e => {
     setSelectedFilter(e.target.value)
   }
@@ -50,6 +53,37 @@ function Cohorts (props) {
     setSelectedValue(e.target.value)
     console.log(e.target.value)
   }
+
+  useEffect(() => {
+    const fetchDataCohorts = async () => {
+      try {
+        let res = await axios.get(configData.API_URL + '/cohorts')
+        console.log(res)
+        res.data.response.collections.forEach(element => {
+          if (element.name === undefined && element.cohortName !== undefined) {
+            let obj = {
+              value: element.cohortName,
+              label: element.cohortName
+            }
+            optionsCohorts.push(obj)
+          } else if (element.name !== undefined) {
+            let obj = {
+              value: element.name,
+              label: element.name
+            }
+            optionsCohorts.push(obj)
+          }
+          const timer = setTimeout(() => {
+            setTriggerLayout(true)
+          }, 2000)
+          return () => clearTimeout(timer)
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchDataCohorts().catch(console.error)
+  }, [])
 
   useEffect(() => {
     let values = []
@@ -505,46 +539,27 @@ function Cohorts (props) {
     }
   }, [showGraphs])
 
-  useEffect(() => {
-    const fetchDataCohorts = async () => {
-      try {
-        let res = await axios.get(
-         configData.API_URL + "/cohorts"
-        )
-
-        res.data.response.collections.forEach(element => {
-          if (element.name === undefined && element.cohortName !== undefined) {
-            let obj = {
-              value: element.cohortName,
-              label: element.cohortName
-            }
-            options.push(obj)
-          } else if (element.name !== undefined) {
-            let obj = {
-              value: element.name,
-              label: element.name
-            }
-            options.push(obj)
-          }
-
-          console.log(options)
-        })
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    fetchDataCohorts().catch(console.error)
-  }, [])
-
   return (
     <div className='graphsDiv'>
-      {showGraphs === false && (
+      {triggerLayout === false && (
+        <div class='middle'>
+          <div class='bar bar1'></div>
+          <div class='bar bar2'></div>
+          <div class='bar bar3'></div>
+          <div class='bar bar4'></div>
+          <div class='bar bar5'></div>
+          <div class='bar bar6'></div>
+          <div class='bar bar7'></div>
+          <div class='bar bar8'></div>
+        </div>
+      )}
+      {showGraphs === false && triggerLayout && (
         <Layout
           collection={'Cohorts'}
           setShowGraphs={setShowGraphs}
           selectedCohorts={selectedCohorts}
           setSelectedCohorts={setSelectedCohorts}
-          options={options}
+          optionsCohorts={optionsCohorts}
         />
       )}
 
