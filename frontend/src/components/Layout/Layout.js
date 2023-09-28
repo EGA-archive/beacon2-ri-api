@@ -590,6 +590,7 @@ function Layout (props) {
                   optionsCohorts={props.optionsCohorts}
                   selectedCohorts={props.selectedCohorts}
                   setSelectedCohorts={props.setSelectedCohorts}
+                  setShowGraphs={props.setShowGraphs}
                 />
               }
         

@@ -4,7 +4,7 @@
   width: 100vw;
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: 10px;
+  margin-top: 44px;
 }
 
 #chartEthnicity {
@@ -191,6 +191,7 @@
 #chartDiseases {
   width: 1000px;
   margin: 38px;
+  min-height: 300px !important;
 }
 
 h12 {
@@ -215,6 +216,17 @@ h12 {
 .graphsDiv {
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.graphsDiv h3 {
+  color: #e16e00;
+  text-transform: uppercase;
+  margin-top: 32px;
+  font-size: 14px;
+  display: flex;
+  align-content: center;
   justify-content: center;
 }
 
@@ -262,11 +274,11 @@ h12 {
 @keyframes loader {
   0% {
     transform: scaleY(0.1);
-    background: #34495e ;
+    background: #34495e;
   }
   50% {
     transform: scaleY(1);
-    background:#6ad513;
+    background: #6ad513;
   }
   100% {
     transform: scaleY(0.1);
