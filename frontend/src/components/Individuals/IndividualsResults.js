@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 import { useAuth } from 'oidc-react'
+import configData from '../../config.json'
 
 import TableResultsIndividuals from '../Results/IndividualsResults/TableResultsIndividuals'
 
@@ -41,7 +42,8 @@ function IndividualsResults (props) {
 
   const auth = useAuth()
   const isAuthenticated = auth.userData?.id_token ? true : false
-  console.log(isAuthenticated)
+  
+ // const isAuthenticated = true
 
   useEffect(() => {
     console.log(props.query)
@@ -50,8 +52,8 @@ function IndividualsResults (props) {
       if (isAuthenticated) {
         setLoginRequired(false)
       } else {
-        //setLoginRequired(true)
-        setLoginRequired(false)
+        setLoginRequired(true)
+        //setLoginRequired(false)
         setMessageLogin('PLEASE CREATE AN ACCOUNT AND LOG IN FOR QUERYING')
       }
 
@@ -141,9 +143,7 @@ function IndividualsResults (props) {
       }
 
       try {
-        let res = await axios.get(
-          'https://beacons.bsc.es/beacon-network/v2.0.0/info'
-        )
+        let res = await axios.get(configData.API_URL + '/info')
 
         res.data.responses.forEach(element => {
           beaconsList.push(element)
@@ -178,7 +178,7 @@ function IndividualsResults (props) {
 
           //res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals/", jsonData1, { headers: headers })
           res = await axios.post(
-            'https://beacons.bsc.es/beacon-network/v2.0.0/individuals/?skip=0&limit=0',
+            configData.API_URL + '/individuals',
             jsonData1
           )
 
@@ -233,7 +233,7 @@ function IndividualsResults (props) {
 
           //res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals/", jsonData2, { headers: headers })
           res = await axios.post(
-            'https://beacons.bsc.es/beacon-network/v2.0.0/individuals/?skip=0&limit=0',
+            configData.API_URL + '/individuals',
             jsonData2
           )
 
@@ -273,6 +273,7 @@ function IndividualsResults (props) {
         }
       } catch (error) {
         setError('Error. Please retry')
+        setTimeOut(false)
         console.log(error)
       }
     }
@@ -313,14 +314,18 @@ function IndividualsResults (props) {
   return (
     <div>
       {timeOut === false && (
-        <div class='ring'>
-          <span></span>
+        <div className='loaderLogo'>
+          <div className='loader2'>
+            <div id='ld3'>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
         </div>
       )}
-
       {logInRequired === false && (
         <div>
-          {error && <h3>{error}</h3>}
           <div>
             {' '}
             {timeOut && (

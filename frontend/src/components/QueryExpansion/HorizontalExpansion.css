@@ -1,0 +1,167 @@
+.hideQE {
+  width: 25px;
+  margin-left: 10px;
+}
+
+.hideQE:hover {
+  width: 27px;
+}
+
+.expansionContainer2 {
+  width: 100vw;
+}
+
+.expansionContainer {
+  width: 100vw;
+}
+
+.qeSection {
+  background: #d5dce7;
+  padding: 20px;
+  margin-bottom: 44px;
+  margin-top: 10px;
+  height: 112px;
+  border-radius: 2px;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.qeSection h5 {
+  color: rgb(209, 66, 66);
+  font-weight: bold;
+  width: fit-content;
+}
+
+.qeSection h5:hover {
+  color: rgb(209, 66, 66);
+  font-weight: bold;
+  width: fit-content;
+}
+
+.qeSubmitH2 {
+  margin-top: 2px;
+  margin-top: -72px;
+  text-decoration: underline;
+  padding: 20px;
+  text-underline-position: under;
+}
+
+.QEinput {
+  margin-left: -12vw;
+  width: 427px;
+  border: 2px solid 8985c1;
+  margin-top: 30px;
+  height: 25px;
+  font-size: 14.5px;
+  padding: 3px;
+  margin-right: 1px;
+}
+
+.QEinput2 {
+  width: 527px;
+  border: 2px solid 8985c1;
+  margin-top: 30px;
+  height: 25px;
+  font-size: 14.5px;
+  padding: 3px;
+  margin-left: 10px;
+}
+
+.qeSubmit {
+  margin-left: 10px;
+  margin-top: 44px;
+}
+
+.qeSubmit:hover {
+  margin-left: 10px;
+  color: #51a1cf;
+}
+
+.textQE2 {
+  width: fit-content;
+  line-height: 1.5;
+  font-size: 14px;
+  padding-right: 30px;
+}
+
+.qeListItem {
+  margin: 14px;
+}
+.nextButton {
+  margin-top: 94px;
+  margin-left: 12px;
+  font-weight: 500;
+}
+
+.forwardButton {
+  margin-top: 94px;
+  margin-left: 76px;
+  font-weight: 500;
+}
+.nextButton:hover {
+  font-size: 14px;
+  color: #1abc9c;
+}
+
+.forwardButton:hover {
+  font-size: 14px;
+  color: #1abc9c;
+}
+.textQE {
+  width: 50vw;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.divCheckboxQE input {
+  margin-right: 6px;
+  height: 16px;
+  width: 16px;
+  accent-color: #1abc9c;
+  cursor: pointer;
+}
+
+.divCheckboxQE input:hover {
+  margin-right: 6px;
+  height: 16px;
+  width: 16px;
+  accent-color: #3fa18e;
+}
+.labelQE {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+  margin-left: 11px;
+  font-size: 15px;
+  font-family: system-ui;
+}
+
+.newQEsearch {
+  border: solid;
+  padding: 6px;
+  border-radius: 2px;
+  margin-top: 95px;
+  margin-left: 66px;
+}
+
+.newQEsearch:hover {
+  color: #1abc9c;
+  margin-left: 74px;
+}
+
+.errorQE {
+  color: rgb(209, 66, 66);
+  font-size: 12.5px;
+  font-weight: bold;
+  margin-top: -71px;
+  /* margin: 9px; */
+  display: flex;
+  /* display: block; */
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 50px;
+}

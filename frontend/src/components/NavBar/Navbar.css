@@ -1,265 +1,291 @@
-.navB{
-    display: flex;
-    width: 100vw;
-    position: relative;
-    height: 57px;
-    background-color: #34495e;
-    font-size: 0;
+.navB {
+  display: flex;
+  width: 100vw;
+  position: relative;
+  height: 57px;
+  background-color: #34495e;
+  font-size: 0;
 }
 
 .nav2 {
-    width: 70%;
-    display: flex;
-    justify-content: flex-start;
+  width: 70%;
+  display: flex;
+  justify-content: flex-start;
 }
 .nav3 {
-    width: 30%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+  width: 30%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 .nav2 a {
-	line-height: 57px;
-	height: 100%;
-	font-size: 12px;
-	display: inline-block;
-	position: relative;
-	z-index: 1;
-	text-decoration: none;
-	text-transform: uppercase;
-	text-align: center;
-	color: white;
-	cursor: pointer;
+  line-height: 57px;
+  height: 100%;
+  font-size: 12px;
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  text-align: center;
+  color: white;
+  cursor: pointer;
 }
 
 .nav3 a {
-	line-height: 57px;
-	height: 100%;
-	font-size: 12px;
-	display: inline-block;
-	position: relative;
-	z-index: 1;
-	text-decoration: none;
-	text-transform: uppercase;
-	text-align: center;
-	color: white;
-	cursor: pointer;
+  line-height: 57px;
+  height: 100%;
+  font-size: 12px;
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  text-align: center;
+  color: white;
+  cursor: pointer;
 }
 
 .navB .animation {
-	position: absolute;
-	height: 100%;
-	top: 0;
-	z-index: 0;
-	transition: all .5s ease 0s;
-	border-radius: 8px;
+  position: absolute;
+  height: 100%;
+  top: 0;
+  z-index: 0;
+  transition: all 0.5s ease 0s;
+  border-radius: 8px;
 }
 
 .Individuals2 {
-	width: 120px;
-    background-color: #1abc9c;
+  width: 120px;
+  background-color: #1abc9c;
 }
 
 .Individuals {
-	width: 120px;
+  width: 120px;
 }
 
-.Biosamples2{
-	width: 120px;
-    background-color: #e74c3c;
+.Biosamples2 {
+  width: 120px;
+  background-color: #e74c3c;
 }
-.Biosamples{
-	width: 120px;
+.Biosamples {
+  width: 120px;
 }
 
 .Variants {
-	width: 120px;
+  width: 120px;
 }
 
 .Variants2 {
-	width: 120px;
-    background-color: #3498db;
+  width: 120px;
+  background-color: #3498db;
 }
 
 .Runs {
-	width: 120px;
+  width: 120px;
 }
 .Runs2 {
-	width: 120px;
-    background-color: #9b59b6;
+  width: 120px;
+  background-color: #9b59b6;
 }
 
-.Analyses{
-    width: 120px;
+.Analyses {
+  width: 120px;
 }
-.Analyses2{
-    width: 120px;
-    background-color: #e67e22;
-}
-
-.Cohorts{
-    width: 120px;
-}
-.Cohorts2{
-    width: 120px;
-    background-color: #5be57b;
+.Analyses2 {
+  width: 120px;
+  background-color: #e67e22;
 }
 
-
-.Cross-queries{
-    width: 120px;
+.Cohorts {
+  width: 120px;
+}
+.Cohorts2 {
+  width: 120px;
+  background-color: #5be57b;
 }
 
-.Cross-queries2{
-    width: 120px;
-    background-color: #d4c223;
+.Cross-queries {
+  width: 120px;
 }
 
-.Members{
-    width: 180px;
+.Cross-queries2 {
+  width: 120px;
+  background-color: #d4c223;
 }
 
-.Members2{
-    width: 180px;
-    background-color: #4961b8;
+.Members {
+  width: 200px;
+  margin-right: 10px;
 }
 
-.Sign-in{
-	width: 176px;
-	margin-left: 20px;
+.Members2 {
+  width: 200px;
+  background-color: #4961b8;
+  margin-right: 10px;
 }
 
-
-.Sign-in2{
-	width: 196px;
-	right: 0px;
-    background-color: #e575dd;
+.Members3 {
+  width: 200px;
+  margin-right: 10px;
 }
 
-.nav3 .Sign-in3{
-	display: flex;
-    align-items: center;
-    justify-content: center;
-    align-content: center;
-    width: fit-content;
-	margin-right: 50px;
+.Members4 {
+  width: 186px;
+  background-color: #4961b8;
+  margin-right: 10px;
 }
 
-.nav3 .Sign-in4{
-	display: flex;
-    align-items: center;
-    justify-content: center;
-    align-content: center;
-    width: fit-content;
-    margin-right: 50px;
+.Sign-in {
+  width: 196px;
 }
 
-.Sign-in3{
-	width: 176px;
-	margin-left: 40px;
+.Sign-in2 {
+  width: 196px;
+  background-color: #e575dd;
 }
 
-.Sign-in3:hover~.animation {
-	width: 186px;
-	right: 0px;
-	background-color: #e575dd;
+.Sign-in6 {
+  width: 140px;
 }
 
-.Sign-in4{
-	width: 186px;
-	right: 0px;
-    background-color: #e575dd;
+.Sign-in5 {
+  width: 140px;
+  background-color: #7a9f9f;
 }
 
-.ls-login-image2{
-	width: 24px;
-	margin-right: 10px;
+.Sign-in6:hover ~ .animation {
+  width: 120px;
+  left: 92%;
+  background-color: #7a9f9f;
 }
 
-.ls-login-image{
-	width: 146px;
-	margin-right: 10px;
-	margin-left: 10px;
+.nav3 .Sign-in3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  width: fit-content;
+  margin-right: 50px;
 }
 
-
-.nav3 .Sign-in{
-	display: flex;
-    align-items: center;
-    justify-content: center;
-    align-content: center;
-    width: fit-content;
-    margin-right: 9px;
+.nav3 .Sign-in4 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  width: fit-content;
+  margin-right: 50px;
 }
 
-
-.nav3 .Sign-in2{
-	display: flex;
-    align-items: center;
-    justify-content: center;
-    align-content: center;
-    width: 186px;
+.Sign-in3 {
+  width: 176px;
+  margin-left: 40px;
 }
 
-.Members:hover~.animation {
-	width: 180px;
-	right: 200px;
-	background-color: #4961b8;
-}
-.Sign-in:hover~.animation {
-	width: 190px;
-	right: 0px;
-	background-color: #e575dd;
+.Sign-in3:hover ~ .animation {
+  width: 176px;
+  right: 8px;
+  background-color: #e575dd;
 }
 
-.Individuals:hover~.animation {
-	width: 120px !important;
-	left: 0px !important;
-	background-color: #1abc9c !important;
-}
-.Biosamples:hover~.animation {
-	width: 120px;
-	left: 120px;
-	background-color: #e74c3c;
+.Sign-in4 {
+  width: 176px;
+  right: 0px;
+  background-color: #e575dd;
 }
 
-.Variants:hover~.animation {
-	width: 120px;
-	left: 240px;
-	background-color: #3498db;
+.ls-login-image2 {
+  width: 24px;
+  margin-right: 10px;
 }
 
-.Runs:hover~.animation {
-	width: 120px;
-	left: 360px;
-	background-color: #9b59b6;
-}
-.Analyses:hover~.animation {
-	width: 120px;
-	left: 480px;
-	background-color: #e67e22;
-}
-.Cohorts:hover~.animation {
-	width: 120px;
-	left: 600px;
-	background-color: #5be57b;
-}
-.Cross-queries:hover~.animation {
-	width: 120px;
-	left: 720px;
-	background-color: #d4c223;
+.ls-login-image {
+  width: 146px;
 }
 
+.nav3 .Sign-in {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  width: fit-content;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.nav3 .Sign-in2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  width: 186px;
+}
+
+.Members:hover ~ .animation {
+  width: 180px;
+  left: 70%;
+  background-color: #4961b8;
+}
+
+.Members3:hover ~ .animation {
+  width: 180px;
+  right: 200px;
+  background-color: #4961b8;
+}
+
+.Sign-in:hover ~ .animation {
+  width: 176px;
+  left: 81.5%;
+  background-color: #e575dd;
+}
+
+.Individuals:hover ~ .animation {
+  width: 120px !important;
+  left: 0px !important;
+  background-color: #1abc9c !important;
+}
+.Biosamples:hover ~ .animation {
+  width: 120px;
+  left: 120px;
+  background-color: #e74c3c;
+}
+
+.Variants:hover ~ .animation {
+  width: 120px;
+  left: 240px;
+  background-color: #3498db;
+}
+
+.Runs:hover ~ .animation {
+  width: 120px;
+  left: 360px;
+  background-color: #9b59b6;
+}
+.Analyses:hover ~ .animation {
+  width: 120px;
+  left: 480px;
+  background-color: #e67e22;
+}
+.Cohorts:hover ~ .animation {
+  width: 120px;
+  left: 600px;
+  background-color: #5be57b;
+}
+.Cross-queries:hover ~ .animation {
+  width: 120px;
+  left: 720px;
+  background-color: #d4c223;
+}
 
 button {
-    background: none;
-    box-shadow: none;
-    border: none;
-    cursor: pointer;
-  }
-  
-  button:focus,
-  input:focus {
-    outline: 0;
-  }
-  
+  background: none;
+  box-shadow: none;
+  border: none;
+  cursor: pointer;
+}
+
+button:focus,
+input:focus {
+  outline: 0;
+}

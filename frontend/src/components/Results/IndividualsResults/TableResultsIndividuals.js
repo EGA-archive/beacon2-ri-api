@@ -300,6 +300,7 @@ function TableResultsIndividuals (props) {
         })}
 
       {showDatsets === false && showResults=== true && trigger2 === true && 
+      
         <DataGrid getRowHeight={() => 'auto'} columns={columns} rows={editable} />
       }
     </div>
