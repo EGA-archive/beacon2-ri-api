@@ -274,7 +274,7 @@ h12 {
 @keyframes loader {
   0% {
     transform: scaleY(0.1);
-    background: #2f89e2;
+    background: #123690;
   }
   50% {
     transform: scaleY(1);
