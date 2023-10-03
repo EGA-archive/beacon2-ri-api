@@ -28,7 +28,7 @@ org_adress = ('C/ Dr. Aiguader, 88'
               '08003 Barcelona, Spain')
 org_welcome_url = 'https://ega-archive.org/'
 org_contact_url = 'mailto:beacon.ega@crg.eu'
-org_logo_url = 'https://ega-archive.org/images/logo.png'
+org_logo_url = 'https://legacy.ega-archive.org/images/logo.png'
 org_info = ''
 
 #
