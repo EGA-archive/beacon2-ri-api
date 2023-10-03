@@ -27,7 +27,7 @@ requests==2.25.1
 pandas==1.5.3
 scipy==1.10.0
 numpy==1.24.2
-urllib3==1.26.13
+urllib3==1.26.17
 #beautifulsoup4==4.11.2
 #torch==1.11.0
 obonet==0.3.1
