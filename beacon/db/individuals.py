@@ -44,6 +44,7 @@ def include_resultset_responses(query: Dict[str, List[dict]], qparams: RequestPa
 
 def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParams):
     LOG.debug("Request parameters len = {}".format(len(qparams.query.request_parameters)))
+    v_list=[]
     query_2={}
     for k, v in qparams.query.request_parameters.items():
         LOG.debug(k)
@@ -81,6 +82,17 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                             query_2["$or"].append({'id': case["biosampleId"]})
 
                 LOG.debug(query_2)
+                
+            elif ',' in v:
+                v_list =v.split(',')
+                LOG.debug(v_list)
+            else:
+                v_list.append(v)
+            for id in v_list:
+                v_dict={}
+                v_dict['id']=id
+                qparams.query.filters.append(v_dict)
+
                         
                 
 
