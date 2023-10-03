@@ -173,7 +173,7 @@ services:
     command: ["node", "/opt/yarn-v1.22.19/bin/yarn.js", "start" ]
     container_name: react
     ports:
-      - 3000:3000
+      - 3010:3000
     volumes:
       - ../frontend:/usr/src/app
 
