@@ -73,9 +73,8 @@ h2 {
 }
 
 h3 {
-  color: #e16e00;
+  color: #c11524;
   text-transform: uppercase;
-  margin-left: 40px;
   margin-top: 17px;
   font-size: 14px;
   display: flex;
@@ -103,7 +102,7 @@ h4 {
 
 .p1 {
   text-transform: uppercase;
-  color: #c11524;
+  color: #e16e00;
   line-height: 23px;
   font-size: 18px;
   font-weight: bold;

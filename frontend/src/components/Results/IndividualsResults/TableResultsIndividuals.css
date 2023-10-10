@@ -1,5 +1,3 @@
-
-
 .super-app-theme--header {
   background-color: rgb(168 206 221);
 }
@@ -54,33 +52,32 @@ h6:hover {
 }
 
 h7 {
-    text-transform: uppercase;
-    /* margin-left: 40px; */
-    /* margin-top: 17px; */
-    font-size: 14px;
-    color: rgba(12, 16, 64, 0.606);
-    margin-left: 10px;
-    font-weight: bold;
-    margin-top: 8px;
-    margin-bottom: 2px;
+  text-transform: uppercase;
+  /* margin-left: 40px; */
+  /* margin-top: 17px; */
+  font-size: 14px;
+  color: rgba(12, 16, 64, 0.606);
+  font-weight: bold;
+  margin-top: 8px;
+  margin-bottom: 2px;
 }
 
 h7:hover {
-    text-transform: uppercase;
-    /* margin-left: 40px; */
-    /* margin-top: 17px; */
-    font-size: 14px;
-    color: rgb(118, 151, 228);
-    margin-left: 10px;
-    font-weight: bold;
-    margin-top: 8px;
-    margin-bottom: 2px;
+  text-transform: uppercase;
+  /* margin-left: 40px; */
+  /* margin-top: 17px; */
+  font-size: 14px;
+  color: rgb(118, 151, 228);
+  margin-left: 10px;
+  font-weight: bold;
+  margin-top: 8px;
+  margin-bottom: 2px;
 }
 
-h1{
-    margin-left: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
+h1 {
+  margin-left: 7px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .MuiDataGrid-root {
@@ -93,11 +90,10 @@ h1{
   overflow: scroll;
 }
 
-.MuiDataGrid-root .MuiDataGrid-columnHeaderDraggableContainer{
+.MuiDataGrid-root .MuiDataGrid-columnHeaderDraggableContainer {
   width: fit-content !important;
   height: 100%;
 }
-
 
 .MuiFormControl-root label {
   visibility: hidden;
@@ -114,6 +110,7 @@ h1{
 }
 
 .MuiDataGrid-cellContent {
+  display: flex;
   margin-top: 10px;
   margin-bottom: 10px;
   margin-right: 40px;
@@ -125,6 +122,8 @@ h1{
   text-overflow: clip !important;
   overflow-inline: scroll;
   overflow: scroll;
+  align-content: center;
+  align-items: center;
 }
 
 .MuiDataGrid-root {
@@ -140,20 +139,23 @@ h1{
 ::-webkit-scrollbar-thumb {
   border-radius: 2px;
   background-color: rgba(223, 202, 202, 0.5);
-  -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+  -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
 .containerBeaconResults {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    /* width: 98vw; */
-    /* margin-right: 26px; */
-    align-content: center;
-    flex-wrap: wrap;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 12px;
-    align-items: center;
-    overflow: scroll;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  /* width: 98vw; */
+  margin-right: 26px;
+  align-content: center;
+  flex-wrap: wrap;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 12px;
+  align-items: center;
+  overflow: scroll;
+  border: solid #e1dede;
+  padding: 14px;
+  box-shadow: 1px 1px 1px 1px snow;
 }

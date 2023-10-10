@@ -18,9 +18,9 @@
 .qeSection {
   background: #d5dce7;
   padding: 20px;
-  margin-bottom: 44px;
+  margin-bottom: 38px;
   margin-top: 10px;
-  height: 112px;
+  height: 106px;
   border-radius: 2px;
   display: flex;
   align-content: center;
@@ -53,8 +53,8 @@
   width: 427px;
   border: 2px solid 8985c1;
   margin-top: 30px;
-  height: 25px;
-  font-size: 14.5px;
+  height: 23px;
+  font-size: 13.5px;
   padding: 3px;
   margin-right: 1px;
 }
@@ -63,8 +63,8 @@
   width: 527px;
   border: 2px solid 8985c1;
   margin-top: 30px;
-  height: 25px;
-  font-size: 14.5px;
+  height: 23px;
+  font-size: 13.5px;
   padding: 3px;
   margin-left: 10px;
 }

@@ -1,12 +1,7 @@
-import '../../App.css'
-import Layout from '../Layout/Layout'
+import '../../App.css';
 
-function Runs () {
-  return (
-    <div>
-      <Layout collection={'Runs'} />
-    </div>
-  )
+function Runs(){
+    return (<><h2 className="comming_message">Comming soon...</h2></>)
 }
 
 export default Runs

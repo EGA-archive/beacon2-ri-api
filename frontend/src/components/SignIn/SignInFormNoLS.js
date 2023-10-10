@@ -4,6 +4,7 @@ import React, { Component, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../NavBar/Navbar';
 
 export default function SignInFormNoLS() {
 
@@ -56,7 +57,7 @@ export default function SignInFormNoLS() {
             formBody = formBody.join("&");
 
 
-            const response = await fetch('https://beacon-network-test2.ega-archive.org/auth/realms/Beacon/protocol/openid-connect/token', {
+            const response = await fetch('https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon/protocol/openid-connect/token', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -81,7 +82,6 @@ export default function SignInFormNoLS() {
             if (readableResponse.access_token) {
                 navigate("/")
                 setIsLoggedIn(true)
-
             } else {
                 setError("User not found. Please check the username and the password and retry")
             }

@@ -56,8 +56,8 @@
 .appForm h3 {
   color: #e16e00;
   text-transform: uppercase;
-  margin-left: 105px;
-  margin-top: 17px;
+  /* margin-left: 105px; */
+  margin-top: 43px;
   font-size: 14px;
 }
 

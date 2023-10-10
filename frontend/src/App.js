@@ -12,7 +12,7 @@ import Cohorts from './components/Cohorts/Cohorts'
 import ErrorPage from './pages/ErrorPage'
 import Navbar from './components/NavBar/Navbar'
 import SignInForm from './components/SignIn/SignInForm'
-import ResultsDatasets from './components/Datasets/ResultsDatasets'
+import BeaconInfo from './components/Dataset/BeaconInfo';
 import CrossQueries from './components/CrossQueries/CrossQueries'
 import LoggedIn from './components/SignIn/LoggedIn'
 import Verifier from './components/Verifier/Verifier'
@@ -30,7 +30,7 @@ function App () {
         <Route path='/runs' element={<Runs />} />
         <Route path='/analyses' element={<Analyses />} />
         <Route path='/cohorts' element={<Cohorts />} />
-        <Route path='/members' element={<ResultsDatasets />} />
+        <Route path='/info' element={<BeaconInfo />} />
         <Route path='/sign-in' element={<SignInForm />} />
         <Route path='/sign-in-noLS' element={<SignInFormNoLS />} />
         <Route path='/loggedOut' element={<LoggedIn />} />
