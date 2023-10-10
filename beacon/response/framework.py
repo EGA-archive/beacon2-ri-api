@@ -26,7 +26,7 @@ def get_entry_types():
             "defaultSchema": {
                 "id": DefaultSchemas.ANALYSES.value['schema'],
                 "name": "Default schema for a bioinformatics analysis",
-                "referenceToSchemaDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/analyses/defaultSchema.json",
+                "referenceToSchemaDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/analyses/defaultSchema.json",
                 "schemaVersion": "v2.0.0"
             },
             "additionallySupportedSchemas": []
@@ -43,7 +43,7 @@ def get_entry_types():
             "defaultSchema": {
                 "id": DefaultSchemas.BIOSAMPLES.value['schema'],
                 "name": "Default schema for a biological sample",
-                "referenceToSchemaDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/biosamples/defaultSchema.json",
+                "referenceToSchemaDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/biosamples/defaultSchema.json",
                 "schemaVersion": "v2.0.0"
             },
             "additionallySupportedSchemas": []
@@ -60,7 +60,7 @@ def get_entry_types():
             "defaultSchema": {
                 "id": DefaultSchemas.COHORTS.value['schema'],
                 "name": "Default schema for cohorts",
-                "referenceToSchemaDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/cohorts/defaultSchema.json",
+                "referenceToSchemaDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/cohorts/defaultSchema.json",
                 "schemaVersion": "v2.0.0"
             },
             "aCollectionOf": [{"id": "individual", "name": "Individuals"}],
@@ -78,7 +78,7 @@ def get_entry_types():
             "defaultSchema": {
                 "id": DefaultSchemas.DATASETS.value['schema'],
                 "name": "Default schema for datasets",
-                "referenceToSchemaDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/datasets/defaultSchema.json",
+                "referenceToSchemaDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/datasets/defaultSchema.json",
                 "schemaVersion": "v2.0.0"
             },
             "aCollectionOf": [{"id": "genomicVariation", "name": "Genomic Variants"}],
@@ -96,7 +96,7 @@ def get_entry_types():
             "defaultSchema": {
                 "id": DefaultSchemas.GENOMICVARIATIONS.value['schema'],
                 "name": "Default schema for a genomic variation",
-                "referenceToSchemaDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/genomicVariations/defaultSchema.json",
+                "referenceToSchemaDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/genomicVariations/defaultSchema.json",
                 "schemaVersion": "v2.0.0"
             },
             "additionallySupportedSchemas": []
@@ -113,7 +113,7 @@ def get_entry_types():
             "defaultSchema": {
                 "id": DefaultSchemas.INDIVIDUALS.value['schema'],
                 "name": "Default schema for an individual",
-                "referenceToSchemaDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/individuals/defaultSchema.json",
+                "referenceToSchemaDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/individuals/defaultSchema.json",
                 "schemaVersion": "v2.0.0"
             },
             "additionallySupportedSchemas": []
@@ -130,7 +130,7 @@ def get_entry_types():
             "defaultSchema": {
                 "id": DefaultSchemas.RUNS.value['schema'],
                 "name": "Default schema for a sequencing run",
-                "referenceToSchemaDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/runs/defaultSchema.json",
+                "referenceToSchemaDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/runs/defaultSchema.json",
                 "schemaVersion": "v2.0.0"
             },
             "additionallySupportedSchemas": []
@@ -200,7 +200,7 @@ async def beacon_map(request):
         "endpointSets": {
             "analysis": {
                 "entryType": "analysis",
-                "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/analyses/endpoints.json",
+                "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/analyses/endpoints.json",
                 "rootUrl": conf.uri + "analyses",
                 "singleEntryUrl": conf.uri + "analyses/{id}",
                 "endpoints": {
@@ -212,7 +212,7 @@ async def beacon_map(request):
             },
             "biosample": {
                 "entryType": "biosample",
-                "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/biosamples/endpoints.json",
+                "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/biosamples/endpoints.json",
                 "rootUrl": conf.uri + "biosamples",
                 "singleEntryUrl": conf.uri + "biosamples/{id}",
                 "endpoints": {
@@ -232,7 +232,7 @@ async def beacon_map(request):
             },
             "cohort": {
                 "entryType": "cohort",
-                "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/cohorts/endpoints.json",
+                "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/cohorts/endpoints.json",
                 "rootUrl": conf.uri + "cohorts",
                 "singleEntryUrl": conf.uri + "cohorts/{id}",
                 "filteringTermsUrl": conf.uri + "cohorts/filtering_terms",
@@ -253,7 +253,7 @@ async def beacon_map(request):
             },
             "dataset": {
                 "entryType": "dataset",
-                "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/datasets/endpoints.json",
+                "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/datasets/endpoints.json",
                 "rootUrl": conf.uri + "datasets",
                 "singleEntryUrl": conf.uri + "datasets/{id}",
                 "filteringTermsUrl": conf.uri + "datasets/filtering_terms",
@@ -282,7 +282,7 @@ async def beacon_map(request):
             },
             "genomicVariant": {
                 "entryType": "genomicVariant",
-                "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/genomicVariations/endpoints.json",
+                "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/genomicVariations/endpoints.json",
                 "rootUrl": conf.uri + "g_variants",
                 "singleEntryUrl": conf.uri + "g_variants/{variantInternalId}",
                 "endpoints": {
@@ -306,7 +306,7 @@ async def beacon_map(request):
             },
             "individual": {
                 "entryType": "individual",
-                "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/individuals/endpoints.json",
+                "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/individuals/endpoints.json",
                 "rootUrl": conf.uri + "individuals",
                 "singleEntryUrl": conf.uri + "individuals/{id}",
                 "filteringTermsUrl": conf.uri + "individuals/filtering_terms",
@@ -331,7 +331,7 @@ async def beacon_map(request):
             },
             "run": {
                 "entryType": "run",
-                "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2-Models/main/BEACON-V2-Model/runs/endpoints.json",
+                "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/runs/endpoints.json",
                 "rootUrl": conf.uri + "runs",
                 "singleEntryUrl": conf.uri + "runs/{id}",
                 "endpoints": {

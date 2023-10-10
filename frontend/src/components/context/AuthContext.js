@@ -1,3 +1,4 @@
+
 import React, { useState, createContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import configData from '../../config.json'
@@ -152,6 +153,7 @@ function AuthProviderWrapper (props) {
       {props.children}
     </AuthContext.Provider>
   )
+
 }
 
 export { AuthProviderWrapper, AuthContext }
