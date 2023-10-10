@@ -1,4 +1,33 @@
-.variantsResult{
-    scroll-behavior: auto;
-    
+.variantsResult {
+  scroll-behavior: auto;
+}
+
+.resultsVariants p {
+  font-size: 11px;
+  background: #f7faff;
+  color: black;
+  padding: 20px;
+  box-shadow: 1px 1px 1px 1px #e6e6e6;
+}
+
+.containerVariants{
+  height: 100vh;
+  overflow-x: scroll;
+  margin-top: 20px;
+}
+
+.copyDivVariants h7{
+  margin-right: 5px;
+}
+
+.buttonCopy{
+  display: flex;
+  align-items: center;
+}
+
+.copyDivVariants{
+  width: 98%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 6px;
 }

@@ -1,7 +1,7 @@
 import './Verifier.css'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import configData from "../../config.json";
+import configData from '../../config.json'
 
 function Verifier () {
   const [verifierUrl, setVerifierUrl] = useState('')
@@ -27,39 +27,48 @@ function Verifier () {
     setTimeout(false)
     e.preventDefault()
     try {
-      let res = await axios.get(
-        configData.API_URL + `/validate?endpoint=${verifierUrl}`
-      )
-      console.log(res)
-      let stringData = ''
-      res.data.forEach(element => {
-        element = JSON.stringify(element, null, 2)
-        stringData = stringData + element + '\n'
-        stringData = stringData.replace('{', '')
-        stringData = stringData.replace('}', '')
-        stringData = stringData.replace(/[ '"]+/g, ' ')
-      })
+      if (verifierUrl !== '') {
+        let res = await axios.get(
+          `https://beacons.bsc.es/beacon-network/v2.0.0/validate?endpoint=${verifierUrl}`
+        )
 
-      setStringDataToCopy(stringData)
+        console.log(res)
+        let stringData = ''
+        res.data.forEach(element => {
+          element = JSON.stringify(element, null, 2)
+          stringData = stringData + element + '\n'
+          stringData = stringData.replace('{', '')
+          stringData = stringData.replace('}', '')
+          stringData = stringData.replace(/[ '"]+/g, ' ')
+          
+        })
 
-      let isProperty = res.data.some(object => 'code' in object)
-      console.log(isProperty)
+        setStringDataToCopy(stringData)
 
-      if (isProperty === false) {
-        setErrorsFound(true)
+        let isProperty = res.data.some(object => 'code' in object)
+        console.log(isProperty)
+
+        if (isProperty === false) {
+          setErrorsFound(true)
+        } else {
+          setErrorsFound(false)
+        }
+
+        setResponse(res.data)
+
+        if (res !== null && res !== undefined) {
+          setShowResults(true)
+          setTimeout(true)
+        }
       } else {
-        setErrorsFound(false)
-      }
-
-      setResponse(res.data)
-
-      if (res !== null && res !== undefined) {
-        setShowResults(true)
+        setErrror('An error occured. Please check the URL and retry.')
         setTimeout(true)
       }
     } catch (error) {
       console.log(error)
-      setErrror('Please retry. The validation could not be performed.')
+      setErrror(
+        'An error occured. Please check the URL and retry.'
+      )
     }
   }
 
@@ -88,8 +97,8 @@ function Verifier () {
             </div>
           </div>
         )}
-
-        {showResults === true && timeOut === true && (
+        {error !== '' && timeOut === true && <h2>{error}</h2>}
+        {showResults === true && timeOut === true && error === '' && (
           <div className='copyDiv'>
             <button onClick={copyData}>
               {' '}
@@ -99,7 +108,7 @@ function Verifier () {
         )}
 
         {showResults === true &&
-          timeOut === true &&
+          timeOut === true && error === '' &&
           response.map((element, index) => {
             return (
               <div className='messageContainer'>
@@ -124,7 +133,7 @@ function Verifier () {
             )
           })}
 
-        {errorsFound === true && (
+        {errorsFound === true && error=== '' && (
           <h11>
             Congratulations! Validation has finished. No errors detected.
           </h11>
