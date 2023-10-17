@@ -20,6 +20,12 @@ function Verifier () {
     //var ctype = document.getElementById('copydata').innerHTML
     //console.log(ctype)
     navigator.clipboard.writeText(stringDataToCopy)
+    .then(() => {
+      alert("successfully copied");
+    })
+    .catch(() => {
+      alert("something went wrong");
+    });
     console.log('COPY DONE')
   }
 
