@@ -190,7 +190,7 @@ function VariantsResults (props) {
             requestParameters['aminoacidChange'] = props.aminoacid2
           }
           if (props.geneID !== '') {
-            requestParameters['geneId'] = props.geneID
+            requestParameters['gene'] = props.geneID
           }
           if (props.assemblyId !== '') {
             requestParameters['assemblyId'] = props.assemblyId
