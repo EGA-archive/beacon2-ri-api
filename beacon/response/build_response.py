@@ -110,9 +110,10 @@ def build_beacon_resultset_response_by_dataset(data,
     dataset_ids_list = []
     
     for dataset_dict in list_of_dataset_dicts:
-        dataset_id = dataset_dict['dataset']
-        response_dict[dataset_id] = []
-        dataset_ids_list.append(dataset_id)
+        if 'Unauthorized dataset' not in dataset_dict['ids']:
+            dataset_id = dataset_dict['dataset']
+            response_dict[dataset_id] = []
+            dataset_ids_list.append(dataset_id)
     
     for doc in data:
         for dataset_dict in list_of_dataset_dicts:
@@ -155,8 +156,7 @@ def build_beacon_resultset_response_by_dataset(data,
                             dataset_id = dataset_dict['dataset']
                             response_dict[dataset_id].append(doc)
             except Exception as e:
-                dataset_id = dataset_dict['dataset']
-                response_dict[dataset_id].append(doc)
+                pass
     length_to_rest=0
     for dataset_id in dataset_ids_list:
         finish_record = finish_record - length_to_rest
