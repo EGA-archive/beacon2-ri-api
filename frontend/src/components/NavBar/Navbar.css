@@ -155,8 +155,8 @@
 }
 
 .Sign-in6:hover ~ .animation {
-  width: 120px;
-  left: 92%;
+  width: 90px;
+  left: 93%;
   background-color: #7a9f9f;
 }
 
@@ -219,11 +219,11 @@
   align-items: center;
   justify-content: center;
   align-content: center;
-  width: 186px;
+  width: 196px;
 }
 
 .Members:hover ~ .animation {
-  width: 180px;
+  width: 150px;
   left: 70%;
   background-color: #4961b8;
 }
@@ -235,8 +235,8 @@
 }
 
 .Sign-in:hover ~ .animation {
-  width: 176px;
-  left: 81.5%;
+  width: 166px;
+  left: 81.1%;
   background-color: #e575dd;
 }
 

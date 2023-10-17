@@ -14,6 +14,7 @@ function CohortsModule (props) {
     props.setShowGraphs(true)
   }
   const handleChangeCohorts = selectedOption => {
+    console.log(selectedOption)
     setSelectedCohortsAux([])
     selectedCohortsAux.push(selectedOption)
     props.setSelectedCohorts(selectedCohortsAux)
@@ -37,7 +38,7 @@ function CohortsModule (props) {
           <button className='searchButton2' type='submit'>
             <img
               className='forwardIcon'
-              src='./adelante.png'
+              src='./next.png'
               alt='searchIcon'
             ></img>
           </button>

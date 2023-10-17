@@ -44,7 +44,7 @@ select {
 
 .formButton {
   cursor: pointer;
-  background: rgb(214, 207, 207);
+  background: rgb(255 255 255);
   border: 2px 2px 2px 0px solid #010a7d;
   font-size: medium;
   border-radius: 5px;
@@ -54,8 +54,10 @@ select {
   margin-top: 30px;
 }
 
+
 .formButton:hover {
-  background: rgb(237, 142, 40);
+  background: #d4c223;
+  box-shadow: 1px 1px 1px 1px #d2cfcf;
 }
 
 h5 {

@@ -1,4 +1,4 @@
-import './Individuals.css'
+import '../Individuals/Individuals.css'
 import '../../App.css'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
@@ -8,7 +8,7 @@ import configData from '../../config.json'
 import { useContext } from 'react'
 import TableResultsIndividuals from '../Results/IndividualsResults/TableResultsIndividuals'
 
-function IndividualsResults (props) {
+function BiosamplesResults (props) {
   const [showLayout, setShowLayout] = useState(false)
 
   const [beaconsList, setBeaconsList] = useState([])
@@ -181,7 +181,7 @@ function IndividualsResults (props) {
           // console.log(token)
           //const headers = { Authorization: `Bearer ${token}` }
 
-          res = await axios.post(configData.API_URL + '/individuals', jsonData1)
+          res = await axios.post(configData.API_URL + '/biosamples', jsonData1)
 
           console.log(res)
           setTimeOut(true)
@@ -233,7 +233,7 @@ function IndividualsResults (props) {
           //const headers = { Authorization: `Bearer ${token}` }
 
           //res = await axios.post("https://beacons.bsc.es/beacon-network/v2.0.0/individuals/", jsonData2, { headers: headers })
-          res = await axios.post(configData.API_URL + '/individuals', jsonData2)
+          res = await axios.post(configData.API_URL + '/biosamples', jsonData2)
 
           console.log(res)
           setTimeOut(true)
@@ -371,4 +371,4 @@ function IndividualsResults (props) {
   )
 }
 
-export default IndividualsResults
+export default BiosamplesResults

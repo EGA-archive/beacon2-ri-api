@@ -59,7 +59,7 @@ html {
 }
 
 .newSearchButton:hover {
-  color: #4fb5f0;
+  color: rgb(118, 151, 228);
 }
 
 .searchButton2 {
@@ -90,6 +90,7 @@ html {
   border-color: black;
   height: 30px;
   margin-left: 14px;
+  z-index: 0;
 }
 
 .container-fluid {
@@ -158,7 +159,7 @@ html {
   /* margin: 10px; */
   border-radius: 10px;
   /* box-shadow: 2px 1px 2px #cecece; */
-  height: 34px;
+  height: 32px;
 }
 
 .searchIcon {
@@ -171,12 +172,13 @@ html {
 }
 
 .forwardIcon {
-  width: 24px;
-  margin-left: 4px;
+  width: 25px;
 }
 
 .forwardIcon:hover {
-  margin-left: 12px;
+  background-color: #c8d4e6;
+  padding: 4px;
+  border-radius: 16px;
 }
 
 .navbar {
@@ -272,7 +274,9 @@ html {
   margin-top: -10px;
   margin-bottom: 35px;
   background: rgba(0, 0, 0, 0.09);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
 }
 .spanQE {
   display: block;
@@ -450,15 +454,14 @@ html {
 .container1 a {
   display: flex;
   align-content: center;
-  justify-content: center;
   text-underline-offset: 4px;
   align-items: center;
 }
 
 .elixirLogo {
-  height: 100px;
+  height: 91px;
   margin-top: 29px;
-  margin-right: 12px;
+  margin-right: 21px;
 }
 
 .comming_message {
@@ -935,7 +938,7 @@ h5 {
   position: absolute !important;
   inset: 35% !important;
   border: 1px solid rgb(204, 204, 204) !important;
-  background: #e16e00 !important;
+  background: #e2842b !important;
   overflow: auto !important;
   border-radius: 4px !important;
   outline: none !important;
@@ -943,11 +946,11 @@ h5 {
 }
 
 .ReactModal__Content--after-open p {
-  font-size: 21px;
+  font-size: 18px;
   font-weight: normal;
   color: white;
-  line-height: 38px;
-  padding: 4px;
+  line-height: 30px;
+  padding: 2px;
 }
 
 @media (max-width: 800px) {

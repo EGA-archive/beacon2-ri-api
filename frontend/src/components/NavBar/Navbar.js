@@ -14,7 +14,7 @@ function Navbar () {
   const auth = useAuth()
 
   const isAuthenticated = auth.userData?.id_token ? true : false
-  if (isAuthenticated) {
+  if (isAuthenticated || isLoggedIn === true) {
     setIsLoggedIn(true)
   } else {
     setIsLoggedIn(false)
@@ -28,6 +28,7 @@ function Navbar () {
     console.log('hejek')
     setIsLoggedIn(false)
     auth.signOut()
+    logOutUser()
   }
 
   return (
@@ -93,10 +94,10 @@ function Navbar () {
       <nav className='nav3'>
         {!isLoggedIn && (
           <NavLink
-            to='/members'
+            to='/info'
             className={({ isActive }) => (isActive ? 'Members2' : 'Members')}
           >
-            Network members
+            Beacon information
           </NavLink>
         )}
         {!isLoggedIn && (
@@ -126,10 +127,10 @@ function Navbar () {
         {isLoggedIn && (
           <NavLink
             exact
-            to='/members'
+            to='/info'
             className={({ isActive }) => (isActive ? 'Members4' : 'Members3')}
           >
-            Network members
+            Beacon information
           </NavLink>
         )}
 

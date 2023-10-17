@@ -1,5 +1,7 @@
 {
-    "API_URL": "https://beacons.bsc.es/beacon-network/v2.0.0",
-    "KEYCLOAK_URL": "https://beacon-network-demo2.ega-archive.org",
-    "REDIRECT_URL": "http://localhost:3000/"
+
+    "API_URL": "http://localhost:5050/api",
+    "REDIRECT_URL": "please insert here your redirect URL",
+    "KEYCLOAK_URL": "http://localhost:8080"
+
   }

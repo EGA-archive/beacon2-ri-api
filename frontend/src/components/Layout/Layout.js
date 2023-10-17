@@ -1,15 +1,15 @@
 import '../../App.css'
 
-import FilteringTermsIndividuals from '../FilteringTerms/FilteringTerms'
+import FilteringTerms from '../FilteringTerms/FilteringTerms'
 import { NavLink } from 'react-router-dom'
 
-import ResultsDatasets from '../Datasets/ResultsDatasets'
+import ResultsDatasets from '../Dataset/BeaconInfo'
 import VariantsResults from '../GenomicVariations/VariantsResults'
 import HorizontalExpansion from '../QueryExpansion/HorizontalExpansion'
+import BiosamplesResults from '../Biosamples/BiosamplesResults'
 
 import React, { useState, useEffect } from 'react'
-import { AuthContext } from '../context/AuthContext'
-import { useContext } from 'react'
+
 
 import Switch from '@mui/material/Switch'
 import MultiSwitch from 'react-multi-switch-toggle'
@@ -31,6 +31,8 @@ function Layout (props) {
 
   const [results, setResults] = useState(null)
   const [query, setQuery] = useState(null)
+  const [queryAux, setQueryAux] = useState(null)
+
   const [exampleQ, setExampleQ] = useState([])
 
   const [expansionSection, setExpansionSection] = useState(false)
@@ -62,16 +64,8 @@ function Layout (props) {
   const [showResultsVariants, setShowResultsVariants] = useState(true)
 
   const [triggerCohorts, setTriggerCohorts] = useState(true)
-
+  const [triggerQuery, setTriggerQuery] = useState(false)
   const [trigger, setTrigger] = useState(false)
-  const {
-    storeToken,
-    refreshToken,
-    getStoredToken,
-    authenticateUser,
-    setExpirationTime,
-    setExpirationTimeRefresh
-  } = useContext(AuthContext)
 
   const [showBar, setShowBar] = useState(true)
 
@@ -105,8 +99,6 @@ function Layout (props) {
 
   const [hideForm, setHideForm] = useState(false)
 
-  const [resetSearch, setResetSearch] = useState(false)
-
   const [state, setstate] = useState({
     query: '',
     list: []
@@ -120,8 +112,6 @@ function Layout (props) {
   const [isSubmitted, setIsSub] = useState(false)
 
   const [arrayFilteringTerms, setArrayFilteringTerms] = useState([])
-
-  const [showIds, setShowIds] = useState(false)
 
   const handleChangeSwitch = e => {
     setDescendantTerm(e.target.checked)
@@ -185,7 +175,7 @@ function Layout (props) {
     if (props.collection === 'Individuals') {
       try {
         let res = await axios.get(
-          configData.API_URL + '/individuals/filtering_terms'
+          configData.API_URL + '/individuals/filtering_terms?skip=0&limit=0'
         )
         setTimeOut(true)
         console.log(res)
@@ -201,7 +191,7 @@ function Layout (props) {
     } else if (props.collection === 'Cohorts') {
       try {
         let res = await axios.get(
-          configData.API_URL + '/cohorts/filtering_terms'
+          configData.API_URL + '/cohorts/filtering_terms?skip=0&limit=0'
         )
         setTimeOut(true)
         if (res.data.response.filteringTerms !== undefined) {
@@ -216,7 +206,7 @@ function Layout (props) {
     } else if (props.collection === 'Variant') {
       try {
         let res = await axios.get(
-          configData.API_URL + '/g_variants/filtering_terms'
+          configData.API_URL + '/g_variants/filtering_terms?skip=0&limit=0'
         )
         setTimeOut(true)
         if (res.data.response.filteringTerms !== undefined) {
@@ -227,11 +217,12 @@ function Layout (props) {
         }
       } catch (error) {
         console.log(error)
+        setError('No filtering terms now available')
       }
     } else if (props.collection === 'Analyses') {
       try {
         let res = await axios.get(
-          configData.API_URL + '/analyses/filtering_terms'
+          configData.API_URL + '/analyses/filtering_terms?skip=0&limit=0'
         )
         setTimeOut(true)
         if (res.data.response.filteringTerms !== undefined) {
@@ -245,7 +236,9 @@ function Layout (props) {
       }
     } else if (props.collection === 'Runs') {
       try {
-        let res = await axios.get(configData.API_URL + '/runs/filtering_terms')
+        let res = await axios.get(
+          configData.API_URL + '/runs/filtering_terms?skip=0&limit=0'
+        )
         setTimeOut(true)
         if (res.data.response.filteringTerms !== undefined) {
           setFilteringTerms(res)
@@ -259,7 +252,7 @@ function Layout (props) {
     } else if (props.collection === 'Biosamples') {
       try {
         let res = await axios.get(
-          configData.API_URL + '/biosamples/filtering_terms'
+          configData.API_URL + '/biosamples/filtering_terms?skip=0&limit=0'
         )
         setTimeOut(true)
         if (res.data.response.filteringTerms !== undefined) {
@@ -286,7 +279,13 @@ function Layout (props) {
         'NCIT:C42331'
       ])
     } else if (props.collection === 'Variant') {
-      setExampleQ(['22 : 16050310 - 16050740', '22 : 16050074 A > G'])
+      setExampleQ(['GENO:GENO_0000458'])
+    } else if (props.collection === 'Biosamples') {
+      setExampleQ(['UBERON:0000178', 'EFO:0009654', 'sampleOriginType:blood'])
+    } else if (props.collection === 'Runs') {
+      setExampleQ([''])
+    } else if (props.collection === 'Analyses') {
+      setExampleQ([''])
     }
   }
 
@@ -373,7 +372,6 @@ function Layout (props) {
   }
 
   useEffect(() => {
-    
     if (props.collection === 'Individuals') {
       setPlaceholder('filtering term comma-separated, ID><=value')
       setExtraIndividuals(true)
@@ -401,9 +399,10 @@ function Layout (props) {
     }
 
     const fetchData = async () => {
+      // for query expansion
       try {
         let res = await axios.get(
-          'https://beacon-apis-test.ega-archive.org/api/individuals/filtering_terms?skip=0&limit=0'
+          configData.API_URL + '/individuals/filtering_terms'
         )
         if (res !== null) {
           res.data.response.filteringTerms.forEach(element => {
@@ -432,31 +431,15 @@ function Layout (props) {
   const onSubmit = async event => {
     event.preventDefault()
 
-    setIsSub(!isSubmitted)
+    setIsSub(true)
 
+    setQueryAux(query)
+
+    if (queryAux !== query) {
+      setTriggerQuery(!triggerQuery)
+    }
     console.log(query)
 
-    authenticateUser()
-
-    setExampleQ([])
-
-    setResetSearch(true)
-
-    if (query === '1' || query === '') {
-      setQuery(null)
-    }
-    if (props.collection === 'Individuals') {
-      setResults('Individuals')
-    } else if (props.collection === 'Variant') {
-      setResults('Variant')
-    }
-  }
-
-  const onSubmit2 = event => {
-    setPlaceholder('filtering term comma-separated, ID><=value')
-
-    setIsSub(!isSubmitted)
-
     setExampleQ([])
 
     if (query === '1' || query === '') {
@@ -466,6 +449,12 @@ function Layout (props) {
       setResults('Individuals')
     } else if (props.collection === 'Variant') {
       setResults('Variant')
+    } else if (props.collection === 'Biosamples') {
+      setResults('Biosamples')
+    } else if (props.collection === 'Analyses') {
+      setResults('Analyses')
+    } else if (props.collection === 'Runs') {
+      setResults('Runs')
     }
   }
 
@@ -492,7 +481,7 @@ function Layout (props) {
           ></img>
         </button>
         <NavLink className='NavlinkVerifier' exact to='/verifier'>
-          BEACON VERIFIER
+          BEACON VALIDATOR
         </NavLink>
 
         <div className='logos'>
@@ -561,39 +550,25 @@ function Layout (props) {
                     onChange={e => search(e)}
                     aria-label='Search'
                   />
-                  {!isSubmitted && (
-                    <button className='searchButton' type='submit'>
-                      <img
-                        className='searchIcon'
-                        src='./magnifier.png'
-                        alt='searchIcon'
-                      ></img>
-                    </button>
-                  )}
-                  {isSubmitted && (
-                    <div className='newSearch'>
-                      <button
-                        className='newSearchButton'
-                        onClick={onSubmit2}
-                        type='submit'
-                      >
-                        NEW SEARCH
-                      </button>
-                    </div>
-                  )}
+
+                  <button className='searchButton' type='submit'>
+                    <img
+                      className='searchIcon'
+                      src='./magnifier.png'
+                      alt='searchIcon'
+                    ></img>
+                  </button>
                 </form>
               </div>
             )}
-            {props.collection === 'Cohorts' &&
-             
-                <CohortsModule
-                  optionsCohorts={props.optionsCohorts}
-                  selectedCohorts={props.selectedCohorts}
-                  setSelectedCohorts={props.setSelectedCohorts}
-                  setShowGraphs={props.setShowGraphs}
-                />
-              }
-        
+            {props.collection === 'Cohorts' && (
+              <CohortsModule
+                optionsCohorts={props.optionsCohorts}
+                selectedCohorts={props.selectedCohorts}
+                setSelectedCohorts={props.setSelectedCohorts}
+                setShowGraphs={props.setShowGraphs}
+              />
+            )}
           </div>
         )}
 
@@ -985,7 +960,12 @@ function Layout (props) {
             ></img>
           </button>
 
-          <p>Help for queries.</p>
+          <p>
+            "Please use the online validator to check your Beacon API for
+            specification compliance before it is included to the network. It
+            will check the metadata, defined endpoints and responses over
+            Beacon's v2 Schemas."{' '}
+          </p>
         </ReactModal>
       </div>
 
@@ -1005,7 +985,7 @@ function Layout (props) {
         {results === null && !showFilteringTerms && (
           <ResultsDatasets trigger={trigger} />
         )}
-        {isSubmitted && results === 'Individuals' && (
+        {isSubmitted && results === 'Individuals' && triggerQuery && (
           <div>
             <IndividualsResults
               query={query}
@@ -1019,7 +999,21 @@ function Layout (props) {
             />
           </div>
         )}
-        {isSubmitted && results === 'Variant' && (
+        {isSubmitted && results === 'Individuals' && !triggerQuery && (
+          <div>
+            <IndividualsResults
+              query={query}
+              resultSets={resultSet}
+              ID={ID}
+              operator={operator}
+              valueFree={valueFree}
+              descendantTerm={descendantTerm}
+              similarity={similarity}
+              isSubmitted={isSubmitted}
+            />
+          </div>
+        )}
+        {isSubmitted && results === 'Variant' && triggerQuery && (
           <div>
             <VariantsResults
               query={query}
@@ -1049,8 +1043,60 @@ function Layout (props) {
             />
           </div>
         )}
+        {isSubmitted && results === 'Variant' && !triggerQuery && (
+          <div>
+            <VariantsResults
+              query={query}
+              resultSets={resultSet}
+              showResultsVariants={showResultsVariants}
+              setHideForm={setHideForm}
+              showBar={showBar}
+              aminoacid2={aminoacid2}
+              assemblyId2={assemblyId2}
+              assemblyId3={assemblyId3}
+              alternateBases3={alternateBases3}
+              alternateBases2={alternateBases2}
+              isSubmitted={isSubmitted}
+              variantType2={variantType2}
+              start2={start2}
+              referenceName2={referenceName2}
+              referenceName={referenceName}
+              assemblyId={assemblyId}
+              start={start}
+              end={end}
+              variantType={variantType}
+              alternateBases={alternateBases}
+              referenceBases={referenceBases}
+              referenceBases2={referenceBases2}
+              aminoacid={aminoacid}
+              geneID={geneID}
+            />
+          </div>
+        )}
+        {isSubmitted && results === 'Biosamples' && triggerQuery && (
+          <div>
+            <BiosamplesResults
+              query={query}
+              resultSets={resultSet}
+              descendantTerm={descendantTerm}
+              similarity={similarity}
+              isSubmitted={isSubmitted}
+            />
+          </div>
+        )}
+        {isSubmitted && results === 'Biosamples' && !triggerQuery && (
+          <div>
+            <BiosamplesResults
+              query={query}
+              resultSets={resultSet}
+              descendantTerm={descendantTerm}
+              similarity={similarity}
+              isSubmitted={isSubmitted}
+            />
+          </div>
+        )}
         {results === null && timeOut === true && showFilteringTerms && (
-          <FilteringTermsIndividuals
+          <FilteringTerms
             filteringTerms={filteringTerms}
             collection={props.collection}
             setPlaceholder={setPlaceholder}
