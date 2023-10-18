@@ -170,7 +170,8 @@ services:
     build:
       context: ../frontend
     #command: ["yarn"]
-    command: ["node", "/opt/yarn-v1.22.19/bin/yarn.js", "start" ]
+    #command: ["node", "/opt/yarn-v1.22.19/bin/yarn.js", "start" ]
+    command: yarn start
     container_name: react
     ports:
       - 3000:3000
