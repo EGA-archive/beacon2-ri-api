@@ -45,7 +45,16 @@ class DummyPermissions(Permissions):
 
     async def get(self, username, requested_datasets=None):
         try:
-            datasets = set(self.db.get(username))
+            with open("/beacon/permissions/controlled_datasets.yml", 'r') as file:
+                controlled_datasets = yaml.safe_load(file)
+            file.close()
+            list_controlled_datasets = controlled_datasets['controlled_datasets']
+            datasets = []
+            for cdataset in list_controlled_datasets:
+                datasets.append(cdataset)
+            for pdataset in self.db.get(username):
+                datasets.append(pdataset)
+            datasets = set(datasets)
         except Exception:
             with open("/beacon/permissions/permissions.yml", 'r') as stream:
                 permissions_dict = yaml.safe_load(stream)

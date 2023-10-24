@@ -2,10 +2,12 @@ app-user3: []
 gemma_test: []
 jane:
 - GiaB
-jofrdo:
+jofrdo: null
 john:
 - GiabV
 - dataset-registered
 - dataset-controlled
 new_user:
 - GiaB
+usuari_creat:
+- hola
