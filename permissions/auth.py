@@ -58,12 +58,24 @@ async def get_user_info(access_token):
                 content = await resp.text()
                 dict_content = json.loads(content)
                 user = dict_content
-                return user
             else:
                 LOG.error('Content: %s', content)
                 LOG.error('Invalid token')
                 raise web.HTTPUnauthorized()
-
+            
+        user = None
+        async with ClientSession(trust_env=True) as session:
+            headers = { 'Accept': 'application/json', 'Authorization': 'Bearer ' + access_token }
+            LOG.debug('Contacting %s', idp_user_info)
+            async with session.get(idp_user_info, headers=headers) as resp:
+                LOG.debug('Response %s', resp)
+                if resp.status == 200:
+                    user = await resp.json()
+                    return user
+                else:
+                    content = await resp.text()
+                    LOG.error('Content: %s', content)
+                    raise web.HTTPUnauthorized()
 
 
 
