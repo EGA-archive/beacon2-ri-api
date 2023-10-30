@@ -6,6 +6,7 @@ from aiohttp.web_request import Request
 from bson import json_util
 from beacon import conf
 import yaml
+import jwt
 
 from beacon.request import ontologies
 from beacon.request.model import Granularity, RequestParams
@@ -66,6 +67,9 @@ def generic_handler(db_fn, request=None):
             except Exception:
                 specific_datasets = []
             access_token = access_token[7:]  # cut out 7 characters: len('Bearer ')
+
+
+            
             
             authorized_datasets, authenticated = await resolve_token(access_token, search_datasets)
             LOG.debug(authorized_datasets)
@@ -178,6 +182,24 @@ def generic_handler(db_fn, request=None):
             
 
         qparams = RequestParams(**json_body).from_request(request)
+
+        if access_token is not None:
+            decoded = jwt.decode(access_token, options={"verify_signature": False})
+            LOG.debug(decoded)
+            token_username = decoded['preferred_username']
+            with open("/beacon/beacon/request/response_type.yml", 'r') as response_type_file:
+                response_type_dict = yaml.safe_load(response_type_file)
+
+            response_type = response_type_dict[token_username]
+            if response_type is not None:
+                for response_typed in response_type:    
+                    LOG.debug(response_typed)        
+                    if response_typed == 'boolean':
+                        qparams.query.requested_granularity = Granularity.BOOLEAN
+                    elif response_typed == 'count':
+                        qparams.query.requested_granularity = Granularity.COUNT
+                    elif response_typed == 'record':
+                        qparams.query.requested_granularity = Granularity.RECORD
         
 
         entry_id = request.match_info.get('id', None)
@@ -200,6 +222,8 @@ def generic_handler(db_fn, request=None):
             finish_record = limit*skip + limit
 
         response_converted = records
+
+        LOG.debug(qparams.query.requested_granularity)
         
         if qparams.query.requested_granularity == Granularity.BOOLEAN:
             response = build_beacon_boolean_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
@@ -242,6 +266,11 @@ def filtering_terms_handler(db_fn, request=None):
             except Exception:
                 specific_datasets = []
             access_token = access_token[7:]  # cut out 7 characters: len('Bearer ')
+
+
+            decoded = jwt.decode(access_token, options={"verify_signature": False})
+            LOG.debug(decoded)
+            token_username = decoded['preferred_username']
             
             authorized_datasets, authenticated = await resolve_token(access_token, search_datasets)
             LOG.debug(authorized_datasets)

@@ -20,14 +20,44 @@ import scipy
 import numpy as np
 from utils import get_filtering_documents
 
+import sys
+import os
+
+
+current = os.path.dirname(os.path.realpath(__file__))
+
+
+parent = os.path.dirname(current)
+
+
+sys.path.append(parent)
+
+
+import conf
+
 
 ONTOLOGY_REGEX = re.compile(r"([_A-Za-z0-9]+):([_A-Za-z0-9^\-]+)")
 
+client = MongoClient(
+        #"mongodb://127.0.0.1:27017/"
+        "mongodb://{}:{}@{}:{}/{}?authSource={}".format(
+            conf.database_user,
+            conf.database_password,
+            conf.database_host,
+            conf.database_port,
+            conf.database_name,
+            conf.database_auth_source,
+        )
+    )
+
+'''
+client = MongoClient(
 client = MongoClient(
     #"mongodb://127.0.0.1:27017/"
     "mongodb://root:example@mongo:27017/beacon?authSource=admin"
 
 )
+'''
 
 class MyProgressBar:
     def __init__(self):
