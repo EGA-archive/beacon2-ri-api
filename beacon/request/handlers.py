@@ -6,7 +6,7 @@ from aiohttp.web_request import Request
 from bson import json_util
 from beacon import conf
 import yaml
-import base64
+import jwt
 
 from beacon.request import ontologies
 from beacon.request.model import Granularity, RequestParams
@@ -184,9 +184,9 @@ def generic_handler(db_fn, request=None):
         qparams = RequestParams(**json_body).from_request(request)
 
         if access_token is not None:
-            tokenSplit = access_token.split(".")
-            payload_token = json.loads((base64.b64decode(tokenSplit[1])).decode("utf-8"))
-            token_username = payload_token['preferred_username']
+            decoded = jwt.decode(access_token, options={"verify_signature": False})
+            LOG.debug(decoded)
+            token_username = decoded['preferred_username']
             with open("/beacon/beacon/request/response_type.yml", 'r') as response_type_file:
                 response_type_dict = yaml.safe_load(response_type_file)
 
@@ -268,9 +268,9 @@ def filtering_terms_handler(db_fn, request=None):
             access_token = access_token[7:]  # cut out 7 characters: len('Bearer ')
 
 
-            tokenSplit = access_token.split(".")
-            payload_token = json.loads((base64.b64decode(tokenSplit[1])).decode("utf-8"))
-            LOG.debug(payload_token)
+            decoded = jwt.decode(access_token, options={"verify_signature": False})
+            LOG.debug(decoded)
+            token_username = decoded['preferred_username']
             
             authorized_datasets, authenticated = await resolve_token(access_token, search_datasets)
             LOG.debug(authorized_datasets)

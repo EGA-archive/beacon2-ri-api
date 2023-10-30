@@ -9,7 +9,7 @@ valid.
 For this implementation, we only implement contacting the userinfo endpoint.
 No JWT signature verification.
 """
-
+import json
 import logging
 
 from aiohttp import ClientSession, BasicAuth, FormData
@@ -21,8 +21,8 @@ LOG = logging.getLogger(__name__)
 
 
 
-idp_client_id     = 'permissions'
-idp_client_secret = 'bcFFbN3N8bVDTStnyeTIszusq7pSoBrn'
+idp_client_id     = 'beacon'
+idp_client_secret = 'b26ca0f9-1137-4bee-b453-ee51eefbe7ba'
 #idp_user_info = 'http://localhost:8080/oidc/userinfo'
 #idp_user_info = 'http://ls-aai-mock:8080/oidc/userinfo'
 idp_user_info  = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
@@ -44,31 +44,28 @@ async def get_user_info(access_token):
     '''
     LOG.debug('Token: %s', access_token)
 
-    user = None
-    async with ClientSession(trust_env=True) as session:
-        headers = { 'Accept': 'application/json', 'Authorization': 'Bearer ' + access_token }
-        LOG.debug('Contacting %s', idp_user_info)
-        async with session.get(idp_user_info, headers=headers) as resp:
-            LOG.debug('Response %s', resp)
-            if resp.status == 200:
-                user = await resp.json()
-                return user
-            else:
-                content = await resp.text()
-                LOG.error('Content: %s', content)
-
     # Invalid access token
-    LOG.error('Invalid token')
+    
     async with ClientSession() as session:
-        async with session.post(idp_introspection,
-                                auth=BasicAuth(idp_client_id, password=idp_client_secret),
-                                data=FormData({ 'token': access_token, 'token_type_hint': 'access_token' }, charset='UTF-8')
+        headers = { 'Accept': 'application/json', 'Authorization': 'Bearer ' + access_token }
+        payload = {'client_id': idp_client_id, 'client_secret': idp_client_secret, 'token': access_token }
+        async with session.post(idp_introspection, headers=headers,
+                                data=payload
         ) as resp:
             LOG.debug('Response %s', resp.status)
             #LOG.debug('Response %s', resp)
-            content = await resp.text()
-            LOG.debug('Content: %s', content)
-    raise web.HTTPUnauthorized()
+            if resp.status == 200:
+                content = await resp.text()
+                dict_content = json.loads(content)
+                user = dict_content
+                return user
+            else:
+                LOG.error('Content: %s', content)
+                LOG.error('Invalid token')
+                raise web.HTTPUnauthorized()
+
+
+
 
 
 

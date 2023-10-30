@@ -32,4 +32,5 @@ urllib3==1.26.13
 #torch==1.11.0
 obonet==0.3.1
 networkx==2.8.8
+PyJWT==2.7.0
 
