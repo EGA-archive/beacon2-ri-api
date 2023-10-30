@@ -27,7 +27,7 @@ async def resolve_token(token, requested_datasets_ids):
     # * return _all_ the datasets the user has access to, in case the datasets list is empty
     async with ClientSession() as session:
         async with session.post(
-                'http://beacon-permissions:5051/',
+                permissions_url,
                 headers={'Authorization': 'Bearer ' + token,
                          'Accept': 'application/json'},
                 json={'datasets': requested_datasets_ids},  # will set the Content-Type to application/json
