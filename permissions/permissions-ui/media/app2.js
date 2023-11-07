@@ -1,7 +1,7 @@
 const btnAdd2 = document.querySelector('#btnAdd2');
 const btnRemove = document.querySelector('#btnRemove');
-const datasets = document.querySelector('#list_datasets');
-const framework = document.querySelector('#framework');
+const datasets = document.querySelector('#datasets');
+const listbox = document.querySelector('#list');
 btnAdd2.onclick = (e) => {
     e.preventDefault();
   
@@ -24,21 +24,6 @@ btnAdd2.onclick = (e) => {
       listbox.add(option, undefined);
     }
     // create a new option
-
-    if (framework.value == '') {
-        alert('Please enter the name.');
-        return;
-      }
-      
-      // create a new option
-      const option = new Option(framework.value, framework.value);
-      option.setAttribute('selected', 'selected');
-      // add it to the list
-      listbox.add(option, undefined);
-    
-      // reset the value of the input
-      framework.value = '';
-      framework.focus();
   
   
   

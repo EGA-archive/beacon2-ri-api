@@ -58,18 +58,19 @@
               <div><h2 style="color: #760509;">Controlled datasets manager</h2></div>
               <form method="post">
                 {% csrf_token %}
-                  <label for="framework">Dataset:</label>
-                  <input type="text" id="framework" placeholder="Enter a controlled dataset" autocomplete="off">
-  
-                  <button id="btnAdd">Add</button>
-  
-                  <label for="list">Controlled Datasets List:</label>
-                  <select id="list" name="list" multiple>
-                    {% for item in bash_out %}
-                    <option value="{{item}}" selected="selected">{{item}}</option>
-                    {% endfor %}
-                  </select>
-                  <button id="btnRemove">Remove Dataset</button>
+                <label for="datasets">Dataset:</label>
+
+                <select id="datasets" name="datasets" multiple>
+                  <option value="dataset1" selected="selected">dataset1</option>
+                </select>
+                <button id="btnAdd2">Add</button>
+                <label for="list">Public Datasets List:</label>
+                <select id="list" name="list" multiple>
+                  {% for item in bash_out %}
+                  <option value="{{item}}" selected="selected">{{item}}</option>
+                  {% endfor %}
+                </select>
+                <button id="btnRemove">Remove Dataset</button>
                   <div class="col-5">
                     <button type="submit" class="btn btn-success mb-3">Add datasets</button>    
                   </div>
@@ -130,6 +131,6 @@
     }
   
   </script>
-  <script src="media/app.js"></script>
+  <script src="media/app2.js"></script>
 </body>
 </html>
