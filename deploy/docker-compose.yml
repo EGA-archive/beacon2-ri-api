@@ -103,6 +103,7 @@ services:
       - ./logger.yml:/beacon/logger.yml
     ports:
       - "5051:5051"
+      - 8010:8000
     networks:
       - beacon-priv
       - pub
@@ -177,4 +178,6 @@ services:
       - 3000:3000
     volumes:
       - ../frontend:/usr/src/app
+
+
 

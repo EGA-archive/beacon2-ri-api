@@ -32,11 +32,13 @@ async def resolve_token(token, requested_datasets_ids):
                          'Accept': 'application/json'},
                 json={'datasets': requested_datasets_ids},  # will set the Content-Type to application/json
         ) as resp:
+            '''
             if resp.status > 200:
                 LOG.error('Permissions server error %d', resp.status)
                 error = await resp.text()
                 LOG.error('Error: %s', error)
                 raise web.HTTPUnauthorized(body=error)
+            '''
             content = await resp.content.read()
             authorized_datasets = content.decode('utf-8')
             authorized_datasets_list = authorized_datasets.split('"')
