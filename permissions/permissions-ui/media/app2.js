@@ -1,7 +1,7 @@
 const btnAdd2 = document.querySelector('#btnAdd2');
 const btnRemove = document.querySelector('#btnRemove');
 const datasets = document.querySelector('#datasets');
-const listbox = document.querySelector('#list');
+const listbox2 = document.querySelector('#list');
 btnAdd2.onclick = (e) => {
     e.preventDefault();
   
@@ -18,10 +18,12 @@ btnAdd2.onclick = (e) => {
   
     for (let i = 0; i < selected.length; i++) {
       console.log(selected[i])
+      if (!selected[i] == false){
       const option = new Option(selected[i], selected[i]);
       option.setAttribute('selected', 'selected');
       // add it to the list
-      listbox.add(option, undefined);
+      listbox2.add(option, undefined);
+      }
     }
     // create a new option
   
@@ -36,15 +38,15 @@ btnRemove.onclick = (e) => {
   // save the selected options
   let selected = [];
 
-  for (let i = 0; i < listbox.options.length; i++) {
-    selected[i] = listbox.options[i].selected;
+  for (let i = 0; i < listbox2.options.length; i++) {
+    selected[i] = listbox2.options[i].selected;
   }
 
   // remove all selected option
-  let index = listbox.options.length;
+  let index = listbox2.options.length;
   while (index--) {
     if (selected[index]) {
-      listbox.remove(index);
+      listbox2.remove(index);
     }
   }
 };

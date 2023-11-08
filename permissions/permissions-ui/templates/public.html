@@ -58,10 +58,12 @@
               <div><h2 style="color: #760509;">Public datasets manager</h2></div>
               <form method="post">
                 {% csrf_token %}
-                  <label for="datasets">Dataset:</label>
+                  <label for="datasets">Datasets:</label>
 
                   <select id="datasets" name="datasets" multiple>
-                    <option value="dataset1" selected="selected">dataset1</option>
+                    {% for dataset in datasets %}
+                    <option value="{{dataset}}" selected="selected">{{dataset}}</option>
+                    {% endfor %}
                   </select>
                   <button id="btnAdd2">Add</button>
                   <label for="list">Public Datasets List:</label>

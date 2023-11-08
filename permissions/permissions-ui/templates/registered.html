@@ -56,30 +56,52 @@
             </div>
             <div id="boxdatasets">
               <div><h2 style="color: #760509;">Registered datasets manager</h2></div>
-              <form method="post">
+              {% if not users %}
+              <form method="get">
                 {% csrf_token %}
                   <label for="framework">Add a new user to the list:</label>
                   <input type="text" id="framework" placeholder="Enter a new user" autocomplete="off">
   
                   <button id="btnAdd">Add</button>
   
-                  <label for="list">Select one or more users from the list:</label>
-                  <select id="list" name="list" multiple>
+                  <label for="userslist">Select one user from the list:</label>
+                  <select id="userslist" name="userslist" size="3">
                     {% for item in bash_out %}
                     <option value="{{item}}" selected="selected">{{item}}</option>
                     {% endfor %}
                   </select>
-                  <label for="datasets">Datasets List:</label>
-                  <select id="list_datasets" name="list_datasets" multiple>
-                    {% for dataset in registered_datasets %}
-                    <option value="{{dataset}}" selected="selected">{{dataset}}</option>
-                    {% endfor %}
-                  </select>
-                  <button id="btnRemove">Remove Dataset</button>
                   <div class="col-5">
                     <button type="submit" class="btn btn-success mb-3">Add dataset to user(s) permissions</button>    
                   </div>
               </form>
+              {% else %}
+              {% for user in users %}
+              <form method="post">
+                {% csrf_token %}
+                <label for="users">User:</label>
+                <select id="users" name="users" multiple>
+                  <option value="{{user}}" selected="selected">{{user}}</option>
+                </select>
+                <label for="datasets">Datasets:</label>
+                <select id="datasets" name="datasets" multiple>
+                  {% for dataset in datasets %}
+                  <option value="{{dataset}}" selected="selected">{{dataset}}</option>
+                  {% endfor %}
+                </select>
+                <button id="btnAdd2">Add</button>
+                <label for="list">Public Datasets List:</label>
+                <select id="list" name="list" multiple>
+                  {% for rdataset in registered_datasets %}
+                  <option value="{{rdataset}}" selected="selected">{{rdataset}}</option>
+                  {% endfor %}
+                </select>
+                <button id="btnRemove">Remove Dataset</button>
+                  <div class="col-5">
+                    <button type="submit" class="btn btn-success mb-3">Add datasets to user {{user}}</button>    
+                  </div>
+              </form>
+              {% endfor %}
+              {% endif %}
           </div>
           
 
@@ -137,5 +159,6 @@
   
   </script>
   <script src="media/app.js"></script>
+  <script src="media/app2.js"></script>
 </body>
 </html>
