@@ -46,7 +46,7 @@
           d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z" />
       </svg></div>
 
-    <div class="text">Back</div>
+    <a class="text" href="/">Back</a>
   </button>
 
   <div class="container pt-3 " style="font-size: 14px; ">
@@ -75,7 +75,8 @@
               <div class="second-tittle">
                 <h2 style="color: #760509;">Registered datasets manager</h2>
               </div>
-              <form class="form-datasets" method="post">
+              {% if not users %}
+              <form class="form-datasets" method="get">
                 {% csrf_token %}
                 <div class="divPublicForm">
                   <label for="framework">Add a new user to the list:</label>
@@ -85,18 +86,41 @@
                     <img class="plusIconHover" src="media/plus-hover.png" alt="plusIconHover" height="22px"></button>
                 </div>
                 <div class="divPublicForm">
-                  <label for="list">Select one or more users from the list:</label>
-                  <select id="list" name="list" multiple>
+                  <label for="userslist">Select one user from the list:</label>
+                  <select id="userslist" name="userslist" size="3">
                     {% for item in bash_out %}
                     <option value="{{item}}" selected="selected">{{item}}</option>
                     {% endfor %}
                   </select>
                 </div>
-                <div class="divPublicForm">
-                  <label for="datasets">Datasets List:</label>
-                  <select id="list_datasets" name="list_datasets" multiple>
-                    {% for dataset in registered_datasets %}
+                    <div class="col-5">
+                      <button type="submit" class="btn btn-success mb-3">Add dataset to user(s) permissions</button>    
+                    </div>
+                  
+                </form>
+                {% else %}
+                {% for user in users %}
+                <form method="post">
+                  {% csrf_token %}
+                  <label for="users">User:</label>
+                  <select id="users" name="users" multiple>
+                    <option value="{{user}}" selected="selected">{{user}}</option>
+                  </select>
+                  <label for="datasets">Datasets:</label>
+                  <select id="datasets" name="datasets" multiple>
+                    {% for dataset in datasets %}
                     <option value="{{dataset}}" selected="selected">{{dataset}}</option>
+                    {% endfor %}
+                  </select>
+                
+                <button id="btnAdd2"><img class="plusIcon" src="media/plus.png" alt="plusIcon" height="22px">
+                  <img class="plusIconHover" src="media/plus-hover.png" alt="plusIconHover" height="22px"></button>
+                <div class="divPublicForm">
+                </div>
+                  <label for="list">{{user}} Datasets List:</label>
+                  <select id="list" name="list" multiple>
+                    {% for rdataset in registered_datasets %}
+                    <option value="{{rdataset}}" selected="selected">{{rdataset}}</option>
                     {% endfor %}
                   </select>
                   <button id="btnRemove"><img class="deleteIcon" src="media/delete.png" alt="deleteIcon" height="20px">
@@ -104,10 +128,12 @@
                       height="23px"></button>
                 </div>
                 <div class="col-5">
-                  <button type="submit" class="btn btn-success mb-3">Add dataset to user(s) permissions</button>
+                  <button type="submit" class="btn btn-success mb-3">Add datasets to user {{user}}</button>
                 </div>
               </form>
-            </div>
+              {% endfor %}
+              {% endif %}
+          </div>
 
 
 
@@ -164,6 +190,7 @@
 
   </script>
   <script src="media/app.js"></script>
+  <script src="media/app2.js"></script>
 </body>
 
 </html>

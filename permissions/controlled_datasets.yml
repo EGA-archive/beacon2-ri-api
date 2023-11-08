@@ -1,4 +1,3 @@
 controlled_datasets:
-- nothing
-- vamos
-- dataset1
+- AV_Dataset
+- CINECA_synthetic_cohort_EUROPE_UK1
