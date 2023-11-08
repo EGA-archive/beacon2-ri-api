@@ -67,10 +67,14 @@
               </div>
               <form class="form-datasets" method="post">
                 {% csrf_token %}
+
                 <div class="divPublicForm">
-                  <label for="datasets">Dataset:</label>
+                  <label for="datasets">Datasets:</label>
+
                   <select id="datasets" name="datasets" multiple>
-                    <option value="dataset1" selected="selected">dataset1</option>
+                    {% for dataset in datasets %}
+                    <option value="{{dataset}}" selected="selected">{{dataset}}</option>
+                    {% endfor %}
                   </select>
                   <button id="btnAdd2"><img class="plusIcon" src="media/plus.png" alt="plusIcon" height="22px">
                     <img class="plusIconHover" src="media/plus-hover.png" alt="plusIconHover" height="22px"></button>
