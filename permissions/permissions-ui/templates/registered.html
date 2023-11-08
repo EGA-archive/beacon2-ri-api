@@ -89,7 +89,7 @@
                   {% endfor %}
                 </select>
                 <button id="btnAdd2">Add</button>
-                <label for="list">Public Datasets List:</label>
+                <label for="list">{{user}} Datasets List:</label>
                 <select id="list" name="list" multiple>
                   {% for rdataset in registered_datasets %}
                   <option value="{{rdataset}}" selected="selected">{{rdataset}}</option>
