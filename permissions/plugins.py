@@ -36,7 +36,7 @@ class DummyPermissions(Permissions):
 
     def __init__(self, *args, **kwargs):
         # Dummy permission database
-        with open("/beacon/permissions/permissions.yml", 'r') as stream:
+        with open("/beacon/permissions/registered_datasets.yml", 'r') as stream:
             out = yaml.safe_load(stream)
         self.db = out
 
@@ -75,10 +75,10 @@ class DummyPermissions(Permissions):
                     datasets.append(rdataset)
                 datasets = set(datasets)
             except Exception:
-                with open("/beacon/permissions/permissions.yml", 'r') as stream:
+                with open("/beacon/permissions/registered_datasets.yml", 'r') as stream:
                     permissions_dict = yaml.safe_load(stream)
                 permissions_dict[username]=[]
-                with open("/beacon/permissions/permissions.yml", 'w') as file:
+                with open("/beacon/permissions/registered_datasets.yml", 'w') as file:
                     yaml.dump(permissions_dict, file)
                     self.db = permissions_dict
                 datasets = set(self.db.get(username))
