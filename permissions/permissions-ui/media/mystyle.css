@@ -338,6 +338,10 @@ table {
   margin-left: 5vw;
 }
 
+.col-3 {
+  width: 100% !important;
+}
+
 .col-5 {
   flex: 0 0 auto;
   width: 100% !important;
