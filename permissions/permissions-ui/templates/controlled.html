@@ -48,6 +48,7 @@
 
     <a class="text" href="/">Back</a>
   </button>
+
   <div class="container pt-3 " style="font-size: 14px; ">
     <div class="col">
       <div class="containerfirst">
@@ -74,23 +75,51 @@
               <div class="second-tittle">
                 <h2 style="color: #760509;">Controlled datasets manager</h2>
               </div>
-              <form class="form-datasets" method="post">
-                {% csrf_token %}
+              {% if not users %}
+              <form class="form-datasets" method="get">
                 <div class="divPublicForm">
-                  <label for="datasets">Dataset:</label>
+                  <label for="framework">Add a new user to the list:</label>
+                  <input type="text" id="framework" placeholder="Enter a new user" autocomplete="off">
+
+                  <button id="btnAdd"><img class="plusIcon" src="media/plus.png" alt="plusIcon" height="22px">
+                    <img class="plusIconHover" src="media/plus-hover.png" alt="plusIconHover" height="22px"></button>
+                </div>
+                <div class="divPublicForm">
+                  <label for="userslist">Select one user from the list:</label>
+                  <select id="userslist" name="userslist" size="3">
+                    {% for item in bash_out %}
+                    <option value="{{item}}" selected="selected">{{item}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                    <div class="col-5">
+                      <button type="submit" class="btn btn-success mb-3">Add dataset to user(s) permissions</button>    
+                    </div>
+                  
+                </form>
+                {% else %}
+                {% for user in users %}
+                <form method="post">
+                  {% csrf_token %}
+                  <label for="users">User:</label>
+                  <select id="users" name="users" multiple>
+                    <option value="{{user}}" selected="selected">{{user}}</option>
+                  </select>
+                  <label for="datasets">Datasets:</label>
                   <select id="datasets" name="datasets" multiple>
                     {% for dataset in datasets %}
                     <option value="{{dataset}}" selected="selected">{{dataset}}</option>
                     {% endfor %}
                   </select>
-                  <button id="btnAdd2"><img class="plusIcon" src="media/plus.png" alt="plusIcon" height="22px">
-                    <img class="plusIconHover" src="media/plus-hover.png" alt="plusIconHover" height="22px"></button>
-                </div>
+                
+                <button id="btnAdd2"><img class="plusIcon" src="media/plus.png" alt="plusIcon" height="22px">
+                  <img class="plusIconHover" src="media/plus-hover.png" alt="plusIconHover" height="22px"></button>
                 <div class="divPublicForm">
-                  <label for="list">Public Datasets List:</label>
+                </div>
+                  <label for="list">{{user}} Datasets List:</label>
                   <select id="list" name="list" multiple>
-                    {% for item in bash_out %}
-                    <option value="{{item}}" selected="selected">{{item}}</option>
+                    {% for rdataset in controlled_datasets %}
+                    <option value="{{rdataset}}" selected="selected">{{rdataset}}</option>
                     {% endfor %}
                   </select>
                   <button id="btnRemove"><img class="deleteIcon" src="media/delete.png" alt="deleteIcon" height="20px">
@@ -98,10 +127,12 @@
                       height="23px"></button>
                 </div>
                 <div class="col-5">
-                  <button type="submit" class="btn btn-success mb-3">Add datasets</button>
+                  <button type="submit" class="btn btn-success mb-3">Add datasets to user {{user}}</button>
                 </div>
               </form>
-            </div>
+              {% endfor %}
+              {% endif %}
+          </div>
 
 
 
@@ -157,6 +188,7 @@
     }
 
   </script>
+  <script src="media/app.js"></script>
   <script src="media/app2.js"></script>
 </body>
 

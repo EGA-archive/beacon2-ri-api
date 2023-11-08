@@ -1,6 +1,3 @@
-app-user3:
-- CINECA_synthetic_cohort_EUROPE_UK1
-- AV_Dataset
-hola:
+registered_datasets:
 - CINECA_synthetic_cohort_EUROPE_UK1
 - AV_Dataset
