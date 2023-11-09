@@ -61,7 +61,8 @@ async def get_user_info(access_token):
             else:
                 LOG.error('Content: %s', content)
                 LOG.error('Invalid token')
-                raise web.HTTPUnauthorized()
+                user = 'public'
+                return user
             
         user = None
         async with ClientSession(trust_env=True) as session:
@@ -75,7 +76,8 @@ async def get_user_info(access_token):
                 else:
                     content = await resp.text()
                     LOG.error('Content: %s', content)
-                    raise web.HTTPUnauthorized()
+                    user = 'public'
+                    return user
 
 
 
@@ -96,7 +98,10 @@ def bearer_required(func):
         LOG.info('The user is: %r', user)
         if user is None:
             raise web.HTTPUnauthorized()
-        username = user.get('preferred_username')
+        elif user == 'public':
+            username = 'public'
+        else:
+            username = user.get('preferred_username')
         LOG.debug('username: %s', username)
 
         return await func(request, username)

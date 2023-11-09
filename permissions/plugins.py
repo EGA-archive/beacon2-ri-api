@@ -36,7 +36,7 @@ class DummyPermissions(Permissions):
 
     def __init__(self, *args, **kwargs):
         # Dummy permission database
-        with open("/beacon/permissions/permissions.yml", 'r') as stream:
+        with open("/beacon/permissions/registered_datasets.yml", 'r') as stream:
             out = yaml.safe_load(stream)
         self.db = out
 
@@ -44,25 +44,44 @@ class DummyPermissions(Permissions):
         pass
 
     async def get(self, username, requested_datasets=None):
-        try:
-            with open("/beacon/permissions/controlled_datasets.yml", 'r') as file:
-                controlled_datasets = yaml.safe_load(file)
-            file.close()
-            list_controlled_datasets = controlled_datasets['controlled_datasets']
-            datasets = []
-            for cdataset in list_controlled_datasets:
-                datasets.append(cdataset)
-            for pdataset in self.db.get(username):
-                datasets.append(pdataset)
-            datasets = set(datasets)
-        except Exception:
-            with open("/beacon/permissions/permissions.yml", 'r') as stream:
-                permissions_dict = yaml.safe_load(stream)
-            permissions_dict[username]=[]
-            with open("/beacon/permissions/permissions.yml", 'w') as file:
-                yaml.dump(permissions_dict, file)
-                self.db = permissions_dict
-            datasets = set(self.db.get(username))
+        if username == 'public':
+            try:
+                with open("/beacon/permissions/public_datasets.yml", 'r') as pfile:
+                    public_datasets = yaml.safe_load(pfile)
+                pfile.close()
+                list_public_datasets = public_datasets['public_datasets']
+                datasets = []
+                for pdataset in list_public_datasets:
+                    datasets.append(pdataset)
+                datasets = set(datasets)
+            except Exception:
+                datasets = set(self.db.get(username))            
+        else:
+            try:
+                with open("/beacon/permissions/controlled_datasets.yml", 'r') as file:
+                    controlled_datasets = yaml.safe_load(file)
+                file.close()
+                with open("/beacon/permissions/public_datasets.yml", 'r') as pfile:
+                    public_datasets = yaml.safe_load(pfile)
+                pfile.close()
+                list_controlled_datasets = controlled_datasets['controlled_datasets']
+                list_public_datasets = public_datasets['public_datasets']
+                datasets = []
+                for pdataset in list_public_datasets:
+                    datasets.append(pdataset)
+                for cdataset in list_controlled_datasets:
+                    datasets.append(cdataset)
+                for rdataset in self.db.get(username):
+                    datasets.append(rdataset)
+                datasets = set(datasets)
+            except Exception:
+                with open("/beacon/permissions/registered_datasets.yml", 'r') as stream:
+                    permissions_dict = yaml.safe_load(stream)
+                permissions_dict[username]=[]
+                with open("/beacon/permissions/registered_datasets.yml", 'w') as file:
+                    yaml.dump(permissions_dict, file)
+                    self.db = permissions_dict
+                datasets = set(self.db.get(username))
             
         if requested_datasets:
             return set(requested_datasets).intersection(datasets)

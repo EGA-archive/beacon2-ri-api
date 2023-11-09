@@ -1,0 +1,195 @@
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="media/mystyle.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <link href="https://unpkg.com/@popperjs/core@2" rel="stylesheet"
+    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <script src="media/tablesorter.js"></script>
+  <script src="media/arrows.js"></script>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <span class="navbar-text ">
+        <img class="logo" src="media/logo.png" alt="EGA" height="70px">
+      </span>
+      <a class="navbar-brand " href="/">
+        <h1 class="bi bi-kanban display-6 mx-auto p-2 fw-bold ms-5" style="color: #760509;"> Beacon Admin Page</h1>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+        aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+      </div>
+    </div>
+
+  </nav>
+  <button class="Btn">
+
+    <div class="sign"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+        class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+        <path
+          d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z" />
+      </svg></div>
+
+    <a class="text" href="/">Back</a>
+  </button>
+
+  <div class="container pt-3 " style="font-size: 14px; ">
+    <div class="col">
+      <div class="containerfirst">
+        <div class="row">
+
+          <div class="col-3" style="display: inline">
+
+
+
+
+            <div>
+            </div>
+
+
+          </div>
+          <div class="col">
+            <div id="missatge" style="display: none;">
+              <button class="btn btn-success" type="button" disabled>
+                <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                Verifying your beacon ...
+              </button>
+            </div>
+            <div id="boxdatasets">
+              <div class="second-tittle">
+                <h2 style="color: #760509;">Controlled datasets manager</h2>
+              </div>
+              {% if not users %}
+              <form class="form-datasets" method="get">
+                <div class="divPublicForm">
+                  <label for="framework">Add a new user to the list:</label>
+                  <input type="text" id="framework" placeholder="Enter a new user" autocomplete="off">
+
+                  <button id="btnAdd"><img class="plusIcon" src="media/plus.png" alt="plusIcon" height="22px">
+                    <img class="plusIconHover" src="media/plus-hover.png" alt="plusIconHover" height="22px"></button>
+                </div>
+                <div class="divPublicForm">
+                  <label for="userslist">Select one user from the list:</label>
+                  <select id="userslist" name="userslist" size="3">
+                    {% for item in bash_out %}
+                    <option value="{{item}}" selected="selected">{{item}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                    <div class="col-5">
+                      <button type="submit" class="btn btn-success mb-3">Add dataset to user(s) permissions</button>    
+                    </div>
+                  
+                </form>
+                {% else %}
+                {% for user in users %}
+                <form method="post">
+                  {% csrf_token %}
+                  <label for="users">User:</label>
+                  <select id="users" name="users" multiple>
+                    <option value="{{user}}" selected="selected">{{user}}</option>
+                  </select>
+                  <label for="datasets">Datasets:</label>
+                  <select id="datasets" name="datasets" multiple>
+                    {% for dataset in datasets %}
+                    <option value="{{dataset}}" selected="selected">{{dataset}}</option>
+                    {% endfor %}
+                  </select>
+                
+                <button id="btnAdd2"><img class="plusIcon" src="media/plus.png" alt="plusIcon" height="22px">
+                  <img class="plusIconHover" src="media/plus-hover.png" alt="plusIconHover" height="22px"></button>
+                <div class="divPublicForm">
+                </div>
+                  <label for="list">{{user}} Datasets List:</label>
+                  <select id="list" name="list" multiple>
+                    {% for rdataset in controlled_datasets %}
+                    <option value="{{rdataset}}" selected="selected">{{rdataset}}</option>
+                    {% endfor %}
+                  </select>
+                  <button id="btnRemove"><img class="deleteIcon" src="media/delete.png" alt="deleteIcon" height="20px">
+                    <img class="deleteIconHover" src="media/delete-hover.png" alt="deleteIconHover"
+                      height="23px"></button>
+                </div>
+                <div class="col-5">
+                  <button type="submit" class="btn btn-success mb-3">Add datasets to user {{user}}</button>
+                </div>
+              </form>
+              {% endfor %}
+              {% endif %}
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+  </div>
+
+
+  </div>
+  </div>
+  </div>
+  {% include "footer.html" %}
+  <script>
+    function myFunction() {
+      var x = document.getElementById("myDIV");
+      if (x.style.display === "block") {
+        x.style.display = "none";
+      } else {
+        x.style.display = "block";
+      }
+    }
+  </script>
+  <script>
+    function myFunction2() {
+      var x = document.getElementById("example");
+      if (x.style.display === "inline-flex") {
+        x.style.display = "none";
+      } else {
+        x.style.display = "inline-flex";
+      }
+    }
+  </script>
+  <script>
+
+    function openLoader() {
+      document.getElementById("missatge").style.display = "block";
+    }
+
+  </script>
+  <script src="media/app.js"></script>
+  <script src="media/app2.js"></script>
+</body>
+
+</html>

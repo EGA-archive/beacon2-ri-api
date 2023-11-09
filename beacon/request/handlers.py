@@ -59,131 +59,113 @@ def generic_handler(db_fn, request=None):
 
         LOG.debug(access_token)
         if access_token is not None:
-            with open("/beacon/beacon/request/public_datasets.yml", 'r') as stream:
-                public_datasets = yaml.safe_load(stream)
-            list_of_public_datasets= public_datasets['public_datasets']
-            try:
-                specific_datasets = qparams.query.request_parameters['datasets']
-            except Exception:
-                specific_datasets = []
-            access_token = access_token[7:]  # cut out 7 characters: len('Bearer ')
-
-
-            
-            
-            authorized_datasets, authenticated = await resolve_token(access_token, search_datasets)
-            LOG.debug(authorized_datasets)
-            #LOG.debug('all datasets:  %s', all_datasets)
-            LOG.info('resolved datasets:  %s', authorized_datasets)
-            LOG.debug(authenticated)
-            LOG.debug(specific_datasets)
-
-
-            specific_datasets_unauthorized = []
-            specific_datasets_unauthorized_and_found = []
-            bio_list = []
-            search_and_authorized_datasets = []
-            specific_search_datasets = []
-            for public_dataset in list_of_public_datasets:
-                authorized_datasets.append(public_dataset)
-            # Get response
-            if specific_datasets != []:
-                for element in authorized_datasets:
-                    if element in specific_datasets:
-                        search_and_authorized_datasets.append(element)
-                for elemento in specific_datasets:
-                    if elemento not in search_and_authorized_datasets:
-                        specific_datasets_unauthorized.append(elemento)
-                qparams.query.request_parameters = {}
-                qparams.query.request_parameters['datasets'] = '*******'
-                _, _, datasets = get_datasets(None, qparams)
-                beacon_datasets = [ r for r in datasets ]
-                all_datasets = [r['id'] for r in beacon_datasets]
-                
-                response_datasets = [ r['id'] for r in beacon_datasets if r['id'] in search_and_authorized_datasets]
-                LOG.debug(specific_search_datasets)
-                LOG.debug(response_datasets)
-
-                list_of_dataset_dicts=[]
-
-                for data_r in response_datasets:
-                    dict_dataset = {}
-                    dict_dataset['dataset']=data_r
-                    dict_dataset['ids']=[ r['ids'] for r in beacon_datasets if r['id'] == data_r ]
-                    list_of_dataset_dicts.append(dict_dataset)
-
-                for dataset_searched in specific_datasets_unauthorized:
-                    if dataset_searched not in all_datasets:
-                        dict_dataset = {}
-                        dict_dataset['dataset']=dataset_searched
-                        dict_dataset['ids'] = ['Dataset not found']
-                        LOG.debug(dict_dataset['dataset'])
-                        LOG.debug(dict_dataset['ids'])
-                        list_of_dataset_dicts.append(dict_dataset)
-                
-                for data_s in specific_datasets_unauthorized_and_found:
-                    dict_dataset = {}
-                    dict_dataset['dataset']=data_s
-                    dict_dataset['ids'] = ['Unauthorized dataset']
-                    list_of_dataset_dicts.append(dict_dataset)
-
-                LOG.debug(specific_datasets_unauthorized_and_found)
-                LOG.debug(specific_datasets_unauthorized)
-                LOG.debug(list_of_dataset_dicts)
-
-            else:
-                qparams.query.request_parameters = {}
-                qparams.query.request_parameters['datasets'] = '*******'
-                _, _, datasets = get_datasets(None, qparams)
-                beacon_datasets = [ r for r in datasets ]
-                LOG.debug(authorized_datasets)
-                specific_datasets = [ r['id'] for r in beacon_datasets if r['id'] not in authorized_datasets]
-                response_datasets = [ r['id'] for r in beacon_datasets if r['id'] in authorized_datasets]
-                LOG.debug(specific_datasets)
-                LOG.debug(response_datasets)
-                specific_datasets_unauthorized.append(specific_datasets)
-                for unauth in specific_datasets_unauthorized:
-                    for unauth_spec in unauth:
-                        biosample_ids = [ r['ids'] for r in beacon_datasets if r['id'] == unauth_spec ]
-                        bio_list.append(biosample_ids)
-                
-                list_of_dataset_dicts=[]
-
-                for data_r in response_datasets:
-                    dict_dataset = {}
-                    dict_dataset['dataset']=data_r
-                    dict_dataset['ids']=[ r['ids'] for r in beacon_datasets if r['id'] == data_r ]
-                    list_of_dataset_dicts.append(dict_dataset)
-                
-                for data_s in specific_datasets:
-                    dict_dataset = {}
-                    dict_dataset['dataset']=data_s
-                    dict_dataset['ids'] = ['Unauthorized dataset']
-                    list_of_dataset_dicts.append(dict_dataset)
-                #LOG.debug(list_of_dataset_dicts)
+            print('we have access token')
         else:
-            #write here code for public datasets
-            list_of_dataset_dicts=[]
+            access_token = 'Bearer public'
+        try:
+            specific_datasets = qparams.query.request_parameters['datasets']
+        except Exception:
+            specific_datasets = []
+        access_token = access_token[7:]  # cut out 7 characters: len('Bearer ')
+        LOG.debug(access_token)
+
+        
+        
+        authorized_datasets, authenticated = await resolve_token(access_token, search_datasets)
+        LOG.debug(authorized_datasets)
+        #LOG.debug('all datasets:  %s', all_datasets)
+        LOG.info('resolved datasets:  %s', authorized_datasets)
+        LOG.debug(authenticated)
+        LOG.debug(specific_datasets)
+
+
+        specific_datasets_unauthorized = []
+        specific_datasets_unauthorized_and_found = []
+        bio_list = []
+        search_and_authorized_datasets = []
+        specific_search_datasets = []
+        # Get response
+        if specific_datasets != []:
+            for element in authorized_datasets:
+                if element in specific_datasets:
+                    search_and_authorized_datasets.append(element)
+            for elemento in specific_datasets:
+                if elemento not in search_and_authorized_datasets:
+                    specific_datasets_unauthorized.append(elemento)
             qparams.query.request_parameters = {}
             qparams.query.request_parameters['datasets'] = '*******'
             _, _, datasets = get_datasets(None, qparams)
             beacon_datasets = [ r for r in datasets ]
-            with open("/beacon/beacon/request/public_datasets.yml", 'r') as stream:
-                public_datasets = yaml.safe_load(stream)
-            list_of_public_datasets= public_datasets['public_datasets']
-            LOG.debug(list_of_public_datasets)
-            for data_r in list_of_public_datasets:
+            all_datasets = [r['id'] for r in beacon_datasets]
+            
+            response_datasets = [ r['id'] for r in beacon_datasets if r['id'] in search_and_authorized_datasets]
+            LOG.debug(specific_search_datasets)
+            LOG.debug(response_datasets)
+
+            list_of_dataset_dicts=[]
+
+            for data_r in response_datasets:
                 dict_dataset = {}
                 dict_dataset['dataset']=data_r
                 dict_dataset['ids']=[ r['ids'] for r in beacon_datasets if r['id'] == data_r ]
                 list_of_dataset_dicts.append(dict_dataset)
+
+            for dataset_searched in specific_datasets_unauthorized:
+                if dataset_searched not in all_datasets:
+                    dict_dataset = {}
+                    dict_dataset['dataset']=dataset_searched
+                    dict_dataset['ids'] = ['Dataset not found']
+                    LOG.debug(dict_dataset['dataset'])
+                    LOG.debug(dict_dataset['ids'])
+                    list_of_dataset_dicts.append(dict_dataset)
+            
+            for data_s in specific_datasets_unauthorized_and_found:
+                dict_dataset = {}
+                dict_dataset['dataset']=data_s
+                dict_dataset['ids'] = ['Unauthorized dataset']
+                list_of_dataset_dicts.append(dict_dataset)
+
+            LOG.debug(specific_datasets_unauthorized_and_found)
+            LOG.debug(specific_datasets_unauthorized)
+            LOG.debug(list_of_dataset_dicts)
+
+        else:
+            qparams.query.request_parameters = {}
+            qparams.query.request_parameters['datasets'] = '*******'
+            _, _, datasets = get_datasets(None, qparams)
+            beacon_datasets = [ r for r in datasets ]
+            LOG.debug(authorized_datasets)
+            specific_datasets = [ r['id'] for r in beacon_datasets if r['id'] not in authorized_datasets]
+            response_datasets = [ r['id'] for r in beacon_datasets if r['id'] in authorized_datasets]
+            LOG.debug(specific_datasets)
+            LOG.debug(response_datasets)
+            specific_datasets_unauthorized.append(specific_datasets)
+            for unauth in specific_datasets_unauthorized:
+                for unauth_spec in unauth:
+                    biosample_ids = [ r['ids'] for r in beacon_datasets if r['id'] == unauth_spec ]
+                    bio_list.append(biosample_ids)
+            
+            list_of_dataset_dicts=[]
+
+            for data_r in response_datasets:
+                dict_dataset = {}
+                dict_dataset['dataset']=data_r
+                dict_dataset['ids']=[ r['ids'] for r in beacon_datasets if r['id'] == data_r ]
+                list_of_dataset_dicts.append(dict_dataset)
+            
+            for data_s in specific_datasets:
+                dict_dataset = {}
+                dict_dataset['dataset']=data_s
+                dict_dataset['ids'] = ['Unauthorized dataset']
+                list_of_dataset_dicts.append(dict_dataset)
             #LOG.debug(list_of_dataset_dicts)
+
 
             
 
         qparams = RequestParams(**json_body).from_request(request)
 
-        if access_token is not None:
+        if access_token != 'public':
             decoded = jwt.decode(access_token, options={"verify_signature": False})
             LOG.debug(decoded)
             token_username = decoded['preferred_username']

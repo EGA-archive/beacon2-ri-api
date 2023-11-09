@@ -1,0 +1,556 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+.terminal {
+  border-radius: 5px 5px 5px 5px;
+  position: relative;
+}
+.terminal .top {
+  background: #e8e6e8;
+  color: black;
+  padding: 5px;
+  margin-left: 5px;
+  border-radius: 5px 5px 0 0;
+}
+.terminal .btns {
+  position: absolute;
+  top: 7px;
+  margin-left: 15px;
+}
+.terminal .circle {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  border-radius: 15px;
+  margin-left: 2px;
+  border-width: 1px;
+  border-style: solid;
+}
+.title {
+  text-align: center;
+}
+.red {
+  background: #ec6a5f;
+  border-color: #d04e42;
+}
+.green {
+  background: #64cc57;
+  border-color: #4ea73b;
+}
+.yellow {
+  background: #f5c04f;
+  border-color: #d6a13d;
+}
+.clear {
+  clear: both;
+}
+.terminal .body {
+  background: black;
+  color: #7afb4c;
+  padding: 100px;
+  margin-left: 5px;
+  overflow: auto;
+  text-align: left;
+  height: 300px;
+}
+.space {
+  margin: 25px;
+}
+
+.hovertext {
+  position: relative;
+  border-bottom: 1px dotted black;
+  font-family: monospace;
+}
+
+.hovertext:before {
+  content: attr(data-hover);
+  visibility: hidden;
+  opacity: 0;
+  width: 140px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px 0;
+  transition: opacity 1s ease-in-out;
+  position: absolute;
+  z-index: 1;
+  left: 70px;
+  top: -10px;
+}
+
+.hovertext:hover:before {
+  opacity: 1;
+  visibility: visible;
+}
+.prova {
+  color: blue;
+}
+
+.typewriter h3 {
+  color: #185177;
+  display: inline-block;
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  border-right: 0.15em solid orange; /* The typwriter cursor */
+  white-space: nowrap; /* Keeps the content on a single line */
+  margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+  letter-spacing: 0.15em; /* Adjust as needed */
+  animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+/* The typing effect */
+@keyframes typing {
+  from {
+    max-width: 0;
+  }
+  to {
+    max-width: 100%;
+  }
+}
+
+/* The typewriter cursor effect */
+@keyframes blink-caret {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: orange;
+  }
+}
+
+#myDIV {
+  display: none;
+}
+
+#example {
+  display: none;
+}
+
+.result {
+  margin-left: -100px;
+  margin-top: -120px;
+}
+
+.links {
+  display: inline-block;
+}
+
+.results {
+  position: relative;
+  display: inline;
+}
+
+td,
+th {
+  border: 1px solid rgb(190, 190, 190);
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+td {
+  text-align: left;
+}
+
+tr:nth-child(even) {
+  background-color: #eee;
+}
+
+th[scope='col'] {
+  background-color: #696969;
+  color: #fff;
+}
+
+th[scope='row'] {
+  background-color: #d7d9f2;
+}
+
+caption {
+  padding: 10px;
+  caption-side: bottom;
+}
+
+table {
+  border-collapse: collapse;
+  letter-spacing: 1px;
+  font-family: sans-serif;
+  font-size: 0.8rem;
+  display: block;
+  height: 500px;
+  overflow-y: scroll;
+}
+
+.false {
+  padding: 1rem;
+  box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.11),
+    0 5px 15px 0 rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+
+  border-left: 1px solid red;
+  transition: border-left 300ms ease-in-out, padding-left 300ms ease-in-out;
+}
+
+.false:hover {
+  padding-left: 0.5rem;
+  border-left: 0.5rem solid #ec6a5f;
+}
+
+.false > :first-child {
+  margin-top: 0;
+}
+
+.false > :last-child {
+  margin-bottom: 0;
+}
+
+.true {
+  padding: 1rem;
+  box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.11),
+    0 5px 15px 0 rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+
+  border-left: 1px solid green;
+  transition: border-left 300ms ease-in-out, padding-left 300ms ease-in-out;
+}
+
+.true:hover {
+  padding-left: 0.5rem;
+  border-left: 0.5rem solid #00ff99;
+}
+
+.true > :first-child {
+  margin-top: 0;
+}
+
+.true > :last-child {
+  margin-bottom: 0;
+}
+
+.none {
+  padding: 1rem;
+  box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.11),
+    0 5px 15px 0 rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+
+  border-left: 1px solid grey;
+  transition: border-left 300ms ease-in-out, padding-left 300ms ease-in-out;
+}
+
+.none:hover {
+  padding-left: 0.5rem;
+  border-left: 0.5rem solid grey;
+}
+
+.none > :first-child {
+  margin-top: 0;
+}
+
+.none > :last-child {
+  margin-bottom: 0;
+}
+
+.kcbutton {
+  cursor: pointer;
+  border: 0;
+  border-radius: 4px;
+  font-weight: 600;
+  margin: 0 10px;
+  width: 200px;
+  padding: 10px 0;
+  box-shadow: 0 0 20px rgba(104, 85, 224, 0.2);
+  transition: 0.4s;
+  color: #239b56;
+  background-color: rgba(255, 255, 255, 1);
+  border: 1px solid #239b56;
+}
+
+.kcbutton:hover {
+  color: white;
+  box-shadow: 0 0 20px rgba(2, 45, 2, 0.6);
+  background-color: #239b56;
+}
+.welcome {
+  margin-top: 15px;
+}
+
+.valid {
+  color: green;
+}
+
+.notvalid {
+  color: red;
+}
+
+.navbar-brand {
+  width: 100vw;
+}
+
+.container-fluid {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.navbar-text {
+  margin: 20px;
+}
+
+.logo {
+  margin-right: 12px;
+  height: 52px;
+}
+
+#id_Datasets {
+  margin-left: 8px;
+  border: solid #760509;
+  padding: 5px;
+  cursor: pointer;
+  font-family: monospace;
+  width: 138px;
+}
+
+#list {
+  margin-left: 3px;
+  border: solid #760509;
+  cursor: pointer;
+  font-family: monospace;
+  margin-right: 10px;
+}
+
+#list_datasets {
+  margin-left: 3px;
+  border: solid #760509;
+  cursor: pointer;
+  font-family: monospace;
+  margin-right: 10px;
+}
+
+.containerfirst {
+  display: flex;
+  justify-content: center;
+}
+
+#boxdatasets {
+  margin-left: 7vw;
+}
+
+
+.col-3 {
+  width: 100% !important;
+}
+
+.col-5 {
+  flex: 0 0 auto;
+  width: 100% !important;
+}
+
+.col-5 button {
+  margin-top: 26px;
+}
+
+.row {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.navbar-brand h1 {
+  font-size: 34px;
+  font-family: system-ui;
+}
+
+.second-tittle h2 {
+  font-size: 25px;
+  font-family: system-ui;
+  color: #c45950 !important;
+  margin-bottom: 45px;
+}
+
+.form-datasets label {
+  display: inline-block;
+  font-family: monospace;
+  margin-right: 10px;
+}
+
+#datasets {
+  width: fit-content;
+  border: solid 1.5px #760509;
+  margin-right: 10px;
+}
+
+#datasets option {
+  padding-right: 11px;
+  padding-left: 11px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: #a9cba6;
+  font-family: monospace;
+  border-bottom: 0.5px solid #420909;
+  font-size: 12px;
+}
+
+#list_datasets option {
+  padding-right: 11px;
+  padding-left: 11px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: #a9cba6;
+  font-family: monospace;
+  border-bottom: 0.5px solid #420909;
+  font-size: 12px;
+}
+
+#list option {
+  padding-right: 11px;
+  padding-left: 11px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: #a9cba6;
+  font-family: monospace;
+  border-bottom: 0.5px solid #420909;
+  font-size: 12px;
+}
+
+.divPublicForm {
+  display: flex;
+  align-content: center;
+  align-items: flex-end;
+  /* justify-content: flex-start; */
+  width: 100%;
+  margin-bottom: 38px;
+}
+
+.divPublicForm button {
+  border: none;
+  background: white;
+}
+
+#btnAdd2 {
+  border: none;
+  background: white;
+}
+
+#btnAdd2:hover .plusIcon,
+#btnAdd2 .plusIconHover {
+  display: none;
+}
+#btnAdd2:hover .plusIconHover {
+  display: inline;
+}
+
+#btnAdd:hover .plusIcon,
+#btnAdd .plusIconHover {
+  display: none;
+}
+#btnAdd:hover .plusIconHover {
+  display: inline;
+}
+
+#btnRemove:hover .deleteIcon,
+#btnRemove .deleteIconHover {
+  display: none;
+}
+#btnRemove:hover .deleteIconHover {
+  display: inline;
+}
+
+#btnAdd {
+  border: none !important;
+  background: white !important;
+}
+
+#btnRemove {
+  border: none;
+  background: white;
+}
+
+.deleteIcon {
+  height: 24px;
+}
+
+.divPublicForm input {
+  margin-left: 2px;
+  border: solid #760509;
+  cursor: pointer;
+  font-family: monospace;
+  margin-right: 10px;
+  /* padding-left: 10px; */
+  width: 234px;
+  font-size: 12px;
+  /* padding-left: 7px; */
+  padding: 4px;
+}
+
+.Btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 45px;
+  height: 45px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition-duration: .3s;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+  background-color: #760509;
+  margin-left: 60px;
+  margin-bottom: -50px;
+}
+
+/* plus sign */
+.sign {
+  width: 100%;
+  transition-duration: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sign svg {
+  width: 17px;
+}
+
+.sign svg path {
+  fill: white;
+}
+/* text */
+.text {
+  position: absolute;
+  right: 0%;
+  width: 0%;
+  opacity: 0;
+  color: white;
+  font-size: 1.2em;
+  font-weight: 600;
+  transition-duration: 0.3s;
+}
+/* hover effect on button width */
+.Btn:hover {
+  width: 125px;
+  border-radius: 40px;
+  transition-duration: 0.3s;
+}
+
+.Btn:hover .sign {
+  width: 30%;
+  transition-duration: 0.3s;
+  padding-left: 20px;
+}
+/* hover effect button's text */
+.Btn:hover .text {
+  opacity: 1;
+  width: 70%;
+  transition-duration: 0.3s;
+  padding-right: 10px;
+}
+/* button click effect*/
+.Btn:active {
+  transform: translate(2px, 2px);
+}
