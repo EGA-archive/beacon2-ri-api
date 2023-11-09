@@ -117,8 +117,6 @@ def load_controlled_datasets(user):
 
     return list_controlled_datasets
 
-
-
 def bash_view(request):
     template = "home.html"
     form =BamForm()
@@ -142,6 +140,8 @@ def public_view(request):
     context={'bash_out': bash_out, 'datasets': datasets}
     if request.method == 'POST':
         answer = request.POST.getlist('list', False)
+        if answer == False:
+            answer = []
         add_public_datasets(answer)
         context = {
                 'answer': answer,
@@ -156,6 +156,8 @@ def registered_view(request):
     context={'bash_out': bash_out, 'datasets': datasets}
     if request.method == 'POST':
         answer = request.POST.getlist('list', False)
+        if answer == False:
+            answer = []
         add_registered_datasets(answer)
         context = {
                 'answer': answer,
@@ -182,7 +184,11 @@ def controlled_view(request):
     if request.method == 'POST':
         user = request.POST.getlist('users', False)
         datasets_list = request.POST.getlist('list', False)
-        add_controlled_datasets(user, datasets_list)
+        if datasets_list == False:
+            datasets_list = []
+            add_controlled_datasets(user, datasets_list)
+        else:
+            add_controlled_datasets(user, datasets_list)
         context = {
                 'answer': user, 'datasets_list': datasets_list
             }
