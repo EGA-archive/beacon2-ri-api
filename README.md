@@ -15,7 +15,11 @@ docker network create my-app-network
 
 ### Managing AAI-LSAAI permissions
 
-To give the right permissions for AAI you will need to set the permissions of the users inside permissions folder, within the [permissions.yml](permissions/permissions.yml) file. 
+To give the right permissions for AAI you will need to set the permissions of the users inside permissions folder, within the [public_datasets.yml](permissions/public_datasets.yml), [registered_datasets.yml](permissions/registered_datasets.yml), [controlled_datasets.yml](permissions/controlled_datasets.yml) files.
+Now we have developed a UI that allows you to manage all the permissions in a friendly way and no need to open .yml files. Just start the UI, that will run in http://localhost:8010, by executing this command from the deploy folder after the containers are up and running:
+```bash
+docker exec beacon-permissions bash permissions/permissions-ui/start.sh
+```
 Please, bear in mind that the name of the user has to be the same that you used when creating the user in LS or in IDP, whatever the AAI method you are working with.
 Furthermore, if you are using LS-AAI method, you will need to get the authorization code following LS-AAI authorization flow method with a browser (for example http://localhost:8080/oidc/auth/authorize?response_type=code&client_id=app-123) and then pass this code via a POST request to get the authorization token. For example:
 ```bash
