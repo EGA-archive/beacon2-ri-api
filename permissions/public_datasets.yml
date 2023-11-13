@@ -1,1 +1,2 @@
-public_datasets: []
+public_datasets:
+  - CINECA_synthetic_cohort_EUROPE_UK1
