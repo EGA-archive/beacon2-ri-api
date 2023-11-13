@@ -59,7 +59,7 @@ async def get_user_info(access_token):
                 dict_content = json.loads(content)
                 user = dict_content
             else:
-                LOG.error('Content: %s', content)
+                #LOG.error('Content: %s', content)
                 LOG.error('Invalid token')
                 user = 'public'
                 return user
