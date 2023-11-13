@@ -13,18 +13,18 @@ from aiohttp import web
 LOG = logging.getLogger(__name__)
 
 VARIANTS_PROPERTY_MAP = {
-    "assemblyId": "_position.assemblyId",
-    "Chromosome": "_position.refseqId",
-    "start": "_position.start",
-    "end": "_position.end",
+    "start": "variation.location.interval.start.value",
+    "end": "variation.location.interval.end.value",
+    "assemblyId": "variantInternalId",
+    "referenceName": "variation.location.sequence_id",
     "referenceBases": "variation.referenceBases",
     "alternateBases": "variation.alternateBases",
     "variantType": "variation.variantType",
-    "variantMinLength": None,
-    "variantMaxLength": None,
-    "mateName": None,
-    "gene": "molecularAttributes.geneIds",
-    "aachange": "molecularAttributes.aminoacidChanges"
+    "variantMinLength": "variation.location.interval.start.min",
+    "variantMaxLength": "variation.location.interval.end.max",
+    "geneId": "molecularAttributes.geneIds",
+    "genomicAlleleShortForm": "identifiers.genomicHGVSId",
+    "aminoacidChange": "molecularAttributes.aminoacidChanges"
 }
 
 def include_resultset_responses(query: Dict[str, List[dict]], qparams: RequestParams):
@@ -105,8 +105,6 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
             filters = generate_position_filter_end(k, v)
             for filter in filters:
                 query["$and"].append(apply_alphanumeric_filter({}, filter, collection))
-        elif k == "variantMinLength" or k == "variantMaxLength" or k == "mateName":
-            continue
         elif k == "datasets":
             pass
         else:
