@@ -20,6 +20,10 @@ docker exec beacon-permissions bash permissions/permissions-ui/start.sh
 Please, bear in mind that the name of the user has to be the same that you used when creating the user in LS or in IDP, whatever the AAI method you are working with.
 When you have your access token, pass it in a header with **Authorization: Bearer** in your POST request to get your answers. This token works coming from either from LS AAI or from keycloak (idp container).
 
+### Beacon security system
+
+![Beacon security](https://github.com/EGA-archive/beacon2-ri-api/blob/master/deploy/beacon_security.png?raw=true)
+
 ### Version notes
 
 * Fusions (`mateName`) are not supported.
