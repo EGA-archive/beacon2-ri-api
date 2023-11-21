@@ -5,7 +5,7 @@ from aiohttp import ClientSession, web
 import asyncio
 
 from beacon.db.datasets import filter_public_datasets
-from ..conf import permissions_url
+from ..conf import permissions_url, idp_user_info as idpu, lsaai_user_info as lsu
 
 LOG = logging.getLogger(__name__)
 
@@ -51,10 +51,10 @@ async def resolve_token(token, requested_datasets_ids):
             LOG.debug(auth_datasets)
             return auth_datasets, True
         
-async def check_issuer(access_token):
+async def check_user(access_token):
     user = None
-    idp_user_info = 'https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon/protocol/openid-connect/userinfo'
-    lsaai_user_info = 'https://login.elixir-czech.org/oidc/userinfo'
+    idp_user_info = idpu
+    lsaai_user_info = lsu
     async with ClientSession(trust_env=True) as session:
         headers = { 'Accept': 'application/json', 'Authorization': 'Bearer ' + access_token }
         LOG.debug('Contacting %s', idp_user_info)

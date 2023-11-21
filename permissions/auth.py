@@ -14,13 +14,14 @@ import logging
 
 from aiohttp import ClientSession, BasicAuth, FormData
 from aiohttp import web
+from beacon import conf
 
 
 LOG = logging.getLogger(__name__)
 
 
-idp_user_info = 'https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon/protocol/openid-connect/userinfo'
-lsaai_user_info = 'https://login.elixir-czech.org/oidc/userinfo'
+idp_user_info = conf.idp_user_info
+lsaai_user_info = conf.lsaai_user_info
 #idp_user_info = 'http://localhost:8080/oidc/userinfo'
 #idp_user_info = 'http://ls-aai-mock:8080/oidc/userinfo'
 #idp_user_info  = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
@@ -28,12 +29,6 @@ lsaai_user_info = 'https://login.elixir-czech.org/oidc/userinfo'
 #idp_introspection = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/token/introspect'
 #idp_user_info     = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
 #idp_introspection = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/token/introspect'
-
-
-
-
-
-
 
 async def get_user_info(access_token):
     '''
@@ -94,11 +89,6 @@ async def get_user_info(access_token):
                     LOG.error('Content: %s', content)
                     user = 'public'
                     return user
-
-    
-
-
-
 
 
 def bearer_required(func):

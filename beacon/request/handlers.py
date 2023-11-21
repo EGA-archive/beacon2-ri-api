@@ -4,7 +4,7 @@ import logging
 from aiohttp import ClientSession, web
 from aiohttp.web_request import Request
 from bson import json_util
-from beacon import conf
+from .. import conf
 import yaml
 import jwt
 
@@ -20,7 +20,7 @@ from beacon.response.build_response import (
 )
 from beacon.utils.stream import json_stream
 from beacon.db.datasets import get_datasets
-from beacon.utils.auth import resolve_token, check_issuer
+from beacon.utils.auth import resolve_token, check_user
 
 LOG = logging.getLogger(__name__)
 
@@ -57,9 +57,11 @@ def generic_handler(db_fn, request=None):
         authenticated=False
         access_token = request.headers.get('Authorization')
 
+
+        visa_datasets=[]
         LOG.debug(access_token)
         if access_token is not None:
-            print('we have access token')
+            pass
         else:
             access_token = 'Bearer public'
         try:
@@ -68,11 +70,35 @@ def generic_handler(db_fn, request=None):
             specific_datasets = []
         access_token = access_token[7:]  # cut out 7 characters: len('Bearer ')
         LOG.debug(access_token)
-
-        
+        if access_token != 'public':
+            decoded = jwt.decode(access_token, options={"verify_signature": False})
+            LOG.debug(decoded)
+            user = await check_user(access_token)
+            LOG.debug(user)
+            try:
+                token_username = user['preferred_username']
+            except Exception:
+                token_username = None
+                LOG.debug(token_username)
+            issuer = decoded['iss']
+            visa_datasets = user['ga4gh_passport_v1']
+    
         
         authorized_datasets, authenticated = await resolve_token(access_token, search_datasets)
         LOG.debug(authorized_datasets)
+        if visa_datasets:
+            for visa_dataset in visa_datasets:
+                try:
+                    visa = jwt.decode(visa_dataset, options={"verify_signature": False}, algorithms=["RS256"])
+                    LOG.debug(visa)
+                    LOG.debug(visa["ga4gh_visa_v1"]["value"])
+                    dataset_url = visa["ga4gh_visa_v1"]["value"]
+                    dataset_url_splitted = dataset_url.split('/')
+                    visa_dataset = dataset_url_splitted[-1]
+                    authorized_datasets.append(visa_dataset)
+                except Exception:
+                    visa_dataset = None
+        
         #LOG.debug('all datasets:  %s', all_datasets)
         LOG.info('resolved datasets:  %s', authorized_datasets)
         LOG.debug(authenticated)
@@ -164,18 +190,11 @@ def generic_handler(db_fn, request=None):
             
 
         qparams = RequestParams(**json_body).from_request(request)
-        trust_issuers = ['https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon', 'https://login.elixir-czech.org/oidc/']
 
         if access_token != 'public':
-            decoded = jwt.decode(access_token, options={"verify_signature": False})
-            LOG.debug(decoded)
-            user = await check_issuer(access_token)
-            LOG.debug(user)
-            token_username = user['preferred_username']
-            LOG.debug(token_username)
-            issuer = decoded['iss']
 
-            if issuer in trust_issuers:
+
+            if issuer in conf.trusted_issuers:
                 pass
             else:
                 raise web.HTTPUnauthorized('invalid token')
@@ -187,7 +206,7 @@ def generic_handler(db_fn, request=None):
                 response_type = response_type_dict[token_username]
             except Exception:
                 LOG.debug(Exception)
-                response_type = 'boolean'
+                response_type = ['boolean']
             if response_type is not None:
                 for response_typed in response_type:    
                     LOG.debug(response_typed)        

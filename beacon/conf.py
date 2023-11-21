@@ -110,17 +110,10 @@ permissions_url = 'http://beacon-permissions:5051/'
 #
 # or use Elixir AAI (see https://elixir-europe.org/services/compute/aai)
 #
-idp_client_id = 'beacon'
-idp_client_secret = 'b26ca0f9-1137-4bee-b453-ee51eefbe7ba'  # same as in the test IdP
-idp_scope = 'profile openid'
+idp_user_info = 'https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon/protocol/openid-connect/userinfo'
+lsaai_user_info = 'https://login.elixir-czech.org/oidc/userinfo'
+trusted_issuers = ['https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon', 'https://login.elixir-czech.org/oidc/']
 
-idp_authorize = 'http://idp/auth/realms/Beacon/protocol/openid-connect/auth'
-idp_access_token = 'http://idp/auth/realms/Beacon/protocol/openid-connect/token'
-idp_introspection = 'http://idp/auth/realms/Beacon/protocol/openid-connect/token/introspect'
-idp_user_info = 'http://idp/auth/realms/Beacon/protocol/openid-connect/userinfo'
-idp_logout = 'http://idp/auth/realms/Beacon/protocol/openid-connect/logout'
-
-idp_redirect_uri = 'http://beacon:5050/login'
 
 #
 # UI
