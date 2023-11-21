@@ -1,1 +1,3 @@
-registered_datasets: []
+dummy_user: []
+registered_datasets:
+- CINECA_synthetic_cohort_EUROPE_UK1

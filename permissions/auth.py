@@ -16,18 +16,16 @@ from aiohttp import ClientSession, BasicAuth, FormData
 from aiohttp import web
 
 
-
 LOG = logging.getLogger(__name__)
 
 
-
-idp_client_id     = 'beacon'
-idp_client_secret = 'b26ca0f9-1137-4bee-b453-ee51eefbe7ba'
+idp_user_info = 'https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon/protocol/openid-connect/userinfo'
+lsaai_user_info = 'https://login.elixir-czech.org/oidc/userinfo'
 #idp_user_info = 'http://localhost:8080/oidc/userinfo'
 #idp_user_info = 'http://ls-aai-mock:8080/oidc/userinfo'
-idp_user_info  = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
+#idp_user_info  = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
 #idp_introspection = 'http://ls-aai-mock:8080/oidc/introspect'
-idp_introspection = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/token/introspect'
+#idp_introspection = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/token/introspect'
 #idp_user_info     = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
 #idp_introspection = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/token/introspect'
 
@@ -45,7 +43,7 @@ async def get_user_info(access_token):
     LOG.debug('Token: %s', access_token)
 
     # Invalid access token
-    
+    '''
     async with ClientSession() as session:
         headers = { 'Accept': 'application/json', 'Authorization': 'Bearer ' + access_token }
         payload = {'client_id': idp_client_id, 'client_secret': idp_client_secret, 'token': access_token }
@@ -63,21 +61,41 @@ async def get_user_info(access_token):
                 LOG.error('Invalid token')
                 user = 'public'
                 return user
+        '''
             
-        user = None
+    user = None
+    async with ClientSession(trust_env=True) as session:
+        headers = { 'Accept': 'application/json', 'Authorization': 'Bearer ' + access_token }
+        LOG.debug('Contacting %s', idp_user_info)
+        async with session.get(idp_user_info, headers=headers) as resp:
+            LOG.debug('Response %s', resp)
+            if resp.status == 200:
+                user = await resp.json()
+                LOG.error(user)
+                return user
+            else:
+                content = await resp.text()
+                LOG.error('Not a Keycloak token')
+                #LOG.error('Content: %s', content)
+                user = 'public'
+                
+    if user == 'public':
         async with ClientSession(trust_env=True) as session:
             headers = { 'Accept': 'application/json', 'Authorization': 'Bearer ' + access_token }
-            LOG.debug('Contacting %s', idp_user_info)
-            async with session.get(idp_user_info, headers=headers) as resp:
+            LOG.debug('Contacting %s', lsaai_user_info)
+            async with session.get(lsaai_user_info, headers=headers) as resp:
                 LOG.debug('Response %s', resp)
                 if resp.status == 200:
                     user = await resp.json()
                     return user
                 else:
                     content = await resp.text()
+                    LOG.error('Not a LS AAI token')
                     LOG.error('Content: %s', content)
                     user = 'public'
                     return user
+
+    
 
 
 

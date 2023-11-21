@@ -50,3 +50,38 @@ async def resolve_token(token, requested_datasets_ids):
                             auth_datasets.append(auth_dataset)
             LOG.debug(auth_datasets)
             return auth_datasets, True
+        
+async def check_issuer(access_token):
+    user = None
+    idp_user_info = 'https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon/protocol/openid-connect/userinfo'
+    lsaai_user_info = 'https://login.elixir-czech.org/oidc/userinfo'
+    async with ClientSession(trust_env=True) as session:
+        headers = { 'Accept': 'application/json', 'Authorization': 'Bearer ' + access_token }
+        LOG.debug('Contacting %s', idp_user_info)
+        async with session.get(idp_user_info, headers=headers) as resp:
+            LOG.debug('Response %s', resp)
+            if resp.status == 200:
+                user = await resp.json()
+                LOG.error(user)
+                return user
+            else:
+                content = await resp.text()
+                LOG.error('Not a Keycloak token')
+                #LOG.error('Content: %s', content)
+                user = 'public'
+                
+    if user == 'public':
+        async with ClientSession(trust_env=True) as session:
+            headers = { 'Accept': 'application/json', 'Authorization': 'Bearer ' + access_token }
+            LOG.debug('Contacting %s', lsaai_user_info)
+            async with session.get(lsaai_user_info, headers=headers) as resp:
+                LOG.debug('Response %s', resp)
+                if resp.status == 200:
+                    user = await resp.json()
+                    return user
+                else:
+                    content = await resp.text()
+                    LOG.error('Not a LS AAI token')
+                    LOG.error('Content: %s', content)
+                    user = 'public'
+                    return user

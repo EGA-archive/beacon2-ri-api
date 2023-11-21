@@ -1,7 +1,7 @@
 import json
 import asyncio
 import logging
-from aiohttp import web
+from aiohttp import ClientSession, web
 from aiohttp.web_request import Request
 from bson import json_util
 from beacon import conf
@@ -20,7 +20,7 @@ from beacon.response.build_response import (
 )
 from beacon.utils.stream import json_stream
 from beacon.db.datasets import get_datasets
-from beacon.utils.auth import resolve_token
+from beacon.utils.auth import resolve_token, check_issuer
 
 LOG = logging.getLogger(__name__)
 
@@ -164,15 +164,30 @@ def generic_handler(db_fn, request=None):
             
 
         qparams = RequestParams(**json_body).from_request(request)
+        trust_issuers = ['https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon', 'https://login.elixir-czech.org/oidc/']
 
         if access_token != 'public':
             decoded = jwt.decode(access_token, options={"verify_signature": False})
             LOG.debug(decoded)
-            token_username = decoded['preferred_username']
+            user = await check_issuer(access_token)
+            LOG.debug(user)
+            token_username = user['preferred_username']
+            LOG.debug(token_username)
+            issuer = decoded['iss']
+
+            if issuer in trust_issuers:
+                pass
+            else:
+                raise web.HTTPUnauthorized('invalid token')
+
             with open("/beacon/beacon/request/response_type.yml", 'r') as response_type_file:
                 response_type_dict = yaml.safe_load(response_type_file)
 
-            response_type = response_type_dict[token_username]
+            try:
+                response_type = response_type_dict[token_username]
+            except Exception:
+                LOG.debug(Exception)
+                response_type = 'boolean'
             if response_type is not None:
                 for response_typed in response_type:    
                     LOG.debug(response_typed)        
