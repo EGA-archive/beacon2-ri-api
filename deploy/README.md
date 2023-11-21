@@ -21,6 +21,12 @@ cd deploy
 
 ### Light up the database and the Beacon
 
+#### Up the docker network
+
+```bash
+docker network create my-app-network
+```
+
 #### Up the containers
 
 ```bash
