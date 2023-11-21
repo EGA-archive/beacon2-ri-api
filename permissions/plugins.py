@@ -36,7 +36,7 @@ class DummyPermissions(Permissions):
 
     def __init__(self, *args, **kwargs):
         # Dummy permission database
-        with open("/beacon/permissions/registered_datasets.yml", 'r') as stream:
+        with open("/beacon/permissions/controlled_datasets.yml", 'r') as stream:
             out = yaml.safe_load(stream)
         self.db = out
 

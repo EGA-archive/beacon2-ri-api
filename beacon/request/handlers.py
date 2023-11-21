@@ -81,7 +81,10 @@ def generic_handler(db_fn, request=None):
                 token_username = None
                 LOG.debug(token_username)
             issuer = decoded['iss']
-            visa_datasets = user['ga4gh_passport_v1']
+            try:
+                visa_datasets = user['ga4gh_passport_v1']
+            except Exception:
+                pass
     
         
         authorized_datasets, authenticated = await resolve_token(access_token, search_datasets)
