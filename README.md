@@ -22,7 +22,7 @@ When you have your access token, pass it in a header with **Authorization: Beare
 
 ### Beacon security system
 
-![Beacon security](https://github.com/EGA-archive/beacon2-ri-api/blob/master/deploy/beacon_security.png?raw=true)
+![Beacon security](https://github.com/EGA-archive/beacon2-ri-api/blob/develop/deploy/beacon_security.png?raw=true)
 
 ### Version notes
 
