@@ -20,7 +20,7 @@ from beacon.response.build_response import (
 )
 from beacon.utils.stream import json_stream
 from beacon.db.datasets import get_datasets
-from beacon.utils.auth import resolve_token, check_user
+from beacon.utils.auth import resolve_token
 
 LOG = logging.getLogger(__name__)
 
