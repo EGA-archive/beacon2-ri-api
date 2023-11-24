@@ -4,3 +4,5 @@ app-user3:
 costero-e: []
 dummy_user: []
 hola: []
+test_user:
+- CINECA_synthetic_cohort_EUROPE_UK1

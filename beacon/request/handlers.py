@@ -58,7 +58,7 @@ def generic_handler(db_fn, request=None):
         access_token = request.headers.get('Authorization')
 
 
-        visa_datasets=[]
+        
         LOG.debug(access_token)
         if access_token is not None:
             pass
@@ -70,37 +70,12 @@ def generic_handler(db_fn, request=None):
             specific_datasets = []
         access_token = access_token[7:]  # cut out 7 characters: len('Bearer ')
         LOG.debug(access_token)
-        if access_token != 'public':
-            decoded = jwt.decode(access_token, options={"verify_signature": False})
-            LOG.debug(decoded)
-            user = await check_user(access_token)
-            LOG.debug(user)
-            try:
-                token_username = user['preferred_username']
-            except Exception:
-                token_username = None
-                LOG.debug(token_username)
-            issuer = decoded['iss']
-            try:
-                visa_datasets = user['ga4gh_passport_v1']
-            except Exception:
-                pass
+
     
         
-        authorized_datasets, authenticated = await resolve_token(access_token, search_datasets)
+        authorized_datasets, authenticated, username = await resolve_token(access_token, search_datasets)
         LOG.debug(authorized_datasets)
-        if visa_datasets:
-            for visa_dataset in visa_datasets:
-                try:
-                    visa = jwt.decode(visa_dataset, options={"verify_signature": False}, algorithms=["RS256"])
-                    LOG.debug(visa)
-                    LOG.debug(visa["ga4gh_visa_v1"]["value"])
-                    dataset_url = visa["ga4gh_visa_v1"]["value"]
-                    dataset_url_splitted = dataset_url.split('/')
-                    visa_dataset = dataset_url_splitted[-1]
-                    authorized_datasets.append(visa_dataset)
-                except Exception:
-                    visa_dataset = None
+
         
         #LOG.debug('all datasets:  %s', all_datasets)
         LOG.info('resolved datasets:  %s', authorized_datasets)
@@ -197,16 +172,13 @@ def generic_handler(db_fn, request=None):
         if access_token != 'public':
 
 
-            if issuer in conf.trusted_issuers:
-                pass
-            else:
-                raise web.HTTPUnauthorized('invalid token')
+
 
             with open("/beacon/beacon/request/response_type.yml", 'r') as response_type_file:
                 response_type_dict = yaml.safe_load(response_type_file)
 
             try:
-                response_type = response_type_dict[token_username]
+                response_type = response_type_dict[username]
             except Exception:
                 LOG.debug(Exception)
                 response_type = ['boolean']
@@ -286,10 +258,6 @@ def filtering_terms_handler(db_fn, request=None):
                 specific_datasets = []
             access_token = access_token[7:]  # cut out 7 characters: len('Bearer ')
 
-
-            decoded = jwt.decode(access_token, options={"verify_signature": False})
-            LOG.debug(decoded)
-            token_username = decoded['preferred_username']
             
             authorized_datasets, authenticated = await resolve_token(access_token, search_datasets)
             LOG.debug(authorized_datasets)

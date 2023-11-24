@@ -1,2 +1,4 @@
 public_datasets:
-  - public
+- CINECA_dataset
+- CINECA_synthetic_cohort_EUROPE_UK1
+- AV_Dataset

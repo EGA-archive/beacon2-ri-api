@@ -40,8 +40,14 @@ async def resolve_token(token, requested_datasets_ids):
                 raise web.HTTPUnauthorized(body=error)
             '''
             content = await resp.content.read()
-            authorized_datasets = content.decode('utf-8')
+            content =  content.decode('utf-8')
+            content_splitted= content.split(':')
+            authorized_datasets = content_splitted[-1]
             authorized_datasets_list = authorized_datasets.split('"')
+            username_ = content_splitted[1]
+            username_list = username_.split('"')
+            username = username_list[1]
+            LOG.debug(username)
             auth_datasets = []
             for auth_dataset in authorized_datasets_list:
                 if ',' not in auth_dataset:
@@ -49,7 +55,7 @@ async def resolve_token(token, requested_datasets_ids):
                         if ']' not in auth_dataset:
                             auth_datasets.append(auth_dataset)
             LOG.debug(auth_datasets)
-            return auth_datasets, True
+            return auth_datasets, True, username
         
 async def check_user(access_token):
     user = None
