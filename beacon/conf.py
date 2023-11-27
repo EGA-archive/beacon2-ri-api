@@ -12,7 +12,7 @@ import os
 beacon_id = 'org.ega-archive.ga4gh-approval-beacon-test'  # ID of the Beacon
 beacon_name = 'GA4GH Approval Beacon Test'  # Name of the Beacon service
 api_version = 'v2.0.0'  # Version of the Beacon implementation
-uri = 'https://beacon-apis-test.ega-archive.org/api'
+uri = 'https://beacon-apis-test.ega-archive.org/api/'
 
 #
 # Beacon granularity
