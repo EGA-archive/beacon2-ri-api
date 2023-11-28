@@ -59,11 +59,15 @@ async def get_user_info(access_token):
                 user = 'public'
                 return user
         '''
-    decoded = jwt.decode(access_token, options={"verify_signature": False})
-    LOG.error(decoded)
-    issuer = decoded['iss']
-    list_visa_datasets=[]
-    visa_datasets=None
+    try:
+        decoded = jwt.decode(access_token, options={"verify_signature": False})
+        LOG.error(decoded)
+        issuer = decoded['iss']
+        list_visa_datasets=[]
+        visa_datasets=None
+    except Exception:
+        user = 'public'
+        return user
 
     if issuer in conf.trusted_issuers:
         pass
