@@ -44,9 +44,12 @@ async def resolve_token(token, requested_datasets_ids):
             content_splitted= content.split(':')
             authorized_datasets = content_splitted[-1]
             authorized_datasets_list = authorized_datasets.split('"')
-            username_ = content_splitted[1]
-            username_list = username_.split('"')
-            username = username_list[1]
+            try:
+                username_ = content_splitted[1]
+                username_list = username_.split('"')
+                username = username_list[1]
+            except Exception:
+                username = ''
             LOG.debug(username)
             auth_datasets = []
             for auth_dataset in authorized_datasets_list:
