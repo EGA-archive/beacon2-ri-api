@@ -131,7 +131,7 @@ def bearer_required(func):
             raise web.HTTPUnauthorized()
 
         access_token = auth[7:].strip() # 7 = len('Bearer ')
-
+        LOG.error(access_token)
         # We make a round-trip to the userinfo. We might not have a JWT token.
         user, list_visa_datasets = await get_user_info(access_token)
         LOG.info('The user is: %r', user)

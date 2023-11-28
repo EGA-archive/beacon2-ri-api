@@ -72,8 +72,8 @@ def generic_handler(db_fn, request=None):
         LOG.debug(access_token)
 
     
-        
-        authorized_datasets, authenticated, username = await resolve_token(access_token, search_datasets)
+        if access_token != 'public':
+            authorized_datasets, authenticated, username = await resolve_token(access_token, search_datasets)
         LOG.debug(authorized_datasets)
 
         
