@@ -5,6 +5,10 @@ on:
     branches: ['develop', 'master']
     tags:
       - 'v*.*.*'
+  pull_request:
+    branches: ['elixir-bsc', 'main']
+    tags:
+      - 'v*.*.*'
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
