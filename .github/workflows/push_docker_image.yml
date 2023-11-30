@@ -3,12 +3,15 @@ name: Create and publish a Docker image
 on:
   push:
     branches: ['develop', 'master']
-    tags:
-      - 'v*.*.*'
+    tags: |
+      # set latest tag for default branch
+      type=raw,value=latest,enable={{is_default_branch}}
   pull_request:
     branches: ['develop', 'master']
     tags:
-      - 'v*.*.*'
+    tags: |
+      # set latest tag for default branch
+      type=raw,value=latest,enable={{is_default_branch}}
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
