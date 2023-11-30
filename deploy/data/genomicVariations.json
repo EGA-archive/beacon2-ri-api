@@ -4,8 +4,8 @@
             {
                 "biosampleId": "HG03771",
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 }
             }
         ],
@@ -52,218 +52,218 @@
         "caseLevelData": [
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG01365"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02337"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02345"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02501"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02537"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02577"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02624"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02878"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG03054"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG03060"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG03085"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG03363"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG03369"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG03394"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG03433"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG03476"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA18517"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA18520"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA18861"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA18876"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA18909"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA19028"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA19107"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA19129"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA19138"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA19214"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA19225"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA19463"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA19711"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA20126"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA20334"
             }
@@ -311,260 +311,260 @@
         "caseLevelData": [
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG01438"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG01670"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG01912"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02111"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02113"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02583"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02611"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02648"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02676"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02716"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02774"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02805"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02808"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02811"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02817"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02854"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02881"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02890"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02943"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG03049"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG03063"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG03163"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG03202"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG03304"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG03518"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG03538"
             },
             {
                 "zygosity": {
-                    "id": "1/1",
-                    "label": "GENO:0000136"
+                    "label": "1/1",
+                    "id": "GENO:GENO_0000136"
                 },
                 "biosampleId": "NA18874"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA19025"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA19095"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA19116"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA19172"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA19248"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA19257"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA19317"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA19404"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA19428"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA20355"
             }
@@ -613,8 +613,8 @@
             {
                 "biosampleId": "HG01440",
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 }
             }
         ],
@@ -662,8 +662,8 @@
             {
                 "biosampleId": "HG01625",
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 }
             }
         ],
@@ -710,15 +710,15 @@
         "caseLevelData": [
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG01857"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02390"
             }
@@ -766,36 +766,36 @@
         "caseLevelData": [
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG00257"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG01257"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG01506"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA12874"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA20801"
             }
@@ -844,8 +844,8 @@
             {
                 "biosampleId": "NA19720",
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 }
             }
         ],
@@ -893,8 +893,8 @@
             {
                 "biosampleId": "NA21091",
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 }
             }
         ],
@@ -941,64 +941,64 @@
         "caseLevelData": [
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG02508"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG03129"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG03259"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG03432"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "HG03457"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA18979"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA19209"
             },
             {
                 "zygosity": {
-                    "id": "1/0",
-                    "label": "GENO:0000458"
+                    "label": "1/0",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA20362"
             },
             {
                 "zygosity": {
-                    "id": "0/1",
-                    "label": "GENO:0000458"
+                    "label": "0/1",
+                    "id": "GENO:GENO_0000458"
                 },
                 "biosampleId": "NA20412"
             }
