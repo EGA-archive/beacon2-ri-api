@@ -28,17 +28,17 @@ def get_count(collection: Collection, query: dict) -> int:
         LOG.debug("Returning estimated count")
         return collection.estimated_document_count()
     else:
-        LOG.debug("FINAL QUERY (COUNT): {}".format(query))
+        #LOG.debug("FINAL QUERY (COUNT): {}".format(query))
         LOG.debug("Returning count")
         return collection.count_documents(query)
 
 
 def get_documents(collection: Collection, query: dict, skip: int, limit: int) -> Cursor:
-    LOG.debug("FINAL QUERY: {}".format(query))
+    #LOG.debug("FINAL QUERY: {}".format(query))
     return collection.find(query).skip(skip).limit(limit).max_time_ms(10 * 1000)
 
 def get_filtering_documents(collection: Collection, query: dict, remove_id: dict,skip: int, limit: int) -> Cursor:
-    LOG.debug("FINAL QUERY: {}".format(query))
+    #LOG.debug("FINAL QUERY: {}".format(query))
     return collection.find(query,remove_id).skip(skip).limit(limit).max_time_ms(10 * 1000)
 
 def get_cross_query(ids: dict, cross_type: str, collection_id: str):

@@ -24,7 +24,6 @@ def build_meta(qparams: RequestParams, entity_schema: Optional[DefaultSchemas], 
     }
     return meta
 
-
 def build_response_summary(exists, num_total_results):
     if num_total_results is None:
         return {
@@ -37,21 +36,56 @@ def build_response_summary(exists, num_total_results):
         }
 
 
+def build_response_summary_by_dataset(exists, num_total_results, response_dict):
+    count=0
+    try:
+        for k,v in response_dict.items():
+            count+=len(v)
+    except Exception:
+        count=num_total_results
+    LOG.debug(count)
+    if count == 0:
+        return {
+            'exists': count > 0
+        }
+    else:
+        return {
+            'exists': count > 0,
+            'numTotalResults': count
+        }
+
+
 def build_response_by_dataset(data, response_dict, num_total_results, qparams, func):
     """"Fills the `response` part with the correct format in `results`"""
     list_of_responses=[]
-    for k,v in response_dict.items():
-        LOG.debug(len(v))
-        response = {
-            'id': k, # TODO: Set the name of the dataset/cohort
-            'setType': 'dataset', # TODO: Set the type of collection
-            'exists': len(v) > 0,
-            'resultsCount': len(v),
-            'results': v,
-            # 'info': None,
-            'resultsHandover': None,  # build_results_handover
-        }
-        list_of_responses.append(response)
+    include = qparams.query.include_resultset_responses
+    if include != 'ALL':
+        for k,v in response_dict.items():
+            LOG.debug(len(v))
+            if (len(v)) > 0:
+                response = {
+                    'id': k, # TODO: Set the name of the dataset/cohort
+                    'setType': 'dataset', # TODO: Set the type of collection
+                    'exists': len(v) > 0,
+                    'resultsCount': len(v),
+                    'results': v,
+                    # 'info': None,
+                    'resultsHandover': None,  # build_results_handover
+                }
+                list_of_responses.append(response)
+    else:
+        for k,v in response_dict.items():
+            LOG.debug(len(v))
+            response = {
+                'id': k, # TODO: Set the name of the dataset/cohort
+                'setType': 'dataset', # TODO: Set the type of collection
+                'exists': len(v) > 0,
+                'resultsCount': len(v),
+                'results': v,
+                # 'info': None,
+                'resultsHandover': None,  # build_results_handover
+            }
+            list_of_responses.append(response)
 
     return list_of_responses
 
@@ -108,6 +142,7 @@ def build_beacon_resultset_response_by_dataset(data,
     response_dict={}
     #LOG.debug(list_of_dataset_dicts)
     dataset_ids_list = []
+    include = qparams.query.include_resultset_responses
     
 
     for dataset_dict in list_of_dataset_dicts:
@@ -115,49 +150,150 @@ def build_beacon_resultset_response_by_dataset(data,
             dataset_id = dataset_dict['dataset']
             response_dict[dataset_id] = []
             dataset_ids_list.append(dataset_id)
-    
-    for doc in data:
-        for dataset_dict in list_of_dataset_dicts:
-            try:
-                if str(entity_schema) == 'DefaultSchemas.GENOMICVARIATIONS':
-                    for element in doc['caseLevelData']:
-                        if element['biosampleId'] in dataset_dict['ids']:
-                            dataset_id = dataset_dict['dataset']
-                            response_dict[dataset_id].append(doc)
-                        elif element['biosampleId'] in dataset_dict['ids']:
-                            dataset_id = dataset_dict['dataset']
-                            response_dict[dataset_id].append(doc)
-                elif str(entity_schema) == 'DefaultSchemas.ANALYSES':
-                        if doc['biosampleId'] in dataset_dict['ids']:
-                            dataset_id = dataset_dict['dataset']
-                            response_dict[dataset_id].append(doc)
-                        elif doc['individualId'] in dataset_dict['ids']:
-                            dataset_id = dataset_dict['dataset']
-                            response_dict[dataset_id].append(doc)
-                elif str(entity_schema) == 'DefaultSchemas.RUNS':
-                        if doc['biosampleId'] in dataset_dict['ids']:
-                            dataset_id = dataset_dict['dataset']
-                            response_dict[dataset_id].append(doc)
-                        elif doc['individualId'] in dataset_dict['ids']:
-                            dataset_id = dataset_dict['dataset']
-                            response_dict[dataset_id].append(doc)
-                elif str(entity_schema) == 'DefaultSchemas.DATASETS':
-                        if doc['id'] == dataset_dict['dataset']:
-                            dataset_id = dataset_dict['dataset']
-                            response_dict[dataset_id].append(doc)
-                elif str(entity_schema) == 'DefaultSchemas.COHORTS':
-                        if doc['id'] == dataset_dict['dataset']:
-                            dataset_id = dataset_dict['dataset']
-                            response_dict[dataset_id].append(doc)
-                else:
+
+    if include == 'MISS':
+        for doc in data:
+            for dataset_dict in list_of_dataset_dicts:
+                try:
+                    if str(entity_schema) == 'DefaultSchemas.GENOMICVARIATIONS':
+                        for element in doc['caseLevelData']:
+                            if element['biosampleId'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                            elif element['biosampleId'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                    elif str(entity_schema) == 'DefaultSchemas.ANALYSES':
+                            if doc['biosampleId'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                            elif doc['individualId'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                    elif str(entity_schema) == 'DefaultSchemas.RUNS':
+                            if doc['biosampleId'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                            elif doc['individualId'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                    elif str(entity_schema) == 'DefaultSchemas.DATASETS':
+                            if doc['id'] == dataset_dict['dataset']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                    elif str(entity_schema) == 'DefaultSchemas.COHORTS':
+                            if doc['id'] == dataset_dict['dataset']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                    else:
                         if doc['id'] in dataset_dict['ids']:
                             dataset_id = dataset_dict['dataset']
                             response_dict[dataset_id].append(doc)
                         elif doc['id'] in dataset_dict['ids']:
                             dataset_id = dataset_dict['dataset']
                             response_dict[dataset_id].append(doc)
-            except Exception as e:
-                pass
+                except Exception as e:
+                    pass
+        LOG.debug(response_dict)
+        miss_response_dict={}
+        for dataset_dict in list_of_dataset_dicts:
+            for k, v in response_dict.items():
+                if k == dataset_dict['dataset']:
+                    LOG.debug(len(response_dict[dataset_dict['dataset']]))
+                    LOG.debug(len(dataset_dict['ids']))
+                    if len(response_dict[dataset_dict['dataset']]) != len(dataset_dict['ids']):
+                        miss_response_dict[dataset_dict['dataset']] = []
+                    else:
+                        miss_response_dict[dataset_dict['dataset']] = response_dict[dataset_dict['dataset']]
+        LOG.debug(miss_response_dict)
+        response_dict = miss_response_dict
+    elif include == 'ALL':
+        for doc in data:
+            for dataset_dict in list_of_dataset_dicts:
+                try:
+                    if str(entity_schema) == 'DefaultSchemas.GENOMICVARIATIONS':
+                        for element in doc['caseLevelData']:
+                            if element['biosampleId'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                            elif element['biosampleId'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                    elif str(entity_schema) == 'DefaultSchemas.ANALYSES':
+                            if doc['biosampleId'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                            elif doc['individualId'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                    elif str(entity_schema) == 'DefaultSchemas.RUNS':
+                            if doc['biosampleId'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                            elif doc['individualId'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                    elif str(entity_schema) == 'DefaultSchemas.DATASETS':
+                            if doc['id'] == dataset_dict['dataset']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                    elif str(entity_schema) == 'DefaultSchemas.COHORTS':
+                            if doc['id'] == dataset_dict['dataset']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                    else:
+                            if doc['id'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                            elif doc['id'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                except Exception as e:
+                    pass
+    elif include == 'HIT':
+        for doc in data:
+            for dataset_dict in list_of_dataset_dicts:
+                try:
+                    if str(entity_schema) == 'DefaultSchemas.GENOMICVARIATIONS':
+                        for element in doc['caseLevelData']:
+                            if element['biosampleId'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                            elif element['biosampleId'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                    elif str(entity_schema) == 'DefaultSchemas.ANALYSES':
+                            if doc['biosampleId'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                            elif doc['individualId'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                    elif str(entity_schema) == 'DefaultSchemas.RUNS':
+                            if doc['biosampleId'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                            elif doc['individualId'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                    elif str(entity_schema) == 'DefaultSchemas.DATASETS':
+                            if doc['id'] == dataset_dict['dataset']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                    elif str(entity_schema) == 'DefaultSchemas.COHORTS':
+                            if doc['id'] == dataset_dict['dataset']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                    else:
+                            if doc['id'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                            elif doc['id'] in dataset_dict['ids']:
+                                dataset_id = dataset_dict['dataset']
+                                response_dict[dataset_id].append(doc)
+                except Exception as e:
+                    pass
+
     length_to_rest=0
     for dataset_id in dataset_ids_list:
         finish_record = finish_record - length_to_rest
@@ -181,7 +317,7 @@ def build_beacon_resultset_response_by_dataset(data,
 
     beacon_response = {
         'meta': build_meta(qparams, entity_schema, Granularity.RECORD),
-        'responseSummary': build_response_summary(num_total_results > 0, num_total_results),
+        'responseSummary': build_response_summary_by_dataset(num_total_results > 0, num_total_results, response_dict),
         # TODO: 'extendedInfo': build_extended_info(),
         'response': {
             'resultSets': build_response_by_dataset(data, response_dict, num_total_results, qparams, func_response_type)

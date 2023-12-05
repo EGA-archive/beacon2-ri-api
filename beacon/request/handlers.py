@@ -120,15 +120,13 @@ def generic_handler(db_fn, request=None):
                 except Exception:
                     dict_dataset['ids']=[]
                 list_of_dataset_dicts.append(dict_dataset)
-
+            #LOG.debug(list_of_dataset_dicts)
 
             for dataset_searched in specific_datasets_unauthorized:
                 if dataset_searched not in all_datasets:
                     dict_dataset = {}
                     dict_dataset['dataset']=dataset_searched
                     dict_dataset['ids'] = ['Dataset not found']
-                    LOG.debug(dict_dataset['dataset'])
-                    LOG.debug(dict_dataset['ids'])
                     list_of_dataset_dicts.append(dict_dataset)
             
             for data_s in specific_datasets_unauthorized_and_found:
@@ -139,7 +137,6 @@ def generic_handler(db_fn, request=None):
 
             LOG.debug(specific_datasets_unauthorized_and_found)
             LOG.debug(specific_datasets_unauthorized)
-            LOG.debug(list_of_dataset_dicts)
 
         else:
             qparams.query.request_parameters = {}
@@ -183,6 +180,8 @@ def generic_handler(db_fn, request=None):
             
 
         qparams = RequestParams(**json_body).from_request(request)
+        include = qparams.query.include_resultset_responses
+
 
         if access_token != 'public':
 
@@ -247,6 +246,8 @@ def generic_handler(db_fn, request=None):
                 response = build_beacon_boolean_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
             elif conf.max_beacon_granularity == Granularity.COUNT:
                 response = build_beacon_count_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
+            elif include == 'NONE':
+                response = build_beacon_resultset_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
             else:
                 response = build_beacon_resultset_response_by_dataset(response_converted, list_of_dataset_dicts, count, qparams, lambda x, y: x, entity_schema, start_record, finish_record)
                 
@@ -317,8 +318,6 @@ def filtering_terms_handler(db_fn, request=None):
                         dict_dataset = {}
                         dict_dataset['dataset']=dataset_searched
                         dict_dataset['ids'] = ['Dataset not found']
-                        LOG.debug(dict_dataset['dataset'])
-                        LOG.debug(dict_dataset['ids'])
                         list_of_dataset_dicts.append(dict_dataset)
                 
                 for data_s in specific_datasets_unauthorized_and_found:
@@ -358,7 +357,6 @@ def filtering_terms_handler(db_fn, request=None):
                     dict_dataset['dataset']=data_s
                     dict_dataset['ids'] = ['Unauthorized dataset']
                     list_of_dataset_dicts.append(dict_dataset)
-                LOG.debug(list_of_dataset_dicts)
         else:
             list_of_dataset_dicts=[]
 
