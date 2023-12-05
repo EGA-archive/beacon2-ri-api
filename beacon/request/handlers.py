@@ -107,13 +107,20 @@ def generic_handler(db_fn, request=None):
             LOG.debug(specific_search_datasets)
             LOG.debug(response_datasets)
 
+            with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
+                datasets_dict = yaml.safe_load(datasets_file)
+
             list_of_dataset_dicts=[]
 
             for data_r in response_datasets:
                 dict_dataset = {}
                 dict_dataset['dataset']=data_r
-                dict_dataset['ids']=[ r['ids'] for r in beacon_datasets if r['id'] == data_r ]
+                try:
+                    dict_dataset['ids']=datasets_dict[data_r]
+                except Exception:
+                    dict_dataset['ids']=[]
                 list_of_dataset_dicts.append(dict_dataset)
+
 
             for dataset_searched in specific_datasets_unauthorized:
                 if dataset_searched not in all_datasets:
@@ -150,12 +157,19 @@ def generic_handler(db_fn, request=None):
                     biosample_ids = [ r['ids'] for r in beacon_datasets if r['id'] == unauth_spec ]
                     bio_list.append(biosample_ids)
             
+            with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
+                datasets_dict = yaml.safe_load(datasets_file)
+
             list_of_dataset_dicts=[]
 
             for data_r in response_datasets:
                 dict_dataset = {}
                 dict_dataset['dataset']=data_r
-                dict_dataset['ids']=[ r['ids'] for r in beacon_datasets if r['id'] == data_r ]
+                
+                try:
+                    dict_dataset['ids']=datasets_dict[data_r]
+                except Exception:
+                    dict_dataset['ids']=[]
                 list_of_dataset_dicts.append(dict_dataset)
             
             for data_s in specific_datasets:

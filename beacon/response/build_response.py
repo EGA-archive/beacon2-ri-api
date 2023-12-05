@@ -109,6 +109,7 @@ def build_beacon_resultset_response_by_dataset(data,
     #LOG.debug(list_of_dataset_dicts)
     dataset_ids_list = []
     
+
     for dataset_dict in list_of_dataset_dicts:
         if 'Unauthorized dataset' not in dataset_dict['ids']:
             dataset_id = dataset_dict['dataset']
@@ -120,24 +121,24 @@ def build_beacon_resultset_response_by_dataset(data,
             try:
                 if str(entity_schema) == 'DefaultSchemas.GENOMICVARIATIONS':
                     for element in doc['caseLevelData']:
-                        if element['biosampleId'] in dataset_dict['ids'][0]['biosampleIds']:
+                        if element['biosampleId'] in dataset_dict['ids']:
                             dataset_id = dataset_dict['dataset']
                             response_dict[dataset_id].append(doc)
-                        elif element['biosampleId'] in dataset_dict['ids'][0]['individualIds']:
+                        elif element['biosampleId'] in dataset_dict['ids']:
                             dataset_id = dataset_dict['dataset']
                             response_dict[dataset_id].append(doc)
                 elif str(entity_schema) == 'DefaultSchemas.ANALYSES':
-                        if doc['biosampleId'] in dataset_dict['ids'][0]['biosampleIds']:
+                        if doc['biosampleId'] in dataset_dict['ids']:
                             dataset_id = dataset_dict['dataset']
                             response_dict[dataset_id].append(doc)
-                        elif doc['individualId'] in dataset_dict['ids'][0]['individualIds']:
+                        elif doc['individualId'] in dataset_dict['ids']:
                             dataset_id = dataset_dict['dataset']
                             response_dict[dataset_id].append(doc)
                 elif str(entity_schema) == 'DefaultSchemas.RUNS':
-                        if doc['biosampleId'] in dataset_dict['ids'][0]['biosampleIds']:
+                        if doc['biosampleId'] in dataset_dict['ids']:
                             dataset_id = dataset_dict['dataset']
                             response_dict[dataset_id].append(doc)
-                        elif doc['individualId'] in dataset_dict['ids'][0]['individualIds']:
+                        elif doc['individualId'] in dataset_dict['ids']:
                             dataset_id = dataset_dict['dataset']
                             response_dict[dataset_id].append(doc)
                 elif str(entity_schema) == 'DefaultSchemas.DATASETS':
@@ -149,10 +150,10 @@ def build_beacon_resultset_response_by_dataset(data,
                             dataset_id = dataset_dict['dataset']
                             response_dict[dataset_id].append(doc)
                 else:
-                        if doc['id'] in dataset_dict['ids'][0]['biosampleIds']:
+                        if doc['id'] in dataset_dict['ids']:
                             dataset_id = dataset_dict['dataset']
                             response_dict[dataset_id].append(doc)
-                        elif doc['id'] in dataset_dict['ids'][0]['individualIds']:
+                        elif doc['id'] in dataset_dict['ids']:
                             dataset_id = dataset_dict['dataset']
                             response_dict[dataset_id].append(doc)
             except Exception as e:
