@@ -13,15 +13,6 @@ LOG = logging.getLogger(__name__)
 
 def include_resultset_responses(query: Dict[str, List[dict]], qparams: RequestParams):
     LOG.debug("Include Resultset Responses = {}".format(qparams.query.include_resultset_responses))
-    include = qparams.query.include_resultset_responses
-    if include == 'HIT':
-        query = query
-    elif include == 'ALL':
-        query = {}
-    elif include == 'NONE':
-        query = {'$text': {'$search': '########'}}
-    else:
-        query = query
     return query
 
 def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParams):
@@ -67,15 +58,22 @@ def get_biosamples(entry_id: Optional[str], qparams: RequestParams):
             client.beacon.biosamples,
             negative_query,
             qparams.query.pagination.skip,
-            qparams.query.pagination.limit
+            0
         )
         count = get_count(client.beacon.biosamples, negative_query)
+    elif include == 'NONE':
+            docs = get_documents(
+            client.beacon.biosamples,
+            query,
+            qparams.query.pagination.skip,
+            qparams.query.pagination.limit
+        )
     else:
         docs = get_documents(
             client.beacon.biosamples,
             query,
             qparams.query.pagination.skip,
-            qparams.query.pagination.limit
+            0
         )
     return schema, count, docs
 
@@ -109,15 +107,22 @@ def get_biosample_with_id(entry_id: Optional[str], qparams: RequestParams):
             client.beacon.biosamples,
             negative_query,
             qparams.query.pagination.skip,
-            qparams.query.pagination.limit
+            0
         )
         count = get_count(client.beacon.biosamples, negative_query)
+    elif include == 'NONE':
+            docs = get_documents(
+            client.beacon.biosamples,
+            query,
+            qparams.query.pagination.skip,
+            qparams.query.pagination.limit
+        )
     else:
         docs = get_documents(
             client.beacon.biosamples,
             query,
             qparams.query.pagination.skip,
-            qparams.query.pagination.limit
+            0
         )
     return schema, count, docs
 
@@ -157,15 +162,22 @@ def get_variants_of_biosample(entry_id: Optional[str], qparams: RequestParams):
             client.beacon.genomicVariations,
             negative_query,
             qparams.query.pagination.skip,
-            qparams.query.pagination.limit
+            0
         )
         count = get_count(client.beacon.genomicVariations, negative_query)
+    elif include == 'NONE':
+            docs = get_documents(
+            client.beacon.genomicVariations,
+            query,
+            qparams.query.pagination.skip,
+            qparams.query.pagination.limit
+        )
     else:
         docs = get_documents(
             client.beacon.genomicVariations,
             query,
             qparams.query.pagination.skip,
-            qparams.query.pagination.limit
+            0
         )
     return schema, count, docs
 
@@ -199,15 +211,22 @@ def get_analyses_of_biosample(entry_id: Optional[str], qparams: RequestParams):
             client.beacon.analyses,
             negative_query,
             qparams.query.pagination.skip,
-            qparams.query.pagination.limit
+            0
         )
         count = get_count(client.beacon.analyses, negative_query)
+    elif include == 'NONE':
+            docs = get_documents(
+            client.beacon.analyses,
+            query,
+            qparams.query.pagination.skip,
+            qparams.query.pagination.limit
+        )
     else:
         docs = get_documents(
             client.beacon.analyses,
             query,
             qparams.query.pagination.skip,
-            qparams.query.pagination.limit
+            0
         )
     return schema, count, docs
 
@@ -240,15 +259,22 @@ def get_runs_of_biosample(entry_id: Optional[str], qparams: RequestParams):
             client.beacon.runs,
             negative_query,
             qparams.query.pagination.skip,
-            qparams.query.pagination.limit
+            0
         )
         count = get_count(client.beacon.runs, negative_query)
+    elif include == 'NONE':
+            docs = get_documents(
+            client.beacon.runs,
+            query,
+            qparams.query.pagination.skip,
+            qparams.query.pagination.limit
+        )
     else:
         docs = get_documents(
             client.beacon.runs,
             query,
             qparams.query.pagination.skip,
-            qparams.query.pagination.limit
+            0
         )
     return schema, count, docs
 
@@ -262,6 +288,6 @@ def get_filtering_terms_of_biosample(entry_id: Optional[str], qparams: RequestPa
         query,
         remove_id,
         qparams.query.pagination.skip,
-        qparams.query.pagination.limit
+        0
     )
     return schema, count, docs

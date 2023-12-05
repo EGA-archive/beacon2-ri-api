@@ -24,16 +24,28 @@ def build_meta(qparams: RequestParams, entity_schema: Optional[DefaultSchemas], 
     }
     return meta
 
-def build_response_summary(exists, num_total_results):
-    if num_total_results is None:
-        return {
-            'exists': exists
-        }
+def build_response_summary(exists, qparams, num_total_results):
+    limit = qparams.query.pagination.limit
+    if limit != 0 and limit < num_total_results:
+        if num_total_results is None:
+            return {
+                'exists': exists
+            }
+        else:
+            return {
+                'exists': exists,
+                'numTotalResults': limit
+            }
     else:
-        return {
-            'exists': exists,
-            'numTotalResults': num_total_results
-        }
+        if num_total_results is None:
+            return {
+                'exists': exists
+            }
+        else:
+            return {
+                'exists': exists,
+                'numTotalResults': num_total_results
+            }
 
 
 def build_response_summary_by_dataset(exists, num_total_results, response_dict):
@@ -91,16 +103,28 @@ def build_response_by_dataset(data, response_dict, num_total_results, qparams, f
 
 def build_response(data, num_total_results, qparams, func):
     """"Fills the `response` part with the correct format in `results`"""
+    limit = qparams.query.pagination.limit
 
-    response = {
-        'id': '', # TODO: Set the name of the dataset/cohort
-        'setType': '', # TODO: Set the type of collection
-        'exists': num_total_results > 0,
-        'resultsCount': num_total_results,
-        'results': data,
-        # 'info': None,
-        'resultsHandover': None,  # build_results_handover
-    }
+    if limit != 0 and limit < num_total_results:
+        response = {
+            'id': '', # TODO: Set the name of the dataset/cohort
+            'setType': '', # TODO: Set the type of collection
+            'exists': num_total_results > 0,
+            'resultsCount': limit,
+            'results': data,
+            # 'info': None,
+            'resultsHandover': None,  # build_results_handover
+        }
+    else:
+        response = {
+            'id': '', # TODO: Set the name of the dataset/cohort
+            'setType': '', # TODO: Set the type of collection
+            'exists': num_total_results > 0,
+            'resultsCount': num_total_results,
+            'results': data,
+            # 'info': None,
+            'resultsHandover': None,  # build_results_handover
+        }
 
     return response
 
@@ -119,7 +143,7 @@ def build_beacon_resultset_response(data,
 
     beacon_response = {
         'meta': build_meta(qparams, entity_schema, Granularity.RECORD),
-        'responseSummary': build_response_summary(num_total_results > 0, num_total_results),
+        'responseSummary': build_response_summary(num_total_results > 0, qparams, num_total_results),
         # TODO: 'extendedInfo': build_extended_info(),
         'response': {
             'resultSets': [build_response(data, num_total_results, qparams, func_response_type)]
@@ -293,7 +317,8 @@ def build_beacon_resultset_response_by_dataset(data,
                                 response_dict[dataset_id].append(doc)
                 except Exception as e:
                     pass
-
+    
+    limit= qparams.query.pagination.limit
     length_to_rest=0
     for dataset_id in dataset_ids_list:
         finish_record = finish_record - length_to_rest
@@ -341,7 +366,7 @@ def build_beacon_count_response(data,
 
     beacon_response = {
         'meta': build_meta(qparams, entity_schema, Granularity.COUNT),
-        'responseSummary': build_response_summary(num_total_results > 0, num_total_results),
+        'responseSummary': build_response_summary(num_total_results > 0, qparams, num_total_results),
         # TODO: 'extendedInfo': build_extended_info(),
         'beaconHandovers': conf.beacon_handovers,
     }
@@ -362,7 +387,7 @@ def build_beacon_boolean_response(data,
 
     beacon_response = {
         'meta': build_meta(qparams, entity_schema, Granularity.BOOLEAN),
-        'responseSummary': build_response_summary(num_total_results > 0, None),
+        'responseSummary': build_response_summary(num_total_results > 0, qparams, None),
         # TODO: 'extendedInfo': build_extended_info(),
         'beaconHandovers': conf.beacon_handovers,
     }
@@ -375,7 +400,7 @@ def build_beacon_boolean_response(data,
 def build_beacon_collection_response(data, num_total_results, qparams: RequestParams, func_response_type, entity_schema: DefaultSchemas):
     beacon_response = {
         'meta': build_meta(qparams, entity_schema, Granularity.RECORD),
-        'responseSummary': build_response_summary(num_total_results > 0, num_total_results),
+        'responseSummary': build_response_summary(num_total_results > 0, qparams, num_total_results),
         # TODO: 'info': build_extended_info(),
         'beaconHandovers': conf.beacon_handovers,
         'response': {
@@ -463,7 +488,7 @@ def build_filtering_terms_response(data,
 
     beacon_response = {
         'meta': build_meta(qparams, entity_schema, Granularity.RECORD),
-        'responseSummary': build_response_summary(num_total_results > 0, num_total_results),
+        'responseSummary': build_response_summary(num_total_results > 0, qparams, num_total_results),
         # TODO: 'extendedInfo': build_extended_info(),
         'response': {
             'filteringTerms': data,

@@ -18,7 +18,7 @@ def get_cohorts(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.cohorts,
         query,
         qparams.query.pagination.skip,
-        qparams.query.pagination.limit
+        0
     )
     return schema, count, docs
 
@@ -33,7 +33,7 @@ def get_cohort_with_id(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.cohorts,
         query,
         qparams.query.pagination.skip,
-        qparams.query.pagination.limit
+        0
     )
     return schema, count, docs
 
@@ -54,7 +54,7 @@ def get_individuals_of_cohort(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.individuals,
         query,
         qparams.query.pagination.skip,
-        qparams.query.pagination.limit
+        0
     )
     return schema, count, docs
 
@@ -75,7 +75,7 @@ def get_analyses_of_cohort(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.analyses,
         query,
         qparams.query.pagination.skip,
-        qparams.query.pagination.limit
+        0
     )
     return schema, count, docs
 
@@ -100,7 +100,7 @@ def get_variants_of_cohort(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.genomicVariations,
         query,
         qparams.query.pagination.skip,
-        qparams.query.pagination.limit
+        0
     )
     return schema, count, docs
 
@@ -121,7 +121,7 @@ def get_runs_of_cohort(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.runs,
         query,
         qparams.query.pagination.skip,
-        qparams.query.pagination.limit
+        0
     )
     return schema, count, docs
 
@@ -142,7 +142,7 @@ def get_biosamples_of_cohort(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.biosamples,
         query,
         qparams.query.pagination.skip,
-        qparams.query.pagination.limit
+        0
     )
     return schema, count, docs
 
@@ -157,6 +157,6 @@ def get_filtering_terms_of_cohort(entry_id: Optional[str], qparams: RequestParam
         query,
         remove_id,
         qparams.query.pagination.skip,
-        qparams.query.pagination.limit
+        0
     )
     return schema, count, docs
