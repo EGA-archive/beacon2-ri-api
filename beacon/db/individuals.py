@@ -105,7 +105,7 @@ def get_individuals(entry_id: Optional[str], qparams: RequestParams):
             client.beacon.individuals,
             query,
             qparams.query.pagination.skip,
-            count
+            0
         )
         negative_query={}
         ids_array = []
@@ -115,15 +115,16 @@ def get_individuals(entry_id: Optional[str], qparams: RequestParams):
             ids_array.append(elem_query)
         
         negative_query['$nor']=ids_array
-        LOG.debug(negative_query)
+        #LOG.debug(negative_query)
         docs = get_documents(
             client.beacon.individuals,
             negative_query,
             qparams.query.pagination.skip,
             0
         )
+        LOG.debug(docs)
         count = get_count(client.beacon.individuals, negative_query)
-    elif include == 'NONE':
+    if include == 'NONE':
             docs = get_documents(
             client.beacon.individuals,
             query,

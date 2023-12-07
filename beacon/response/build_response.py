@@ -218,10 +218,12 @@ def build_beacon_resultset_response_by_dataset(data,
                             response_dict[dataset_id].append(doc)
                 except Exception as e:
                     pass
-        LOG.debug(response_dict)
+        #LOG.debug(response_dict)
         miss_response_dict={}
         for dataset_dict in list_of_dataset_dicts:
+            #LOG.debug(dataset_dict)
             for k, v in response_dict.items():
+                LOG.debug(k)
                 if k == dataset_dict['dataset']:
                     LOG.debug(len(response_dict[dataset_dict['dataset']]))
                     LOG.debug(len(dataset_dict['ids']))

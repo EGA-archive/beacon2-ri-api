@@ -43,7 +43,6 @@ def collection_handler(db_fn, request=None):
 
     return wrapper
 
-
 def generic_handler(db_fn, request=None):
     async def wrapper(request: Request):
         # Get params
@@ -56,8 +55,6 @@ def generic_handler(db_fn, request=None):
         search_datasets = []
         authenticated=False
         access_token = request.headers.get('Authorization')
-
-
         
         LOG.debug(access_token)
         if access_token is not None:
@@ -104,8 +101,8 @@ def generic_handler(db_fn, request=None):
             all_datasets = [r['id'] for r in beacon_datasets]
             
             response_datasets = [ r['id'] for r in beacon_datasets if r['id'] in search_and_authorized_datasets]
-            LOG.debug(specific_search_datasets)
-            LOG.debug(response_datasets)
+            #LOG.debug(specific_search_datasets)
+            #LOG.debug(response_datasets)
 
             with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
                 datasets_dict = yaml.safe_load(datasets_file)
@@ -276,11 +273,11 @@ def filtering_terms_handler(db_fn, request=None):
 
             
             authorized_datasets, authenticated = await resolve_token(access_token, search_datasets)
-            LOG.debug(authorized_datasets)
+            #LOG.debug(authorized_datasets)
             #LOG.debug('all datasets:  %s', all_datasets)
             LOG.info('resolved datasets:  %s', authorized_datasets)
-            LOG.debug(authenticated)
-            LOG.debug(specific_datasets)
+            #LOG.debug(authenticated)
+            #LOG.debug(specific_datasets)
 
             specific_datasets_unauthorized = []
             specific_datasets_unauthorized_and_found = []
@@ -302,8 +299,8 @@ def filtering_terms_handler(db_fn, request=None):
                 all_datasets = [r['id'] for r in beacon_datasets]
                 
                 response_datasets = [ r['id'] for r in beacon_datasets if r['id'] in search_and_authorized_datasets]
-                LOG.debug(specific_search_datasets)
-                LOG.debug(response_datasets)
+                #LOG.debug(specific_search_datasets)
+                #LOG.debug(response_datasets)
 
                 list_of_dataset_dicts=[]
 
@@ -326,8 +323,8 @@ def filtering_terms_handler(db_fn, request=None):
                     dict_dataset['ids'] = ['Unauthorized dataset']
                     list_of_dataset_dicts.append(dict_dataset)
 
-                LOG.debug(specific_datasets_unauthorized_and_found)
-                LOG.debug(specific_datasets_unauthorized)
+                #LOG.debug(specific_datasets_unauthorized_and_found)
+                #LOG.debug(specific_datasets_unauthorized)
 
             else:
                 qparams.query.request_parameters = {}
@@ -336,8 +333,8 @@ def filtering_terms_handler(db_fn, request=None):
                 beacon_datasets = [ r for r in datasets ]
                 specific_datasets = [ r['id'] for r in beacon_datasets if r['id'] not in authorized_datasets]
                 response_datasets = [ r['id'] for r in beacon_datasets if r['id'] in authorized_datasets]
-                LOG.debug(specific_datasets)
-                LOG.debug(response_datasets)
+                #LOG.debug(specific_datasets)
+                #LOG.debug(response_datasets)
                 specific_datasets_unauthorized.append(specific_datasets)
                 for unauth in specific_datasets_unauthorized:
                     for unauth_spec in unauth:
