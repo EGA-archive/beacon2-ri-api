@@ -124,7 +124,7 @@ def get_individuals(entry_id: Optional[str], qparams: RequestParams):
         )
         LOG.debug(docs)
         count = get_count(client.beacon.individuals, negative_query)
-    if include == 'NONE':
+    elif include == 'NONE':
             docs = get_documents(
             client.beacon.individuals,
             query,
@@ -174,7 +174,7 @@ def get_individual_with_id(entry_id: Optional[str], qparams: RequestParams):
         )
         LOG.debug(docs)
         count = get_count(client.beacon.individuals, negative_query)
-    if include == 'NONE':
+    elif include == 'NONE':
             docs = get_documents(
             client.beacon.individuals,
             query,
@@ -231,7 +231,7 @@ def get_variants_of_individual(entry_id: Optional[str], qparams: RequestParams):
         )
         LOG.debug(docs)
         count = get_count(client.beacon.individuals, negative_query)
-    if include == 'NONE':
+    elif include == 'NONE':
             docs = get_documents(
             client.beacon.individuals,
             query,
@@ -281,7 +281,7 @@ def get_biosamples_of_individual(entry_id: Optional[str], qparams: RequestParams
         )
         LOG.debug(docs)
         count = get_count(client.beacon.biosamples, negative_query)
-    if include == 'NONE':
+    elif include == 'NONE':
             docs = get_documents(
             client.beacon.biosamples,
             query,
@@ -346,7 +346,7 @@ def get_runs_of_individual(entry_id: Optional[str], qparams: RequestParams):
         )
         LOG.debug(docs)
         count = get_count(client.beacon.runs, negative_query)
-    if include == 'NONE':
+    elif include == 'NONE':
             docs = get_documents(
             client.beacon.runs,
             query,
@@ -395,7 +395,7 @@ def get_analyses_of_individual(entry_id: Optional[str], qparams: RequestParams):
         )
         LOG.debug(docs)
         count = get_count(client.beacon.analyses, negative_query)
-    if include == 'NONE':
+    elif include == 'NONE':
             docs = get_documents(
             client.beacon.analyses,
             query,

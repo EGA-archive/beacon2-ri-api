@@ -61,7 +61,7 @@ def get_analyses(entry_id: Optional[str], qparams: RequestParams):
         )
         LOG.debug(docs)
         count = get_count(client.beacon.analyses, negative_query)
-    if include == 'NONE':
+    elif include == 'NONE':
             docs = get_documents(
             client.beacon.analyses,
             query,
@@ -111,7 +111,7 @@ def get_analysis_with_id(entry_id: Optional[str], qparams: RequestParams):
         )
         LOG.debug(docs)
         count = get_count(client.beacon.analyses, negative_query)
-    if include == 'NONE':
+    elif include == 'NONE':
             docs = get_documents(
             client.beacon.analyses,
             query,
@@ -166,7 +166,7 @@ def get_variants_of_analysis(entry_id: Optional[str], qparams: RequestParams):
         )
         LOG.debug(docs)
         count = get_count(client.beacon.genomicVariations, negative_query)
-    if include == 'NONE':
+    elif include == 'NONE':
             docs = get_documents(
             client.beacon.genomicVariations,
             query,

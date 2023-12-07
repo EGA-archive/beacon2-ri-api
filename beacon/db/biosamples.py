@@ -62,7 +62,7 @@ def get_biosamples(entry_id: Optional[str], qparams: RequestParams):
         )
         LOG.debug(docs)
         count = get_count(client.beacon.biosamples, negative_query)
-    if include == 'NONE':
+    elif include == 'NONE':
             docs = get_documents(
             client.beacon.biosamples,
             query,
@@ -112,7 +112,7 @@ def get_biosample_with_id(entry_id: Optional[str], qparams: RequestParams):
         )
         LOG.debug(docs)
         count = get_count(client.beacon.biosamples, negative_query)
-    if include == 'NONE':
+    elif include == 'NONE':
             docs = get_documents(
             client.beacon.biosamples,
             query,
@@ -168,7 +168,7 @@ def get_variants_of_biosample(entry_id: Optional[str], qparams: RequestParams):
         )
         LOG.debug(docs)
         count = get_count(client.beacon.genomicVariations, negative_query)
-    if include == 'NONE':
+    elif include == 'NONE':
             docs = get_documents(
             client.beacon.genomicVariations,
             query,
@@ -218,7 +218,7 @@ def get_analyses_of_biosample(entry_id: Optional[str], qparams: RequestParams):
         )
         LOG.debug(docs)
         count = get_count(client.beacon.analyses, negative_query)
-    if include == 'NONE':
+    elif include == 'NONE':
             docs = get_documents(
             client.beacon.analyses,
             query,
@@ -267,7 +267,7 @@ def get_runs_of_biosample(entry_id: Optional[str], qparams: RequestParams):
         )
         LOG.debug(docs)
         count = get_count(client.beacon.runs, negative_query)
-    if include == 'NONE':
+    elif include == 'NONE':
             docs = get_documents(
             client.beacon.runs,
             query,
