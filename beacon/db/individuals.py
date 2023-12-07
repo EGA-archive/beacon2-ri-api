@@ -155,7 +155,7 @@ def get_individual_with_id(entry_id: Optional[str], qparams: RequestParams):
             client.beacon.individuals,
             query,
             qparams.query.pagination.skip,
-            count
+            0
         )
         negative_query={}
         ids_array = []
@@ -165,15 +165,16 @@ def get_individual_with_id(entry_id: Optional[str], qparams: RequestParams):
             ids_array.append(elem_query)
         
         negative_query['$nor']=ids_array
-        LOG.debug(negative_query)
+        #LOG.debug(negative_query)
         docs = get_documents(
             client.beacon.individuals,
             negative_query,
             qparams.query.pagination.skip,
             0
         )
+        LOG.debug(docs)
         count = get_count(client.beacon.individuals, negative_query)
-    elif include == 'NONE':
+    if include == 'NONE':
             docs = get_documents(
             client.beacon.individuals,
             query,
@@ -211,7 +212,7 @@ def get_variants_of_individual(entry_id: Optional[str], qparams: RequestParams):
             client.beacon.genomicVariations,
             query,
             qparams.query.pagination.skip,
-            count
+            0
         )
         negative_query={}
         ids_array = []
@@ -221,24 +222,25 @@ def get_variants_of_individual(entry_id: Optional[str], qparams: RequestParams):
             ids_array.append(elem_query)
         
         negative_query['$nor']=ids_array
-        LOG.debug(negative_query)
+        #LOG.debug(negative_query)
         docs = get_documents(
-            client.beacon.genomicVariations,
+            client.beacon.individuals,
             negative_query,
             qparams.query.pagination.skip,
             0
         )
-        count = get_count(client.beacon.genomicVariations, negative_query)
-    elif include == 'NONE':
+        LOG.debug(docs)
+        count = get_count(client.beacon.individuals, negative_query)
+    if include == 'NONE':
             docs = get_documents(
-            client.beacon.genomicVariations,
+            client.beacon.individuals,
             query,
             qparams.query.pagination.skip,
             qparams.query.pagination.limit
         )
     else:
         docs = get_documents(
-            client.beacon.genomicVariations,
+            client.beacon.individuals,
             query,
             qparams.query.pagination.skip,
             0
@@ -260,7 +262,7 @@ def get_biosamples_of_individual(entry_id: Optional[str], qparams: RequestParams
             client.beacon.biosamples,
             query,
             qparams.query.pagination.skip,
-            count
+            0
         )
         negative_query={}
         ids_array = []
@@ -270,15 +272,16 @@ def get_biosamples_of_individual(entry_id: Optional[str], qparams: RequestParams
             ids_array.append(elem_query)
         
         negative_query['$nor']=ids_array
-        LOG.debug(negative_query)
+        #LOG.debug(negative_query)
         docs = get_documents(
             client.beacon.biosamples,
             negative_query,
             qparams.query.pagination.skip,
             0
         )
+        LOG.debug(docs)
         count = get_count(client.beacon.biosamples, negative_query)
-    elif include == 'NONE':
+    if include == 'NONE':
             docs = get_documents(
             client.beacon.biosamples,
             query,
@@ -324,7 +327,7 @@ def get_runs_of_individual(entry_id: Optional[str], qparams: RequestParams):
             client.beacon.runs,
             query,
             qparams.query.pagination.skip,
-            count
+            0
         )
         negative_query={}
         ids_array = []
@@ -334,15 +337,16 @@ def get_runs_of_individual(entry_id: Optional[str], qparams: RequestParams):
             ids_array.append(elem_query)
         
         negative_query['$nor']=ids_array
-        LOG.debug(negative_query)
+        #LOG.debug(negative_query)
         docs = get_documents(
             client.beacon.runs,
             negative_query,
             qparams.query.pagination.skip,
             0
         )
+        LOG.debug(docs)
         count = get_count(client.beacon.runs, negative_query)
-    elif include == 'NONE':
+    if include == 'NONE':
             docs = get_documents(
             client.beacon.runs,
             query,
@@ -372,7 +376,7 @@ def get_analyses_of_individual(entry_id: Optional[str], qparams: RequestParams):
             client.beacon.analyses,
             query,
             qparams.query.pagination.skip,
-            count
+            0
         )
         negative_query={}
         ids_array = []
@@ -382,15 +386,16 @@ def get_analyses_of_individual(entry_id: Optional[str], qparams: RequestParams):
             ids_array.append(elem_query)
         
         negative_query['$nor']=ids_array
-        LOG.debug(negative_query)
+        #LOG.debug(negative_query)
         docs = get_documents(
             client.beacon.analyses,
             negative_query,
             qparams.query.pagination.skip,
             0
         )
+        LOG.debug(docs)
         count = get_count(client.beacon.analyses, negative_query)
-    elif include == 'NONE':
+    if include == 'NONE':
             docs = get_documents(
             client.beacon.analyses,
             query,
