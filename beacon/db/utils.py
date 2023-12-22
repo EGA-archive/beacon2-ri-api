@@ -46,7 +46,7 @@ def get_cross_query(ids: dict, cross_type: str, collection_id: str):
     dict_in={}
     id_dict={}
     if cross_type == 'biosampleId' or cross_type=='id':
-        list_item=ids[cross_type]
+        list_item=ids
         LOG.debug(str(list_item))
         id_list.append(str(list_item))
         dict_in["$in"]=id_list
@@ -54,7 +54,7 @@ def get_cross_query(ids: dict, cross_type: str, collection_id: str):
         id_dict[collection_id]=dict_in
         query = id_dict
     elif cross_type == 'individualIds' or cross_type=='biosampleIds':
-        list_individualIds=ids[cross_type]
+        list_individualIds=ids
         dict_in["$in"]=list_individualIds
         LOG.debug(list_individualIds)
         id_dict[collection_id]=dict_in
