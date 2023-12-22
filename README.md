@@ -11,6 +11,8 @@ This repository is an implementation of the [Beacon v2.0 Model](https://github.c
 
 > [Local deployment instructions](deploy/README.md)
 
+> [Frontend usage instructions](frontend/README.md)
+
 ### Managing AAI-LSAAI permissions
 
 To give the right permissions for AAI you will need to set the permissions of the users inside permissions folder, within the [public_datasets.yml](permissions/public_datasets.yml), [registered_datasets.yml](permissions/registered_datasets.yml), [controlled_datasets.yml](permissions/controlled_datasets.yml) files, or run the beacon admin page that allows you to manage all the permissions in a friendly way and no need to open .yml files. Just start the UI, that will run in http://localhost:8010, by executing this command from the deploy folder after the containers are up and running:
