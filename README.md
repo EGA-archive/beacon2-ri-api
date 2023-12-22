@@ -10,6 +10,7 @@ This repository is an implementation of the [Beacon v2.0 Model](https://github.c
 
 
 > [Local deployment instructions](deploy/README.md)
+
 > [Frontend usage instructions](frontend/README.md)
 
 ### Managing AAI-LSAAI permissions

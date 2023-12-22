@@ -1,4 +1,4 @@
-## Instructions on how to deploy the Beacon Network User Interface
+## Instructions on how to deploy the Beacon User Interface
  
 
 Please first create a .env file inside the frontend folder so that you can modify some variables as follows:
