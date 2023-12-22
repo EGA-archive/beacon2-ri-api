@@ -78,7 +78,8 @@ services:
       # - ../ui/templates:/beacon/ui/templates
       - ./conf.py:/beacon/beacon/conf.py
       - ./logger.yml:/beacon/beacon/logger.yml
-      - ./ontologies:/beacon/ontologies
+      - ../beacon/request/datasets.yml:/beacon/beacon/request/datasets.yml
+      - ../beacon/request/response_type.yml:/beacon/beacon/request/response_type.yml
     ports:
       - "5050:5050"
     networks:
