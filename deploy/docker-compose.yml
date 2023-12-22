@@ -171,14 +171,16 @@ services:
   frontend:
     build:
       context: ../frontend
-    #command: ["yarn"]
-    #command: ["node", "/opt/yarn-v1.22.19/bin/yarn.js", "start" ]
-    command: yarn start
-    container_name: react
+    command: node /opt/yarn-v1.22.19/bin/yarn.js start
+    container_name: beacon-ui
+    environment:
+      - CHOKIDAR_USEPOLLING=true
     ports:
       - 3000:3000
+    stdin_open: true
     volumes:
-      - ../frontend:/usr/src/app
+      - ./frontend/.env:/frontend/.env
+      - ./frontend/src/config.json:/frontend/src/config.json
 
 
 
