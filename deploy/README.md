@@ -188,7 +188,7 @@ But you can also use complex filters:
     "query": {
         "filters": [
             {
-                "id": "UBERON:0001256",
+                "id": "UBERON:0000178",
                 "scope": "biosamples",
                 "includeDescendantTerms": false
             }
