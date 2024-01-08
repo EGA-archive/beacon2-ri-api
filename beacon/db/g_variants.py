@@ -38,18 +38,18 @@ def generate_position_filter_start(key: str, value: List[int]) -> List[Alphanume
     if len(value) == 1:
         filters.append(AlphanumericFilter(
             id=VARIANTS_PROPERTY_MAP[key],
-            value=[value[0]],
+            value=value[0],
             operator=Operator.GREATER_EQUAL
         ))
     elif len(value) == 2:
         filters.append(AlphanumericFilter(
             id=VARIANTS_PROPERTY_MAP[key],
-            value=[value[0]],
+            value=value[0],
             operator=Operator.GREATER_EQUAL
         ))
         filters.append(AlphanumericFilter(
             id=VARIANTS_PROPERTY_MAP[key],
-            value=[value[1]],
+            value=value[1],
             operator=Operator.LESS_EQUAL
         ))
     return filters
@@ -61,18 +61,18 @@ def generate_position_filter_end(key: str, value: List[int]) -> List[Alphanumeri
     if len(value) == 1:
         filters.append(AlphanumericFilter(
             id=VARIANTS_PROPERTY_MAP[key],
-            value=[value[0]],
+            value=value[0],
             operator=Operator.LESS_EQUAL
         ))
     elif len(value) == 2:
         filters.append(AlphanumericFilter(
             id=VARIANTS_PROPERTY_MAP[key],
-            value=[value[0]],
+            value=value[0],
             operator=Operator.GREATER_EQUAL
         ))
         filters.append(AlphanumericFilter(
             id=VARIANTS_PROPERTY_MAP[key],
-            value=[value[1]],
+            value=value[1],
             operator=Operator.LESS_EQUAL
         ))
     return filters
