@@ -20,6 +20,7 @@ To give the right permissions for AAI you will need to set the permissions of th
 docker exec beacon-permissions bash permissions/permissions-ui/start.sh
 ```
 Please, bear in mind that the name of the user has to be the same that you used when creating the user in LS or in IDP, whatever the AAI method you are working with.
+To give a user a certain type of response for their queries, please modify this file [response_type.yml](https://github.com/EGA-archive/beacon2-ri-api/blob/master/beacon/request/response_type.yml) adding the maximum type of response you want to allow every user.
 
 Also, you will need to edit the file [conf.py](beacon/conf.py) and introduce the domain where your keycloak is being hosted inside **ldp_user_info** and the issuers you trust for your token inside **trusted_issuers**. In case you want to run your local container, use this configuration:
 ```bash
