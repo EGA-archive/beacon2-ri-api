@@ -49,6 +49,7 @@ def build_response_summary(exists, qparams, num_total_results):
 
 
 def build_response_summary_by_dataset(exists, num_total_results, response_dict):
+    LOG.debug(response_dict)
     count=0
     try:
         for k,v in response_dict.items():
@@ -174,7 +175,7 @@ def build_beacon_resultset_response_by_dataset(data,
             dataset_id = dataset_dict['dataset']
             response_dict[dataset_id] = []
             dataset_ids_list.append(dataset_id)
-
+    LOG.debug(include)
     if include == 'MISS':
         for doc in data:
             for dataset_dict in list_of_dataset_dicts:
@@ -311,14 +312,16 @@ def build_beacon_resultset_response_by_dataset(data,
                                 dataset_id = dataset_dict['dataset']
                                 response_dict[dataset_id].append(doc)
                     else:
-                            if doc['id'] in dataset_dict['ids']:
-                                dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
-                            elif doc['id'] in dataset_dict['ids']:
-                                dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                        #LOG.debug(doc['id'])
+                        if doc['id'] in dataset_dict['ids']:
+                            dataset_id = dataset_dict['dataset']
+                            response_dict[dataset_id].append(doc)
+                        elif doc['id'] in dataset_dict['ids']:
+                            dataset_id = dataset_dict['dataset']
+                            response_dict[dataset_id].append(doc)
                 except Exception as e:
                     pass
+    #LOG.debug(response_dict)
     
     limit= qparams.query.pagination.limit
     length_to_rest=0
@@ -338,10 +341,11 @@ def build_beacon_resultset_response_by_dataset(data,
             length_to_rest = len(response_dict[dataset_id])
         else:
             start_record = start_record - len(response_dict[dataset_id])
+    
         
         
         
-
+    LOG.debug(response_dict)
     beacon_response = {
         'meta': build_meta(qparams, entity_schema, Granularity.RECORD),
         'responseSummary': build_response_summary_by_dataset(num_total_results > 0, num_total_results, response_dict),
