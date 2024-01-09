@@ -179,8 +179,8 @@ services:
       - 3000:3000
     stdin_open: true
     volumes:
-      - ./frontend/.env:/frontend/.env
-      - ./frontend/src/config.json:/frontend/src/config.json
+      - ../frontend/.env:/frontend/.env
+      - ../frontend/src/config.json:/frontend/src/config.json
 
 
 
