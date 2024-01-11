@@ -10,7 +10,7 @@ import {
   GridToolbarExport
 } from '@mui/x-data-grid'
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 function CustomToolbar () {
   return (
@@ -28,17 +28,17 @@ function TableResultsIndividuals (props) {
   const [rows, setRows] = useState([])
   const [ids, setIds] = useState([])
 
-  const [beaconsArrayResults, setBeaconsArrayResults] = useState([])
-
-  const [beaconsArrayResultsOrdered, setBeaconsArrayResultsOrdered] = useState([])
-
   const [resultsSelected, setResultsSelected] = useState(props.results)
   const [resultsSelectedFinal, setResultsSelectedFinal] = useState([])
+
+  const [openDatasetArray, setOpenDataset] = useState([])
 
   const [editable, setEditable] = useState([])
 
   const [trigger, setTrigger] = useState(false)
   const [trigger2, setTrigger2] = useState(false)
+
+  const [triggerArray, setTriggerArray] = useState([])
 
   const getSelectedRowsToExport = ({ apiRef }) => {
     const selectedRowIds = selectedGridRowsSelector(apiRef)
@@ -47,6 +47,16 @@ function TableResultsIndividuals (props) {
     }
 
     return gridFilteredSortedRowIdsSelector(apiRef)
+  }
+
+  const handleClickDatasets = e => {
+    console.log(e)
+
+    openDatasetArray[e] = true
+    console.log(openDatasetArray)
+    triggerArray[e] = true
+    console.log(triggerArray)
+    setTrigger(!trigger)
   }
 
   const columns = [
@@ -60,7 +70,12 @@ function TableResultsIndividuals (props) {
       field: 'IndividualId',
       headerName: 'Individual ID',
       width: 150,
-      headerClassName: 'super-app-theme--header'
+      headerClassName: 'super-app-theme--header',
+      renderCell: params => (
+        <Link to={`/individuals/cross-queries/${params.row.IndividualId}`}>
+          {params.row.IndividualId}
+        </Link>
+      )
     },
     {
       field: 'Beacon',
@@ -112,40 +127,24 @@ function TableResultsIndividuals (props) {
     // { field: 'karyotypicSex', headerName: 'karyotypicSex', width: 150 },
   ]
 
-  const handleSeeResults = e => {
-    resultsSelected.forEach(element => {
-      if (element[0] === e) {
-        console.log(e)
-        console.log(element[0])
-        resultsSelectedFinal.push(element)
-      }
-    })
-    console.log(resultsSelectedFinal) //correct number
-
+  const handleSeeResults = ()=> {
+ 
+    setResultsSelectedFinal(resultsSelected)
+    console.log(resultsSelected)
     setShowResults(true)
     setShowDatasets(false)
     setTrigger(true)
   }
 
-  function getOccurrence (array, value) {
-    var count = 0
-    array.forEach(v => v === value && count++)
-    return count
-  }
-
   useEffect(() => {
-    console.log(props.results)
     setRows([])
     setIds([])
-    console.log(rows)
 
     resultsSelected.forEach((element, index) => {
-      console.log(element[0])
       arrayBeaconsIds.push(element[0])
     })
     resultsSelectedFinal.forEach((element, index) => {
       if (element[1] !== undefined) {
-        console.log(element[0])
         let eth_id = ''
         let eth_label = ''
         let stringEth = ''
@@ -205,8 +204,10 @@ function TableResultsIndividuals (props) {
               )
             })
             measuresJson = measuresJson.toString()
-            measuresJson = measuresJson.replaceAll(", ",",").replaceAll(" ,",",")
-            measuresJson = measuresJson.replaceAll(",",'')
+            measuresJson = measuresJson
+              .replaceAll(', ', ',')
+              .replaceAll(' ,', ',')
+            measuresJson = measuresJson.replaceAll(',', '')
           } else {
             measuresJson = JSON.stringify(element[1].measures, null, 2)
               .replaceAll('[', '')
@@ -219,8 +220,10 @@ function TableResultsIndividuals (props) {
               .replaceAll('"', '')
 
             measuresJson = measuresJson.toString()
-            measuresJson = measuresJson.replaceAll(", ",",").replaceAll(" ,",",")
-            measuresJson = measuresJson.replaceAll(",",'')
+            measuresJson = measuresJson
+              .replaceAll(', ', ',')
+              .replaceAll(' ,', ',')
+            measuresJson = measuresJson.replaceAll(',', '')
           }
         }
 
@@ -245,8 +248,13 @@ function TableResultsIndividuals (props) {
               )
             })
             interventionsProcedures = interventionsProcedures.toString()
-            interventionsProcedures = interventionsProcedures.replaceAll(", ",",").replaceAll(" ,",",")
-            interventionsProcedures = interventionsProcedures.replaceAll(",",'')
+            interventionsProcedures = interventionsProcedures
+              .replaceAll(', ', ',')
+              .replaceAll(' ,', ',')
+            interventionsProcedures = interventionsProcedures.replaceAll(
+              ',',
+              ''
+            )
           } else {
             interventionsProcedures = JSON.stringify(
               element[1].interventionsOrProcedures,
@@ -262,8 +270,13 @@ function TableResultsIndividuals (props) {
               .replaceAll(', ', '')
               .replaceAll('"', '')
             interventionsProcedures = interventionsProcedures.toString()
-            interventionsProcedures = interventionsProcedures.replaceAll(", ",",").replaceAll(" ,",",")
-            interventionsProcedures = interventionsProcedures.replaceAll(",",'')
+            interventionsProcedures = interventionsProcedures
+              .replaceAll(', ', ',')
+              .replaceAll(' ,', ',')
+            interventionsProcedures = interventionsProcedures.replaceAll(
+              ',',
+              ''
+            )
           }
         }
 
@@ -285,8 +298,8 @@ function TableResultsIndividuals (props) {
               )
             })
             diseases = diseases.toString()
-            diseases = diseases.replaceAll(", ",",").replaceAll(" ,",",")
-            diseases= diseases.replaceAll(",",'')
+            diseases = diseases.replaceAll(', ', ',').replaceAll(' ,', ',')
+            diseases = diseases.replaceAll(',', '')
           } else {
             diseases = JSON.stringify(element[1].diseases, null, 2)
               .replaceAll('[', '')
@@ -298,8 +311,8 @@ function TableResultsIndividuals (props) {
               .replaceAll(', ', '')
               .replaceAll('"', '')
             diseases = diseases.toString()
-            diseases = diseases.replaceAll(", ",",").replaceAll(" ,",",")
-            diseases= diseases.replaceAll(",",'')
+            diseases = diseases.replaceAll(', ', ',').replaceAll(' ,', ',')
+            diseases = diseases.replaceAll(',', '')
           }
         }
 
@@ -314,11 +327,9 @@ function TableResultsIndividuals (props) {
           sex: stringSex,
           diseases: diseases
         })
-        console.log(rows)
 
         if (index === resultsSelectedFinal.length - 1) {
           setEditable(rows.map(o => ({ ...o })))
-
           setTrigger2(true)
         }
       }
@@ -326,27 +337,28 @@ function TableResultsIndividuals (props) {
   }, [trigger, resultsSelectedFinal])
 
   useEffect(() => {
+    console.log(props.resultsPerDataset)
+    console.log(props.beaconsList)
     let count = 0
-    props.beaconsList.forEach((element2, index2) => {
-      console.log(element2.meta.beaconId)
-      console.log(arrayBeaconsIds)
-      count = getOccurrence(arrayBeaconsIds, element2.meta.beaconId)
-      if (count > 0) {
-        beaconsArrayResults.push([element2, count, true])
-      } else {
-        beaconsArrayResults.push([element2, count, false])
-      }
-    })
-    beaconsArrayResults.forEach(element => {
-      if (element[2] === true){
-        beaconsArrayResultsOrdered.push(element)
-      }
-    })
-    beaconsArrayResults.forEach(element => {
-      if (element[2] === false){
-        beaconsArrayResultsOrdered.push(element)
-      }
-    } )
+
+    // props.beaconsList.forEach((element2, index2) => {
+    //   count = getOccurrence(arrayBeaconsIds, element2.meta.beaconId)
+    //   if (count > 0) {
+    //     beaconsArrayResults.push([element2, count, true])
+    //   } else {
+    //     beaconsArrayResults.push([element2, count, false])
+    //   }
+    // })
+    // beaconsArrayResults.forEach(element => {
+    //   if (element[2] === true) {
+    //     beaconsArrayResultsOrdered.push(element)
+    //   }
+    // })
+    // beaconsArrayResults.forEach(element => {
+    //   if (element[2] === false) {
+    //     beaconsArrayResultsOrdered.push(element)
+    //   }
+    // })
 
     setShowDatasets(true)
   }, [])
@@ -354,31 +366,83 @@ function TableResultsIndividuals (props) {
   return (
     <div className='containerBeaconResults'>
       {showDatsets === true &&
-        beaconsArrayResultsOrdered.length > 0 &&
-        beaconsArrayResultsOrdered.map(result => {
+        props.beaconsList.map(result => {
           return (
-            <div className='datasetCardResults'>
-              <div className='tittleResults'>
-                <div className='tittle2'>
-                  <img
-                    className='logoBeacon'
-                    src={result[0].response.organization.logoUrl}
-                    alt={result[0].meta.beaconId}
-                  />
-                </div>
-                <h2>{result[0].response.organization.name}</h2>
-                {result[2] === true && <h6>FOUND </h6>}
-                {result[2] === false && <h5>NOT FOUND</h5>}
-                <h1>{result[1]} results</h1>
-                <button
-                  onClick={() => {
-                    handleSeeResults(result[0].meta.beaconId)
-                  }}
-                >
-                  <h7>See results</h7>
-                </button>
-              </div>
-            </div>
+            <>
+              {props.show && (
+                <>
+                  {props.resultsPerDataset.map((element, index) => {
+                    return (
+                      <>
+                        <div className='datasetCardResults'>
+                          <div className='tittleResults'>
+                            <div className='tittle4'>
+                              <img
+                                className='logoBeacon'
+                                src={result.organization.logoUrl}
+                                alt={result.id}
+                              />
+                              <h4>{result.organization.name}</h4>
+                            </div>
+
+                            {element[0].map((datasetObject, indexDataset) => {
+                              return (
+                                <div className='resultSetsContainer'>
+                                  <button
+                                    className='resultSetsButton'
+                                    onClick={() =>
+                                      handleClickDatasets([index, indexDataset])
+                                    }
+                                  >
+                                    <h7>
+                                      {datasetObject.replaceAll('_', ' ')}
+                                    </h7>
+                                  </button>
+                                  {openDatasetArray[[index, indexDataset]] ===
+                                    true &&
+                                    triggerArray[[index, indexDataset]] ===
+                                      true &&
+                                    element[1][indexDataset] === true &&
+                                    props.show === 'boolean' && <h6>FOUND</h6>}
+                                  {openDatasetArray[[index, indexDataset]] ===
+                                    true &&
+                                    triggerArray[[index, indexDataset]] ===
+                                      true &&
+                                    element[1][indexDataset] === false &&
+                                    props.show === 'boolean' && (
+                                      <h5>NOT FOUND</h5>
+                                    )}
+                                  {props.show === 'count' &&
+                                    triggerArray[[index, indexDataset]] ===
+                                      true && (
+                                      <h6>
+                                        {element[2][indexDataset]} RESULTS
+                                      </h6>
+                                    )}
+                                  {props.show === 'full' &&
+                                    element[1][indexDataset] === true && (
+                                      <button
+                                        className='buttonResults'
+                                        onClick={() => {
+                                          handleSeeResults(
+                                            
+                                          )
+                                        }}
+                                      >
+                                        <h7 className="seeResultsButton"> SEE RESULTS</h7>
+                                      </button>
+                                    )}
+                                </div>
+                              )
+                            })}
+                          </div>
+                        </div>
+                      </>
+                    )
+                  })}
+                </>
+              )}
+            </>
           )
         })}
 

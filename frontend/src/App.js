@@ -12,11 +12,13 @@ import Cohorts from './components/Cohorts/Cohorts'
 import ErrorPage from './pages/ErrorPage'
 import Navbar from './components/NavBar/Navbar'
 import SignInForm from './components/SignIn/SignInForm'
-import BeaconInfo from './components/Dataset/BeaconInfo';
 import CrossQueries from './components/CrossQueries/CrossQueries'
 import LoggedIn from './components/SignIn/LoggedIn'
-import Verifier from './components/Verifier/Verifier'
+import Validator from './components/Validator/Validator'
 import SignInFormNoLS from './components/SignIn/SignInFormNoLS'
+import AboutSection from './components/AboutSection/AboutSection'
+import SignInOptions from './components/SignInOptions/SignInOptions'
+import BeaconInfo from './components/Dataset/BeaconInfo'
 
 function App () {
   return (
@@ -30,12 +32,14 @@ function App () {
         <Route path='/runs' element={<Runs />} />
         <Route path='/analyses' element={<Analyses />} />
         <Route path='/cohorts' element={<Cohorts />} />
-        <Route path='/info' element={<BeaconInfo />} />
+        <Route path='/beaconInfo' element={<BeaconInfo />} />
         <Route path='/sign-in' element={<SignInForm />} />
         <Route path='/sign-in-noLS' element={<SignInFormNoLS />} />
+        <Route path='/sign-in-options' element={<SignInOptions />} />
         <Route path='/loggedOut' element={<LoggedIn />} />
-        <Route path='/cross-queries' element={<CrossQueries />} />
-        <Route path='/verifier' element={<Verifier />} />
+        <Route path='/:scope/cross-queries/:id' element={<CrossQueries />} />
+        <Route path='/validator' element={<Validator />} />
+        <Route path='/about' element={<AboutSection />} />
         <Route path='*' element={<ErrorPage />} />
       </Routes>
     </div>

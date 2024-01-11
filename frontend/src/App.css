@@ -36,15 +36,11 @@ html {
   color: rgba(12, 16, 64, 0.606);
   font-size: 16px;
   font-variant-caps: all-petite-caps;
+  margin-top: 16px;
 }
 
-.modeVariants:hover {
-  color: white;
-  background-color: #e3eefe;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-radius: 3px;
-  margin-left: 10px;
+.modeVariants:hover h2 {
+  color: rgb(236, 149, 0) !important;
 }
 
 .variantsFilters {
@@ -55,7 +51,14 @@ html {
 
 .resultSetsDiv {
   display: flex;
-  margin-left: 13px;
+  margin-top: 5px;
+}
+
+.containerTableResults {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
 }
 
 .newSearchButton:hover {
@@ -84,15 +87,6 @@ html {
   font-size: 14px;
 }
 
-.multi-switch-container {
-  width: 180px;
-  background-color: white;
-  border-color: black;
-  height: 30px;
-  margin-left: 14px;
-  z-index: 0;
-}
-
 .container-fluid {
   display: flex;
   width: 100%;
@@ -115,6 +109,10 @@ html {
   margin: 10px;
   margin-right: 30px;
   width: 89px;
+}
+
+.test-example {
+  padding: 2px;
 }
 
 .selectedOperator {
@@ -186,7 +184,7 @@ html {
   flex-direction: column;
   align-content: center;
   align-items: center;
-  margin-top: -48px;
+  margin-top: 18px;
 }
 
 .variantsContainer {
@@ -199,11 +197,12 @@ html {
 }
 
 .inputVariants {
-  height: 18px;
+  height: 24px;
   border: 1.5px solid #dfdfdf;
   border-radius: 2px;
   margin-bottom: 30px;
-  font-size: 14.5px;
+  font-size: 12.5px;
+  padding: 5px;
 }
 
 .labelVariants {
@@ -271,16 +270,25 @@ html {
   color: #34495e;
   font-size: 14px;
   cursor: pointer;
-  margin-top: -10px;
-  margin-bottom: 35px;
+  margin-top: 16px;
+  margin-bottom: 10px;
+  /* margin-top: -10px; */
+  /* margin-bottom: 35px; */
+  border-radius: 3px;
   background: rgba(0, 0, 0, 0.09);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
 }
+
 .spanQE {
   display: block;
-  padding: 14px 15px;
+  padding: 8px 4px;
+  font-size: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 .btn-3::before,
@@ -356,18 +364,16 @@ html {
 }
 
 .buttonVariants {
-  margin-top: 12px;
-  margin-bottom: 20px;
+  margin-top: 9px;
+  margin-bottom: -14px;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 1px,
     rgba(179, 179, 179, 0.22) 0px 1px 1px;
-  padding: 7px;
+  padding: 6px;
   cursor: pointer;
 }
 
 .buttonVariants:hover {
-  margin-top: 12px;
-  margin-right: -9px;
-  margin-bottom: 20px;
+  margin-right: -2px;
   font-weight: 600;
   color: rgb(118, 151, 228);
 }
@@ -388,10 +394,60 @@ html {
   flex-direction: column;
 }
 
+.variantExampleButton {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  border: solid #d6d5e1;
+  padding: 4px;
+  margin-left: 13px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  font-size: 10px;
+  box-shadow: 1px 1px 1px -1px #ffd8d8;
+  text-transform: uppercase;
+  color: rgba(12, 16, 64, 0.606);
+  font-weight: 700;
+}
+.variantExampleButton:hover {
+  background-color: #78beed;
+  border: solid #06c;
+}
+
 .divFlex {
   width: 168%;
   display: flex;
   justify-content: flex-end;
+}
+
+.text-example {
+  display: none;
+}
+
+.exampleQuery:hover {
+  color: rgb(118, 151, 228);
+}
+
+.exampleQuery:hover .text-example {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: solid #c8c8c8;
+  background-color: #c8c8c8;
+  color: black;
+  width: fit-content;
+  border-radius: 6px;
+  margin-left: 10px;
+  padding: 1px;
+}
+
+.examplesQueriesList {
+  width: 111px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  align-items: flex-start;
 }
 
 .container1 {
@@ -405,14 +461,18 @@ html {
   width: 100vw;
   display: flex;
   margin-bottom: 40px;
+  margin-top: 11px;
 }
 
 .NavlinkVerifier {
-  color: #3fa18e;
-  width: 172px;
+  color: rgba(12, 16, 64, 0.606);
+  font-size: 15px !important;
+  font-feature-settings: 'pcap', 'c2pc';
+  font-variant-caps: all-petite-caps;
+  margin-top: -4px;
 }
 .NavlinkVerifier:hover {
-  margin: 0px !important;
+  color: rgb(236, 149, 0) !important;
 }
 
 .alphanumContainer {
@@ -458,8 +518,8 @@ html {
   align-items: center;
 }
 
-.elixirLogo {
-  height: 91px;
+.beaconLogo {
+  height: 45px;
   margin-top: 29px;
   margin-right: 21px;
 }
@@ -561,19 +621,17 @@ hr {
     sans-serif;
   text-transform: uppercase;
   font-size: 12px;
+  margin-left: 33px;
+}
+
+.exampleQueries:hover {
+  color: rgb(118, 151, 228);
 }
 
 .bulbExample {
   display: flex;
   align-items: center;
-}
-
-.exampleQuery:hover {
-  color: rgb(118, 151, 228);
-}
-
-.exampleQueries:hover {
-  color: rgb(118, 151, 228);
+  border-left: 1.7px solid #f1f1f1;
 }
 
 .helpButton {
@@ -599,7 +657,8 @@ hr {
 
 .bulbLogo {
   height: 16px;
-  margin-right: 10px;
+  margin-right: 11px;
+  margin-left: 4px;
 }
 
 .arrowLogo {
@@ -617,7 +676,7 @@ hr {
 }
 
 .questionLogo:hover {
-  background: linear-gradient(356deg, #6ac5ff 50%, #86d2ff 80%);
+  background: linear-gradient(356deg, #3893cb 50%, #419ed3 80%);
   border-radius: 9px;
 }
 
@@ -628,7 +687,7 @@ hr {
 }
 
 .questionLogo2:hover {
-  background: linear-gradient(356deg, #6ac5ff 50%, #86d2ff 80%);
+  background: linear-gradient(356deg, #3ca2e2 50%, #63acd6 80%);
   border-radius: 9px;
 }
 
@@ -652,9 +711,12 @@ hr {
 .example {
   display: flex;
   align-items: center;
+  margin-right: -117px;
+  margin-top: 22px;
+  margin-bottom: 22px;
+  flex-direction: row-reverse;
+  align-content: space-between;
   justify-content: center;
-  margin-top: 30px;
-  margin-bottom: 10px;
 }
 
 .extraSections {
@@ -671,6 +733,11 @@ hr {
   /* border-color: #5454bc; */
   padding: 5px;
   cursor: pointer;
+  display: flex;
+  flex-direction: row-reverse;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
 }
 
 .exampleQueriesAlph {
@@ -738,12 +805,13 @@ h5 {
 .advSearch-module {
   display: flex;
   align-items: center;
-  margin-top: -3px;
+  margin-top: 6px;
+  margin-bottom: -2px;
 }
 
 .loader2 {
   width: 50vw;
-  height: 10vh;
+  height: 30vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -926,6 +994,8 @@ h5 {
     sans-serif;
   text-transform: uppercase;
   font-size: 12px;
+  margin-right: 36px;
+  margin-left: 27px;
 }
 
 .filters:hover {
@@ -933,20 +1003,21 @@ h5 {
 }
 
 .ReactModal__Content--after-open {
-  width: 30vw;
-  height: 29%;
+  width: 485px;
+  font-size: 11px;
+  height: 33%;
   position: absolute !important;
   inset: 35% !important;
   border: 1px solid rgb(204, 204, 204) !important;
-  background: #e2842b !important;
+  background: #be5930 !important;
   overflow: auto !important;
   border-radius: 4px !important;
   outline: none !important;
-  padding: 20px !important;
+  padding: 16px !important;
 }
 
 .ReactModal__Content--after-open p {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: normal;
   color: white;
   line-height: 30px;
@@ -956,12 +1027,213 @@ h5 {
 @media (max-width: 800px) {
   .container1 a {
     display: flex;
+    font-size: 11px;
+    text-underline-offset: 1px;
+  }
+
+  .inputVariants {
+    height: 24px;
+    border: 1.5px solid #dfdfdf;
+    border-radius: 2px;
+    margin-bottom: 30px;
+    font-size: 12px;
+  }
+
+  .exampleQuery {
+    border: none;
+    /* border-color: #5454bc; */
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row-reverse;
     align-content: center;
     justify-content: center;
+    align-items: center;
+    font-size: 12px;
+  }
+
+  .labelVariants {
+    font-size: 11.5px;
+    margin-bottom: 18px;
+    margin-right: 4px;
+    margin-left: 18px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+  }
+
+  .buttonVariants {
+    margin-top: 12px;
+    margin-bottom: 20px;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 1px,
+      rgba(179, 179, 179, 0.22) 0px 1px 1px;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-right: 7px;
+  }
+
+  .switchDescendants h3 {
+    color: #e16e00;
+    text-transform: uppercase;
+    margin-left: 3px !important;
+    margin-top: 14px;
+    font-size: 12px;
+  }
+
+  .ReactModal__Content--after-open {
+    width: 269px;
+    font-size: 12px;
+    height: fit-content;
+    position: absolute !important;
+    inset: 35% !important;
+    border: 1px solid rgb(204, 204, 204) !important;
+    background: #be5930 !important;
+    overflow: auto !important;
+    border-radius: 4px !important;
+    outline: none !important;
+    padding: 16px !important;
+  }
+
+  .ReactModal__Content--after-open p {
+    font-size: 14px;
+    font-weight: normal;
+    color: white;
+    line-height: 20px;
+    padding: 2px;
+  }
+
+  .filters {
+    padding: 4px;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+    text-transform: uppercase;
+    font-size: 10px;
+    margin-left: 2px !important;
+    margin-right: 7px !important;
+    /* margin-right: 36px; */
+    /* margin-left: 27px; */
+  }
+
+  .container-fluid {
+    display: flex;
+    width: 100%;
+    margin-right: 0px;
+    margin-left: 0px;
+    justify-content: center;
+    height: 35px;
+  }
+
+  .example {
+    display: flex;
+    align-items: center;
+    margin-right: 0px;
+    margin-top: 22px;
+    margin-bottom: 22px;
+    flex-direction: row-reverse;
+    align-content: space-between;
+    justify-content: center;
+  }
+
+  .exampleQueries {
+    border: none;
+    background-color: #ffffff;
+    color: #4d4b4b;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+    text-transform: uppercase;
+    font-size: 10px;
+    margin-left: 0px !important;
+  }
+
+  .additionalOptions {
+    justify-content: center;
+    align-items: center;
+    z-index: 0;
+    height: 34px;
+  }
+
+  .bulbLogo {
+    display: none;
+  }
+
+  .formSearch {
+    width: 81vw;
+    margin-right: 3px;
+    background: white;
+    border: 2px solid #8985c1;
+    font-size: small;
+    /* margin: 10px; */
+    border-radius: 10px;
+    /* box-shadow: 2px 1px 2px #cecece; */
+    height: 27px;
+  }
+  .bulbExample {
+    display: flex;
+    border-left: 1.7px solid #f1f1f1;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    width: 112px;
+  }
+  .searchIcon {
+    width: 26px;
+    margin-top: -1px;
+    margin-left: -8px;
+  }
+  .searchIcon:hover {
+    width: 26px;
+    margin-top: -1px;
+    margin-left: -8px;
+  }
+
+  .beaconLogo {
+    height: 45px;
+    margin-top: 18px;
+    margin-bottom: 37px;
+    margin-right: 21px;
   }
 
   .searchButton {
     height: 30px;
     cursor: pointer;
   }
+
+  .examplesQueriesList {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: flex-start;
+    width: 189px;
+    border-radius: 5px;
+    font-size: 9px;
+    margin-left: 10px !important;
+    background: #8dbde0;
+    
+  }
+
+  .bulbExample {
+    display: flex;
+    border-left: 1.7px solid #f1f1f1;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+  }
+
+  .NavlinkVerifier{
+    color: rgba(12, 16, 64, 0.606);
+    font-size: 15px !important;
+    font-feature-settings: 'pcap', 'c2pc', "pcap", "c2pc";
+    font-variant-caps: all-petite-caps;
+    margin-top: 0px;
+    font-size: 12px !important;
+  }
+
 }
