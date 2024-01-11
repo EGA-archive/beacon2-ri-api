@@ -131,3 +131,5 @@ deploy/ontologies/*.owl*
 
 alternate_docker_compose_ls.yml
 frontend3
+
+node_modules

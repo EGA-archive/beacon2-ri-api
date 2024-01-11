@@ -2,27 +2,36 @@ import './CrossQueries.css'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
 import configData from '../../config.json'
+import { useParams } from 'react-router-dom'
 
 function CrossQueries () {
   const [valueInitial, setValueInitial] = useState('')
   const [valueFinal, setValueFinal] = useState('')
-  const [IdValue, setIdValue] = useState('')
+
   const [error, setError] = useState('')
   const [results, setResults] = useState('')
   const [arrayResults, setArrayResults] = useState([])
 
   const [showSubmit, setShowSubmit] = useState(true)
+  const [trigger, setTrigger] = useState(true)
 
   const handleChangeInitial = e => {
     setValueInitial(e.target.value)
   }
 
+  let { scope, id } = useParams()
+
+  const [scope2, setScope2] = useState(scope)
+
+  const [IdValue, setIdValue] = useState(id)
   const handleChangeFinal = e => {
     setValueFinal(e.target.value)
   }
 
   const handleChangeID = e => {
     setIdValue(e.target.value)
+    setScope2('allScopes')
+    setTrigger(false)
   }
 
   const handleClick = () => {
@@ -52,8 +61,6 @@ function CrossQueries () {
               JSON.stringify(element, null, 2).replace('[', '').replace(']', '')
             )
           })
-          console.log(results)
-          console.log(arrayResults)
         } else {
           setResults(null)
         }
@@ -64,18 +71,56 @@ function CrossQueries () {
     }
   }
 
+  useEffect(() => {
+    setTrigger(true)
+  }, [scope2])
+
   return (
     <div className='divCrossQueries'>
       <form className='crossQueriesForm' onSubmit={handleSubmit}>
         <label className='originCollection'>
           Pick the "origin" collection:
           <select value={valueInitial} onChange={handleChangeInitial}>
-            <option value='select'>Select</option>
-            <option value='g_variants'>Variant</option>
-            <option value='individuals'>Individuals</option>
-            <option value='biosamples'>Biosamples</option>
-            <option value='runs'>Runs</option>
-            <option value='analyses'>Analyses</option>
+            {scope2 === 'allScopes' && <option value='select'>Select</option>}
+            {scope2 === 'allScopes' && (
+              <option value='g_variants'>Variant</option>
+            )}
+            {scope2 === 'allScopes' && (
+              <option value='individuals'>Individuals</option>
+            )}
+            {scope2 === 'allScopes' && (
+              <option value='biosamples'>Biosamples</option>
+            )}
+            {scope2 === 'allScopes' && <option value='runs'>Runs</option>}
+            {scope2 === 'allScopes' && (
+              <option value='analyses'>Analyses</option>
+            )}
+
+            {scope2 === 'variants' && (
+              <option value='g_variants' selected>
+                Variant
+              </option>
+            )}
+            {scope2 === 'individuals' && (
+              <option value='individuals' selected>
+                Individuals
+              </option>
+            )}
+            {scope2 === 'biosamples' && (
+              <option value='biosamples' selected>
+                Biosamples
+              </option>
+            )}
+            {scope2 === 'runs' && (
+              <option value='runs' selected>
+                Runs
+              </option>
+            )}
+            {scope2 === 'analyses' && (
+              <option value='analyses' selected>
+                Analyses
+              </option>
+            )}
           </select>
         </label>
         <label>

@@ -1,6 +1,11 @@
-import '../../App.css';
+import '../../App.css'
+import Layout from '../Layout/Layout'
 
-function Analyses(){
-    return (<><h2 className="comming_message">Comming soon...</h2></>)
+function Analyses () {
+  return (
+    <div>
+      <Layout collection={'Analyses'} />
+    </div>
+  )
 }
 export default Analyses

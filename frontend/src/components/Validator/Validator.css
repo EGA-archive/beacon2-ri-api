@@ -123,7 +123,7 @@ h10 {
 }
 
 .copyLogo {
-  width: 18px;
+  width: 20px;
 }
 
 h11 {
@@ -140,7 +140,7 @@ h11 {
 
 .loader2 {
   width: 50vw;
-  height: 10vh;
+  height: 30vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -254,4 +254,15 @@ h11 {
   100% {
     left: 20px;
   }
+}
+
+@media (max-width: 800px) {
+  .inputVerifierUrl {
+    font-size: 12px;
+    width: 68vw;
+    height: 24px;
+    border: 1px solid #f0f5ff;
+    box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
+}
+
 }
