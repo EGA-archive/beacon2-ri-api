@@ -72,6 +72,7 @@ class DummyPermissions(Permissions):
                 for rdataset in list_registered_datasets:
                     datasets.append(rdataset)
                 for cdataset in self.db.get(username):
+                    LOG.error(username)
                     datasets.append(cdataset)
                 datasets = set(datasets)
             except Exception:

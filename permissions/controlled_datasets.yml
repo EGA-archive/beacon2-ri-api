@@ -2,7 +2,8 @@ app-user3:
 - CINECA_synthetic_cohort_EUROPE_UK1
 - AV_Dataset
 costero-e: []
-dummy_user: []
+dummy_user:
+- AV_Dataset
 hola: []
 test_user:
 - CINECA_synthetic_cohort_EUROPE_UK1
