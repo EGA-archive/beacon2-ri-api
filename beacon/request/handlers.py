@@ -146,12 +146,6 @@ def generic_handler(db_fn, request=None):
             LOG.debug(specific_datasets)
             LOG.debug(response_datasets)
             specific_datasets_unauthorized.append(specific_datasets)
-            ''''
-            for unauth in specific_datasets_unauthorized:
-                for unauth_spec in unauth:
-                    biosample_ids = [ r['ids'] for r in beacon_datasets if r['id'] == unauth_spec ]
-                    bio_list.append(biosample_ids)
-            '''
             
             with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
                 datasets_dict = yaml.safe_load(datasets_file)
@@ -297,12 +291,12 @@ def filtering_terms_handler(db_fn, request=None):
                 qparams.query.request_parameters = {}
                 qparams.query.request_parameters['datasets'] = '*******'
                 _, _, datasets = get_datasets(None, qparams)
-                #beacon_datasets = [ r for r in datasets ]
-                #all_datasets = [r['id'] for r in beacon_datasets]
+                beacon_datasets = [ r for r in datasets ]
+                all_datasets = [r['id'] for r in beacon_datasets]
                 
-                #response_datasets = [ r['id'] for r in beacon_datasets if r['id'] in search_and_authorized_datasets]
-                #LOG.debug(specific_search_datasets)
-                #LOG.debug(response_datasets)
+                response_datasets = [ r['id'] for r in beacon_datasets if r['id'] in search_and_authorized_datasets]
+                LOG.debug(specific_search_datasets)
+                LOG.debug(response_datasets)
 
                 list_of_dataset_dicts=[]
 
@@ -337,11 +331,6 @@ def filtering_terms_handler(db_fn, request=None):
                 response_datasets = [ r['id'] for r in beacon_datasets if r['id'] in authorized_datasets]
                 #LOG.debug(specific_datasets)
                 #LOG.debug(response_datasets)
-                specific_datasets_unauthorized.append(specific_datasets)
-                for unauth in specific_datasets_unauthorized:
-                    for unauth_spec in unauth:
-                        biosample_ids = [ r['ids'] for r in beacon_datasets if r['id'] == unauth_spec ]
-                        bio_list.append(biosample_ids)
                 
                 list_of_dataset_dicts=[]
 
