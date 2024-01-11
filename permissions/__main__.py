@@ -22,7 +22,7 @@ from .plugins import DummyPermissions as PermissionsProxy
 LOG = logging.getLogger(__name__)
 
 @bearer_required
-async def permission(request: Request, username: Optional[str]):
+async def permission(request: Request, username: Optional[str], list_visa_datasets: Optional [list]):
 
     if request.headers.get('Content-Type') == 'application/json':
         post_data = await request.json()
@@ -43,8 +43,16 @@ async def permission(request: Request, username: Optional[str]):
     LOG.debug('requested datasets: %s', requested_datasets)
     datasets = await request.app['permissions'].get(username, requested_datasets=requested_datasets)
     LOG.debug('selected datasets: %s', datasets)
+    dict_returned={}
+    dict_returned['username']=username
+    datasets=list(datasets)
+    LOG.error('visa_datasets: {}'.format(list_visa_datasets))
+    for visa_dataset in list_visa_datasets:
+        datasets.append(visa_dataset)
+    dict_returned['datasets']=list(datasets)
+    LOG.error(dict_returned['datasets'])
 
-    return web.json_response(list(datasets or [])) # cuz python-json doesn't like sets
+    return web.json_response(dict_returned) # cuz python-json doesn't like sets
 
 async def initialize(app):
     """Initialize server."""

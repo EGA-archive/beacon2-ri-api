@@ -78,7 +78,8 @@ services:
       # - ../ui/templates:/beacon/ui/templates
       - ./conf.py:/beacon/beacon/conf.py
       - ./logger.yml:/beacon/beacon/logger.yml
-      - ./ontologies:/beacon/ontologies
+      - ../beacon/request/datasets.yml:/beacon/beacon/request/datasets.yml
+      - ../beacon/request/response_type.yml:/beacon/beacon/request/response_type.yml
     ports:
       - "5050:5050"
     networks:
@@ -103,6 +104,7 @@ services:
       - ./logger.yml:/beacon/logger.yml
     ports:
       - "5051:5051"
+      - 8010:8000
     networks:
       - beacon-priv
       - pub
@@ -169,11 +171,16 @@ services:
   frontend:
     build:
       context: ../frontend
-    #command: ["yarn"]
-    command: ["node", "/opt/yarn-v1.22.19/bin/yarn.js", "start" ]
-    container_name: react
+    command: node /opt/yarn-v1.22.19/bin/yarn.js start
+    container_name: beacon-ui
+    environment:
+      - CHOKIDAR_USEPOLLING=true
     ports:
       - 3000:3000
+    stdin_open: true
     volumes:
-      - ../frontend:/usr/src/app
+      - ../frontend/.env:/frontend/.env
+      - ../frontend/src/config.json:/frontend/src/config.json
+
+
 

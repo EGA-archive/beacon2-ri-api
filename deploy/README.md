@@ -21,6 +21,12 @@ cd deploy
 
 ### Light up the database and the Beacon
 
+#### Up the docker network
+
+```bash
+docker network create my-app-network
+```
+
 #### Up the containers
 
 ```bash
@@ -54,6 +60,11 @@ docker exec deploy_db_1 mongoimport --jsonArray --uri "mongodb://root:example@12
 ```
 
 This loads the JSON files inside of the `data` folder into the MongoDB database container.
+
+#### List the ids
+
+After deploying all the data, you will need to tell the beacon which are the individual and biosample ids belonging to each dataset and cohort. In order to do that, please, add the name of each dataset with the respective array of all the ids together in this file [datasets.yml](https://github.com/EGA-archive/beacon2-ri-api/blob/master/beacon/request/datasets.yml).
+Then, repeat the same for the cohorts modifying this file [cohorts.yml](https://github.com/EGA-archive/beacon2-ri-api/blob/master/beacon/request/cohorts.yml).
 
 #### Create the indexes
 
@@ -182,7 +193,7 @@ But you can also use complex filters:
     "query": {
         "filters": [
             {
-                "id": "UBERON:0001256",
+                "id": "UBERON:0000178",
                 "scope": "biosamples",
                 "includeDescendantTerms": false
             }

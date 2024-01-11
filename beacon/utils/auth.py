@@ -5,7 +5,7 @@ from aiohttp import ClientSession, web
 import asyncio
 
 from beacon.db.datasets import filter_public_datasets
-from ..conf import permissions_url
+from ..conf import permissions_url, idp_user_info as idpu, lsaai_user_info as lsu
 
 LOG = logging.getLogger(__name__)
 
@@ -27,19 +27,30 @@ async def resolve_token(token, requested_datasets_ids):
     # * return _all_ the datasets the user has access to, in case the datasets list is empty
     async with ClientSession() as session:
         async with session.post(
-                'http://beacon-permissions:5051/',
+                permissions_url,
                 headers={'Authorization': 'Bearer ' + token,
                          'Accept': 'application/json'},
                 json={'datasets': requested_datasets_ids},  # will set the Content-Type to application/json
         ) as resp:
+            '''
             if resp.status > 200:
                 LOG.error('Permissions server error %d', resp.status)
                 error = await resp.text()
                 LOG.error('Error: %s', error)
                 raise web.HTTPUnauthorized(body=error)
+            '''
             content = await resp.content.read()
-            authorized_datasets = content.decode('utf-8')
+            content =  content.decode('utf-8')
+            content_splitted= content.split(':')
+            authorized_datasets = content_splitted[-1]
             authorized_datasets_list = authorized_datasets.split('"')
+            try:
+                username_ = content_splitted[1]
+                username_list = username_.split('"')
+                username = username_list[1]
+            except Exception:
+                username = ''
+            LOG.debug(username)
             auth_datasets = []
             for auth_dataset in authorized_datasets_list:
                 if ',' not in auth_dataset:
@@ -47,4 +58,5 @@ async def resolve_token(token, requested_datasets_ids):
                         if ']' not in auth_dataset:
                             auth_datasets.append(auth_dataset)
             LOG.debug(auth_datasets)
-            return auth_datasets, True
+            return auth_datasets, True, username
+        
