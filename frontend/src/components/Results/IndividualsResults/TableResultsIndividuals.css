@@ -12,6 +12,28 @@
   overflow-inline: scroll;
 }
 
+.resultSetsButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.resultSetsButton h7 {
+  font-size: 12px;
+}
+
+.resultSetsButton h6 {
+  margin-top: 10px;
+}
+
+.tittleResults h7 {
+  font-size: 12px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 9px;
+}
+
 h6 {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -25,8 +47,8 @@ h6 {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 3px;
-  font-size: 14px;
+  margin-top: 37px;
+  font-size: 12px;
 }
 
 h6:hover {
@@ -43,12 +65,15 @@ h6:hover {
   font-weight: normal;
   color: rgb(209, 45, 20);
   font-weight: bold;
-  width: 100%;
+  background: #ffd1d1;
+  width: fit-content;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 3px;
-  font-size: 14px;
+  margin-top: 34px;
+  font-size: 12px;
+  border-radius: 2px;
+  padding: 3px;
 }
 
 h7 {
@@ -58,20 +83,15 @@ h7 {
   font-size: 14px;
   color: rgba(12, 16, 64, 0.606);
   font-weight: bold;
-  margin-top: 8px;
-  margin-bottom: 2px;
+  margin-top: 12px;
 }
 
 h7:hover {
   text-transform: uppercase;
   /* margin-left: 40px; */
   /* margin-top: 17px; */
-  font-size: 14px;
   color: rgb(118, 151, 228);
-  margin-left: 10px;
   font-weight: bold;
-  margin-top: 8px;
-  margin-bottom: 2px;
 }
 
 h1 {
@@ -147,7 +167,7 @@ h1 {
   flex-direction: row;
   justify-content: center;
   /* width: 98vw; */
-  margin-right: 26px;
+  /* margin-right: 26px; */
   align-content: center;
   flex-wrap: wrap;
   margin-left: 10px;
@@ -155,7 +175,118 @@ h1 {
   margin-top: 12px;
   align-items: center;
   overflow: scroll;
-  border: solid #e1dede;
-  padding: 14px;
-  box-shadow: 1px 1px 1px 1px snow;
+}
+
+.containerBeaconResultsVariants {
+  overflow-y: scroll;
+  height: 100vh;
+}
+
+
+.containerResultsVariants {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 860px) {
+  .containerBeaconResults {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 90vw;
+    /* margin-right: 26px; */
+    align-content: center;
+    flex-wrap: wrap;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 12px;
+    align-items: center;
+    overflow: scroll;
+  }
+
+  .containerResultsVariants {
+    display: flex;
+    /* align-content: center; */
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    flex-direction: column;
+  }
+
+  .containerBeaconResultsVariants {
+    overflow-y: scroll;
+    height: 100vh;
+    width: 70vw;
+  }
+  .tittleResults {
+    width: 46vw;
+    background: white;
+    border-radius: 2px;
+    height: 212px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  h6 {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: normal;
+    color: rgb(26, 131, 128);
+    font-weight: bold;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 37px;
+    font-size: 12px;
+  }
+
+  .tittleResults h5 {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: normal;
+    color: rgb(209, 45, 20);
+    font-weight: bold;
+    background: #ffd1d1;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 34px;
+    font-size: 12px;
+    border-radius: 2px;
+    padding: 3px;
+  }
+  h7 {
+    text-transform: uppercase;
+    /* margin-left: 40px; */
+    /* margin-top: 17px; */
+    font-size: 12px;
+    color: rgba(12, 16, 64, 0.606);
+    font-weight: bold;
+    margin-top: 8px;
+    margin-bottom: 2px;
+  }
+}
+
+@media (max-width: 600px) {
+  .tittleResults {
+    width: 72vw;
+    background: white;
+    border-radius: 2px;
+    height: 212px;
+    display: flex;
+    padding: 2px;
+    flex-direction: column;
+    align-items: center;
+  }
 }

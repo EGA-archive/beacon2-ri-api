@@ -1,9 +1,9 @@
-import './Verifier.css'
+import './Validator.css'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import configData from '../../config.json'
 
-function Verifier () {
+function Validator () {
   const [verifierUrl, setVerifierUrl] = useState('')
   const [response, setResponse] = useState([])
   const [showResults, setShowResults] = useState(false)
@@ -17,15 +17,14 @@ function Verifier () {
   }
 
   const copyData = e => {
-    //var ctype = document.getElementById('copydata').innerHTML
-    //console.log(ctype)
-    navigator.clipboard.writeText(stringDataToCopy)
-    .then(() => {
-      alert("successfully copied");
-    })
-    .catch(() => {
-      alert("something went wrong");
-    });
+    navigator.clipboard
+      .writeText(stringDataToCopy)
+      .then(() => {
+        alert('successfully copied')
+      })
+      .catch(() => {
+        alert('something went wrong')
+      })
     console.log('COPY DONE')
   }
 
@@ -35,10 +34,8 @@ function Verifier () {
     try {
       if (verifierUrl !== '') {
         let res = await axios.get(
-          `https://beacons.bsc.es/beacon-network/v2.0.0/validate?endpoint=${verifierUrl}`
+          'https://beacon-network-backend-demo.ega-archive.org/beacon-network/v2.0.0' + `/validate?endpoint=${verifierUrl}`
         )
-
-        console.log(res)
         let stringData = ''
         res.data.forEach(element => {
           element = JSON.stringify(element, null, 2)
@@ -46,13 +43,11 @@ function Verifier () {
           stringData = stringData.replace('{', '')
           stringData = stringData.replace('}', '')
           stringData = stringData.replace(/[ '"]+/g, ' ')
-          
         })
 
         setStringDataToCopy(stringData)
 
         let isProperty = res.data.some(object => 'code' in object)
-        console.log(isProperty)
 
         if (isProperty === false) {
           setErrorsFound(true)
@@ -72,9 +67,7 @@ function Verifier () {
       }
     } catch (error) {
       console.log(error)
-      setErrror(
-        'An error occured. Please check the URL and retry.'
-      )
+      setErrror('An error occured. Please check the URL and retry.')
     }
   }
 
@@ -87,7 +80,7 @@ function Verifier () {
           type='text'
           value={verifierUrl}
           onChange={handleChangeVerifierUrl}
-          placeholder={'https://beacons.bsc.es/beacon/v2.0.0'}
+          placeholder={'https://beacon-apis-demo.ega-archive.org/api'}
         ></input>
         <button className='submitButton' onClick={submitVerifierUrl}>
           SUBMIT
@@ -114,7 +107,8 @@ function Verifier () {
         )}
 
         {showResults === true &&
-          timeOut === true && error === '' &&
+          timeOut === true &&
+          error === '' &&
           response.map((element, index) => {
             return (
               <div className='messageContainer'>
@@ -139,7 +133,7 @@ function Verifier () {
             )
           })}
 
-        {errorsFound === true && error=== '' && (
+        {errorsFound === true && error === '' && (
           <h11>
             Congratulations! Validation has finished. No errors detected.
           </h11>
@@ -149,4 +143,4 @@ function Verifier () {
   )
 }
 
-export default Verifier
+export default Validator

@@ -10,24 +10,39 @@
   box-shadow: 1px 1px 1px 1px #e6e6e6;
 }
 
-.containerVariants{
+.containerVariants {
   height: 100vh;
   overflow-x: scroll;
   margin-top: 20px;
 }
 
-.copyDivVariants h7{
+.copyDivVariants h7 {
   margin-right: 5px;
 }
 
-.buttonCopy{
+.buttonCopy {
   display: flex;
   align-items: center;
 }
 
-.copyDivVariants{
+.copyDivVariants {
   width: 98%;
   display: flex;
   justify-content: flex-end;
   margin-bottom: 6px;
+}
+
+.datasetsResultsVariants {
+  display: flex;
+  flex-wrap: wrap;
+  /* align-content: flex-start; */
+  justify-content: center;
+  align-items: center;
+}
+
+.resultsVariantsContainer {
+  height: 50vh;
+  overflow-x: scroll;
+  overflow-y: scroll;
+  margin: 30px;
 }

@@ -3,8 +3,6 @@ import './FilteringTerms.css'
 import { TagBox } from 'react-tag-box'
 
 function FilteringTerms (props) {
-  console.log(props)
-
   const [error, setError] = useState(false)
 
   const [checked, setChecked] = useState(false)
@@ -70,17 +68,12 @@ function FilteringTerms (props) {
 
   const handleOperatorchange = e => {
     setOperator(e.target.value)
-    console.log()
   }
 
   const [valueChosen, setValueChosen] = useState([])
 
   const handdleInclude = e => {
-    console.log(ID)
-    console.log(valueFree)
-    console.log(operator)
     if (ID !== '' && valueFree !== '' && operator !== '') {
-      console.log('hola')
       if (props.query !== null) {
         props.setQuery(props.query + ',' + `${ID}${operator}${valueFree}`)
       }
@@ -104,8 +97,6 @@ function FilteringTerms (props) {
     } else {
       setError(false)
     }
-
-    console.log(state.list)
     setstate({
       query: '',
       list: props.filteringTerms !== false ? state.list : 'error'
@@ -119,19 +110,11 @@ function FilteringTerms (props) {
 
       setTags(sampleTags)
     }
-
-    console.log(tags)
-
-    //selected.push(state.list[0].id)
-
-    // setSelected(selected)
-    // setTags(state.list)
   }, [props.filteringTerms, trigger])
 
   const handleChange = e => {
     const results = props.filteringTerms.data.response.filteringTerms.filter(
       post => {
-        console.log(post)
         if (e.target.value === '') {
           return props.filteringTerms.data.response.filteringTerms
         } else {
@@ -158,7 +141,6 @@ function FilteringTerms (props) {
   const handleChange2 = e => {
     const results = props.filteringTerms.data.response.filteringTerms.filter(
       post => {
-        console.log(post)
         if (post.label !== '' && post.label !== undefined) {
           if (e.target.value === '') {
             return props.filteringTerms.data.response.filteringTerms
@@ -182,7 +164,6 @@ function FilteringTerms (props) {
   const handleChange3 = e => {
     const results = props.filteringTerms.data.response.filteringTerms.filter(
       post => {
-        console.log(post)
         if (e.target.value === '') {
           return props.filteringTerms.data.response.filteringTerms
         } else {
@@ -210,7 +191,6 @@ function FilteringTerms (props) {
   const handleChange4 = e => {
     const results = props.filteringTerms.data.response.filteringTerms.filter(
       post => {
-        console.log(post)
         if (e.target.value === '') {
           return props.filteringTerms.data.response.filteringTerms
         } else {
@@ -226,17 +206,6 @@ function FilteringTerms (props) {
             if (returnedPosts.length > 0) {
               return returnedPosts
             }
-          } else if (post.scope !== undefined) {
-            var returnedPosts = []
-              if (
-                post.scope.toLowerCase().includes(e.target.value.toLowerCase())
-              ) {
-                returnedPosts.push(post)
-              }
-            
-            if (returnedPosts.length > 0) {
-              return returnedPosts
-            }
           }
         }
       }
@@ -247,9 +216,8 @@ function FilteringTerms (props) {
   }
 
   const handleCheck = e => {
-    console.log(e.target.value)
     let infoValue = e.target.value.split(',')
-    console.log(infoValue[2])
+
     if (infoValue[1].toLowerCase() !== 'alphanumeric') {
       const alreadySelected = selected.filter(
         term => term.label === infoValue[0]
@@ -258,22 +226,12 @@ function FilteringTerms (props) {
       if (alreadySelected.length !== 0) {
         setSelected(selected.filter(t => t.value !== infoValue[0]))
       } else {
-        //     for (let i = 0; i < tags.length; i++) {
-
-        //   console.log(tags[i])
-
-        //   if (tags[i].label === e.target.value) {
-
         const newTag = {
           label: infoValue[0],
           value: infoValue[0]
         }
-        console.log(newTag)
-        selected.push(newTag)
 
-        //     }
-        console.log(selected)
-        //      }
+        selected.push(newTag)
       }
 
       if (props.query !== null) {
@@ -306,8 +264,6 @@ function FilteringTerms (props) {
         let stringQuery = infoValue[0]
         props.setQuery(stringQuery)
       }
-
-      console.log(state.list)
       const filteredItems = state.list.filter(item => item.id !== infoValue[0])
       e.target.checked = false
 
@@ -316,13 +272,10 @@ function FilteringTerms (props) {
         list: filteredItems
       })
       setTrigger(true)
-      console.log(state.list)
     }
   }
 
   const handleCheck2 = e => {
-    console.log(e.target)
-    console.log(e.target.value)
     if (e.target.checked === false) {
       let newValueChosen = valueChosen.filter(valor => valor !== e.target.value)
       setValueChosen(newValueChosen)
@@ -337,7 +290,6 @@ function FilteringTerms (props) {
     })
   }
 
-  console.log(state.list)
   return (
     <div className='generalContainer'>
       <TagBox
@@ -495,7 +447,6 @@ function FilteringTerms (props) {
                                   ? term2 + '' + ','
                                   : term2 + ''
                               })}
-                            {term.scopes === undefined && term.scope}
                           </td>
                         </tr>
                       )}
@@ -537,15 +488,16 @@ function FilteringTerms (props) {
 
                           <td className='th3'>{term.type}</td>
 
-                          <td className='th1'>
-                            {term.scopes !== undefined &&
-                              term.scopes.map((term2, index) => {
+                          {term.scopes && (
+                            <td className='th1'>
+                              {term.scopes.map((term2, index) => {
                                 return index < term.scopes.length - 1
                                   ? term2 + '' + ','
                                   : term2 + ''
                               })}
-                            {term.scopes === undefined && term.scope}
-                          </td>
+                            </td>
+                          )}
+                          {term.scope && <td className='th1'>{term.scope}</td>}
                         </tr>
                       )}
 

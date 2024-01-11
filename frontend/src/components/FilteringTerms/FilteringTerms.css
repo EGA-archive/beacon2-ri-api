@@ -210,6 +210,7 @@ thead {
 
 .select-checkbox {
   cursor: pointer;
+  margin-right: 7px;
 }
 
 .searchTermInput {
@@ -230,10 +231,9 @@ tr {
 }
 
 .terms1 {
-    background-color: #efedf4;
-    border-bottom: solid #8985c1;
+  background-color: #efedf4;
+  border-bottom: solid #8985c1;
 }
-
 
 .checkbox {
   margin-right: -25px;

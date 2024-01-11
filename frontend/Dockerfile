@@ -14,3 +14,4 @@ COPY src ./src
 
 
 RUN yarn install --production
+

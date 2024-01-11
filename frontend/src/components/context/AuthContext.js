@@ -1,17 +1,18 @@
-
 import React, { useState, createContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import configData from '../../config.json'
+import { useAuth } from 'oidc-react';
 
 const AuthContext = createContext()
 
 function AuthProviderWrapper (props) {
   // Store the variables we want to share
   const [user, setUser] = useState(null)
+  const [userNameToShare, setUserNameToShare] = useState('')
   const [expirationMessage, setExpirationMessage] = useState('')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const navigate = useNavigate()
-
+  const auth = useAuth();
   // Functions to store and delete the token received by the backend in the browser
   const getStoredToken = () => {
     return localStorage.getItem('authToken')
@@ -22,7 +23,6 @@ function AuthProviderWrapper (props) {
   }
 
   const refreshTokenFunction = token => {
-    console.log(token)
     localStorage.setItem('refreshToken', token)
   }
 
@@ -48,7 +48,9 @@ function AuthProviderWrapper (props) {
 
   const logOutUser = () => {
     removeToken()
+    auth = null
     setIsLoggedIn(false)
+    setExpirationMessage('')
     navigate('/')
   }
 
@@ -65,13 +67,10 @@ function AuthProviderWrapper (props) {
 
     const startTime = localStorage.getItem('startTime')
     const token = localStorage.getItem('authToken')
-    console.log(token)
-    console.log(startTime)
-
     setCurrentTime(Date.now())
 
     const currentTime = localStorage.getItem('currentTime')
-    console.log(currentTime)
+
     console.log('AUTHENTICATING')
 
     if (currentTime - startTime > expirationTime) {
@@ -81,11 +80,9 @@ function AuthProviderWrapper (props) {
         setExpirationMessage(
           'Session expired due to inactivity. Please log in again'
         )
-        console.log("asdasdhas")
+        removeToken()
       } else {
         setExpirationMessage('')
-        console.log('HA PASADO EL EXPIRATION TIME')
-
         var details = {
           grant_type: 'refresh_token',
           client_id: 'beacon',
@@ -116,9 +113,7 @@ function AuthProviderWrapper (props) {
             body: formBody
           }
         )
-
         const readableResponse = await response.json()
-        console.log(readableResponse)
 
         storeToken(readableResponse.access_token)
         refreshTokenFunction(readableResponse.refresh_token)
@@ -128,7 +123,7 @@ function AuthProviderWrapper (props) {
 
         setStartTime(Date.now())
         const startTime = localStorage.getItem('startTime')
-        console.log(startTime)
+       
       }
     }
   }
@@ -138,6 +133,8 @@ function AuthProviderWrapper (props) {
       value={{
         setIsLoggedIn,
         isLoggedIn,
+        userNameToShare,
+        setUserNameToShare,
         getStoredToken,
         setExpirationTime,
         expirationMessage,
@@ -153,7 +150,6 @@ function AuthProviderWrapper (props) {
       {props.children}
     </AuthContext.Provider>
   )
-
 }
 
 export { AuthProviderWrapper, AuthContext }
