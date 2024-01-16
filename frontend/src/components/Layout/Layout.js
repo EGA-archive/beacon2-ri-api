@@ -10,8 +10,6 @@ import BiosamplesResults from '../Biosamples/BiosamplesResults'
 
 import React, { useState, useEffect } from 'react'
 
-import OutsideClickHandler from 'react-outside-click-handler'
-
 import Switch from '@mui/material/Switch'
 import MultiSwitch from 'react-multi-switch-toggle'
 

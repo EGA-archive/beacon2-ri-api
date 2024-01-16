@@ -802,7 +802,7 @@ function Cohorts (props) {
       )}
 
       {trigger && noCollectionEvents && showGraphs && (
-        <h10>NO GRAPHICS AVAILABLE FOR THE SELECTED COHORTS</h10>
+        <h10>NO GRAPHICS AVAILABLE FOR THE SELECTED COHORT</h10>
       )}
       {showGraphs === true && dataAvailable === false && timeOut === true && (
         <div>
