@@ -33,22 +33,22 @@ def load_ontology(ontology_id: str) -> Optional[owlready2.Ontology]:
                 urllib.request.urlretrieve(url, path, MyProgressBar())
         except HTTPError:
             # TODO: Handle error
-            print("ERROR", HTTPError)
+            #print("ERROR", HTTPError)
             pass
         except ValueError:
-            print("ERROR", ValueError)
+            #print("ERROR", ValueError)
             pass
         try:
-            print (os.stat(path).st_size)
+            #print (os.stat(path).st_size)
             if os.stat(path).st_size == 0:
                 try:
                     urllib.request.urlretrieve(url_alt, path, MyProgressBar())
                 except HTTPError:
                     # TODO: Handle error
-                    print("ERROR", HTTPError)
+                    #print("ERROR", HTTPError)
                     pass
                 except ValueError:
-                    print("ERROR", ValueError)
+                    #print("ERROR", ValueError)
                     pass
         except Exception:
                 pass
@@ -127,16 +127,19 @@ def get_descendants_and_similarities(ontology:str):
     path = "/beacon/beacon/db/similarities/{}{}{}.txt".format(ontology_list[0],ontology_list[1],'high')
     with open(path, 'w') as f:
         for item in similarity_high:
+            print(item)
             f.write(item+"\n")
     f.close()
     path = "/beacon/beacon/db/similarities/{}{}{}.txt".format(ontology_list[0],ontology_list[1],'medium')
     with open(path, 'w') as f:
         for item in similarity_medium:
+            print(item)
             f.write(item+"\n")
     f.close()
     path = "/beacon/beacon/db/similarities/{}{}{}.txt".format(ontology_list[0],ontology_list[1],'low')
     with open(path, 'w') as f:
         for item in similarity_low:
+            print(item)
             f.write(item+"\n")
     f.close()
     
