@@ -327,7 +327,7 @@ function VariantsResults (props) {
           }
 
           var jsonData1 = {}
-          console.log(props.sequenceSubmitted)
+         
           if (props.sequenceSubmitted) {
             jsonData1 = {
               meta: {
@@ -519,7 +519,7 @@ function VariantsResults (props) {
               )}
               {show3 && error && <h3>&nbsp; {error} </h3>}
 
-              {show2 && (
+              {show2 && logInRequired === false && !error && (
                 <div>
                   <TableResultsVariant
                     show={'count'}
@@ -531,7 +531,7 @@ function VariantsResults (props) {
                 </div>
               )}
 
-              {show1 && (
+              {show1 && logInRequired === false && !error &&(
                 <div className='containerTableResults'>
                   <TableResultsVariant
                     show={'boolean'}
