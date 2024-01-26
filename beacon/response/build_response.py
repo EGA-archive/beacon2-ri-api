@@ -184,39 +184,49 @@ def build_beacon_resultset_response_by_dataset(data,
                         for element in doc['caseLevelData']:
                             if element['biosampleId'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                             elif element['biosampleId'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                     elif str(entity_schema) == 'DefaultSchemas.ANALYSES':
                             if doc['biosampleId'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                             elif doc['individualId'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                     elif str(entity_schema) == 'DefaultSchemas.RUNS':
                             if doc['biosampleId'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                             elif doc['individualId'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                     elif str(entity_schema) == 'DefaultSchemas.DATASETS':
                             if doc['id'] == dataset_dict['dataset']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                     elif str(entity_schema) == 'DefaultSchemas.COHORTS':
                             if doc['id'] == dataset_dict['dataset']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                     else:
                         if doc['id'] in dataset_dict['ids']:
                             dataset_id = dataset_dict['dataset']
-                            response_dict[dataset_id].append(doc)
+                            if doc not in response_dict[dataset_id]:
+                                response_dict[dataset_id].append(doc)
                         elif doc['id'] in dataset_dict['ids']:
                             dataset_id = dataset_dict['dataset']
-                            response_dict[dataset_id].append(doc)
+                            if doc not in response_dict[dataset_id]:
+                                response_dict[dataset_id].append(doc)
                 except Exception as e:
                     pass
         #LOG.debug(response_dict)
@@ -242,39 +252,49 @@ def build_beacon_resultset_response_by_dataset(data,
                         for element in doc['caseLevelData']:
                             if element['biosampleId'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                             elif element['biosampleId'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                     elif str(entity_schema) == 'DefaultSchemas.ANALYSES':
                             if doc['biosampleId'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                             elif doc['individualId'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                     elif str(entity_schema) == 'DefaultSchemas.RUNS':
                             if doc['biosampleId'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                             elif doc['individualId'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                     elif str(entity_schema) == 'DefaultSchemas.DATASETS':
                             if doc['id'] == dataset_dict['dataset']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                     elif str(entity_schema) == 'DefaultSchemas.COHORTS':
                             if doc['id'] == dataset_dict['dataset']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                     else:
                             if doc['id'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                             elif doc['id'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                 except Exception as e:
                     pass
     elif include == 'HIT':
@@ -285,40 +305,50 @@ def build_beacon_resultset_response_by_dataset(data,
                         for element in doc['caseLevelData']:
                             if element['biosampleId'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                             elif element['biosampleId'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                     elif str(entity_schema) == 'DefaultSchemas.ANALYSES':
                             if doc['biosampleId'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                             elif doc['individualId'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                     elif str(entity_schema) == 'DefaultSchemas.RUNS':
                             if doc['biosampleId'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                             elif doc['individualId'] in dataset_dict['ids']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                     elif str(entity_schema) == 'DefaultSchemas.DATASETS':
                             if doc['id'] == dataset_dict['dataset']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                     elif str(entity_schema) == 'DefaultSchemas.COHORTS':
                             if doc['id'] == dataset_dict['dataset']:
                                 dataset_id = dataset_dict['dataset']
-                                response_dict[dataset_id].append(doc)
+                                if doc not in response_dict[dataset_id]:
+                                    response_dict[dataset_id].append(doc)
                     else:
                         #LOG.debug(doc['id'])
                         if doc['id'] in dataset_dict['ids']:
                             dataset_id = dataset_dict['dataset']
-                            response_dict[dataset_id].append(doc)
+                            if doc not in response_dict[dataset_id]:
+                                response_dict[dataset_id].append(doc)
                         elif doc['id'] in dataset_dict['ids']:
                             dataset_id = dataset_dict['dataset']
-                            response_dict[dataset_id].append(doc)
+                            if doc not in response_dict[dataset_id]:
+                                response_dict[dataset_id].append(doc)
                 except Exception as e:
                     pass
     #LOG.debug(response_dict)

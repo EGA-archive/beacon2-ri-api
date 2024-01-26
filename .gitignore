@@ -133,3 +133,5 @@ alternate_docker_compose_ls.yml
 frontend3
 
 node_modules
+
+genomicVariations_full.json

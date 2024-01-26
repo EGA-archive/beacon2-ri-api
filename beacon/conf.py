@@ -125,3 +125,5 @@ autocomplete_ellipsis = '...'
 # Ontologies
 #
 ontologies_folder = "deploy/ontologies/"
+
+#json_buffer_size = 10000
