@@ -306,6 +306,7 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                 valuesplitted = filter.value.split('.')
                 dict_regex['$regex']=valuesplitted[0]+".*"+valuesplitted[-1]+":"
                 dict_regex['$options']= "si"
+            query[filter.id] = dict_regex
         elif filter.id == "variantInternalId":
             if 'max' in filter.value:
                 valuereplaced = filter.value.replace('max', '')
