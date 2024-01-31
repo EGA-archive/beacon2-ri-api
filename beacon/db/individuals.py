@@ -85,10 +85,10 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                 qparams.query.filters.append(v_dict)
 
                         
-                
-
-        
-    return query_2
+    if query_2 != {}:  
+        return query_2
+    else:
+        return query
 
 
 def get_individuals(entry_id: Optional[str], qparams: RequestParams):
@@ -249,14 +249,19 @@ def get_variants_of_individual(entry_id: Optional[str], qparams: RequestParams):
 
 
 def get_biosamples_of_individual(entry_id: Optional[str], qparams: RequestParams):
-    collection = 'individuals'
+    collection = 'biosamples'
     query = {"individualId": entry_id}
+    LOG.debug(query)
     query = apply_request_parameters(query, qparams)
+    LOG.debug(query)
     query = apply_filters(query, qparams.query.filters, collection)
+    LOG.debug(query)
     query = include_resultset_responses(query, qparams)
+    LOG.debug(query)
     schema = DefaultSchemas.BIOSAMPLES
     count = get_count(client.beacon.biosamples, query)
     include = qparams.query.include_resultset_responses
+    LOG.debug(query)
     if include == 'MISS':
         pre_docs = get_documents(
             client.beacon.biosamples,
