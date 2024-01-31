@@ -31,7 +31,7 @@ function SignInOptions () {
                   isActive ? 'Sign-in2' : 'Sign-in'
                 }
               >
-                <h6>Beacon IDP Login</h6>
+                <h6>Beacon Network IDP Login</h6>
               </NavLink>
             </div>
           </form>

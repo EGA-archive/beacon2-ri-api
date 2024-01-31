@@ -17,7 +17,7 @@ function Cohorts (props) {
 
   const [optionsCohorts, setOptionsCohorts] = useState([])
 
-  const [count, setCount] = useState('II')
+  const [count, setCount] = useState(2)
 
   const [selectedCohorts, setSelectedCohorts] = useState([])
 
@@ -77,13 +77,33 @@ function Cohorts (props) {
       const fetchDataCohorts = async () => {
         try {
           let res = await axios.get(configData.API_URL + '/cohorts')
-          console.log(res)
           res.data.response.collections.forEach(element => {
-            let obj = {
-              value: element.id,
-              label: element.id
+            if (optionsCohorts.length > 0) {
+              optionsCohorts.forEach(cohort => {
+                if (cohort.value === element.id) {
+                  let obj = {
+                    value: element.id + count,
+                    label: element.id
+                  }
+                  setCount(count + 1)
+                  element.id = element.id + count
+                  optionsCohorts.push(obj)
+                } else {
+                  let obj = {
+                    value: element.id,
+                    label: element.id
+                  }
+                  optionsCohorts.push(obj)
+                }
+              })
+            } else {
+              let obj = {
+                value: element.id,
+                label: element.id
+              }
+              optionsCohorts.push(obj)
             }
-            optionsCohorts.push(obj)
+
             arrayCohorts.push(element)
             const timer = setTimeout(() => {
               setTriggerLayout(true)
@@ -92,8 +112,7 @@ function Cohorts (props) {
           })
         } catch (error) {
           setTimeOut(true)
-          console.log(error)
-          setError('Unexpected error. Please retry')
+          setError('No information available right now')
         }
       }
       fetchDataCohorts().catch(console.error)
@@ -101,98 +120,6 @@ function Cohorts (props) {
       setTimeOut(true)
     }
   }, [])
-
-  useEffect(() => {
-    let values = []
-    let labels = []
-    if (response !== '') {
-      values = Object.values(response)
-      labels = Object.keys(response)
-    }
-    if (values.length > 0 && labels.length > 0) {
-      var options = {
-        chart: {
-          type: 'pie'
-        },
-        title: {
-          text: valueToFilter
-        },
-        colors: [
-          '#4dc5ff',
-          '#FF96EF',
-          '#7DF9FF',
-          '#8B0000',
-          '#AAFF00',
-          '#98FB98',
-          '#009E60',
-          '#AF2BFF',
-          '#FF0000',
-          '#FF69B4',
-          '#13D3B6',
-          '#800080',
-          '#FA8072',
-          '#33b2df',
-          '#546E7A',
-          '#FEF300',
-          '#2b908f',
-          '#FE00FA',
-          '#FE6800',
-          '#69d2e7',
-          '#13d8aa',
-          '#A5978B',
-          '#f9a3a4',
-          '#FF4500',
-          '#51f08e',
-          '#b051f0',
-          '#CCFF33',
-          '#FF66CC',
-          '#FF3333',
-          '#6633CC',
-          '#CD853F',
-          '#3333FF',
-          '#FF3333',
-          '#BF40BF',
-          'DF00F9',
-          '38ED61',
-          '#FCF55F',
-          '#00A9D1',
-          '#041FCE',
-          '#B4B5BC',
-          '#C1E701',
-          '#FF8604'
-        ],
-        series: values,
-        labels: labels
-      }
-      if (selectedFilter === 'dis_eth') {
-        var chartFiltered = new ApexCharts(
-          document.querySelector('#chartFilteredDisease'),
-          options
-        )
-        chartFiltered.render()
-      } else if (selectedFilter === 'dis_sex') {
-        var chartFiltered = new ApexCharts(
-          document.querySelector('#chartFilteredDisease2'),
-          options
-        )
-
-        chartFiltered.render()
-      } else if (selectedFilter === 'eth_dis') {
-        var chartFiltered = new ApexCharts(
-          document.querySelector('#chartFilteredEthnicity'),
-          options
-        )
-
-        chartFiltered.render()
-      } else if (selectedFilter === 'eth_sex') {
-        var chartFiltered = new ApexCharts(
-          document.querySelector('#chartFilteredEthnicity2'),
-          options
-        )
-        chartFiltered.render()
-      }
-    }
-  }, [response])
 
   // const submitFilters = e => {
   //   if (selectedFilter === 'dis_eth') {
@@ -251,12 +178,8 @@ function Cohorts (props) {
   // }
 
   useEffect(() => {
-    console.log(selectedCohorts)
-    console.log(arrayCohorts)
     const apiCall = () => {
       arrayCohorts.forEach(element => {
-        console.log(element)
-
         if (element.id === selectedCohorts.value) {
           if (element.collectionEvents) {
             element.collectionEvents.forEach(element2 => {
@@ -278,11 +201,10 @@ function Cohorts (props) {
                 let entriesGeo = ''
                 let valuesDiseases = ''
                 let labelsDiseases = ''
-
+               
                 // for (var i = 0; i < res.data.response.collections.length; i++) {
                 if (element2.eventGenders !== undefined) {
                   sexs = element2.eventGenders.distribution.genders
-
                   setDataAvailable(true)
                 }
                 if (element2.eventEthnicities !== undefined) {
@@ -340,7 +262,7 @@ function Cohorts (props) {
                 if (labelsEthnicities !== '') {
                   setLabelsEthnicities(labelsEthnicities)
                 }
-                console.log(geoData)
+         
                 if (geoData !== '') {
                   valuesGeo = Object.values(geoData)
                   labelsGeo = Object.keys(geoData)
@@ -802,7 +724,7 @@ function Cohorts (props) {
       )}
 
       {trigger && noCollectionEvents && showGraphs && (
-        <h10>NO GRAPHICS AVAILABLE FOR THE SELECTED COHORT!</h10>
+        <h10>NO GRAPHICS AVAILABLE FOR THE SELECTED COHORT</h10>
       )}
       {showGraphs === true && dataAvailable === false && timeOut === true && (
         <div>

@@ -1,14 +1,14 @@
-import './Individuals.css'
+import '../Individuals/Individuals.css'
 import '../../App.css'
+import TableResultsAnalyses from '../Results/AnalysesResults/TableResultsAnalyses'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { AuthContext } from '../context/AuthContext'
 import { useAuth } from 'oidc-react'
 import configData from '../../config.json'
 import { useContext } from 'react'
-import TableResultsIndividuals from '../Results/IndividualsResults/TableResultsIndividuals'
 
-function IndividualsResults (props) {
+function AnalysesResults (props) {
   const [showLayout, setShowLayout] = useState(false)
 
   const [beaconsList, setBeaconsList] = useState([])
@@ -174,15 +174,12 @@ function IndividualsResults (props) {
           }
 
           if (token === null) {
-            res = await axios.post(
-              configData.API_URL + '/individuals',
-              jsonData1
-            )
+            res = await axios.post(configData.API_URL + '/analyses', jsonData1)
           } else {
             const headers = { Authorization: `Bearer ${token}` }
 
             res = await axios.post(
-              configData.API_URL + '/individuals',
+              configData.API_URL + '/analyses',
               jsonData1,
               { headers: headers }
             )
@@ -212,6 +209,7 @@ function IndividualsResults (props) {
                     [element.exists],
                     [element.resultsCount]
                   ]
+
                   resultsPerDataset.push(arrayResultsPerDataset)
                 }
               }
@@ -222,7 +220,6 @@ function IndividualsResults (props) {
               }
 
               if (res.data.response.resultSets[index].results) {
-           
                 res.data.response.resultSets[index].results.forEach(
                   (element2, index2) => {
                     let arrayResult = [
@@ -261,15 +258,13 @@ function IndividualsResults (props) {
 
           if (token === null) {
             console.log('Querying without token')
-            res = await axios.post(
-              configData.API_URL + '/individuals',
-              jsonData2
-            )
+            res = await axios.post(configData.API_URL + '/analyses', jsonData2)
           } else {
             console.log('Querying WITH token')
             const headers = { Authorization: `Bearer ${token}` }
+
             res = await axios.post(
-              configData.API_URL + '/individuals',
+              configData.API_URL + '/analyses',
               jsonData2,
               { headers: headers }
             )
@@ -285,12 +280,9 @@ function IndividualsResults (props) {
             setBoolean(false)
           } else {
             res.data.response.resultSets.forEach((element, index) => {
-            
               if (element.id && element.id !== '') {
-   
                 if (resultsPerDataset.length > 0) {
                   resultsPerDataset.forEach(element2 => {
-              
                     element2[0].push(element.id)
                     element2[1].push(element.exists)
                     element2[2].push(element.resultsCount)
@@ -302,7 +294,7 @@ function IndividualsResults (props) {
                     [element.exists],
                     [element.resultsCount]
                   ]
-       
+
                   resultsPerDataset.push(arrayResultsPerDataset)
                 }
               }
@@ -313,7 +305,6 @@ function IndividualsResults (props) {
               }
 
               if (res.data.response.resultSets[index].results) {
-         
                 res.data.response.resultSets[index].results.forEach(
                   (element2, index2) => {
                     let arrayResult = [
@@ -328,8 +319,9 @@ function IndividualsResults (props) {
           }
         }
       } catch (error) {
-        setError('Connection error. Please retry')
-        console.log(error)
+        setError(
+          'No results. Please check the query and the connection and retry'
+        )
         setTimeOut(true)
       }
     }
@@ -396,38 +388,38 @@ function IndividualsResults (props) {
           )}
           {show3 && logInRequired === false && !error && (
             <div className='containerTableResults'>
-              <TableResultsIndividuals
+              <TableResultsAnalyses
                 show={'full'}
                 results={results}
                 resultsPerDataset={resultsPerDataset}
                 beaconsList={beaconsList}
                 resultSets={props.resultSets}
-              ></TableResultsIndividuals>
+              ></TableResultsAnalyses>
             </div>
           )}
           {show3 && error && <h3>&nbsp; {error} </h3>}
           {show2 && !error && (
             <div className='containerTableResults'>
-              <TableResultsIndividuals
+              <TableResultsAnalyses
                 show={'count'}
                 resultsPerDataset={resultsPerDataset}
                 resultsNotPerDataset={resultsNotPerDataset}
                 results={results}
                 beaconsList={beaconsList}
                 resultSets={props.resultSets}
-              ></TableResultsIndividuals>
+              ></TableResultsAnalyses>
             </div>
           )}
           {show1 && !error && (
             <div className='containerTableResults'>
-              <TableResultsIndividuals
+              <TableResultsAnalyses
                 show={'boolean'}
                 resultsPerDataset={resultsPerDataset}
                 resultsNotPerDataset={resultsNotPerDataset}
                 results={results}
                 beaconsList={beaconsList}
                 resultSets={props.resultSets}
-              ></TableResultsIndividuals>
+              ></TableResultsAnalyses>
             </div>
           )}
           {show2 && error && <h3>&nbsp; {error} </h3>}
@@ -438,4 +430,4 @@ function IndividualsResults (props) {
   )
 }
 
-export default IndividualsResults
+export default AnalysesResults

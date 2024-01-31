@@ -1,4 +1,4 @@
-import './TableResultsIndividuals.css'
+import '../IndividualsResults/TableResultsIndividuals.css'
 import '../../Dataset/BeaconInfo.css'
 import * as React from 'react'
 import {
@@ -19,7 +19,7 @@ function CustomToolbar () {
     </GridToolbarContainer>
   )
 }
-function TableResultsIndividuals (props) {
+function TableResultsAnalyses (props) {
   const [showDatsets, setShowDatasets] = useState(false)
 
   const [showResults, setShowResults] = useState(false)
@@ -51,13 +51,11 @@ function TableResultsIndividuals (props) {
 
   const handleClickDatasets = e => {
     openDatasetArray[e] = true
-
     triggerArray[e] = true
-
     setTrigger(!trigger)
   }
 
-  const columns = [
+  let columns = [
     {
       field: 'id',
       headerName: 'Row',
@@ -65,13 +63,13 @@ function TableResultsIndividuals (props) {
       headerClassName: 'super-app-theme--header'
     },
     {
-      field: 'IndividualId',
-      headerName: 'Individual ID',
+      field: 'analysisId',
+      headerName: 'Analysis ID',
       width: 150,
       headerClassName: 'super-app-theme--header',
       renderCell: params => (
-        <Link to={`/individuals/cross-queries/${params.row.IndividualId}`}>
-          {params.row.IndividualId}
+        <Link to={`cross-queries/${params.row.analysisId}`}>
+          {params.row.analysisId}
         </Link>
       )
     },
@@ -82,47 +80,54 @@ function TableResultsIndividuals (props) {
       headerClassName: 'super-app-theme--header'
     },
     {
-      field: 'ethnicity',
-      headerName: 'ethnicity',
+      field: 'runId',
+      headerName: 'Run ID',
+      width: 150,
+      headerClassName: 'super-app-theme--header'
+    },
+    {
+      field: 'biosampleId',
+      headerName: 'Biosample ID',
+      width: 150,
+      headerClassName: 'super-app-theme--header'
+    },
+    {
+      field: 'individualId',
+      headerName: 'Individual ID',
+      width: 150,
+      headerClassName: 'super-app-theme--header'
+    },
+    {
+      field: 'analysisDate',
+      headerName: 'Analysis date',
       width: 240,
       headerClassName: 'super-app-theme--header'
     },
     {
-      field: 'geographicOrigin',
-      headerName: 'geographicOrigin',
+      field: 'pipelineName',
+      headerName: 'Pipeline name',
       width: 250,
       headerClassName: 'super-app-theme--header'
     },
     {
-      field: 'interventionsOrProcedures',
-      headerName: 'interventionsOrProcedures',
+      field: 'pipelineRef',
+      headerName: 'Pipeline Ref',
       width: 350,
       headerClassName: 'super-app-theme--header'
     },
     {
-      field: 'measures',
-      headerName: 'measures',
+      field: 'aligner',
+      headerName: 'Aligner',
       width: 350,
       headerClassName: 'super-app-theme--header',
       cellClass: 'pre'
     },
     {
-      field: 'sex',
-      headerName: 'sex',
+      field: 'variantCaller',
+      headerName: 'Variant Caller',
       width: 200,
       headerClassName: 'super-app-theme--header'
-    },
-    {
-      field: 'diseases',
-      headerName: 'diseases',
-      width: 350,
-      headerClassName: 'super-app-theme--header'
     }
-    //   { field: 'pedigrees', headerName: 'pedigrees', width: 150 },
-    // { field: 'treatments', headerName: 'treatments', width: 150 },
-    //{ field: 'interventionsOrProcedures', headerName: 'interventionsOrProcedures', width: 150 },
-    // { field: 'exposures', headerName: 'exposures', width: 150 },
-    // { field: 'karyotypicSex', headerName: 'karyotypicSex', width: 150 },
   ]
 
   const handleSeeResults = () => {
@@ -142,53 +147,36 @@ function TableResultsIndividuals (props) {
     })
     resultsSelectedFinal.forEach((element, index) => {
       if (element[1] !== undefined) {
-        let eth_id = ''
-        let eth_label = ''
-        let stringEth = ''
-
-        if (element[1].ethnicity !== '' && element[1].ethnicity !== undefined) {
-          if (element[1].ethnicity.id !== undefined) {
-            eth_id = element[1].ethnicity.id
+        let analysisDateJson = []
+        if (
+          element[1].analysisDate !== '' &&
+          element[1].analysisDate !== undefined
+        ) {
+          if (typeof element[1].analysisDate === 'string') {
+            analysisDateJson = element[1].analysisDate
+          } else {
+            analysisDateJson = element[1].analysisDate.toString()
           }
-
-          eth_label = element[1].ethnicity.label
-          stringEth = `${eth_id} / ${eth_label} `
-        } else {
-          stringEth = ''
+        }
+        let pipelineNameJson = []
+        if (
+          element[1].pipelineName !== '' &&
+          element[1].pipelineName !== undefined
+        ) {
+          if (typeof element[1].pipelineName === 'string') {
+            pipelineNameJson = element[1].pipelineName
+          }
         }
 
-        let sex_id = ''
-        let sex_label = ''
-        let stringSex = ''
-
-        if (element[1].sex !== '') {
-          sex_id = element[1].sex.id
-          sex_label = element[1].sex.label
-          stringSex = `${element[1].sex.label} / ${element[1].sex.id}`
-        } else {
-          stringSex = ''
-        }
-
-        let geographic_id = ''
-        let geographic_label = ''
-        let stringGeographic = ''
+        let pipelineRefJson = []
 
         if (
-          element[1].geographicOrigin !== '' &&
-          element[1].geographicOrigin !== undefined
+          element[1].pipelineRef !== '' &&
+          element[1].pipelineRef !== undefined
         ) {
-          geographic_id = element[1].geographicOrigin.id
-          geographic_label = element[1].geographicOrigin.label
-          stringGeographic = `${geographic_id} / ${geographic_label}`
-        } else {
-          stringGeographic = ''
-        }
-
-        let measuresJson = []
-        if (element[1].measures !== '' && element[1].measures !== undefined) {
-          if (typeof element[1].measures === 'object') {
-            element[1].measures.forEach(element2 => {
-              measuresJson.push(
+          if (typeof element[1].pipelineRef === 'object') {
+            element[1].pipelineRef.forEach(element2 => {
+              pipelineRefJson.push(
                 JSON.stringify(element2, null, 2)
                   .replaceAll('[', '')
                   .replaceAll(']', '')
@@ -200,13 +188,13 @@ function TableResultsIndividuals (props) {
                   .replaceAll('"', '')
               )
             })
-            measuresJson = measuresJson.toString()
-            measuresJson = measuresJson
+            pipelineRefJson = pipelineRefJson.toString()
+            pipelineRefJson = pipelineRefJson
               .replaceAll(', ', ',')
               .replaceAll(' ,', ',')
-            measuresJson = measuresJson.replaceAll(',', '')
+            pipelineRefJson = pipelineRefJson.replaceAll(',', '')
           } else {
-            measuresJson = JSON.stringify(element[1].measures, null, 2)
+            pipelineRefJson = JSON.stringify(element[1].pipelineRef, null, 2)
               .replaceAll('[', '')
               .replaceAll(']', '')
               .replaceAll('{', '')
@@ -215,24 +203,20 @@ function TableResultsIndividuals (props) {
               .replaceAll(' ,', '')
               .replaceAll(', ', '')
               .replaceAll('"', '')
-
-            measuresJson = measuresJson.toString()
-            measuresJson = measuresJson
+            pipelineRefJson = pipelineRefJson.toString()
+            pipelineRefJson = pipelineRefJson
               .replaceAll(', ', ',')
               .replaceAll(' ,', ',')
-            measuresJson = measuresJson.replaceAll(',', '')
+            pipelineRefJson = pipelineRefJson.replaceAll(',', '')
           }
         }
 
-        let interventionsProcedures = []
+        let alignerJson = []
 
-        if (
-          element[1].interventionsOrProcedures !== '' &&
-          element[1].interventionsOrProcedures !== undefined
-        ) {
-          if (typeof element[1].interventionsOrProcedures === 'object') {
-            element[1].interventionsOrProcedures.forEach(element2 => {
-              interventionsProcedures.push(
+        if (element[1].aligner !== '' && element[1].aligner !== undefined) {
+          if (typeof element[1].aligner === 'object') {
+            element[1].aligner.forEach(element2 => {
+              alignerJson.push(
                 JSON.stringify(element2, null, 2)
                   .replaceAll('[', '')
                   .replaceAll(']', '')
@@ -244,17 +228,57 @@ function TableResultsIndividuals (props) {
                   .replaceAll('"', '')
               )
             })
-            interventionsProcedures = interventionsProcedures.toString()
-            interventionsProcedures = interventionsProcedures
+            alignerJson = alignerJson.toString()
+            alignerJson = alignerJson
               .replaceAll(', ', ',')
               .replaceAll(' ,', ',')
-            interventionsProcedures = interventionsProcedures.replaceAll(
-              ',',
-              ''
-            )
+            alignerJson = alignerJson.replaceAll(',', '')
           } else {
-            interventionsProcedures = JSON.stringify(
-              element[1].interventionsOrProcedures,
+            alignerJson = JSON.stringify(element[1].aligner, null, 2)
+              .replaceAll('[', '')
+              .replaceAll(']', '')
+              .replaceAll('{', '')
+              .replaceAll('}', '')
+              .replaceAll(',', '')
+              .replaceAll(' ,', '')
+              .replaceAll(', ', '')
+              .replaceAll('"', '')
+            alignerJson = alignerJson.toString()
+            alignerJson = alignerJson
+              .replaceAll(', ', ',')
+              .replaceAll(' ,', ',')
+            alignerJson = alignerJson.replaceAll(',', '')
+          }
+        }
+
+        let variantCallerJson = []
+
+        if (
+          element[1].variantCaller !== '' &&
+          element[1].variantCaller !== undefined
+        ) {
+          if (typeof element[1].variantCaller === 'object') {
+            element[1].variantCaller.forEach(element2 => {
+              variantCallerJson.push(
+                JSON.stringify(element2, null, 2)
+                  .replaceAll('[', '')
+                  .replaceAll(']', '')
+                  .replaceAll('{', '')
+                  .replaceAll('}', '')
+                  .replaceAll(',', '')
+                  .replaceAll(' ,', '')
+                  .replaceAll(', ', '')
+                  .replaceAll('"', '')
+              )
+            })
+            variantCallerJson = variantCallerJson.toString()
+            variantCallerJson = variantCallerJson
+              .replaceAll(', ', ',')
+              .replaceAll(' ,', ',')
+            variantCallerJson = variantCallerJson.replaceAll(',', '')
+          } else {
+            variantCallerJson = JSON.stringify(
+              element[1].variantCaller,
               null,
               2
             )
@@ -266,67 +290,51 @@ function TableResultsIndividuals (props) {
               .replaceAll(' ,', '')
               .replaceAll(', ', '')
               .replaceAll('"', '')
-            interventionsProcedures = interventionsProcedures.toString()
-            interventionsProcedures = interventionsProcedures
+            variantCallerJson = variantCallerJson.toString()
+            variantCallerJson = variantCallerJson
               .replaceAll(', ', ',')
               .replaceAll(' ,', ',')
-            interventionsProcedures = interventionsProcedures.replaceAll(
-              ',',
-              ''
-            )
+            variantCallerJson = variantCallerJson.replaceAll(',', '')
           }
         }
 
-        let diseases = []
-
-        if (element[1].diseases !== '' && element[1].diseases !== undefined) {
-          if (typeof element[1].diseases === 'object') {
-            element[1].diseases.forEach(element2 => {
-              diseases.push(
-                JSON.stringify(element2, null, 2)
-                  .replaceAll('[', '')
-                  .replaceAll(']', '')
-                  .replaceAll('{', '')
-                  .replaceAll('}', '')
-                  .replaceAll(',', '')
-                  .replaceAll(' ,', '')
-                  .replaceAll(', ', '')
-                  .replaceAll('"', '')
-              )
-            })
-            diseases = diseases.toString()
-            diseases = diseases.replaceAll(', ', ',').replaceAll(' ,', ',')
-            diseases = diseases.replaceAll(',', '')
-          } else {
-            diseases = JSON.stringify(element[1].diseases, null, 2)
-              .replaceAll('[', '')
-              .replaceAll(']', '')
-              .replaceAll('{', '')
-              .replaceAll('}', '')
-              .replaceAll(',', '')
-              .replaceAll(' ,', '')
-              .replaceAll(', ', '')
-              .replaceAll('"', '')
-            diseases = diseases.toString()
-            diseases = diseases.replaceAll(', ', ',').replaceAll(' ,', ',')
-            diseases = diseases.replaceAll(',', '')
-          }
+        var myObjRows = new Object()
+        myObjRows.id = index
+        if (element[1].id !== '') {
+          myObjRows.analysisId = element[1].id
+        }
+        if (element[1].runId !== '') {
+          myObjRows.runId = element[1].runId
+        }
+        myObjRows.Beacon = element[0]
+        if (element[1].biosampleId !== '') {
+          myObjRows.biosampleId = element[1].biosampleId
+        }
+        if (element[1].individualId !== '') {
+          myObjRows.individualId = element[1].individualId
         }
 
-        rows.push({
-          id: index,
-          IndividualId: element[1].id,
-          Beacon: element[0],
-          ethnicity: stringEth,
-          geographicOrigin: stringGeographic,
-          interventionsOrProcedures: interventionsProcedures,
-          measures: measuresJson,
-          sex: stringSex,
-          diseases: diseases
-        })
+        if (analysisDateJson !== '') {
+          myObjRows.analysisDate = analysisDateJson
+        }
+        if (pipelineNameJson !== '') {
+          myObjRows.pipelineName = pipelineNameJson
+        }
+        if (pipelineRefJson !== '') {
+          myObjRows.pipelineRef = pipelineRefJson
+        }
+        if (alignerJson !== '') {
+          myObjRows.aligner = alignerJson
+        }
+        if (variantCallerJson !== '') {
+          myObjRows.variantCaller = variantCallerJson
+        }
+
+        rows.push(myObjRows)
 
         if (index === resultsSelectedFinal.length - 1) {
           setEditable(rows.map(o => ({ ...o })))
+
           setTrigger2(true)
         }
       }
@@ -458,4 +466,4 @@ function TableResultsIndividuals (props) {
   )
 }
 
-export default TableResultsIndividuals
+export default TableResultsAnalyses

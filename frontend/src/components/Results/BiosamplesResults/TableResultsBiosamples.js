@@ -1,6 +1,5 @@
 import '../IndividualsResults/TableResultsIndividuals.css'
 import '../../Dataset/BeaconInfo.css'
-import './TableResultsBiosamples.css'
 import * as React from 'react'
 import {
   DataGrid,
@@ -51,12 +50,8 @@ function TableResultsBiosamples (props) {
   }
 
   const handleClickDatasets = e => {
-    console.log(e)
-
     openDatasetArray[e] = true
-    console.log(openDatasetArray)
     triggerArray[e] = true
-    console.log(triggerArray)
     setTrigger(!trigger)
   }
 
@@ -188,10 +183,9 @@ function TableResultsBiosamples (props) {
       headerClassName: 'super-app-theme--header'
     }
   ]
-
   const handleSeeResults = () => {
     setResultsSelectedFinal(resultsSelected)
-    console.log(resultsSelected)
+
     setShowResults(true)
     setShowDatasets(false)
     setTrigger(true)
@@ -205,9 +199,7 @@ function TableResultsBiosamples (props) {
       arrayBeaconsIds.push(element[0])
     })
     resultsSelectedFinal.forEach((element, index) => {
-      console.log(element)
       if (element[1] !== undefined) {
-        console.log(element[0])
         let biosampleStatus_id = ''
         let biosampleStatus_label = ''
         let stringBiosampleStatus = ''
@@ -219,8 +211,10 @@ function TableResultsBiosamples (props) {
           if (element[1].biosampleStatus.id !== undefined) {
             biosampleStatus_id = element[1].biosampleStatus.id
           }
+          if (element[1].biosampleStatus.label !== undefined) {
+            biosampleStatus_label = element[1].biosampleStatus.label
+          }
 
-          biosampleStatus_label = element[1].biosampleStatus.label
           stringBiosampleStatus = `${biosampleStatus_id} / ${biosampleStatus_label} `
         } else {
           stringBiosampleStatus = ''
@@ -230,7 +224,10 @@ function TableResultsBiosamples (props) {
         let sampleOriginType_label = ''
         let stringSampleOriginType = ''
 
-        if (element[1].sampleOriginType !== '') {
+        if (
+          element[1].sampleOriginType !== '' &&
+          element[1].sampleOriginType !== undefined
+        ) {
           sampleOriginType_id = element[1].sampleOriginType.id
           sampleOriginType_label = element[1].sampleOriginType.label
           stringSampleOriginType = `${element[1].sampleOriginType.label} / ${element[1].sampleOriginType.id}`
@@ -260,6 +257,8 @@ function TableResultsBiosamples (props) {
         ) {
           if (typeof element[1].collectionDate === 'string') {
             collectionDateJson = element[1].collectionDate
+          } else {
+            collectionDateJson = element[1].collectionDate.toString()
           }
         }
 
@@ -810,12 +809,9 @@ function TableResultsBiosamples (props) {
         if (stringSampleOriginType !== '') {
           myObjRows.sampleOriginType = stringSampleOriginType
         }
-
-        console.log(stringSampleOriginDetail)
         if (stringSampleOriginDetail !== '') {
           myObjRows.sampleOriginDetail = stringSampleOriginDetail
         }
-
         if (collectionDateJson !== '') {
           myObjRows.collectionDate = collectionDateJson
         }
@@ -860,7 +856,6 @@ function TableResultsBiosamples (props) {
         }
 
         rows.push(myObjRows)
-        console.log(rows)
 
         if (index === resultsSelectedFinal.length - 1) {
           setEditable(rows.map(o => ({ ...o })))
@@ -872,10 +867,6 @@ function TableResultsBiosamples (props) {
   }, [trigger, resultsSelectedFinal])
 
   useEffect(() => {
-    console.log(props.resultsPerDataset)
-    console.log(props.beaconsList)
-    console.log(arrayBeaconsIds)
-    let count = 0
     // props.beaconsList.forEach((element2, index2) => {
     //   count = getOccurrence(arrayBeaconsIds, element2.meta.beaconId)
     //   if (count > 0) {

@@ -403,7 +403,7 @@ body {
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 760px) {
   .formFields {
     margin: 0px;
     margin-top: 37px;

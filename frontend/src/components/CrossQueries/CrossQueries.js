@@ -51,7 +51,6 @@ function CrossQueries () {
       let res = await axios.get(
         configData.API_URL + `/${valueInitial}/${IdValue}/${valueFinal}`
       )
-      console.log(res)
       res.data.response.resultSets.forEach((element, index) => {
         if (res.data.response.resultSets[index].results.length > 0) {
           setResults(res.data.response.resultSets[index].results)
@@ -67,7 +66,6 @@ function CrossQueries () {
       })
     } catch (error) {
       setError('Not found. Please retry')
-      console.log(error)
     }
   }
 

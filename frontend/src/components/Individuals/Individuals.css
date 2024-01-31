@@ -40,6 +40,11 @@ label {
   margin-top: 12px;
 }
 
+.multi-switch-container {
+  background-color: white;
+  border-color: #6e8baf !important;
+}
+
 .skipLimitButton {
   width: fit-content;
   background-color: rgb(228 223 223);
@@ -331,7 +336,7 @@ h4 {
   .multi-switch-container {
     width: 237px !important;
     background-color: white;
-    border-color: black;
+    border-color: #6e8baf;
     height: 29px !important;
     margin-left: 14px;
     z-index: 0;
@@ -413,18 +418,18 @@ h4 {
   .multi-switch-container {
     width: 219px !important;
     background-color: white;
-    border-color: black;
+    border-color: #6e8baf;
     height: 29px !important;
     margin-left: 14px;
     z-index: 0;
   }
 }
 
-@media (max-width: 763px) {
+@media (max-width: 797px) {
   .multi-switch-container {
     width: 219px !important;
     background-color: white;
-    border-color: black;
+    border-color: #6e8baf;
     height: 29px !important;
     margin-left: -4px;
     z-index: 0;
