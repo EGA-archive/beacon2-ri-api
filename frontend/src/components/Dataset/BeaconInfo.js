@@ -13,7 +13,6 @@ function BeaconInfo (props) {
       try {
         let res = await axios.get(configData.API_URL + '/info')
         resp.push(res.data)
-        console.log(res)
         setTrigger(true)
       } catch (error) {
         console.log(error)
@@ -41,25 +40,19 @@ function BeaconInfo (props) {
               <h2>{resp[0].response.organization.name}</h2>
             </div>
             <hr className='line'></hr>
-            {resp[0].meta.beaconId ===
-              'org.ega-archive.ga4gh-approval-beacon-test' && (
-              <p>
-                This Beacon is based on synthetic data hosted at the{' '}
-                <a
-                  id='descriptionEGA'
-                  href='https://ega-archive.org/datasets/EGAD00001003338'
-                  target='_blank'
-                >
-                  EGA
-                </a>
-                . The dataset contains 2504 samples including genetic data based
-                on 1K Genomes data, and 76 individual attributes and phenotypic
-                data derived from UKBiobank.
+
+            {!resp[0].response.description.includes('<a href') && (
+              <p className='descriptionBeacon'>
+                {resp[0].response.description}
               </p>
             )}
-            {resp[0].meta.beaconId !==
-              'org.ega-archive.ga4gh-approval-beacon-test' && (
-              <p>{resp[0].response.description}</p>
+            {resp[0].response.description.includes('<a href') && (
+              <p
+                className='descriptionBeacon'
+                dangerouslySetInnerHTML={{
+                  __html: resp[0].response.description
+                }}
+              />
             )}
             <div className='linksBeacons'>
               {resp[0].meta.beaconId ===

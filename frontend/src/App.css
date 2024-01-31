@@ -15,8 +15,68 @@ html {
   height: 100vh;
 }
 
+.resultSetsDiv2 label h2 {
+  font-size: 10px;
+}
 .skipLimit {
   margin-top: 10px;
+}
+
+.switchDescendants2 h3 {
+  font-size: 10px;
+  width: fit-content;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+.switchDescendants2 {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-wrap: nowrap;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.resultSetsDiv2 .multi-switch-container {
+  margin-left: -5px;
+  margin-top: 8px;
+}
+
+.containerExtraSections2 {
+  display: flex;
+  flex-direction: column;
+  margin-left: -32%;
+  margin-top: 10px;
+  margin-right: 14%;
+}
+
+.advSearch-module2 label h2 {
+  font-size: 10px;
+}
+.advSearch-module2 {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.extraSectionVariantFormMode {
+  display: flex;
+}
+
+.version {
+  margin-bottom: 19px;
+  margin-right: 46px;
+  margin-top: 7px;
+  color: rgb(102 116 152) !important;
+  font-weight: 700 !important;
+}
+
+.beaconLogo {
+  height: 45px;
+  margin-top: 41px;
+  margin-right: 31px;
 }
 
 .searchButton {
@@ -30,13 +90,27 @@ html {
   color: rgba(12, 16, 64, 0.606);
   font-size: 16px;
   font-variant-caps: all-petite-caps;
+  margin-top: 16px;
 }
 
 .modeVariants {
   color: rgba(12, 16, 64, 0.606);
   font-size: 16px;
   font-variant-caps: all-petite-caps;
-  margin-top: 16px;
+}
+
+.modeVariantsBarMode {
+  /* margin-bottom: 60px; */
+  margin-top: -15px;
+  margin-bottom: 31px;
+  color: rgba(12, 16, 64, 0.606);
+  font-size: 16px;
+  font-feature-settings: 'pcap', 'c2pc', 'pcap', 'c2pc';
+  font-variant-caps: all-petite-caps;
+}
+
+.modeVariantsBarMode:hover h2 {
+  color: rgb(236, 149, 0) !important;
 }
 
 .modeVariants:hover h2 {
@@ -52,6 +126,7 @@ html {
 .resultSetsDiv {
   display: flex;
   margin-top: 5px;
+  align-items: center;
 }
 
 .containerTableResults {
@@ -77,14 +152,15 @@ html {
   display: flex;
   align-items: center;
   margin-left: 10px;
+  margin-top: 5px;
 }
 
 .switchDescendants h3 {
   color: #e16e00;
   text-transform: uppercase;
   margin-left: 3px !important;
-  margin-top: 17px;
-  font-size: 14px;
+  margin-top: 10px;
+  font-size: 12px;
 }
 
 .container-fluid {
@@ -184,7 +260,7 @@ html {
   flex-direction: column;
   align-content: center;
   align-items: center;
-  margin-top: 18px;
+  margin-top: -48px;
 }
 
 .variantsContainer {
@@ -461,7 +537,6 @@ html {
   width: 100vw;
   display: flex;
   margin-bottom: 40px;
-  margin-top: 11px;
 }
 
 .NavlinkVerifier {
@@ -503,25 +578,11 @@ html {
   margin-bottom: 12px;
 }
 
-.cinecaLogo {
-  height: 51px;
-  align-items: center;
-  margin-top: 55px;
-  margin-bottom: 30px;
-  margin-right: 42px;
-}
-
 .container1 a {
   display: flex;
   align-content: center;
   text-underline-offset: 4px;
   align-items: center;
-}
-
-.beaconLogo {
-  height: 45px;
-  margin-top: 29px;
-  margin-right: 21px;
 }
 
 .comming_message {
@@ -586,7 +647,7 @@ select {
   align-items: center;
 }
 
-.resultSet {
+.resultSet2 {
   margin-top: -22px;
 }
 
@@ -643,12 +704,10 @@ hr {
 .logos {
   display: flex;
   width: 100vw;
-  align-items: center;
-  align-content: flex-end;
-  flex-direction: row-reverse;
-  /* justify-content: flex-end; */
+  align-items: flex-end;
   margin-bottom: -11px;
   margin-top: -16px;
+  flex-direction: column;
 }
 
 .helpButton:hover {
@@ -1023,12 +1082,83 @@ h5 {
   line-height: 30px;
   padding: 2px;
 }
+@media (max-width: 1409px) {
+  .containerExtraSections2 {
+    display: flex;
+    flex-direction: column;
+    margin-left: -12%;
+    margin-top: 9px;
+    margin-right: 12%;
+  }
+}
+@media (max-width: 1000px) {
+  .extraSectionVariantFormMode {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+  }
+  .containerExtraSections2 {
+    display: flex;
+    flex-direction: column;
+    /* margin-left: -12%; */
+    margin-top: 9px;
+    /* margin-right: 12%; */
+    margin-left: 0px;
+    margin-right: 0px;
+  }
 
-@media (max-width: 800px) {
+  .resultset2 {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 100vw;
+    background: #e0e7ef;
+    padding: 17px;
+  }
+
+  .resultSetsDiv2 {
+    margin-right: 25px;
+  }
+
+  .advSearch-module2 {
+    margin-right: 21px;
+  }
+}
+
+@media (max-width: 760px) {
   .container1 a {
     display: flex;
     font-size: 11px;
     text-underline-offset: 1px;
+  }
+
+  .resultset2 {
+    display: flex;
+    align-items: flex-start;
+    width: 244px;
+    flex-direction: column;
+    justify-content: center;
+    /* margin-left: 46px; */
+    background: #e0e7ef;
+    padding-top: 10px;
+    padding-bottom: 1px;
+  }
+
+  .version {
+    margin-bottom: 46px;
+    margin-right: 36px;
+    margin-top: -35px;
+    color: rgb(102 116 152) !important;
+    font-weight: 600;
+  }
+
+  .beaconLogo {
+    height: 45px;
+    margin-top: 18px;
+    margin-bottom: 37px;
+    margin-right: 21px;
   }
 
   .inputVariants {
@@ -1077,10 +1207,27 @@ h5 {
     color: #e16e00;
     text-transform: uppercase;
     margin-left: 3px !important;
-    margin-top: 14px;
-    font-size: 12px;
+    margin-top: 6px;
+    font-size: 10px;
   }
-
+  .css-1ycxvqq-MuiSwitch-root {
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    width: 40px;
+    height: 24px;
+    overflow: hidden;
+    padding: 7px;
+    box-sizing: border-box;
+    position: relative;
+    -webkit-flex-shrink: 0;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    z-index: 0;
+    margin-top: -3px;
+    vertical-align: middle;
+  }
   .ReactModal__Content--after-open {
     width: 269px;
     font-size: 12px;
@@ -1101,6 +1248,10 @@ h5 {
     color: white;
     line-height: 20px;
     padding: 2px;
+  }
+
+  .ReactModal__Overlay {
+    z-index: 3;
   }
 
   .filters {
@@ -1154,7 +1305,8 @@ h5 {
     justify-content: center;
     align-items: center;
     z-index: 0;
-    height: 34px;
+    height: 84px;
+    margin-top: -21px;
   }
 
   .bulbLogo {
@@ -1192,8 +1344,8 @@ h5 {
     margin-left: -8px;
   }
 
-  .beaconLogo {
-    height: 45px;
+  .elixirLogo {
+    height: 70px;
     margin-top: 18px;
     margin-bottom: 37px;
     margin-right: 21px;
@@ -1215,7 +1367,6 @@ h5 {
     font-size: 9px;
     margin-left: 10px !important;
     background: #8dbde0;
-    
   }
 
   .bulbExample {
@@ -1227,13 +1378,12 @@ h5 {
     align-items: center;
   }
 
-  .NavlinkVerifier{
+  .NavlinkVerifier {
     color: rgba(12, 16, 64, 0.606);
     font-size: 15px !important;
-    font-feature-settings: 'pcap', 'c2pc', "pcap", "c2pc";
+    font-feature-settings: 'pcap', 'c2pc', 'pcap', 'c2pc';
     font-variant-caps: all-petite-caps;
     margin-top: 0px;
     font-size: 12px !important;
   }
-
 }

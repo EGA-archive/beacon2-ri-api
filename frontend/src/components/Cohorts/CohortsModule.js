@@ -19,7 +19,6 @@ function CohortsModule (props) {
     props.setShowGraphs(true)
   }
   const handleChangeCohorts = selectedOption => {
-    console.log(selectedOption)
     setSelected(selectedOption)
     props.setSelectedCohorts(selectedOption)
   }
