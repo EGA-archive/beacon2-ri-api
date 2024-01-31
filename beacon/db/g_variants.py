@@ -15,13 +15,13 @@ LOG = logging.getLogger(__name__)
 VARIANTS_PROPERTY_MAP = {
     "start": "variation.location.interval.start.value",
     "end": "variation.location.interval.end.value",
-    "assemblyId": "variantInternalId",
-    "referenceName": "variation.location.sequence_id",
+    "assemblyId": "identifiers.genomicHGVSId",
+    "referenceName": "identifiers.genomicHGVSId",
     "referenceBases": "variation.referenceBases",
     "alternateBases": "variation.alternateBases",
     "variantType": "variation.variantType",
-    "variantMinLength": "variation.location.interval.start.min",
-    "variantMaxLength": "variation.location.interval.end.max",
+    "variantMinLength": "variantInternalId",
+    "variantMaxLength": "variantInternalId",
     "geneId": "molecularAttributes.geneIds",
     "genomicAlleleShortForm": "identifiers.genomicHGVSId",
     "aminoacidChange": "molecularAttributes.aminoacidChanges"
@@ -98,6 +98,22 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                 query["$and"].append(apply_alphanumeric_filter({}, filter, collection))
         elif k == "datasets":
             pass
+        elif k == "variantMinLength":
+            try:
+                query["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
+                    id=VARIANTS_PROPERTY_MAP[k],
+                    value='min'+v
+                ), collection))
+            except KeyError:
+                raise web.HTTPNotFound
+        elif k == "variantMaxLength":
+            try:
+                query["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
+                    id=VARIANTS_PROPERTY_MAP[k],
+                    value='max'+v
+                ), collection))
+            except KeyError:
+                raise web.HTTPNotFound    
         else:
             try:
                 query["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(

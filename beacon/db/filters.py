@@ -1,7 +1,7 @@
 from collections import defaultdict
 from typing import List, Union
 import re
-import dataclasses
+import itertools
 from copy import deepcopy
 
 from beacon.request import ontologies
@@ -288,15 +288,66 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
     LOG.debug(filter.value)
     formatted_value = format_value(filter.value)
     formatted_operator = format_operator(filter.operator)
+    LOG.debug(collection)
+    LOG.debug(filter.id)
     if collection == 'g_variants':
-        if filter.id == "_position.refseqId":
-            filter.value = str(filter.value)
-            formatted_value = filter.value
-            LOG.debug(formatted_value)
+        if filter.id == "identifiers.genomicHGVSId":
+            list_chromosomes = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22']
+            dict_regex={}
+            if filter.value == 'GRCh38':
+                dict_regex['$regex']="11:"
+            elif filter.value == 'GRCh37':
+                dict_regex['$regex']="10:"
+            elif filter.value == 'NCBI36':
+                dict_regex['$regex']="9:"
+            elif filter.value in list_chromosomes:
+                dict_regex['$regex']='NC_0000'+filter.value
+            elif '.' in filter.value:
+                valuesplitted = filter.value.split('.')
+                dict_regex['$regex']=valuesplitted[0]+".*"+valuesplitted[-1]+":"
+                dict_regex['$options']= "si"
+            query[filter.id] = dict_regex
+        elif filter.id == "variantInternalId":
+            if 'max' in filter.value:
+                valuereplaced = filter.value.replace('max', '')
+                length=40+int(valuereplaced)+1
+                array_min=[]
+                dict_len={}
+                dict_len['$strLenCP']="$variantInternalId"
+                array_min.append(dict_len)
+                array_min.append(length)
+                dict_gt={}
+                dict_gt['$lt']=array_min
+                dict_expr={}
+                dict_expr['$expr']=dict_gt
+
+                            
+                query=dict_expr
+
+            elif 'min' in filter.value:
+                valuereplaced = filter.value.replace('min', '')
+                length=40+int(valuereplaced)-1
+                array_min=[]
+                dict_len={}
+                dict_len['$strLenCP']="$variantInternalId"
+                array_min.append(dict_len)
+                array_min.append(length)
+                dict_gt={}
+                dict_gt['$gt']=array_min
+                dict_expr={}
+                dict_expr['$expr']=dict_gt
+
+                            
+                query=dict_expr
+
+
+
+
+
         else:
             formatted_value = format_value(filter.value)
-        formatted_operator = format_operator(filter.operator)
-        query[filter.id] = { formatted_operator: formatted_value }
+            formatted_operator = format_operator(filter.operator)
+            query[filter.id] = { formatted_operator: formatted_value }
     elif isinstance(formatted_value,str):
         if formatted_operator == "$eq":
             if '%' in filter.value:
