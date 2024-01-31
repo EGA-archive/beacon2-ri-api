@@ -26,7 +26,8 @@ def build_meta(qparams: RequestParams, entity_schema: Optional[DefaultSchemas], 
 
 def build_response_summary(exists, qparams, num_total_results):
     limit = qparams.query.pagination.limit
-    if limit != 0 and limit < num_total_results:
+    #if limit != 0 and limit < num_total_results:
+    if limit and num_total_results and limit < num_total_results:
         if num_total_results is None:
             return {
                 'exists': exists
