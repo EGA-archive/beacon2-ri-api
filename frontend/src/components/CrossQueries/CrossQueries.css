@@ -91,7 +91,7 @@ h5:hover {
   padding: 20px;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 760px) {
   select {
     font-size: 11px;
     width: 104px;
@@ -106,14 +106,16 @@ h5:hover {
     align-content: center;
     align-items: flex-start;
   }
-  .inputId {
-    background: white;
-    border: 2px solid #f3f4ff;
-    font-size: 12px;
-    border-radius: 5px;
-    width: 200px;
-    margin-left: 10px;
-    height: 22px;
-    box-shadow: 1px 2px 2px #cecece;
-  }
+
+.inputId {
+  background: white;
+  border: 2px solid #f3f4ff;
+  font-size: 12px;
+  border-radius: 5px;
+  width: 200px;
+  margin-left: 10px;
+  height: 22px;
+  box-shadow: 1px 2px 2px #cecece;
+}
+
 }

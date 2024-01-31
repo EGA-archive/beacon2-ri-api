@@ -47,18 +47,14 @@ function TableResultsVariant (props) {
   }
 
   const handleClickDatasets = e => {
-    console.log(e)
-
+  
     openDatasetArray[e] = true
-    console.log(openDatasetArray)
     triggerArray[e] = true
-    console.log(triggerArray)
     setTrigger(!trigger)
   }
   const handleSeeResults = ()=> {
  
     setResultsSelectedFinal(resultsSelected)
-    console.log(resultsSelected)
     setShowResults(true)
     setShowDatasets(false)
     setTrigger(true)

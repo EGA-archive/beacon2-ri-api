@@ -12,6 +12,11 @@
   overflow-inline: scroll;
 }
 
+.MuiDataGrid-cell--withRenderer a {
+  text-decoration: underline;
+  color: #5c5cb5;
+}
+
 .resultSetsButton {
   display: flex;
   align-items: center;
@@ -182,7 +187,6 @@ h1 {
   height: 100vh;
 }
 
-
 .containerResultsVariants {
   display: flex;
   align-content: center;
@@ -261,7 +265,7 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 34px;
+    margin-top: 27px;
     font-size: 12px;
     border-radius: 2px;
     padding: 3px;

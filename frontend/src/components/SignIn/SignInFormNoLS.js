@@ -54,7 +54,7 @@ export default function SignInFormNoLS () {
       formBody = formBody.join('&')
 
       const response = await fetch(
-        'http://localhost:8080/auth/realms/Beacon/protocol/openid-connect/token',
+        'https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon/protocol/openid-connect/token',
         {
           method: 'POST',
           headers: {

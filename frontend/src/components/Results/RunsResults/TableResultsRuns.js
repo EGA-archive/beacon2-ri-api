@@ -1,4 +1,4 @@
-import './TableResultsIndividuals.css'
+import '../IndividualsResults/TableResultsIndividuals.css'
 import '../../Dataset/BeaconInfo.css'
 import * as React from 'react'
 import {
@@ -19,7 +19,7 @@ function CustomToolbar () {
     </GridToolbarContainer>
   )
 }
-function TableResultsIndividuals (props) {
+function TableResultsRuns (props) {
   const [showDatsets, setShowDatasets] = useState(false)
 
   const [showResults, setShowResults] = useState(false)
@@ -51,13 +51,11 @@ function TableResultsIndividuals (props) {
 
   const handleClickDatasets = e => {
     openDatasetArray[e] = true
-
     triggerArray[e] = true
-
     setTrigger(!trigger)
   }
 
-  const columns = [
+  let columns = [
     {
       field: 'id',
       headerName: 'Row',
@@ -65,14 +63,12 @@ function TableResultsIndividuals (props) {
       headerClassName: 'super-app-theme--header'
     },
     {
-      field: 'IndividualId',
-      headerName: 'Individual ID',
+      field: 'runId',
+      headerName: 'Run ID',
       width: 150,
       headerClassName: 'super-app-theme--header',
       renderCell: params => (
-        <Link to={`/individuals/cross-queries/${params.row.IndividualId}`}>
-          {params.row.IndividualId}
-        </Link>
+        <Link to={`cross-queries/${params.row.runId}`}>{params.row.runId}</Link>
       )
     },
     {
@@ -82,56 +78,70 @@ function TableResultsIndividuals (props) {
       headerClassName: 'super-app-theme--header'
     },
     {
-      field: 'ethnicity',
-      headerName: 'ethnicity',
+      field: 'biosampleId',
+      headerName: 'Biosample ID',
+      width: 150,
+      headerClassName: 'super-app-theme--header'
+    },
+    {
+      field: 'individualId',
+      headerName: 'Individual ID',
+      width: 150,
+      headerClassName: 'super-app-theme--header'
+    },
+    {
+      field: 'runDate',
+      headerName: 'Run date',
       width: 240,
       headerClassName: 'super-app-theme--header'
     },
     {
-      field: 'geographicOrigin',
-      headerName: 'geographicOrigin',
+      field: 'librarySource',
+      headerName: 'Library source',
       width: 250,
       headerClassName: 'super-app-theme--header'
     },
     {
-      field: 'interventionsOrProcedures',
-      headerName: 'interventionsOrProcedures',
+      field: 'librarySelection',
+      headerName: 'Library selection',
       width: 350,
       headerClassName: 'super-app-theme--header'
     },
     {
-      field: 'measures',
-      headerName: 'measures',
+      field: 'libraryStrategy',
+      headerName: 'Library strategy',
       width: 350,
       headerClassName: 'super-app-theme--header',
       cellClass: 'pre'
     },
     {
-      field: 'sex',
-      headerName: 'sex',
+      field: 'libraryLayout',
+      headerName: 'Library layout',
       width: 200,
       headerClassName: 'super-app-theme--header'
     },
     {
-      field: 'diseases',
-      headerName: 'diseases',
-      width: 350,
+      field: 'platform',
+      headerName: 'Platform',
+      width: 200,
+      headerClassName: 'super-app-theme--header'
+    },
+    {
+      field: 'platformModel',
+      headerName: 'Platform model',
+      width: 200,
       headerClassName: 'super-app-theme--header'
     }
-    //   { field: 'pedigrees', headerName: 'pedigrees', width: 150 },
-    // { field: 'treatments', headerName: 'treatments', width: 150 },
-    //{ field: 'interventionsOrProcedures', headerName: 'interventionsOrProcedures', width: 150 },
-    // { field: 'exposures', headerName: 'exposures', width: 150 },
-    // { field: 'karyotypicSex', headerName: 'karyotypicSex', width: 150 },
   ]
 
   const handleSeeResults = () => {
     setResultsSelectedFinal(resultsSelected)
-
+   
     setShowResults(true)
     setShowDatasets(false)
     setTrigger(true)
   }
+
 
   useEffect(() => {
     setRows([])
@@ -142,191 +152,116 @@ function TableResultsIndividuals (props) {
     })
     resultsSelectedFinal.forEach((element, index) => {
       if (element[1] !== undefined) {
-        let eth_id = ''
-        let eth_label = ''
-        let stringEth = ''
-
-        if (element[1].ethnicity !== '' && element[1].ethnicity !== undefined) {
-          if (element[1].ethnicity.id !== undefined) {
-            eth_id = element[1].ethnicity.id
+        let runDateJson = []
+        if (element[1].runDate !== '' && element[1].runDate !== undefined) {
+          if (typeof element[1].runDate === 'string') {
+            runDateJson = element[1].runDate
+          } else {
+            runDateJson = element[1].runDate.toString()
           }
-
-          eth_label = element[1].ethnicity.label
-          stringEth = `${eth_id} / ${eth_label} `
-        } else {
-          stringEth = ''
         }
 
-        let sex_id = ''
-        let sex_label = ''
-        let stringSex = ''
+        let librarySource_id = ''
+        let librarySource_label = ''
+        let stringLibrarySource = ''
 
-        if (element[1].sex !== '') {
-          sex_id = element[1].sex.id
-          sex_label = element[1].sex.label
-          stringSex = `${element[1].sex.label} / ${element[1].sex.id}`
+        if (element[1].librarySource !== '') {
+          librarySource_id = element[1].librarySource.id
+          librarySource_label = element[1].librarySource.label
+          stringLibrarySource = `${element[1].librarySource.label} / ${element[1].librarySource.id}`
         } else {
-          stringSex = ''
+          stringLibrarySource = ''
         }
 
-        let geographic_id = ''
-        let geographic_label = ''
-        let stringGeographic = ''
+        let librarySelectionJson = []
+        if (
+          element[1].librarySelection !== '' &&
+          element[1].librarySelection !== undefined
+        ) {
+          if (typeof element[1].librarySelection === 'string') {
+            librarySelectionJson = element[1].librarySelection
+          }
+        }
+        let libraryStrategyJson = []
+        if (
+          element[1].libraryStrategy !== '' &&
+          element[1].libraryStrategy !== undefined
+        ) {
+          if (typeof element[1].libraryStrategy === 'string') {
+            libraryStrategyJson = element[1].libraryStrategy
+          }
+        }
+
+        let libraryLayoutJson = []
 
         if (
-          element[1].geographicOrigin !== '' &&
-          element[1].geographicOrigin !== undefined
+          element[1].libraryLayout !== '' &&
+          element[1].libraryLayout !== undefined
         ) {
-          geographic_id = element[1].geographicOrigin.id
-          geographic_label = element[1].geographicOrigin.label
-          stringGeographic = `${geographic_id} / ${geographic_label}`
+          if (typeof element[1].libraryLayout === 'string') {
+            libraryLayoutJson = element[1].libraryLayout
+          }
+        }
+
+        let platformJson = []
+
+        if (element[1].platform !== '' && element[1].platform !== undefined) {
+          if (typeof element[1].platform === 'string') {
+            platformJson = element[1].platform
+          }
+        }
+
+        let platformModel_id = ''
+        let platformModel_label = ''
+        let stringPlatformModel = ''
+
+        if (element[1].platformModel !== '') {
+          platformModel_id = element[1].platformModel.id
+          platformModel_label = element[1].platformModel.label
+          stringPlatformModel = `${element[1].platformModel.label} / ${element[1].platformModel.id}`
         } else {
-          stringGeographic = ''
+          stringPlatformModel = ''
+        }
+        var myObjRows = new Object()
+        myObjRows.id = index
+        if (element[1].id !== '') {
+          myObjRows.runId = element[1].id
+        }
+        myObjRows.Beacon = element[0]
+        if (element[1].biosampleId !== '') {
+          myObjRows.biosampleId = element[1].biosampleId
+        }
+        if (element[1].individualId !== '') {
+          myObjRows.individualId = element[1].individualId
         }
 
-        let measuresJson = []
-        if (element[1].measures !== '' && element[1].measures !== undefined) {
-          if (typeof element[1].measures === 'object') {
-            element[1].measures.forEach(element2 => {
-              measuresJson.push(
-                JSON.stringify(element2, null, 2)
-                  .replaceAll('[', '')
-                  .replaceAll(']', '')
-                  .replaceAll('{', '')
-                  .replaceAll('}', '')
-                  .replaceAll(',', '')
-                  .replaceAll(' ,', '')
-                  .replaceAll(', ', '')
-                  .replaceAll('"', '')
-              )
-            })
-            measuresJson = measuresJson.toString()
-            measuresJson = measuresJson
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            measuresJson = measuresJson.replaceAll(',', '')
-          } else {
-            measuresJson = JSON.stringify(element[1].measures, null, 2)
-              .replaceAll('[', '')
-              .replaceAll(']', '')
-              .replaceAll('{', '')
-              .replaceAll('}', '')
-              .replaceAll(',', '')
-              .replaceAll(' ,', '')
-              .replaceAll(', ', '')
-              .replaceAll('"', '')
-
-            measuresJson = measuresJson.toString()
-            measuresJson = measuresJson
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            measuresJson = measuresJson.replaceAll(',', '')
-          }
+        if (runDateJson !== '') {
+          myObjRows.runDate = runDateJson
+        }
+        if (stringLibrarySource !== '') {
+          myObjRows.librarySource = stringLibrarySource
+        }
+        if (librarySelectionJson !== '') {
+          myObjRows.librarySelection = librarySelectionJson
+        }
+        if (libraryStrategyJson !== '') {
+          myObjRows.libraryStrategy = libraryStrategyJson
+        }
+        if (libraryLayoutJson !== '') {
+          myObjRows.libraryLayout = libraryLayoutJson
+        }
+        if (platformJson !== '') {
+          myObjRows.platform = platformJson
+        }
+        if (stringPlatformModel !== '') {
+          myObjRows.platformModel = stringPlatformModel
         }
 
-        let interventionsProcedures = []
-
-        if (
-          element[1].interventionsOrProcedures !== '' &&
-          element[1].interventionsOrProcedures !== undefined
-        ) {
-          if (typeof element[1].interventionsOrProcedures === 'object') {
-            element[1].interventionsOrProcedures.forEach(element2 => {
-              interventionsProcedures.push(
-                JSON.stringify(element2, null, 2)
-                  .replaceAll('[', '')
-                  .replaceAll(']', '')
-                  .replaceAll('{', '')
-                  .replaceAll('}', '')
-                  .replaceAll(',', '')
-                  .replaceAll(' ,', '')
-                  .replaceAll(', ', '')
-                  .replaceAll('"', '')
-              )
-            })
-            interventionsProcedures = interventionsProcedures.toString()
-            interventionsProcedures = interventionsProcedures
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            interventionsProcedures = interventionsProcedures.replaceAll(
-              ',',
-              ''
-            )
-          } else {
-            interventionsProcedures = JSON.stringify(
-              element[1].interventionsOrProcedures,
-              null,
-              2
-            )
-              .replaceAll('[', '')
-              .replaceAll(']', '')
-              .replaceAll('{', '')
-              .replaceAll('}', '')
-              .replaceAll(',', '')
-              .replaceAll(' ,', '')
-              .replaceAll(', ', '')
-              .replaceAll('"', '')
-            interventionsProcedures = interventionsProcedures.toString()
-            interventionsProcedures = interventionsProcedures
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            interventionsProcedures = interventionsProcedures.replaceAll(
-              ',',
-              ''
-            )
-          }
-        }
-
-        let diseases = []
-
-        if (element[1].diseases !== '' && element[1].diseases !== undefined) {
-          if (typeof element[1].diseases === 'object') {
-            element[1].diseases.forEach(element2 => {
-              diseases.push(
-                JSON.stringify(element2, null, 2)
-                  .replaceAll('[', '')
-                  .replaceAll(']', '')
-                  .replaceAll('{', '')
-                  .replaceAll('}', '')
-                  .replaceAll(',', '')
-                  .replaceAll(' ,', '')
-                  .replaceAll(', ', '')
-                  .replaceAll('"', '')
-              )
-            })
-            diseases = diseases.toString()
-            diseases = diseases.replaceAll(', ', ',').replaceAll(' ,', ',')
-            diseases = diseases.replaceAll(',', '')
-          } else {
-            diseases = JSON.stringify(element[1].diseases, null, 2)
-              .replaceAll('[', '')
-              .replaceAll(']', '')
-              .replaceAll('{', '')
-              .replaceAll('}', '')
-              .replaceAll(',', '')
-              .replaceAll(' ,', '')
-              .replaceAll(', ', '')
-              .replaceAll('"', '')
-            diseases = diseases.toString()
-            diseases = diseases.replaceAll(', ', ',').replaceAll(' ,', ',')
-            diseases = diseases.replaceAll(',', '')
-          }
-        }
-
-        rows.push({
-          id: index,
-          IndividualId: element[1].id,
-          Beacon: element[0],
-          ethnicity: stringEth,
-          geographicOrigin: stringGeographic,
-          interventionsOrProcedures: interventionsProcedures,
-          measures: measuresJson,
-          sex: stringSex,
-          diseases: diseases
-        })
+        rows.push(myObjRows)
 
         if (index === resultsSelectedFinal.length - 1) {
           setEditable(rows.map(o => ({ ...o })))
+
           setTrigger2(true)
         }
       }
@@ -334,6 +269,7 @@ function TableResultsIndividuals (props) {
   }, [trigger, resultsSelectedFinal])
 
   useEffect(() => {
+
     // props.beaconsList.forEach((element2, index2) => {
     //   count = getOccurrence(arrayBeaconsIds, element2.meta.beaconId)
     //   if (count > 0) {
@@ -458,4 +394,4 @@ function TableResultsIndividuals (props) {
   )
 }
 
-export default TableResultsIndividuals
+export default TableResultsRuns

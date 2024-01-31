@@ -26,7 +26,7 @@ function VariantsResults (props) {
   const [queryArray, setQueryArray] = useState([])
   const [beaconsList, setBeaconsList] = useState([])
 
-  const [limit, setLimit] = useState(10)
+  const [limit, setLimit] = useState(0)
   const [skip, setSkip] = useState(0)
 
   const [showVariantsResults, setShowVariantsResults] = useState(false)
@@ -50,7 +50,6 @@ function VariantsResults (props) {
   }
 
   const handleTypeResults3 = () => {
-    console.log(error)
     setShow3(true)
     setShow1(false)
     setShow2(false)
@@ -72,12 +71,93 @@ function VariantsResults (props) {
 
       try {
         let res = await axios.get(configData.API_URL + '/info')
-        console.log(res)
 
         beaconsList.push(res.data.response)
 
-        if (props.showBar === true) {
+        if (props.showBar === false) {
           setShowVariantsResults(true)
+          if (props.query !== null) {
+            if (props.query.includes(',')) {
+              queryStringTerm = props.query.split(',')
+              queryStringTerm.forEach((element, index) => {
+                element = element.trim()
+                if (
+                  element.includes('=') ||
+                  element.includes('>') ||
+                  element.includes('<') ||
+                  element.includes('!') ||
+                  element.includes('%')
+                ) {
+                  if (element.includes('=')) {
+                    queryArray[index] = element.split('=')
+                    queryArray[index].push('=')
+                  } else if (element.includes('>')) {
+                    queryArray[index] = element.split('>')
+                    queryArray[index].push('>')
+                  } else if (element.includes('<')) {
+                    queryArray[index] = element.split('<')
+                    queryArray[index].push('<')
+                  } else if (element.includes('!')) {
+                    queryArray[index] = element.split('!')
+                    queryArray[index].push('!')
+                  } else {
+                    queryArray[index] = element.split('%')
+                    queryArray[index].push('%')
+                  }
+                  const alphaNumFilter = {
+                    id: queryArray[index][0],
+                    operator: queryArray[index][2],
+                    value: queryArray[index][1]
+                  }
+                  arrayFilter.push(alphaNumFilter)
+                } else {
+                  const filter2 = {
+                    id: element,
+                    includeDescendantTerms: props.descendantTerm
+                  }
+                  arrayFilter.push(filter2)
+                }
+              })
+            } else {
+              if (
+                props.query.includes('=') ||
+                props.query.includes('>') ||
+                props.query.includes('<') ||
+                props.query.includes('!') ||
+                props.query.includes('%')
+              ) {
+                if (props.query.includes('=')) {
+                  queryArray[0] = props.query.split('=')
+                  queryArray[0].push('=')
+                } else if (props.query.includes('>')) {
+                  queryArray[0] = props.query.split('>')
+                  queryArray[0].push('>')
+                } else if (props.query.includes('<')) {
+                  queryArray[0] = props.query.split('<')
+                  queryArray[0].push('<')
+                } else if (props.query.includes('!')) {
+                  queryArray[0] = props.query.split('!')
+                  queryArray[0].push('!')
+                } else {
+                  queryArray[0] = props.query.split('%')
+                  queryArray[0].push('%')
+                }
+
+                const alphaNumFilter = {
+                  id: queryArray[0][0],
+                  operator: queryArray[0][2],
+                  value: queryArray[0][1]
+                }
+                arrayFilter.push(alphaNumFilter)
+              } else {
+                const filter = {
+                  id: props.query
+                }
+                arrayFilter.push(filter)
+              }
+            }
+          }
+
           if (props.query === null) {
             // show all individuals
 
@@ -89,8 +169,8 @@ function VariantsResults (props) {
                 filters: arrayFilter,
                 includeResultsetResponses: `${props.resultSets}`,
                 pagination: {
-                  skip: 0,
-                  limit: 0
+                  skip: skip,
+                  limit: limit
                 },
                 testMode: false,
                 requestedGranularity: 'record'
@@ -110,6 +190,9 @@ function VariantsResults (props) {
                 configData.API_URL + '/g_variants',
                 jsonData1
               )
+              // Object.defineProperty(res.data.response.resultSets[0], 'beaconId', {
+              //  value: 'es.chipdb.cnic.beacon'
+              //})
             } else {
               const headers = { Authorization: `Bearer ${token}` }
 
@@ -130,13 +213,9 @@ function VariantsResults (props) {
               setBoolean(false)
             } else {
               res.data.response.resultSets.forEach((element, index) => {
-                console.log(res.data.response)
                 if (element.id && element.id !== '') {
-                  console.log(resultsPerDataset)
                   if (resultsPerDataset.length > 0) {
                     resultsPerDataset.forEach(element2 => {
-                      console.log(element2[0])
-                      console.log(element.beaconId)
                       element2[0].push(element.id)
                       element2[1].push(element.exists)
                       element2[2].push(element.resultsCount)
@@ -148,7 +227,7 @@ function VariantsResults (props) {
                       [element.exists],
                       [element.resultsCount]
                     ]
-                    console.log(arrayResultsPerDataset)
+
                     resultsPerDataset.push(arrayResultsPerDataset)
                   }
                 }
@@ -159,99 +238,6 @@ function VariantsResults (props) {
                 }
 
                 if (res.data.response.resultSets[index].results) {
-                  res.data.response.resultSets[index].results.forEach(
-                    (element2, index2) => {
-                      let arrayResult = [
-                        res.data.meta.beaconId,
-                        res.data.response.resultSets[index].results[index2]
-                      ]
-                      results.push(arrayResult)
-                    }
-                  )
-                }
-              })
-            }
-          } else {
-            var jsonData2 = {
-              meta: {
-                apiVersion: '2.0'
-              },
-              query: {
-                filters: arrayFilter,
-                includeResultsetResponses: `${props.resultSets}`,
-                pagination: {
-                  skip: skip,
-                  limit: limit
-                },
-                testMode: false,
-                requestedGranularity: 'record'
-              }
-            }
-            jsonData2 = JSON.stringify(jsonData2)
-            let token = null
-            if (auth.userData === null) {
-              token = getStoredToken()
-            } else {
-              token = auth.userData.access_token
-            }
-
-            if (token === null) {
-              console.log('Querying without token')
-              res = await axios.post(
-                configData.API_URL + '/g_variants',
-                jsonData2
-              )
-            } else {
-              console.log('Querying WITH token')
-              const headers = { Authorization: `Bearer ${token}` }
-
-              res = await axios.post(
-                configData.API_URL + '/g_variants',
-                jsonData2,
-                { headers: headers }
-              )
-            }
-            setTimeOut(true)
-
-            if (
-              res.data.responseSummary.numTotalResults < 1 ||
-              res.data.responseSummary.numTotalResults === undefined
-            ) {
-              setError('ERROR. Please check the query and retry')
-              setNumberResults(0)
-              setBoolean(false)
-            } else {
-              res.data.response.resultSets.forEach((element, index) => {
-                console.log(res.data.response)
-                if (element.id && element.id !== '') {
-                  console.log(resultsPerDataset)
-                  if (resultsPerDataset.length > 0) {
-                    resultsPerDataset.forEach(element2 => {
-                      console.log(element2[0])
-                      console.log(element.beaconId)
-                      element2[0].push(element.id)
-                      element2[1].push(element.exists)
-                      element2[2].push(element.resultsCount)
-                    })
-                  } else {
-                    let arrayResultsPerDataset = [
-                      //element.beaconId,
-                      [element.id],
-                      [element.exists],
-                      [element.resultsCount]
-                    ]
-                    console.log(arrayResultsPerDataset)
-                    resultsPerDataset.push(arrayResultsPerDataset)
-                  }
-                }
-
-                if (element.id === undefined || element.id === '') {
-                  let arrayResultsNoDatasets = [element.beaconId]
-                  resultsNotPerDataset.push(arrayResultsNoDatasets)
-                }
-
-                if (res.data.response.resultSets[index].results) {
-                  console.log(res.data)
                   res.data.response.resultSets[index].results.forEach(
                     (element2, index2) => {
                       let arrayResult = [
@@ -285,6 +271,18 @@ function VariantsResults (props) {
           }
           if (props.start2 !== '') {
             requestParametersRange['start'] = props.start2
+          }
+          if (props.variantMinLength !== '') {
+            requestParametersRange['variantMinLength'] = props.variantMinLength
+          }
+          if (props.variantMaxLength !== '') {
+            requestParametersRange['variantMaxLength'] = props.variantMaxLength
+          }
+          if (props.variantMinLength2 !== '') {
+            requestParametersGene['variantMinLength'] = props.variantMinLength2
+          }
+          if (props.variantMaxLength2 !== '') {
+            requestParametersGene['variantMaxLength'] = props.variantMaxLength2
           }
           if (props.end !== '') {
             requestParametersRange['end'] = props.end
@@ -327,7 +325,7 @@ function VariantsResults (props) {
           }
 
           var jsonData1 = {}
-         
+
           if (props.sequenceSubmitted) {
             jsonData1 = {
               meta: {
@@ -386,7 +384,7 @@ function VariantsResults (props) {
           }
 
           jsonData1 = JSON.stringify(jsonData1)
-          console.log(jsonData1)
+
           let token = null
           if (auth.userData === null) {
             token = getStoredToken()
@@ -396,11 +394,11 @@ function VariantsResults (props) {
 
           if (token === null) {
             console.log('Querying without token')
+
             res = await axios.post(
               configData.API_URL + '/g_variants',
               jsonData1
             )
-            console.log(jsonData1)
           } else {
             const headers = { Authorization: `Bearer ${token}` }
             res = await axios.post(
@@ -411,23 +409,18 @@ function VariantsResults (props) {
           }
 
           setTimeOut(true)
-          console.log(res.data)
           if (
             res.data.responseSummary.numTotalResults < 1 ||
             res.data.responseSummary.numTotalResults === undefined
           ) {
-            setError('No results. Please check the query and retry')
+            setError('ERROR. Please check the query and retry')
             setNumberResults(0)
             setBoolean(false)
           } else {
             res.data.response.resultSets.forEach((element, index) => {
-              console.log(res.data.response)
               if (element.id && element.id !== '') {
-                console.log(resultsPerDataset)
                 if (resultsPerDataset.length > 0) {
                   resultsPerDataset.forEach(element2 => {
-                    console.log(element2[0])
-                    console.log(element.beaconId)
                     element2[0].push(element.id)
                     element2[1].push(element.exists)
                     element2[2].push(element.resultsCount)
@@ -439,7 +432,6 @@ function VariantsResults (props) {
                     [element.exists],
                     [element.resultsCount]
                   ]
-                  console.log(arrayResultsPerDataset)
                   resultsPerDataset.push(arrayResultsPerDataset)
                 }
               }
@@ -466,7 +458,6 @@ function VariantsResults (props) {
       } catch (error) {
         setError('Connection error. Please retry')
         setTimeOut(true)
-        console.log(error)
       }
     }
     apiCall()
@@ -501,9 +492,6 @@ function VariantsResults (props) {
                 </button>
               </div>
 
-              {timeOut && error === 'Connection error. Please retry' && (
-                <h3>&nbsp; {error} </h3>
-              )}
               {show3 && logInRequired === false && !error && (
                 <div>
                   <TableResultsVariant
@@ -511,12 +499,11 @@ function VariantsResults (props) {
                     results={results}
                     resultsPerDataset={resultsPerDataset}
                     beaconsList={beaconsList}
+                    resultSets={props.resultSets}
                   ></TableResultsVariant>
                 </div>
               )}
-              {show3 && logInRequired === true && (
-                <h3>{messageLoginFullResp}</h3>
-              )}
+
               {show3 && error && <h3>&nbsp; {error} </h3>}
 
               {show2 && logInRequired === false && !error && (
@@ -527,11 +514,12 @@ function VariantsResults (props) {
                     resultsNotPerDataset={resultsNotPerDataset}
                     results={results}
                     beaconsList={beaconsList}
+                    resultSets={props.resultSets}
                   ></TableResultsVariant>
                 </div>
               )}
 
-              {show1 && logInRequired === false && !error &&(
+              {show1 && logInRequired === false && !error && (
                 <div className='containerTableResults'>
                   <TableResultsVariant
                     show={'boolean'}
@@ -539,6 +527,7 @@ function VariantsResults (props) {
                     resultsNotPerDataset={resultsNotPerDataset}
                     results={results}
                     beaconsList={beaconsList}
+                    resultSets={props.resultSets}
                   ></TableResultsVariant>
                 </div>
               )}
