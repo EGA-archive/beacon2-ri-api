@@ -5,8 +5,7 @@ from beacon.db.schemas import DefaultSchemas
 from beacon.db.utils import query_id, query_ids, get_count, get_documents, get_cross_query, get_cross_query_variants, get_filtering_documents
 from beacon.request.model import AlphanumericFilter, Operator, RequestParams
 from beacon.db import client
-import json
-from bson import json_util
+import yaml
 from aiohttp import web
 
 
@@ -125,13 +124,47 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
     return query
 
 
-def get_variants(entry_id: Optional[str], qparams: RequestParams):
+def get_variants(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'g_variants'
     query = apply_request_parameters({}, qparams)
     query = apply_filters(query, qparams.query.filters, collection)
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.GENOMICVARIATIONS
+    with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
+        datasets_dict = yaml.safe_load(datasets_file)
     count = get_count(client.beacon.genomicVariations, query)
+    query_count=query
+    
+    query_count["$or"]=[]
+    #LOG.debug(query)
+    i=1
+    #LOG.debug(datasets_dict)
+    for k, v in datasets_dict.items():
+        if k == dataset:
+            for id in v:
+                if i < len(v):
+                    query_id={}
+                    query_id["caseLevelData.biosampleId"]=id
+                    query_count["$or"].append(query_id)
+                    i+=1
+                else:
+                    query_id={}
+                    query_id["caseLevelData.biosampleId"]=id
+                    query_count["$or"].append(query_id)
+                    i=1
+                    
+            if query_count["$or"]!=[]:
+                dataset_count = get_count(client.beacon.genomicVariations, query_count)
+                LOG.debug(dataset_count)
+                docs = get_documents(
+                    client.beacon.genomicVariations,
+                    query_count,
+                    qparams.query.pagination.skip,
+                    10
+                )
+            else:
+                dataset_count=0
+
     include = qparams.query.include_resultset_responses
     if include == 'MISS':
         pre_docs = get_documents(
@@ -164,14 +197,8 @@ def get_variants(entry_id: Optional[str], qparams: RequestParams):
             qparams.query.pagination.skip,
             qparams.query.pagination.limit
         )
-    else:
-        docs = get_documents(
-            client.beacon.genomicVariations,
-            query,
-            qparams.query.pagination.skip,
-            0
-        )
-    return schema, count, docs
+
+    return schema, count, dataset_count, docs
 
 
 def get_variant_with_id(entry_id: Optional[str], qparams: RequestParams):

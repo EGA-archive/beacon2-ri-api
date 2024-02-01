@@ -7,8 +7,7 @@ from beacon.request.model import AlphanumericFilter, Operator, RequestParams
 from beacon.db.schemas import DefaultSchemas
 from beacon.db.utils import query_id, get_count, get_documents
 from beacon.request.model import RequestParams
-import json
-from bson import json_util
+import yaml
 
 LOG = logging.getLogger(__name__)
 
@@ -91,39 +90,56 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
         return query
 
 
-def get_individuals(entry_id: Optional[str], qparams: RequestParams):
+def get_individuals(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'individuals'
     query = apply_request_parameters({}, qparams)
     LOG.debug(qparams.query.filters)
     query = apply_filters(query, qparams.query.filters, collection)
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.INDIVIDUALS
-    count = get_count(client.beacon.individuals, query)
+    with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
+        datasets_dict = yaml.safe_load(datasets_file)
     include = qparams.query.include_resultset_responses
     if include == 'MISS':
-        pre_docs = get_documents(
-            client.beacon.individuals,
-            query,
-            qparams.query.pagination.skip,
-            0
-        )
-        negative_query={}
-        ids_array = []
-        for doc in pre_docs:
-            elem_query={}
-            elem_query['_id']=doc['_id']
-            ids_array.append(elem_query)
+        query_count=query
         
-        negative_query['$nor']=ids_array
-        #LOG.debug(negative_query)
-        docs = get_documents(
-            client.beacon.individuals,
-            negative_query,
-            qparams.query.pagination.skip,
-            0
-        )
-        LOG.debug(docs)
-        count = get_count(client.beacon.individuals, negative_query)
+        query_count["$or"]=[]
+        #LOG.debug(query)
+        i=1
+        #LOG.debug(datasets_dict)
+        for k, v in datasets_dict.items():
+            query_count["$or"]=[]
+            if k == dataset:
+                for id in v:
+                    if i < len(v):
+                        query_id={}
+                        query_id["id"]=id
+                        query_count["$or"].append(query_id)
+                        i+=1
+                    else:
+                        query_id={}
+                        query_id["id"]=id
+                        query_count["$or"].append(query_id)
+                        i=1
+                        
+                if query_count["$or"]!=[]:
+                    dataset_count = get_count(client.beacon.individuals, query_count)
+                    count=dataset_count
+                    if dataset_count == 0:
+                        dataset_count=get_count(client.beacon.individuals, {'$or': query_count['$or']})
+                        count+=get_count(client.beacon.individuals, {'$or': query_count['$or']})
+                        docs = get_documents(
+                            client.beacon.individuals,
+                            {'$or': query_count['$or']},
+                            qparams.query.pagination.skip,
+                            10
+                        )
+                        
+                    else:
+                        return schema, count, -1, None
+                else:
+                    dataset_count=0
+
     elif include == 'NONE':
             docs = get_documents(
             client.beacon.individuals,
@@ -132,13 +148,42 @@ def get_individuals(entry_id: Optional[str], qparams: RequestParams):
             qparams.query.pagination.limit
         )
     else:
-        docs = get_documents(
-            client.beacon.individuals,
-            query,
-            qparams.query.pagination.skip,
-            0
-        )
-    return schema, count, docs
+        count = get_count(client.beacon.individuals, query)
+        query_count=query
+        
+
+        #LOG.debug(query)
+        i=1
+        #LOG.debug(datasets_dict)
+        for k, v in datasets_dict.items():
+            query_count["$or"]=[]
+            if k == dataset:
+                for id in v:
+                    if i < len(v):
+                        query_id={}
+                        query_id["id"]=id
+                        query_count["$or"].append(query_id)
+                        i+=1
+                    else:
+                        query_id={}
+                        query_id["id"]=id
+                        query_count["$or"].append(query_id)
+                        i=1
+                        
+                if query_count["$or"]!=[]:
+                    dataset_count = get_count(client.beacon.individuals, query_count)
+                    LOG.debug(dataset_count)
+                    docs = get_documents(
+                        client.beacon.individuals,
+                        query_count,
+                        qparams.query.pagination.skip,
+                        10
+                    )
+                else:
+                    dataset_count=0
+
+
+    return schema, count, dataset_count, docs
 
 
 def get_individual_with_id(entry_id: Optional[str], qparams: RequestParams):
