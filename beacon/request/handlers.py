@@ -207,7 +207,10 @@ def generic_handler(db_fn, request=None):
         datasets_docs={}
         datasets_count={}
         for dataset in response_datasets:
+            LOG.debug(dataset)
             entity_schema, count, dataset_count, records = db_fn(entry_id, qparams, dataset)
+            LOG.debug(records)
+
             if dataset_count != -1:
                 datasets_docs[dataset]=records
                 datasets_count[dataset]=dataset_count
