@@ -71,38 +71,23 @@ def build_response_summary_by_dataset(exists, num_total_results, response_dict):
 
 def build_response_by_dataset(data, dict_counts, qparams, func):
     """"Fills the `response` part with the correct format in `results`"""
-    dict_of_responses={}
     list_of_responses=[]
-    include = qparams.query.include_resultset_responses
-    if include != 'ALL':
-        for k,v in data.items():
-            if v:
-                response = {
-                    'id': k, # TODO: Set the name of the dataset/cohort
-                    'setType': 'dataset', # TODO: Set the type of collection
-                    'exists': v is not  None,
-                    'resultsCount': dict_counts[k],
-                    'results': v,
-                    # 'info': None,
-                    'resultsHandover': None,  # build_results_handover
-                }
-                
-                list_of_responses.append(response)
-                #LOG.debug(list_of_responses)
-            
-    else:
-        for k,v in data.items():
-            LOG.debug(len(v))
+    for k,v in data.items():
+        if v:
             response = {
                 'id': k, # TODO: Set the name of the dataset/cohort
                 'setType': 'dataset', # TODO: Set the type of collection
-                'exists': len(v) > 0,
+                'exists': v is not  None,
                 'resultsCount': dict_counts[k],
                 'results': v,
                 # 'info': None,
                 'resultsHandover': None,  # build_results_handover
             }
+            
             list_of_responses.append(response)
+            #LOG.debug(list_of_responses)
+            
+
     #LOG.debug(list_of_responses)
     return list_of_responses
 
