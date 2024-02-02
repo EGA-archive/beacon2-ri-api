@@ -73,7 +73,7 @@ def generic_handler(db_fn, request=None):
         authorized_datasets, authenticated, username = await resolve_token(access_token, search_datasets)
 
         LOG.debug(authorized_datasets)
-
+        LOG.debug(username)
         
         #LOG.debug('all datasets:  %s', all_datasets)
         LOG.info('resolved datasets:  %s', authorized_datasets)
@@ -82,10 +82,7 @@ def generic_handler(db_fn, request=None):
 
 
         specific_datasets_unauthorized = []
-        specific_datasets_unauthorized_and_found = []
-        bio_list = []
         search_and_authorized_datasets = []
-        specific_search_datasets = []
         # Get response
         if specific_datasets != []:
             for element in authorized_datasets:
@@ -101,40 +98,6 @@ def generic_handler(db_fn, request=None):
             all_datasets = [r['id'] for r in beacon_datasets]
             
             response_datasets = [ r['id'] for r in beacon_datasets if r['id'] in search_and_authorized_datasets]
-            #LOG.debug(specific_search_datasets)
-            #LOG.debug(response_datasets)
-            '''
-            with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
-                datasets_dict = yaml.safe_load(datasets_file)
-
-            list_of_dataset_dicts=[]
-
-            for data_r in response_datasets:
-                dict_dataset = {}
-                dict_dataset['dataset']=data_r
-                try:
-                    dict_dataset['ids']=datasets_dict[data_r]
-                except Exception:
-                    dict_dataset['ids']=[]
-                list_of_dataset_dicts.append(dict_dataset)
-            #LOG.debug(list_of_dataset_dicts)
-
-            for dataset_searched in specific_datasets_unauthorized:
-                if dataset_searched not in all_datasets:
-                    dict_dataset = {}
-                    dict_dataset['dataset']=dataset_searched
-                    dict_dataset['ids'] = ['Dataset not found']
-                    list_of_dataset_dicts.append(dict_dataset)
-            
-            for data_s in specific_datasets_unauthorized_and_found:
-                dict_dataset = {}
-                dict_dataset['dataset']=data_s
-                dict_dataset['ids'] = ['Unauthorized dataset']
-                list_of_dataset_dicts.append(dict_dataset)
-
-            LOG.debug(specific_datasets_unauthorized_and_found)
-            LOG.debug(specific_datasets_unauthorized)
-            '''
 
         else:
             qparams.query.request_parameters = {}
@@ -147,31 +110,7 @@ def generic_handler(db_fn, request=None):
             LOG.debug(specific_datasets)
             LOG.debug(response_datasets)
             specific_datasets_unauthorized.append(specific_datasets)
-            '''
-            with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
-                datasets_dict = yaml.safe_load(datasets_file)
 
-            list_of_dataset_dicts=[]
-
-            for data_r in response_datasets:
-                dict_dataset = {}
-                dict_dataset['dataset']=data_r
-                
-                try:
-                    dict_dataset['ids']=datasets_dict[data_r]
-                except Exception:
-                    dict_dataset['ids']=[]
-                list_of_dataset_dicts.append(dict_dataset)
-            
-            for data_s in specific_datasets:
-                dict_dataset = {}
-                dict_dataset['dataset']=data_s
-                dict_dataset['ids'] = ['Unauthorized dataset']
-                list_of_dataset_dicts.append(dict_dataset)
-            #LOG.debug(list_of_dataset_dicts)
-            '''
-
-            
 
         qparams = RequestParams(**json_body).from_request(request)
         include = qparams.query.include_resultset_responses
@@ -180,11 +119,9 @@ def generic_handler(db_fn, request=None):
         if access_token != 'public':
 
 
-
-
             with open("/beacon/beacon/request/response_type.yml", 'r') as response_type_file:
                 response_type_dict = yaml.safe_load(response_type_file)
-
+            LOG.debug(response_type_dict)
             try:
                 response_type = response_type_dict[username]
             except Exception:
@@ -206,6 +143,7 @@ def generic_handler(db_fn, request=None):
             entry_id = request.match_info.get('variantInternalId', None)
         datasets_docs={}
         datasets_count={}
+        LOG.debug(response_datasets)
         for dataset in response_datasets:
             LOG.debug(dataset)
             entity_schema, count, dataset_count, records = db_fn(entry_id, qparams, dataset)
@@ -305,31 +243,7 @@ def filtering_terms_handler(db_fn, request=None):
                 response_datasets = [ r['id'] for r in beacon_datasets if r['id'] in search_and_authorized_datasets]
                 LOG.debug(specific_search_datasets)
                 LOG.debug(response_datasets)
-                '''
-                list_of_dataset_dicts=[]
 
-                for data_r in response_datasets:
-                    dict_dataset = {}
-                    dict_dataset['dataset']=data_r
-                    dict_dataset['ids']=[ r['ids'] for r in beacon_datasets if r['id'] == data_r ]
-                    list_of_dataset_dicts.append(dict_dataset)
-
-                for dataset_searched in specific_datasets_unauthorized:
-                    if dataset_searched not in all_datasets:
-                        dict_dataset = {}
-                        dict_dataset['dataset']=dataset_searched
-                        dict_dataset['ids'] = ['Dataset not found']
-                        list_of_dataset_dicts.append(dict_dataset)
-                
-                for data_s in specific_datasets_unauthorized_and_found:
-                    dict_dataset = {}
-                    dict_dataset['dataset']=data_s
-                    dict_dataset['ids'] = ['Unauthorized dataset']
-                    list_of_dataset_dicts.append(dict_dataset)
-
-                #LOG.debug(specific_datasets_unauthorized_and_found)
-                #LOG.debug(specific_datasets_unauthorized)
-                '''
             else:
                 qparams.query.request_parameters = {}
                 qparams.query.request_parameters['datasets'] = '*******'
@@ -339,21 +253,7 @@ def filtering_terms_handler(db_fn, request=None):
                 response_datasets = [ r['id'] for r in beacon_datasets if r['id'] in authorized_datasets]
                 #LOG.debug(specific_datasets)
                 #LOG.debug(response_datasets)
-                '''
-                list_of_dataset_dicts=[]
 
-                for data_r in response_datasets:
-                    dict_dataset = {}
-                    dict_dataset['dataset']=data_r
-                    dict_dataset['ids']=[ r['ids'] for r in beacon_datasets if r['id'] == data_r ]
-                    list_of_dataset_dicts.append(dict_dataset)
-                
-                for data_s in specific_datasets:
-                    dict_dataset = {}
-                    dict_dataset['dataset']=data_s
-                    dict_dataset['ids'] = ['Unauthorized dataset']
-                    list_of_dataset_dicts.append(dict_dataset)
-                '''
         else:
             list_of_dataset_dicts=[]
 

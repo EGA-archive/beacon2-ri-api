@@ -152,7 +152,6 @@ def get_individuals(entry_id: Optional[str], qparams: RequestParams, dataset: st
         for k, v in datasets_dict.items():
             if k == dataset:
                 for id in v:
-                    LOG.debug(len(v))
                     if i < len(v):
                         queryid={}
                         queryid["id"]=id
