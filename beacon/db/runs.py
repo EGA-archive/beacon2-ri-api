@@ -39,6 +39,9 @@ def get_runs(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)
     include = qparams.query.include_resultset_responses
+    limit = qparams.query.pagination.limit
+    if limit > 1000 or limit == 0:
+        limit = 1000
     if include == 'MISS':
         query_count=query
         query_count["$or"]=[]
@@ -67,7 +70,7 @@ def get_runs(entry_id: Optional[str], qparams: RequestParams, dataset: str):
                             client.beacon.runs,
                             {'$or': query_count['$or']},
                             qparams.query.pagination.skip,
-                            10
+                            limit
                         )
                     else:
                         return schema, count, -1, None
@@ -81,7 +84,7 @@ def get_runs(entry_id: Optional[str], qparams: RequestParams, dataset: str):
             client.beacon.runs,
             query,
             qparams.query.pagination.skip,
-            10
+            limit
         )
     elif include == 'HIT':
         count = get_count(client.beacon.runs, query)
@@ -91,7 +94,7 @@ def get_runs(entry_id: Optional[str], qparams: RequestParams, dataset: str):
         for k, v in datasets_dict.items():
             if k == dataset:
                 for id in v:
-                    LOG.debug(len(v))
+                    
                     if i < len(v):
                         queryid={}
                         queryid["individualId"]=id
@@ -109,7 +112,7 @@ def get_runs(entry_id: Optional[str], qparams: RequestParams, dataset: str):
                         client.beacon.runs,
                         query_count,
                         qparams.query.pagination.skip,
-                        10
+                        limit
                     )
                 else:
                     dataset_count=0
@@ -140,7 +143,7 @@ def get_runs(entry_id: Optional[str], qparams: RequestParams, dataset: str):
                         client.beacon.runs,
                         query_count,
                         qparams.query.pagination.skip,
-                        10
+                        limit
                     )
                 else:
                     dataset_count=0
@@ -156,6 +159,9 @@ def get_run_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: st
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)
     include = qparams.query.include_resultset_responses
+    limit = qparams.query.pagination.limit
+    if limit > 1000 or limit == 0:
+        limit = 1000
     if include == 'MISS':
         query_count=query
         query_count["$or"]=[]
@@ -184,7 +190,7 @@ def get_run_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: st
                             client.beacon.runs,
                             {'$or': query_count['$or']},
                             qparams.query.pagination.skip,
-                            10
+                            limit
                         )
                     else:
                         return schema, count, -1, None
@@ -198,7 +204,7 @@ def get_run_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: st
             client.beacon.runs,
             query,
             qparams.query.pagination.skip,
-            10
+            limit
         )
     elif include == 'HIT':
         count = get_count(client.beacon.runs, query)
@@ -208,7 +214,7 @@ def get_run_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: st
         for k, v in datasets_dict.items():
             if k == dataset:
                 for id in v:
-                    LOG.debug(len(v))
+                    
                     if i < len(v):
                         queryid={}
                         queryid["individualId"]=id
@@ -226,7 +232,7 @@ def get_run_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: st
                         client.beacon.runs,
                         query_count,
                         qparams.query.pagination.skip,
-                        10
+                        limit
                     )
                 else:
                     dataset_count=0
@@ -257,7 +263,7 @@ def get_run_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: st
                         client.beacon.runs,
                         query_count,
                         qparams.query.pagination.skip,
-                        10
+                        limit
                     )
                 else:
                     dataset_count=0
@@ -280,6 +286,9 @@ def get_variants_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)
     include = qparams.query.include_resultset_responses
+    limit = qparams.query.pagination.limit
+    if limit > 1000 or limit == 0:
+        limit = 1000
     if include == 'MISS':
         query_count=query
         query_count["$or"]=[]
@@ -308,7 +317,7 @@ def get_variants_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
                             client.beacon.genomicVariations,
                             {'$or': query_count['$or']},
                             qparams.query.pagination.skip,
-                            10
+                            limit
                         )
                     else:
                         return schema, count, -1, None
@@ -322,7 +331,7 @@ def get_variants_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
             client.beacon.individuals,
             query,
             qparams.query.pagination.skip,
-            10
+            limit
         )
     elif include == 'HIT':
         count = get_count(client.beacon.genomicVariations, query)
@@ -332,7 +341,7 @@ def get_variants_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
         for k, v in datasets_dict.items():
             if k == dataset:
                 for id in v:
-                    LOG.debug(len(v))
+                    
                     if i < len(v):
                         queryid={}
                         queryid["caseLevelData.biosampleId"]=id
@@ -350,7 +359,7 @@ def get_variants_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
                         client.beacon.genomicVariations,
                         query_count,
                         qparams.query.pagination.skip,
-                        10
+                        limit
                     )
                 else:
                     dataset_count=0
@@ -381,7 +390,7 @@ def get_variants_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
                         client.beacon.genomicVariations,
                         query_count,
                         qparams.query.pagination.skip,
-                        10
+                        limit
                     )
                 else:
                     dataset_count=0
@@ -397,6 +406,9 @@ def get_analyses_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)
     include = qparams.query.include_resultset_responses
+    limit = qparams.query.pagination.limit
+    if limit > 1000 or limit == 0:
+        limit = 1000
     if include == 'MISS':
         query_count=query
         query_count["$or"]=[]
@@ -425,7 +437,7 @@ def get_analyses_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
                             client.beacon.analyses,
                             {'$or': query_count['$or']},
                             qparams.query.pagination.skip,
-                            10
+                            limit
                         )
                     else:
                         return schema, count, -1, None
@@ -439,7 +451,7 @@ def get_analyses_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
             client.beacon.analyses,
             query,
             qparams.query.pagination.skip,
-            10
+            limit
         )
     elif include == 'HIT':
         count = get_count(client.beacon.analyses, query)
@@ -449,7 +461,7 @@ def get_analyses_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
         for k, v in datasets_dict.items():
             if k == dataset:
                 for id in v:
-                    LOG.debug(len(v))
+                    
                     if i < len(v):
                         queryid={}
                         queryid["biosampleId"]=id
@@ -467,7 +479,7 @@ def get_analyses_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
                         client.beacon.analyses,
                         query_count,
                         qparams.query.pagination.skip,
-                        10
+                        limit
                     )
                 else:
                     dataset_count=0
@@ -498,7 +510,7 @@ def get_analyses_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
                         client.beacon.analyses,
                         query_count,
                         qparams.query.pagination.skip,
-                        10
+                        limit
                     )
                 else:
                     dataset_count=0
