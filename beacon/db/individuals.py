@@ -57,7 +57,7 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                 docs = get_documents(
                 client.beacon.genomicVariations,
                 query,
-                qparams.query.pagination.skip,
+                qparams.query.pagination.skip*qparams.query.pagination.limit,
                 count
             )
                 biosample_IDS =[]
@@ -101,8 +101,8 @@ def get_individuals(entry_id: Optional[str], qparams: RequestParams, dataset: st
         datasets_dict = yaml.safe_load(datasets_file)
     include = qparams.query.include_resultset_responses
     limit = qparams.query.pagination.limit
-    if limit > 1000 or limit == 0:
-        limit = 1000
+    if limit > 100 or limit == 0:
+        limit = 100
     if include == 'MISS':
         query_count=query
         query_count["$or"]=[]
@@ -130,7 +130,7 @@ def get_individuals(entry_id: Optional[str], qparams: RequestParams, dataset: st
                         docs = get_documents(
                             client.beacon.individuals,
                             {'$or': query_count['$or']},
-                            qparams.query.pagination.skip,
+                            qparams.query.pagination.skip*qparams.query.pagination.limit,
                             limit
                         )
                     else:
@@ -144,7 +144,7 @@ def get_individuals(entry_id: Optional[str], qparams: RequestParams, dataset: st
             docs = get_documents(
             client.beacon.individuals,
             query,
-            qparams.query.pagination.skip,
+            qparams.query.pagination.skip*qparams.query.pagination.limit,
             limit
         )
     elif include == 'HIT':
@@ -167,13 +167,13 @@ def get_individuals(entry_id: Optional[str], qparams: RequestParams, dataset: st
                         i=1
                 if query_count["$or"]!=[]:
                     dataset_count = get_count(client.beacon.individuals, query_count)
-                    LOG.debug(dataset_count)
                     docs = get_documents(
                         client.beacon.individuals,
                         query_count,
-                        qparams.query.pagination.skip,
+                        qparams.query.pagination.skip*qparams.query.pagination.limit,
                         limit
                     )
+                    
                 else:
                     dataset_count=0
         if dataset_count==0:
@@ -202,7 +202,7 @@ def get_individuals(entry_id: Optional[str], qparams: RequestParams, dataset: st
                     docs = get_documents(
                         client.beacon.individuals,
                         query_count,
-                        qparams.query.pagination.skip,
+                        qparams.query.pagination.skip*qparams.query.pagination.limit,
                         limit
                     )
                 else:
@@ -221,8 +221,8 @@ def get_individual_with_id(entry_id: Optional[str], qparams: RequestParams, data
         datasets_dict = yaml.safe_load(datasets_file)
     include = qparams.query.include_resultset_responses
     limit = qparams.query.pagination.limit
-    if limit > 1000 or limit == 0:
-        limit = 1000
+    if limit > 100 or limit == 0:
+        limit = 100
     if include == 'MISS':
         query_count=query
         query_count["$or"]=[]
@@ -250,7 +250,7 @@ def get_individual_with_id(entry_id: Optional[str], qparams: RequestParams, data
                         docs = get_documents(
                             client.beacon.individuals,
                             {'$or': query_count['$or']},
-                            qparams.query.pagination.skip,
+                            qparams.query.pagination.skip*qparams.query.pagination.limit,
                             limit
                         )
                     else:
@@ -264,7 +264,7 @@ def get_individual_with_id(entry_id: Optional[str], qparams: RequestParams, data
             docs = get_documents(
             client.beacon.individuals,
             query,
-            qparams.query.pagination.skip,
+            qparams.query.pagination.skip*qparams.query.pagination.limit,
             limit
         )
     elif include == 'HIT':
@@ -292,7 +292,7 @@ def get_individual_with_id(entry_id: Optional[str], qparams: RequestParams, data
                     docs = get_documents(
                         client.beacon.individuals,
                         query_count,
-                        qparams.query.pagination.skip,
+                        qparams.query.pagination.skip*qparams.query.pagination.limit,
                         limit
                     )
                 else:
@@ -323,7 +323,7 @@ def get_individual_with_id(entry_id: Optional[str], qparams: RequestParams, data
                     docs = get_documents(
                         client.beacon.individuals,
                         query_count,
-                        qparams.query.pagination.skip,
+                        qparams.query.pagination.skip*qparams.query.pagination.limit,
                         limit
                     )
                 else:
@@ -342,8 +342,8 @@ def get_variants_of_individual(entry_id: Optional[str], qparams: RequestParams, 
         datasets_dict = yaml.safe_load(datasets_file)
     include = qparams.query.include_resultset_responses
     limit = qparams.query.pagination.limit
-    if limit > 1000 or limit == 0:
-        limit = 1000
+    if limit > 100 or limit == 0:
+        limit = 100
     if include == 'MISS':
         query_count=query
         query_count["$or"]=[]
@@ -371,7 +371,7 @@ def get_variants_of_individual(entry_id: Optional[str], qparams: RequestParams, 
                         docs = get_documents(
                             client.beacon.genomicVariations,
                             {'$or': query_count['$or']},
-                            qparams.query.pagination.skip,
+                            qparams.query.pagination.skip*qparams.query.pagination.limit,
                             limit
                         )
                     else:
@@ -385,7 +385,7 @@ def get_variants_of_individual(entry_id: Optional[str], qparams: RequestParams, 
             docs = get_documents(
             client.beacon.individuals,
             query,
-            qparams.query.pagination.skip,
+            qparams.query.pagination.skip*qparams.query.pagination.limit,
             limit
         )
     elif include == 'HIT':
@@ -413,7 +413,7 @@ def get_variants_of_individual(entry_id: Optional[str], qparams: RequestParams, 
                     docs = get_documents(
                         client.beacon.genomicVariations,
                         query_count,
-                        qparams.query.pagination.skip,
+                        qparams.query.pagination.skip*qparams.query.pagination.limit,
                         limit
                     )
                 else:
@@ -444,7 +444,7 @@ def get_variants_of_individual(entry_id: Optional[str], qparams: RequestParams, 
                     docs = get_documents(
                         client.beacon.genomicVariations,
                         query_count,
-                        qparams.query.pagination.skip,
+                        qparams.query.pagination.skip*qparams.query.pagination.limit,
                         limit
                     )
                 else:
@@ -467,8 +467,8 @@ def get_biosamples_of_individual(entry_id: Optional[str], qparams: RequestParams
         datasets_dict = yaml.safe_load(datasets_file)
     include = qparams.query.include_resultset_responses
     limit = qparams.query.pagination.limit
-    if limit > 1000 or limit == 0:
-        limit = 1000
+    if limit > 100 or limit == 0:
+        limit = 100
     if include == 'MISS':
         query_count=query
         query_count["$or"]=[]
@@ -496,7 +496,7 @@ def get_biosamples_of_individual(entry_id: Optional[str], qparams: RequestParams
                         docs = get_documents(
                             client.beacon.biosamples,
                             {'$or': query_count['$or']},
-                            qparams.query.pagination.skip,
+                            qparams.query.pagination.skip*qparams.query.pagination.limit,
                             limit
                         )
                     else:
@@ -510,7 +510,7 @@ def get_biosamples_of_individual(entry_id: Optional[str], qparams: RequestParams
             docs = get_documents(
             client.beacon.biosamples,
             query,
-            qparams.query.pagination.skip,
+            qparams.query.pagination.skip*qparams.query.pagination.limit,
             limit
         )
     elif include == 'HIT':
@@ -538,7 +538,7 @@ def get_biosamples_of_individual(entry_id: Optional[str], qparams: RequestParams
                     docs = get_documents(
                         client.beacon.biosamples,
                         query_count,
-                        qparams.query.pagination.skip,
+                        qparams.query.pagination.skip*qparams.query.pagination.limit,
                         limit
                     )
                 else:
@@ -569,7 +569,7 @@ def get_biosamples_of_individual(entry_id: Optional[str], qparams: RequestParams
                     docs = get_documents(
                         client.beacon.biosamples,
                         query_count,
-                        qparams.query.pagination.skip,
+                        qparams.query.pagination.skip*qparams.query.pagination.limit,
                         limit
                     )
                 else:
@@ -586,7 +586,7 @@ def get_filtering_terms_of_individual(entry_id: Optional[str], qparams: RequestP
         client.beacon.filtering_terms,
         query,
         remove_id,
-        qparams.query.pagination.skip,
+        qparams.query.pagination.skip*qparams.query.pagination.limit,
         0
     )
     return schema, count, docs
@@ -603,8 +603,8 @@ def get_runs_of_individual(entry_id: Optional[str], qparams: RequestParams, data
         datasets_dict = yaml.safe_load(datasets_file)
     include = qparams.query.include_resultset_responses
     limit = qparams.query.pagination.limit
-    if limit > 1000 or limit == 0:
-        limit = 1000
+    if limit > 100 or limit == 0:
+        limit = 100
     if include == 'MISS':
         query_count=query
         query_count["$or"]=[]
@@ -632,7 +632,7 @@ def get_runs_of_individual(entry_id: Optional[str], qparams: RequestParams, data
                         docs = get_documents(
                             client.beacon.runs,
                             {'$or': query_count['$or']},
-                            qparams.query.pagination.skip,
+                            qparams.query.pagination.skip*qparams.query.pagination.limit,
                             limit
                         )
                     else:
@@ -646,7 +646,7 @@ def get_runs_of_individual(entry_id: Optional[str], qparams: RequestParams, data
             docs = get_documents(
             client.beacon.runs,
             query,
-            qparams.query.pagination.skip,
+            qparams.query.pagination.skip*qparams.query.pagination.limit,
             limit
         )
     elif include == 'HIT':
@@ -674,7 +674,7 @@ def get_runs_of_individual(entry_id: Optional[str], qparams: RequestParams, data
                     docs = get_documents(
                         client.beacon.runs,
                         query_count,
-                        qparams.query.pagination.skip,
+                        qparams.query.pagination.skip*qparams.query.pagination.limit,
                         limit
                     )
                 else:
@@ -705,7 +705,7 @@ def get_runs_of_individual(entry_id: Optional[str], qparams: RequestParams, data
                     docs = get_documents(
                         client.beacon.runs,
                         query_count,
-                        qparams.query.pagination.skip,
+                        qparams.query.pagination.skip*qparams.query.pagination.limit,
                         limit
                     )
                 else:
@@ -723,8 +723,8 @@ def get_analyses_of_individual(entry_id: Optional[str], qparams: RequestParams, 
         datasets_dict = yaml.safe_load(datasets_file)
     include = qparams.query.include_resultset_responses
     limit = qparams.query.pagination.limit
-    if limit > 1000 or limit == 0:
-        limit = 1000
+    if limit > 100 or limit == 0:
+        limit = 100
     if include == 'MISS':
         query_count=query
         query_count["$or"]=[]
@@ -752,7 +752,7 @@ def get_analyses_of_individual(entry_id: Optional[str], qparams: RequestParams, 
                         docs = get_documents(
                             client.beacon.analyses,
                             {'$or': query_count['$or']},
-                            qparams.query.pagination.skip,
+                            qparams.query.pagination.skip*qparams.query.pagination.limit,
                             limit
                         )
                     else:
@@ -766,7 +766,7 @@ def get_analyses_of_individual(entry_id: Optional[str], qparams: RequestParams, 
             docs = get_documents(
             client.beacon.analyses,
             query,
-            qparams.query.pagination.skip,
+            qparams.query.pagination.skip*qparams.query.pagination.limit,
             limit
         )
     elif include == 'HIT':
@@ -794,7 +794,7 @@ def get_analyses_of_individual(entry_id: Optional[str], qparams: RequestParams, 
                     docs = get_documents(
                         client.beacon.analyses,
                         query_count,
-                        qparams.query.pagination.skip,
+                        qparams.query.pagination.skip*qparams.query.pagination.limit,
                         limit
                     )
                 else:
@@ -825,7 +825,7 @@ def get_analyses_of_individual(entry_id: Optional[str], qparams: RequestParams, 
                     docs = get_documents(
                         client.beacon.analyses,
                         query_count,
-                        qparams.query.pagination.skip,
+                        qparams.query.pagination.skip*qparams.query.pagination.limit,
                         limit
                     )
                 else:

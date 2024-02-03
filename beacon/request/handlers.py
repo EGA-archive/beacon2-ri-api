@@ -144,25 +144,16 @@ def generic_handler(db_fn, request=None):
         datasets_docs={}
         datasets_count={}
         LOG.debug(response_datasets)
+        new_count=0
         for dataset in response_datasets:
             LOG.debug(dataset)
             entity_schema, count, dataset_count, records = db_fn(entry_id, qparams, dataset)
+            
             if dataset_count != -1:
+                new_count+=dataset_count
                 datasets_docs[dataset]=records
                 datasets_count[dataset]=dataset_count
-
-        if skip == 0 and limit !=0:
-            start_record = 0
-            finish_record = limit
-        if limit == 0 and skip ==0:
-            start_record = 0
-            finish_record = count 
-        if limit == 0 and skip !=0:
-            start_record = skip
-            finish_record = count 
-        if skip !=0 and limit !=0:
-            start_record = limit*skip
-            finish_record = limit*skip + limit
+        count=new_count
 
         response_converted = records
 
@@ -188,7 +179,7 @@ def generic_handler(db_fn, request=None):
             elif include == 'NONE':
                 response = build_beacon_resultset_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
             else:
-                response = build_beacon_resultset_response_by_dataset(datasets_docs, datasets_count, count, qparams, lambda x, y: x, entity_schema, start_record, finish_record)
+                response = build_beacon_resultset_response_by_dataset(datasets_docs, datasets_count, count, qparams, lambda x, y: x, entity_schema)
                 
         return await json_stream(request, response)
 

@@ -54,7 +54,7 @@ def get_datasets(entry_id: Optional[str], qparams: RequestParams):
     docs = get_documents(
         client.beacon.datasets,
         query,
-        qparams.query.pagination.skip,
+        0,
         0
     )
     return schema, count, docs
