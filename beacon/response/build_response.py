@@ -26,8 +26,20 @@ def build_meta(qparams: RequestParams, entity_schema: Optional[DefaultSchemas], 
 
 def build_response_summary(exists, qparams, num_total_results):
     limit = qparams.query.pagination.limit
+    include = qparams.query.include_resultset_responses
+    LOG.debug(num_total_results)
     #if limit != 0 and limit < num_total_results:
-    if limit and num_total_results and limit < num_total_results:
+    if include == 'NONE':
+        if num_total_results is None:
+            return {
+                'exists': exists
+            }
+        else:
+            return {
+                'exists': exists,
+                'numTotalResults': num_total_results
+            }
+    elif limit and num_total_results and limit < num_total_results:
         if num_total_results is None:
             return {
                 'exists': exists
@@ -94,8 +106,18 @@ def build_response_by_dataset(data, dict_counts, qparams, func):
 def build_response(data, num_total_results, qparams, func):
     """"Fills the `response` part with the correct format in `results`"""
     limit = qparams.query.pagination.limit
-
-    if limit != 0 and limit < num_total_results:
+    include = qparams.query.include_resultset_responses
+    if include == 'NONE':
+            response = {
+            'id': '', # TODO: Set the name of the dataset/cohort
+            'setType': '', # TODO: Set the type of collection
+            'exists': num_total_results > 0,
+            'resultsCount': num_total_results,
+            'results': data,
+            # 'info': None,
+            'resultsHandover': None,  # build_results_handover
+        }
+    elif limit != 0 and limit < num_total_results:
         response = {
             'id': '', # TODO: Set the name of the dataset/cohort
             'setType': '', # TODO: Set the type of collection

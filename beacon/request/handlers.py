@@ -153,7 +153,8 @@ def generic_handler(db_fn, request=None):
                 new_count+=dataset_count
                 datasets_docs[dataset]=records
                 datasets_count[dataset]=dataset_count
-        count=new_count
+        if include != 'NONE':
+            count=new_count
 
         response_converted = records
 
