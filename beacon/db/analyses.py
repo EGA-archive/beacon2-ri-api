@@ -356,7 +356,7 @@ def get_variants_of_analysis(entry_id: Optional[str], qparams: RequestParams, da
                         i=1
                 if query_count["$or"]!=[]:
                     dataset_count = get_count(client.beacon.genomicVariations, query_count)
-                    LOG.debug(dataset_count)
+                    LOG.debug(limit)
                     docs = get_documents(
                         client.beacon.genomicVariations,
                         query_count,
@@ -407,7 +407,7 @@ def get_filtering_terms_of_analyse(entry_id: Optional[str], qparams: RequestPara
         client.beacon.filtering_terms,
         query,
         remove_id,
-        qparams.query.pagination.skip*limit,
+        qparams.query.pagination.skip*qparams.query.pagination.limit,
         0
     )
     return schema, count, docs

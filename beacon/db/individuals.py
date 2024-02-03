@@ -127,6 +127,7 @@ def get_individuals(entry_id: Optional[str], qparams: RequestParams, dataset: st
                     if dataset_count == 0:
                         dataset_count=get_count(client.beacon.individuals, {'$or': query_count['$or']})
                         count+=get_count(client.beacon.individuals, {'$or': query_count['$or']})
+                        
                         docs = get_documents(
                             client.beacon.individuals,
                             {'$or': query_count['$or']},
@@ -167,6 +168,7 @@ def get_individuals(entry_id: Optional[str], qparams: RequestParams, dataset: st
                         i=1
                 if query_count["$or"]!=[]:
                     dataset_count = get_count(client.beacon.individuals, query_count)
+                    LOG.debug(limit)
                     docs = get_documents(
                         client.beacon.individuals,
                         query_count,
@@ -586,7 +588,7 @@ def get_filtering_terms_of_individual(entry_id: Optional[str], qparams: RequestP
         client.beacon.filtering_terms,
         query,
         remove_id,
-        qparams.query.pagination.skip*limit,
+        qparams.query.pagination.skip*qparams.query.pagination.limit,
         0
     )
     return schema, count, docs

@@ -525,7 +525,7 @@ def get_filtering_terms_of_run(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.filtering_terms,
         query,
         remove_id,
-        qparams.query.pagination.skip*limit,
+        qparams.query.pagination.skip*qparams.query.pagination.limit,
         0
     )
     return schema, count, docs
