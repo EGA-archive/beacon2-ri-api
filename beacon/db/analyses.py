@@ -70,7 +70,7 @@ def get_analyses(entry_id: Optional[str], qparams: RequestParams, dataset: str):
                         docs = get_documents(
                             client.beacon.analyses,
                             {'$or': query_count['$or']},
-                            qparams.query.pagination.skip*qparams.query.pagination.limit,
+                            qparams.query.pagination.skip*limit,
                             limit
                         )
                     else:
@@ -84,7 +84,7 @@ def get_analyses(entry_id: Optional[str], qparams: RequestParams, dataset: str):
             docs = get_documents(
             client.beacon.analyses,
             query,
-            qparams.query.pagination.skip*qparams.query.pagination.limit,
+            qparams.query.pagination.skip*limit,
             limit
         )
     elif include == 'HIT':
@@ -112,7 +112,7 @@ def get_analyses(entry_id: Optional[str], qparams: RequestParams, dataset: str):
                     docs = get_documents(
                         client.beacon.analyses,
                         query_count,
-                        qparams.query.pagination.skip*qparams.query.pagination.limit,
+                        qparams.query.pagination.skip*limit,
                         limit
                     )
                 else:
@@ -143,7 +143,7 @@ def get_analyses(entry_id: Optional[str], qparams: RequestParams, dataset: str):
                     docs = get_documents(
                         client.beacon.analyses,
                         query_count,
-                        qparams.query.pagination.skip*qparams.query.pagination.limit,
+                        qparams.query.pagination.skip*limit,
                         limit
                     )
                 else:
@@ -191,7 +191,7 @@ def get_analysis_with_id(entry_id: Optional[str], qparams: RequestParams, datase
                         docs = get_documents(
                             client.beacon.analyses,
                             {'$or': query_count['$or']},
-                            qparams.query.pagination.skip*qparams.query.pagination.limit,
+                            qparams.query.pagination.skip*limit,
                             limit
                         )
                     else:
@@ -205,7 +205,7 @@ def get_analysis_with_id(entry_id: Optional[str], qparams: RequestParams, datase
             docs = get_documents(
             client.beacon.analyses,
             query,
-            qparams.query.pagination.skip*qparams.query.pagination.limit,
+            qparams.query.pagination.skip*limit,
             limit
         )
     elif include == 'HIT':
@@ -233,7 +233,7 @@ def get_analysis_with_id(entry_id: Optional[str], qparams: RequestParams, datase
                     docs = get_documents(
                         client.beacon.analyses,
                         query_count,
-                        qparams.query.pagination.skip*qparams.query.pagination.limit,
+                        qparams.query.pagination.skip*limit,
                         limit
                     )
                 else:
@@ -264,7 +264,7 @@ def get_analysis_with_id(entry_id: Optional[str], qparams: RequestParams, datase
                     docs = get_documents(
                         client.beacon.analyses,
                         query_count,
-                        qparams.query.pagination.skip*qparams.query.pagination.limit,
+                        qparams.query.pagination.skip*limit,
                         limit
                     )
                 else:
@@ -318,7 +318,7 @@ def get_variants_of_analysis(entry_id: Optional[str], qparams: RequestParams, da
                         docs = get_documents(
                             client.beacon.genomicVariations,
                             {'$or': query_count['$or']},
-                            qparams.query.pagination.skip*qparams.query.pagination.limit,
+                            qparams.query.pagination.skip*limit,
                             limit
                         )
                     else:
@@ -332,7 +332,7 @@ def get_variants_of_analysis(entry_id: Optional[str], qparams: RequestParams, da
             docs = get_documents(
             client.beacon.individuals,
             query,
-            qparams.query.pagination.skip*qparams.query.pagination.limit,
+            qparams.query.pagination.skip*limit,
             limit
         )
     elif include == 'HIT':
@@ -360,7 +360,7 @@ def get_variants_of_analysis(entry_id: Optional[str], qparams: RequestParams, da
                     docs = get_documents(
                         client.beacon.genomicVariations,
                         query_count,
-                        qparams.query.pagination.skip*qparams.query.pagination.limit,
+                        qparams.query.pagination.skip*limit,
                         limit
                     )
                 else:
@@ -391,7 +391,7 @@ def get_variants_of_analysis(entry_id: Optional[str], qparams: RequestParams, da
                     docs = get_documents(
                         client.beacon.genomicVariations,
                         query_count,
-                        qparams.query.pagination.skip*qparams.query.pagination.limit,
+                        qparams.query.pagination.skip*limit,
                         limit
                     )
                 else:
@@ -407,7 +407,7 @@ def get_filtering_terms_of_analyse(entry_id: Optional[str], qparams: RequestPara
         client.beacon.filtering_terms,
         query,
         remove_id,
-        qparams.query.pagination.skip*qparams.query.pagination.limit,
+        qparams.query.pagination.skip*limit,
         0
     )
     return schema, count, docs
