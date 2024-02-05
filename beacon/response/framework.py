@@ -203,6 +203,7 @@ async def beacon_map(request):
                 "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/analyses/endpoints.json",
                 "rootUrl": conf.uri + "analyses",
                 "singleEntryUrl": conf.uri + "analyses/{id}",
+                "filteringTermsUrl": conf.uri + "analyses/filtering_terms",
                 "endpoints": {
                     "genomicVariant": {
                         "returnedEntryType": "genomicVariant",
@@ -215,6 +216,7 @@ async def beacon_map(request):
                 "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/biosamples/endpoints.json",
                 "rootUrl": conf.uri + "biosamples",
                 "singleEntryUrl": conf.uri + "biosamples/{id}",
+                "filteringTermsUrl": conf.uri + "biosamples/filtering_terms",
                 "endpoints": {
                     "analysis": {
                         "returnedEntryType": "analysis",
@@ -285,6 +287,7 @@ async def beacon_map(request):
                 "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/genomicVariations/endpoints.json",
                 "rootUrl": conf.uri + "g_variants",
                 "singleEntryUrl": conf.uri + "g_variants/{variantInternalId}",
+                "filteringTermsUrl": conf.uri + "individuals/g_variants",
                 "endpoints": {
                     "analysis": {
                         "returnedEntryType": "analysis",
@@ -334,6 +337,7 @@ async def beacon_map(request):
                 "openAPIEndpointsDefinition": "https://raw.githubusercontent.com/ga4gh-beacon/beacon-v2/main/models/json/beacon-v2-default-model/runs/endpoints.json",
                 "rootUrl": conf.uri + "runs",
                 "singleEntryUrl": conf.uri + "runs/{id}",
+                "filteringTermsUrl": conf.uri + "runs/filtering_terms",
                 "endpoints": {
                     "analysis": {
                         "returnedEntryType": "analysis",
