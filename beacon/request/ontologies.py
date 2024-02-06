@@ -1,3 +1,4 @@
+'''
 import re
 import fastobo
 import networkx
@@ -188,3 +189,4 @@ def get_resources() -> List[Dict]:
             "iriPrefix": ontology_config["baseUris"][0] if ontology_config else None,
         })
     return resources
+    '''
