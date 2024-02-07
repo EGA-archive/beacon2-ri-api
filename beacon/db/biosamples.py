@@ -38,6 +38,7 @@ def get_biosamples(entry_id: Optional[str], qparams: RequestParams, dataset: str
     query = apply_filters(query, qparams.query.filters, collection)
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.BIOSAMPLES
+    #with open("beacon/request/datasets.yml", 'r') as datasets_file:
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)
     include = qparams.query.include_resultset_responses
