@@ -9,8 +9,6 @@ from beacon.request.model import AlphanumericFilter, CustomFilter, OntologyFilte
 from beacon.db.utils import get_documents
 from beacon.db import client
 
-import obonet
-
 import logging
 
 LOG = logging.getLogger(__name__)

@@ -12,6 +12,8 @@ LOG = logging.getLogger(__name__)
 
 def get_cohorts(entry_id: Optional[str], qparams: RequestParams):
     collection = 'cohorts'
+    dataset_count=0
+    limit = qparams.query.pagination.limit
     query = apply_filters({}, qparams.query.filters, collection)
     schema = DefaultSchemas.COHORTS
     count = get_count(client.beacon.cohorts, query)
@@ -19,13 +21,15 @@ def get_cohorts(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.cohorts,
         query,
         qparams.query.pagination.skip,
-        0
+        qparams.query.pagination.skip*limit
     )
     return schema, count, docs
 
 
 def get_cohort_with_id(entry_id: Optional[str], qparams: RequestParams):
     collection = 'cohorts'
+    dataset_count=0
+    limit = qparams.query.pagination.limit
     query = apply_filters({}, qparams.query.filters, collection)
     query = query_id(query, entry_id)
     schema = DefaultSchemas.COHORTS
@@ -34,13 +38,15 @@ def get_cohort_with_id(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.cohorts,
         query,
         qparams.query.pagination.skip,
-        0
+        qparams.query.pagination.skip*limit
     )
     return schema, count, docs
 
 
-def get_individuals_of_cohort(entry_id: Optional[str], qparams: RequestParams):
+def get_individuals_of_cohort(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'cohorts'
+    dataset_count=0
+    limit = qparams.query.pagination.limit
     query = apply_filters({}, qparams.query.filters, collection)
     query = query_id(query, entry_id)
     count = get_count(client.beacon.cohorts, query)
@@ -55,13 +61,15 @@ def get_individuals_of_cohort(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.individuals,
         query,
         qparams.query.pagination.skip,
-        0
+        qparams.query.pagination.skip*limit
     )
-    return schema, count, docs
+    return schema, count, dataset_count, docs
 
 
-def get_analyses_of_cohort(entry_id: Optional[str], qparams: RequestParams):
+def get_analyses_of_cohort(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'cohorts'
+    dataset_count=0
+    limit = qparams.query.pagination.limit
     query = apply_filters({}, qparams.query.filters, collection)
     query = query_id(query, entry_id)
     count = get_count(client.beacon.cohorts, query)
@@ -76,13 +84,15 @@ def get_analyses_of_cohort(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.analyses,
         query,
         qparams.query.pagination.skip,
-        0
+        qparams.query.pagination.skip*limit
     )
-    return schema, count, docs
+    return schema, count, dataset_count, docs
 
 
-def get_variants_of_cohort(entry_id: Optional[str], qparams: RequestParams):
+def get_variants_of_cohort(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'cohorts'
+    dataset_count=0
+    limit = qparams.query.pagination.limit
     query = apply_filters({}, qparams.query.filters, collection)
     query = query_id(query, entry_id)
     count = get_count(client.beacon.cohorts, query)
@@ -96,13 +106,15 @@ def get_variants_of_cohort(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.genomicVariations,
         query,
         qparams.query.pagination.skip,
-        0
+        10
     )
-    return schema, count, docs
+    return schema, count, dataset_count, docs
 
 
-def get_runs_of_cohort(entry_id: Optional[str], qparams: RequestParams):
+def get_runs_of_cohort(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'cohorts'
+    dataset_count=0
+    limit = qparams.query.pagination.limit
     query = apply_filters({}, qparams.query.filters, collection)
     query = query_id(query, entry_id)
     count = get_count(client.beacon.cohorts, query)
@@ -110,20 +122,21 @@ def get_runs_of_cohort(entry_id: Optional[str], qparams: RequestParams):
         datasets_dict = yaml.safe_load(datasets_file)
     cohort_ids=get_cross_query(datasets_dict[entry_id],'biosampleIds','biosampleId')
     query = apply_filters(cohort_ids, qparams.query.filters, collection)
-
     schema = DefaultSchemas.RUNS
     count = get_count(client.beacon.runs, query)
     docs = get_documents(
         client.beacon.runs,
         query,
         qparams.query.pagination.skip,
-        0
+        qparams.query.pagination.skip*limit
     )
-    return schema, count, docs
+    return schema, count, dataset_count, docs
 
 
-def get_biosamples_of_cohort(entry_id: Optional[str], qparams: RequestParams):
+def get_biosamples_of_cohort(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'cohorts'
+    dataset_count=0
+    limit = qparams.query.pagination.limit
     query = apply_filters({}, qparams.query.filters, collection)
     query = query_id(query, entry_id)
     count = get_count(client.beacon.cohorts, query)
@@ -138,9 +151,9 @@ def get_biosamples_of_cohort(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.biosamples,
         query,
         qparams.query.pagination.skip,
-        0
+        qparams.query.pagination.skip*limit
     )
-    return schema, count, docs
+    return schema, count, dataset_count, docs
 
 
 def get_filtering_terms_of_cohort(entry_id: Optional[str], qparams: RequestParams):

@@ -61,11 +61,11 @@ def build_response_summary(exists, qparams, num_total_results):
             }
 
 
-def build_response_summary_by_dataset(exists, num_total_results, response_dict):
-    LOG.debug(response_dict)
+def build_response_summary_by_dataset(exists, num_total_results, data):
+    LOG.debug(data)
     count=0
     try:
-        for k,v in response_dict.items():
+        for k,v in data.items():
             count+=len(v)
     except Exception:
         count=num_total_results
@@ -89,7 +89,7 @@ def build_response_by_dataset(data, dict_counts, qparams, func):
             response = {
                 'id': k, # TODO: Set the name of the dataset/cohort
                 'setType': 'dataset', # TODO: Set the type of collection
-                'exists': v is not  None,
+                'exists': dict_counts[k] > 0,
                 'resultsCount': dict_counts[k],
                 'results': v,
                 # 'info': None,

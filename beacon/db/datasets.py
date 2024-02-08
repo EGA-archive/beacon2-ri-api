@@ -47,6 +47,7 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
 
 def get_datasets(entry_id: Optional[str], qparams: RequestParams):
     collection = 'datasets'
+    limit = qparams.query.pagination.limit
     query = apply_request_parameters({}, qparams)
     #query = apply_filters({}, qparams.query.filters, collection)
     schema = DefaultSchemas.DATASETS
@@ -55,13 +56,14 @@ def get_datasets(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.datasets,
         query,
         0,
-        0
+        qparams.query.pagination.skip*limit
     )
     return schema, count, docs
 
 
 def get_dataset_with_id(entry_id: Optional[str], qparams: RequestParams):
     collection = 'datasets'
+    limit = qparams.query.pagination.limit
     query = apply_request_parameters({}, qparams)
     #query = apply_filters({}, qparams.query.filters, collection)
     query = query_id(query, entry_id)
@@ -71,13 +73,15 @@ def get_dataset_with_id(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.datasets,
         query,
         qparams.query.pagination.skip,
-        0
+        qparams.query.pagination.skip*limit
     )
     return schema, count, docs
 
 
-def get_variants_of_dataset(entry_id: Optional[str], qparams: RequestParams):
+def get_variants_of_dataset(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'datasets'
+    dataset_count=0
+    limit = qparams.query.pagination.limit
     query = apply_filters({}, qparams.query.filters, collection)
     query = query_id(query, entry_id)
     count = get_count(client.beacon.datasets, query)
@@ -92,13 +96,15 @@ def get_variants_of_dataset(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.genomicVariations,
         query,
         qparams.query.pagination.skip,
-        0
+        10
     )
-    return schema, count, docs
+    return schema, count, dataset_count, docs
 
 
-def get_biosamples_of_dataset(entry_id: Optional[str], qparams: RequestParams):
+def get_biosamples_of_dataset(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'datasets'
+    dataset_count=0
+    limit = qparams.query.pagination.limit
     query = apply_filters({}, qparams.query.filters, collection)
     query = query_id(query, entry_id)
     count = get_count(client.beacon.datasets, query)
@@ -113,13 +119,15 @@ def get_biosamples_of_dataset(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.biosamples,
         query,
         qparams.query.pagination.skip,
-        0
+        qparams.query.pagination.skip*limit
     )
-    return schema, count, docs
+    return schema, count, dataset_count, docs
 
 
-def get_individuals_of_dataset(entry_id: Optional[str], qparams: RequestParams):
+def get_individuals_of_dataset(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'datasets'
+    dataset_count=0
+    limit = qparams.query.pagination.limit
     query = apply_filters({}, qparams.query.filters, collection)
     query = query_id(query, entry_id)
     count = get_count(client.beacon.datasets, query)
@@ -134,9 +142,9 @@ def get_individuals_of_dataset(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.individuals,
         query,
         qparams.query.pagination.skip,
-        0
+        qparams.query.pagination.skip*limit
     )
-    return schema, count, docs
+    return schema, count, dataset_count, docs
 
 
 def filter_public_datasets(requested_datasets_ids):
@@ -158,8 +166,10 @@ def get_filtering_terms_of_dataset(entry_id: Optional[str], qparams: RequestPara
     return schema, count, docs
 
 
-def get_runs_of_dataset(entry_id: Optional[str], qparams: RequestParams):
+def get_runs_of_dataset(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'datasets'
+    dataset_count=0
+    limit = qparams.query.pagination.limit
     query = apply_filters({}, qparams.query.filters, collection)
     query = query_id(query, entry_id)
     count = get_count(client.beacon.datasets, query)
@@ -174,13 +184,15 @@ def get_runs_of_dataset(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.runs,
         query,
         qparams.query.pagination.skip,
-        0
+        limit
     )
-    return schema, count, docs
+    return schema, count, dataset_count, docs
 
 
-def get_analyses_of_dataset(entry_id: Optional[str], qparams: RequestParams):
+def get_analyses_of_dataset(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'datasets'
+    dataset_count=0
+    limit = qparams.query.pagination.limit
     query = apply_filters({}, qparams.query.filters, collection)
     query = query_id(query, entry_id)
     count = get_count(client.beacon.datasets, query)
@@ -195,6 +207,6 @@ def get_analyses_of_dataset(entry_id: Optional[str], qparams: RequestParams):
         client.beacon.analyses,
         query,
         qparams.query.pagination.skip,
-        0
+        qparams.query.pagination.skip*limit
     )
-    return schema, count, docs
+    return schema, count, dataset_count, docs
