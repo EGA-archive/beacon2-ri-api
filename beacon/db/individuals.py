@@ -62,12 +62,10 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                 count
             )
                 biosample_IDS =[]
-
                 query_2["$or"] = []
                 for doc in docs:
                     caseLevelData = doc['caseLevelData']
                     for case in caseLevelData:
-                        #LOG.debug(case["biosampleId"])
                         if case["biosampleId"] not in biosample_IDS:
                             biosample_IDS.append(case["biosampleId"])
                             query_2["$or"].append({'id': case["biosampleId"]})
@@ -82,9 +80,7 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
             for id in v_list:
                 v_dict={}
                 v_dict['id']=id
-                qparams.query.filters.append(v_dict)
-
-                        
+                qparams.query.filters.append(v_dict)        
     if query_2 != {}:  
         return query_2
     else:
