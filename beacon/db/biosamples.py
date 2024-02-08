@@ -164,7 +164,7 @@ def get_biosample_with_id(entry_id: Optional[str], qparams: RequestParams, datas
     if limit > 100 or limit == 0:
         limit = 100
     if include == 'MISS':
-        count = get_count(client.beacon.individuals, query)
+        count = get_count(client.beacon.biosamples, query)
         query_count=query
         i=1
         for k, v in datasets_dict.items():
@@ -182,12 +182,12 @@ def get_biosample_with_id(entry_id: Optional[str], qparams: RequestParams, datas
                         query_count["$or"].append(queryid)
                         i=1
                 if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.individuals, query_count)
+                    dataset_count = get_count(client.beacon.biosamples, query_count)
                     if dataset_count!=0:
                         return schema, count, -1, None
                     LOG.debug(dataset_count)
                     docs = get_documents(
-                        client.beacon.individuals,
+                        client.beacon.biosamples,
                         query_count,
                         qparams.query.pagination.skip*limit,
                         limit
@@ -196,16 +196,16 @@ def get_biosample_with_id(entry_id: Optional[str], qparams: RequestParams, datas
                     dataset_count=0
 
     elif include == 'NONE':
-            count = get_count(client.beacon.individuals, query)
+            count = get_count(client.beacon.biosamples, query)
             dataset_count=0
             docs = get_documents(
-            client.beacon.individuals,
+            client.beacon.biosamples,
             query,
             qparams.query.pagination.skip*limit,
             limit
         )
     elif include == 'HIT':
-        count = get_count(client.beacon.individuals, query)
+        count = get_count(client.beacon.biosamples, query)
         query_count=query
         i=1
         query_count["$or"]=[]
@@ -224,10 +224,10 @@ def get_biosample_with_id(entry_id: Optional[str], qparams: RequestParams, datas
                         query_count["$or"].append(queryid)
                         i=1
                 if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.individuals, query_count)
+                    dataset_count = get_count(client.beacon.biosamples, query_count)
                     LOG.debug(dataset_count)
                     docs = get_documents(
-                        client.beacon.individuals,
+                        client.beacon.biosamples,
                         query_count,
                         qparams.query.pagination.skip*limit,
                         limit
@@ -237,7 +237,7 @@ def get_biosample_with_id(entry_id: Optional[str], qparams: RequestParams, datas
         if dataset_count==0:
             return schema, count, -1, None
     elif include == 'ALL':
-        count = get_count(client.beacon.individuals, query)
+        count = get_count(client.beacon.biosamples, query)
         query_count=query
         i=1
         for k, v in datasets_dict.items():
@@ -255,10 +255,10 @@ def get_biosample_with_id(entry_id: Optional[str], qparams: RequestParams, datas
                         query_count["$or"].append(queryid)
                         i=1
                 if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.individuals, query_count)
+                    dataset_count = get_count(client.beacon.biosamples, query_count)
                     LOG.debug(dataset_count)
                     docs = get_documents(
-                        client.beacon.individuals,
+                        client.beacon.biosamples,
                         query_count,
                         qparams.query.pagination.skip*limit,
                         limit
@@ -316,7 +316,7 @@ def get_variants_of_biosample(entry_id: Optional[str], qparams: RequestParams, d
             count = get_count(client.beacon.genomicVariations, query)
             dataset_count=0
             docs = get_documents(
-            client.beacon.individuals,
+            client.beacon.genomicVariations,
             query,
             qparams.query.pagination.skip*limit,
             limit
