@@ -96,7 +96,7 @@ def get_variants_of_dataset(entry_id: Optional[str], qparams: RequestParams, dat
         client.beacon.genomicVariations,
         query,
         qparams.query.pagination.skip,
-        qparams.query.pagination.skip*limit
+        10
     )
     return schema, count, dataset_count, docs
 
