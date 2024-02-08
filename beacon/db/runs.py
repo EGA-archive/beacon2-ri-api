@@ -320,7 +320,7 @@ def get_variants_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
             count = get_count(client.beacon.genomicVariations, query)
             dataset_count=0
             docs = get_documents(
-            client.beacon.individuals,
+            client.beacon.genomicVariations,
             query,
             qparams.query.pagination.skip*limit,
             limit
