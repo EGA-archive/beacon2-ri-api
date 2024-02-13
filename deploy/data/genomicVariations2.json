@@ -21,7 +21,8 @@
                 }
             },
             "alternateBases": "TC",
-            "referenceBases": "T"
+            "referenceBases": "T",
+            "variantType": "SNP"
         }
     }
 ]
