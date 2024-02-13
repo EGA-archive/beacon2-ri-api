@@ -1,5 +1,5 @@
-[
-    {
+[{
+    "caseLevelData": [{"biosampleId": "HG03771", "zygosity": {"id": "GENO:GENO_0000458", "label": "0/1"}}],
         "identifiers": {
             "genomicHGVSId": "NC_000022.22:g.76T>TC"
         },
