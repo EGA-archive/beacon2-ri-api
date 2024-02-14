@@ -76,6 +76,7 @@ class MyProgressBar:
 
 
 def get_ontology_field_name(ontology_id:str, term_id:str, collection:str):
+
     query = {
         '$text': {
             '$search': '\"' + ontology_id + ":" + term_id + '\"'
@@ -226,7 +227,7 @@ def find_ontology_terms_used(collection_name: str) -> List[Dict]:
         num_total=10000
     i=0
     if count > 10000:
-        while i < 100001:
+        while i < count:
             xs = client.beacon.get_collection(collection_name).find().skip(i).limit(10000)
             for r in tqdm(xs, total=num_total):
                 matches = ONTOLOGY_REGEX.findall(str(r))
@@ -259,7 +260,10 @@ def get_filtering_object(terms_ids: list, collection_name: str):
         term_id = ontology[1]
         #if ontology_id not in ontologies:
             #ontologies[ontology_id] = load_ontology(ontology_id)
-        field_dict = get_ontology_field_name(ontology_id, term_id, collection_name)
+        if ontology_id.isupper():
+            field_dict = get_ontology_field_name(ontology_id, term_id, collection_name)
+        else:
+            continue
         try:
             field = field_dict['field']
             label = field_dict['label']
