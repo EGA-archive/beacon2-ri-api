@@ -63,12 +63,7 @@ def build_response_summary(exists, qparams, num_total_results):
 
 def build_response_summary_by_dataset(exists, num_total_results, data):
     #LOG.debug(data)
-    count=0
-    try:
-        for k,v in data.items():
-            count+=len(v)
-    except Exception:
-        count=num_total_results
+    count=num_total_results
     LOG.debug(count)
     if count == 0:
         return {

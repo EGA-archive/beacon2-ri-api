@@ -234,15 +234,16 @@ def get_docs_by_response_type(include: str, query: dict, datasets_dict: dict, da
                 else:
                     dataset_count=0
     elif include == 'NONE':
-            count = get_count(mongo_collection, query)
-            dataset_count=0
-            docs = get_documents(
-            mongo_collection,
-            query,
-            skip*limit,
-            limit
+        count = get_count(mongo_collection, query)
+        dataset_count=0
+        docs = get_documents(
+        mongo_collection,
+        query,
+        skip*limit,
+        limit
         )
     elif include == 'HIT':
+        LOG.debug(query)
         count = get_count(mongo_collection, query)
         LOG.debug(count)
         query_count=query

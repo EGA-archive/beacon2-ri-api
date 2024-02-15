@@ -160,7 +160,7 @@ def generic_handler(db_fn, request=None):
                 pass
             else:
                 count = limit
-
+        LOG.debug(count)
         response_converted = records
 
 

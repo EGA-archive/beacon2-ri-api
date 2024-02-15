@@ -2,7 +2,7 @@ import logging
 import yaml
 from typing import Dict, List, Optional
 from beacon.db.filters import apply_alphanumeric_filter, apply_filters
-from beacon.db.utils import query_id, query_ids, get_count, get_documents, get_cross_query, get_filtering_documents, get_docs_by_response_type
+from beacon.db.utils import query_id, query_ids, get_count, get_documents, get_cross_query, get_filtering_documents, get_docs_by_response_type, join_query
 from beacon.db import client
 from beacon.request.model import AlphanumericFilter, Operator, RequestParams
 from beacon.db.schemas import DefaultSchemas
@@ -33,6 +33,11 @@ def get_runs(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'runs'
     mongo_collection = client.beacon.runs
     query = apply_request_parameters({}, qparams)
+    match_list=[]
+    matching = apply_request_parameters({}, qparams)
+    match_list.append(matching)
+    match_big={}
+    match_big["$match"]=match_list[0]
     LOG.debug(qparams.query.filters)
     query = apply_filters(query, qparams.query.filters, collection)
     query = include_resultset_responses(query, qparams)
@@ -46,7 +51,20 @@ def get_runs(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     if limit > 100 or limit == 0:
         limit = 100
     idq="biosampleId"
-    count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
+    try:
+        aggregation_string_list=query['$and']
+    except Exception:
+        aggregation_string_list=[]
+    if aggregation_string_list != []:
+        if isinstance(aggregation_string_list[0], str):
+            string_list=aggregation_string_list[0].split(' ')
+            filter_id=qparams.query.filters[0]["id"]
+            if 'aggregate' in aggregation_string_list[0]:
+                count, dataset_count, docs = join_query(string_list, filter_id, match_big, qparams, idq, datasets_dict, dataset, mongo_collection)
+        else:
+            count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
+    else:
+        count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
     return schema, count, dataset_count, docs
 
 def get_run_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: str):
@@ -101,6 +119,7 @@ def get_analyses_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
     query = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters, collection)
     query = include_resultset_responses(query, qparams)
+    LOG.debug(query)
     schema = DefaultSchemas.RUNS
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)

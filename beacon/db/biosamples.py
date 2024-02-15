@@ -2,7 +2,7 @@ import logging
 import yaml
 from typing import Dict, List, Optional
 from beacon.db.filters import apply_alphanumeric_filter, apply_filters
-from beacon.db.utils import query_id, query_ids, get_count, get_documents, get_cross_query, get_filtering_documents
+from beacon.db.utils import query_id, query_ids, get_count, get_documents, get_cross_query, get_filtering_documents, join_query
 from beacon.db import client
 from beacon.request.model import AlphanumericFilter, Operator, RequestParams
 from beacon.db.filters import *
@@ -35,6 +35,11 @@ def get_biosamples(entry_id: Optional[str], qparams: RequestParams, dataset: str
     collection = 'biosamples'
     mongo_collection = client.beacon.biosamples
     query = apply_request_parameters({}, qparams)
+    match_list=[]
+    matching = apply_request_parameters({}, qparams)
+    match_list.append(matching)
+    match_big={}
+    match_big["$match"]=match_list[0]
     LOG.debug(qparams.query.filters)
     query = apply_filters(query, qparams.query.filters, collection)
     query = include_resultset_responses(query, qparams)
@@ -48,7 +53,20 @@ def get_biosamples(entry_id: Optional[str], qparams: RequestParams, dataset: str
     if limit > 100 or limit == 0:
         limit = 100
     idq="id"
-    count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
+    try:
+        aggregation_string_list=query['$and']
+    except Exception:
+        aggregation_string_list=[]
+    if aggregation_string_list != []:
+        if isinstance(aggregation_string_list[0], str):
+            string_list=aggregation_string_list[0].split(' ')
+            filter_id=qparams.query.filters[0]["id"]
+            if 'aggregate' in aggregation_string_list[0]:
+                count, dataset_count, docs = join_query(string_list, filter_id, match_big, qparams, idq, datasets_dict, dataset, mongo_collection)
+        else:
+            count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
+    else:
+        count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
     return schema, count, dataset_count, docs
 
 
@@ -57,7 +75,7 @@ def get_biosample_with_id(entry_id: Optional[str], qparams: RequestParams, datas
     mongo_collection = client.beacon.biosamples
     query = apply_request_parameters({}, qparams)
     query = apply_filters(query, qparams.query.filters, collection)
-    query = query_id(query, entry_id)
+    query = query_id(query, entry_id, collection)
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.BIOSAMPLES
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
@@ -83,120 +101,22 @@ def get_variants_of_biosample(entry_id: Optional[str], qparams: RequestParams, d
         datasets_dict = yaml.safe_load(datasets_file)
     include = qparams.query.include_resultset_responses
     limit = qparams.query.pagination.limit
+    skip = qparams.query.pagination.skip
     if limit > 100 or limit == 0:
         limit = 100
-    if include == 'MISS':
-        count = get_count(client.beacon.genomicVariations, query)
-        query_count=query
-        i=1
-        for k, v in datasets_dict.items():
-            query_count["$or"]=[]
-            if k == dataset:
-                for id in v:
-                    if i < len(v):
-                        queryid={}
-                        queryid["caseLevelData.biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["caseLevelData.biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.genomicVariations, query_count)
-                    if dataset_count!=0:
-                        return schema, count, -1, None
-                    LOG.debug(dataset_count)
-                    docs = get_documents(
-                        client.beacon.genomicVariations,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
-
-    elif include == 'NONE':
-            count = get_count(client.beacon.genomicVariations, query)
-            dataset_count=0
-            docs = get_documents(
-            client.beacon.genomicVariations,
-            query,
-            qparams.query.pagination.skip*limit,
-            limit
-        )
-    elif include == 'HIT':
-        count = get_count(client.beacon.genomicVariations, query)
-        query_count=query
-        i=1
-        query_count["$or"]=[]
-        for k, v in datasets_dict.items():
-            if k == dataset:
-                for id in v:
-                    
-                    if i < len(v):
-                        queryid={}
-                        queryid["caseLevelData.biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["caseLevelData.biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.genomicVariations, query_count)
-                    LOG.debug(dataset_count)
-                    docs = get_documents(
-                        client.beacon.genomicVariations,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
-        if dataset_count==0:
-            return schema, count, -1, None
-    elif include == 'ALL':
-        count = get_count(client.beacon.genomicVariations, query)
-        query_count=query
-        i=1
-        for k, v in datasets_dict.items():
-            query_count["$or"]=[]
-            if k == dataset:
-                for id in v:
-                    if i < len(v):
-                        queryid={}
-                        queryid["caseLevelData.biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["caseLevelData.biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.genomicVariations, query_count)
-                    LOG.debug(dataset_count)
-                    docs = get_documents(
-                        client.beacon.genomicVariations,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
+    idq="caseLevelData.biosampleId"
+    count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
     return schema, count, dataset_count, docs
 
 
 def get_analyses_of_biosample(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'biosamples'
-    mongo_collection = client.beacon.genomicVariations
-    query = {"individualId": entry_id}
+    mongo_collection = client.beacon.analyses
+    query = {"biosampleId": entry_id}
     query = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters, collection)
     query = include_resultset_responses(query, qparams)
+    LOG.debug(query)
     schema = DefaultSchemas.ANALYSES
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)
@@ -205,7 +125,7 @@ def get_analyses_of_biosample(entry_id: Optional[str], qparams: RequestParams, d
     skip = qparams.query.pagination.skip
     if limit > 100 or limit == 0:
         limit = 100
-    idq="caseLevelData.biosampleId"
+    idq="biosampleId"
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
     return schema, count, dataset_count, docs
 

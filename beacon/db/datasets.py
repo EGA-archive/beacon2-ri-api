@@ -201,11 +201,12 @@ def get_runs_of_dataset(entry_id: Optional[str], qparams: RequestParams, dataset
 
 def get_analyses_of_dataset(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'datasets'
+    idq="biosampleId"
     mongo_collection = client.beacon.analyses
     dataset_count=0
     limit = qparams.query.pagination.limit
     query = apply_filters({}, qparams.query.filters, collection)
-    query = query_id(query, entry_id)
+    query = query_id(query, entry_id,idq)
     count = get_count(client.beacon.datasets, query)
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)
@@ -219,6 +220,5 @@ def get_analyses_of_dataset(entry_id: Optional[str], qparams: RequestParams, dat
     skip = qparams.query.pagination.skip
     if limit > 100 or limit == 0:
         limit = 100
-    idq="biosampleId"
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
     return schema, count, dataset_count, docs
