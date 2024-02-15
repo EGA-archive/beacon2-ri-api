@@ -62,7 +62,7 @@ def build_response_summary(exists, qparams, num_total_results):
 
 
 def build_response_summary_by_dataset(exists, num_total_results, data):
-    LOG.debug(data)
+    #LOG.debug(data)
     count=0
     try:
         for k,v in data.items():
@@ -183,7 +183,7 @@ def build_beacon_resultset_response_by_dataset(data,
         },
         'beaconHandovers': conf.beacon_handovers,
     }
-    LOG.debug(beacon_response)
+    #LOG.debug(beacon_response)
     return beacon_response
 
 ########################################

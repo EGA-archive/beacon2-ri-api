@@ -155,6 +155,11 @@ def generic_handler(db_fn, request=None):
                 datasets_count[dataset]=dataset_count
         if include != 'NONE':
             count=new_count
+        else:
+            if limit == 0 or new_count < limit:
+                pass
+            else:
+                count = limit
 
         response_converted = records
 
