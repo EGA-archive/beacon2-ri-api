@@ -101,110 +101,15 @@ def get_cross_query_variants(ids: dict, cross_type: str, collection_id: str):
     LOG.debug(query)
     return query
 
-def join_query(aggregation_list: list, filter_id_list: list, match_big: dict, qparams: RequestParams, idq: str, datasets_dict: dict, dataset: str, mongo_collection):
-    query_count={}
-    i=1
-    query_count["$or"]=[]
-    for k, v in datasets_dict.items():
-        LOG.debug(dataset)
-        
-        if k == dataset:
-            LOG.debug(v)
-            for id in v:
-                if i <= len(v):
-                    queryid={}
-                    queryid[idq]=id
-                    query_count["$or"].append(queryid)
-                    i+=1
-                else:
-                    queryid={}
-                    queryid[idq]=id
-                    query_count["$or"].append(queryid)
-                    i=1
-    LOG.debug(query_count)
-    match_or={}
-    limit = qparams.query.pagination.limit
+def join_query(collection: Collection,query: dict, original_id):
+    LOG.debug(query)
+    excluding_fields={"_id": 0, original_id: 1}
+    return collection.find(query, excluding_fields).max_time_ms(10 * 1000)
 
-    
-    j=0
-    aggregated_query=[]
-    count_query=[]
-    lookup={}
-    lookup['from']=aggregation_list[0]["scope"]
-    lookup['localField']=idq
-    if aggregation_list[0]["scope"] == 'g_variants':
-        lookup['foreignField']="caseLevelData.biosampleId"
-    elif aggregation_list[0]["scope"] == 'analyses':
-        lookup['foreignField']="biosampleId"
-    elif aggregation_list[0]["scope"] == 'runs':
-        lookup['foreignField']="biosampleId"
-    else:
-        lookup['foreignField']="id"
-    lookup['as']="aggregation"
-    lookup_big={}
-    lookup_big["$lookup"]=lookup
-    aggregated_query.append(lookup_big)
-    count_query.append(lookup_big)
-    unwind={}
-    unwind['path']="$aggregation"
-    unwind['preserveNullAndEmptyArrays']=False
-    unwind_big={}
-    unwind_big["$unwind"]=unwind
-    aggregated_query.append(unwind_big)
-    count_query.append(unwind_big)
-    if match_big != {}:
-        aggregated_query.append(match_big)
-        count_query.append(match_big)
-    j=0
-    k=0
-    match2_big={}
-    new_query={}
-    new_query['$or']=[]
-    for item in aggregation_list:
-        for element in item["aggregate"][0]['$or']:
-            new_dict={}
-            for k,v in element.items():
-                newkey='aggregation.'+k
-                new_dict[newkey]=v
-                new_query['$or'].append(new_dict)
-
-    match2_big["$match"]=new_query
-    aggregated_query.append(match2_big)
-    if query_count["$or"]!=[]:
-        match_or["$match"]=query_count
-        aggregated_query.append(match_or)
-        count_query.append(match_or)
-    project={}
-    project['aggregation']=0
-    project_big={}
-    project_big["$project"]=project
-    aggregated_query.append(project_big)
-    count_query.append(project_big)
-    skip_dict={}
-    skip_dict["$skip"]=qparams.query.pagination.skip*limit
-    aggregated_query.append(skip_dict)
-    limit_dict={}
-    if limit == 0 or limit > 100:
-        limit_dict["$limit"]=100
-    else:
-        limit_dict["$limit"]=limit
-    aggregated_query.append(limit_dict)
-    count = 0
-    LOG.debug(aggregated_query)
-    docs = get_aggregated_documents(
-    mongo_collection,
-    aggregated_query)
-    count_dict={}
-    count_dict["$count"]='Total'
-    aggregated_query.append(count_dict)
-    dataset_count=get_aggregated_documents(mongo_collection, aggregated_query)
-    #dataset_count=client.beacon.genomicVariations.count_documents(aggregated_query)
-    try:
-        dataset_count=dataset_count[0]['Total']
-    except Exception:
-        dataset_count=0
-    LOG.debug(dataset_count)
-    return count, dataset_count, docs
+def id_to_biosampleId(collection: Collection,query: dict, original_id):
+    LOG.debug(query)
+    excluding_fields={"_id": 0, original_id: 1}
+    return collection.find(query, excluding_fields).max_time_ms(10 * 1000)
 
 def get_docs_by_response_type(include: str, query: dict, datasets_dict: dict, dataset: str, limit: int, skip: int, mongo_collection, idq: str):
     if include == 'MISS':

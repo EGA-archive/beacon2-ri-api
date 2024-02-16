@@ -6,7 +6,7 @@ from copy import deepcopy
 
 from beacon.request import ontologies
 from beacon.request.model import AlphanumericFilter, CustomFilter, OntologyFilter, Operator, Similarity
-from beacon.db.utils import get_documents
+from beacon.db.utils import get_documents, join_query
 from beacon.db import client
 
 import logging
@@ -224,21 +224,39 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
             query_id={}
             query_id[query_term]=simil
             query['$or'].append(query_id)
-        try:
-            if aggregate_query != {}:
-                pass
-        except Exception:
-            aggregate_query={}
-            aggregate_query["aggregate"]=[]
+        
         if scope == 'genomicVariations' and collection == 'g_variants' or scope == collection:
-            return query
+            pass
         else:
-            aggregate_query["aggregate"].append(query)
-            LOG.debug(aggregate_query)
-            aggregate_query["scope"]=scope
-            return aggregate_query
+            def_list=[]
+            if scope == 'individuals' and collection == 'g_variants':
+                mongo_collection=client.beacon.individuals
+                original_id="id"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="individualId"
+                for id_item in join_ids:
+                    new_id={}
+                    new_id[final_id] = id_item.pop(original_id)
+                    def_list.append(new_id)
+                query={}
+                query['$or']=def_list
+                mongo_collection=client.beacon.biosamples
+                original_id="id"
+                join_ids2=list(join_query(mongo_collection, query, original_id))
+                def_list=[]
+                final_id="caseLevelData.biosampleId"
+                for id_item in join_ids2:
+                    new_id={}
+                    new_id[final_id] = id_item.pop(original_id)
+                    def_list.append(new_id)
+                query={}
+                query['$or']=def_list
+
+            
+            
 
 
+            
     if is_filter_id_required:
         query_filtering={}
         query_filtering['$and']=[]
@@ -259,6 +277,7 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
     )
         
         for doc_term in docs:
+            scope = doc_term['scope']
             label = doc_term['label']
         query_filtering={}
         query_filtering['$and']=[]
@@ -450,7 +469,29 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
         dict_measures={}
         dict_measures['measures']=dict_elemmatch
         query = dict_measures
-
+        def_list=[]
+        if collection == 'g_variants':
+            mongo_collection=client.beacon.individuals
+            original_id="id"
+            join_ids=list(join_query(mongo_collection, query, original_id))
+            final_id="individualId"
+            for id_item in join_ids:
+                new_id={}
+                new_id[final_id] = id_item.pop(original_id)
+                def_list.append(new_id)
+            query={}
+            query['$or']=def_list
+            mongo_collection=client.beacon.biosamples
+            original_id="id"
+            join_ids2=list(join_query(mongo_collection, query, original_id))
+            def_list=[]
+            final_id="caseLevelData.biosampleId"
+            for id_item in join_ids2:
+                new_id={}
+                new_id[final_id] = id_item.pop(original_id)
+                def_list.append(new_id)
+            query={}
+            query['$or']=def_list
 
     LOG.debug("QUERY: %s", query)
     return query
