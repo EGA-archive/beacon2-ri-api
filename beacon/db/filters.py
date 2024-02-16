@@ -217,17 +217,26 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
             query_terms = doc2['id']
             query_terms = query_terms.split(':')
             query_term = query_terms[0] + '.id'
-        if scope == 'genomicVariations' and collection == 'g_variants' or scope == collection:
+
+        query_id={}
+        query['$or']=[]
+        for simil in final_term_list:
             query_id={}
-            query['$or']=[]
-            for simil in final_term_list:
-                query_id={}
-                query_id[query_term]=simil
-                query['$or'].append(query_id)
-        else:
-            LOG.debug(query_term)
-            query='aggregate '+scope + ' field ' + query_term
+            query_id[query_term]=simil
+            query['$or'].append(query_id)
+        try:
+            if aggregate_query != {}:
+                pass
+        except Exception:
+            aggregate_query={}
+            aggregate_query["aggregate"]=[]
+        if scope == 'genomicVariations' and collection == 'g_variants' or scope == collection:
             return query
+        else:
+            aggregate_query["aggregate"].append(query)
+            LOG.debug(aggregate_query)
+            aggregate_query["scope"]=scope
+            return aggregate_query
 
 
     if is_filter_id_required:

@@ -148,18 +148,15 @@ def get_variants(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     #with open("beacon/request/datasets.yml", 'r') as datasets_file:
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)
+    LOG.debug(query)
     try:
-        aggregation_string_list=query['$and']
+        aggregation_list=query['$and'][0]["aggregate"]
+        aggregation_list=query['$and']
     except Exception:
-        aggregation_string_list=[]
-    if aggregation_string_list != []:
-        if isinstance(aggregation_string_list[0], str):
-            string_list=aggregation_string_list[0].split(' ')
-            filter_id=qparams.query.filters[0]["id"]
-            if 'aggregate' in aggregation_string_list[0]:
-                count, dataset_count, docs = join_query(string_list, filter_id, match_big, qparams, idq, datasets_dict, dataset, mongo_collection)
-        else:
-            count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
+        aggregation_list=[]
+    if aggregation_list != []:
+        filter_id=qparams.query.filters[0]["id"]
+        count, dataset_count, docs = join_query(aggregation_list, filter_id, match_big, qparams, idq, datasets_dict, dataset, mongo_collection)
     else:
         count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
     return schema, count, dataset_count, docs

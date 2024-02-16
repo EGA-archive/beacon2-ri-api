@@ -101,7 +101,7 @@ def get_cross_query_variants(ids: dict, cross_type: str, collection_id: str):
     LOG.debug(query)
     return query
 
-def join_query(string_list: list, filter_id: str, match_big: dict, qparams: RequestParams, idq: str, datasets_dict: dict, dataset: str, mongo_collection):
+def join_query(aggregation_list: list, filter_id_list: list, match_big: dict, qparams: RequestParams, idq: str, datasets_dict: dict, dataset: str, mongo_collection):
     query_count={}
     i=1
     query_count["$or"]=[]
@@ -123,18 +123,20 @@ def join_query(string_list: list, filter_id: str, match_big: dict, qparams: Requ
                     i=1
     LOG.debug(query_count)
     match_or={}
-    limit = qparams.query.pagination.limit        
-    query = string_list[1]
+    limit = qparams.query.pagination.limit
+
+    
+    j=0
     aggregated_query=[]
     count_query=[]
     lookup={}
-    lookup['from']=query
+    lookup['from']=aggregation_list[0]["scope"]
     lookup['localField']=idq
-    if string_list[1] == 'g_variants':
+    if aggregation_list[0]["scope"] == 'g_variants':
         lookup['foreignField']="caseLevelData.biosampleId"
-    elif string_list[1] == 'analyses':
+    elif aggregation_list[0]["scope"] == 'analyses':
         lookup['foreignField']="biosampleId"
-    elif string_list[1] == 'runs':
+    elif aggregation_list[0]["scope"] == 'runs':
         lookup['foreignField']="biosampleId"
     else:
         lookup['foreignField']="id"
@@ -150,17 +152,24 @@ def join_query(string_list: list, filter_id: str, match_big: dict, qparams: Requ
     unwind_big["$unwind"]=unwind
     aggregated_query.append(unwind_big)
     count_query.append(unwind_big)
-    aggregated_query.append(match_big)
-    count_query.append(match_big)
-    match2={}
-    match2field='aggregation.'+string_list[3]
-    match2["$and"]=[{
-        match2field:filter_id
-    }]
+    if match_big != {}:
+        aggregated_query.append(match_big)
+        count_query.append(match_big)
+    j=0
+    k=0
     match2_big={}
-    match2_big["$match"]=match2
+    new_query={}
+    new_query['$or']=[]
+    for item in aggregation_list:
+        for element in item["aggregate"][0]['$or']:
+            new_dict={}
+            for k,v in element.items():
+                newkey='aggregation.'+k
+                new_dict[newkey]=v
+                new_query['$or'].append(new_dict)
+
+    match2_big["$match"]=new_query
     aggregated_query.append(match2_big)
-    count_query.append(match2_big)
     if query_count["$or"]!=[]:
         match_or["$match"]=query_count
         aggregated_query.append(match_or)
@@ -187,8 +196,8 @@ def join_query(string_list: list, filter_id: str, match_big: dict, qparams: Requ
     aggregated_query)
     count_dict={}
     count_dict["$count"]='Total'
-    count_query.append(count_dict)
-    dataset_count=get_aggregated_documents(mongo_collection, count_query)
+    aggregated_query.append(count_dict)
+    dataset_count=get_aggregated_documents(mongo_collection, aggregated_query)
     #dataset_count=client.beacon.genomicVariations.count_documents(aggregated_query)
     try:
         dataset_count=dataset_count[0]['Total']
