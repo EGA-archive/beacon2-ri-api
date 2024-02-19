@@ -104,7 +104,10 @@ class RequestParams(CamelModel):
         list_of_filters=[]
         for item in self.query.filters:
             for k,v in item.items():
-                list_of_filters.append(v)
+                if v not in list_of_filters:
+                    list_of_filters.append(v)
+        #reqparams=self.query.request_parameters
+        #del reqparams["filters"]
         return {
             "apiVersion": self.meta.api_version,
             "requestedSchemas": self.meta.requested_schemas,

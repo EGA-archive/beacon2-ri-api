@@ -53,20 +53,7 @@ def get_biosamples(entry_id: Optional[str], qparams: RequestParams, dataset: str
     if limit > 100 or limit == 0:
         limit = 100
     idq="id"
-    try:
-        aggregation_string_list=query['$and']
-    except Exception:
-        aggregation_string_list=[]
-    if aggregation_string_list != []:
-        if isinstance(aggregation_string_list[0], str):
-            string_list=aggregation_string_list[0].split(' ')
-            filter_id=qparams.query.filters[0]["id"]
-            if 'aggregate' in aggregation_string_list[0]:
-                count, dataset_count, docs = join_query(string_list, filter_id, match_big, qparams, idq, datasets_dict, dataset, mongo_collection)
-        else:
-            count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    else:
-        count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
+    count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
     return schema, count, dataset_count, docs
 
 
