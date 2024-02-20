@@ -26,12 +26,13 @@ def get_cohorts(entry_id: Optional[str], qparams: RequestParams):
     return schema, count, docs
 
 
-def get_cohort_with_id(entry_id: Optional[str], qparams: RequestParams):
+def get_cohort_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'cohorts'
-    dataset_count=0
+    dataset_count=1
     limit = qparams.query.pagination.limit
     query = apply_filters({}, qparams.query.filters, collection)
     query = query_id(query, entry_id)
+    LOG.debug(query)
     schema = DefaultSchemas.COHORTS
     count = get_count(client.beacon.cohorts, query)
     docs = get_documents(
@@ -40,7 +41,9 @@ def get_cohort_with_id(entry_id: Optional[str], qparams: RequestParams):
         qparams.query.pagination.skip,
         qparams.query.pagination.skip*limit
     )
-    return schema, count, docs
+
+
+    return schema, count, dataset_count, docs
 
 
 def get_individuals_of_cohort(entry_id: Optional[str], qparams: RequestParams, dataset: str):

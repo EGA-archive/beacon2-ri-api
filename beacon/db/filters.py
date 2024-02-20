@@ -16,34 +16,34 @@ LOG = logging.getLogger(__name__)
 CURIE_REGEX = r'^([a-zA-Z0-9]*):\/?[a-zA-Z0-9]*$'
 
 def apply_filters(query: dict, filters: List[dict], collection: str) -> dict:
-    LOG.debug("Filters len = {}".format(len(filters)))
+    #LOG.debug("Filters len = {}".format(len(filters)))
     if len(filters) >= 1:
         query["$and"] = []
         for filter in filters:
             partial_query = {}
             if "value" in filter:
-                LOG.debug(filter)
+                #LOG.debug(filter)
                 filter = AlphanumericFilter(**filter)
-                LOG.debug("Alphanumeric filter: %s %s %s", filter.id, filter.operator, filter.value)
+                #LOG.debug("Alphanumeric filter: %s %s %s", filter.id, filter.operator, filter.value)
                 partial_query = apply_alphanumeric_filter(partial_query, filter, collection)
             elif "includeDescendantTerms" not in filter and '.' not in filter["id"] and filter["id"].isupper():
                 filter=OntologyFilter(**filter)
                 filter.include_descendant_terms=True
-                LOG.debug("Ontology filter: %s", filter.id)
+                #LOG.debug("Ontology filter: %s", filter.id)
                 #partial_query = {"$text": defaultdict(str) }
                 #partial_query =  { "$text": { "$search": "" } } 
-                LOG.debug(partial_query)
+                #LOG.debug(partial_query)
                 partial_query = apply_ontology_filter(partial_query, filter, collection)
             elif "similarity" in filter or "includeDescendantTerms" in filter or re.match(CURIE_REGEX, filter["id"]) and filter["id"].isupper():
                 filter = OntologyFilter(**filter)
-                LOG.debug("Ontology filter: %s", filter.id)
+                #LOG.debug("Ontology filter: %s", filter.id)
                 #partial_query = {"$text": defaultdict(str) }
                 #partial_query =  { "$text": { "$search": "" } } 
-                LOG.debug(partial_query)
+                #LOG.debug(partial_query)
                 partial_query = apply_ontology_filter(partial_query, filter, collection)
             else:
                 filter = CustomFilter(**filter)
-                LOG.debug("Custom filter: %s", filter.id)
+                #LOG.debug("Custom filter: %s", filter.id)
                 partial_query = apply_custom_filter(partial_query, filter, collection)
             query["$and"].append(partial_query)
             if query["$and"] == [{'$or': []}]:
@@ -111,10 +111,9 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
         for doc_term in docs:
             scope = doc_term['scope']
             label = doc_term['label']
-        LOG.debug(scope)
-        LOG.debug(collection)
+        #LOG.debug(scope)
+        #LOG.debug(collection)
         if scope == 'genomicVariations' and collection == 'g_variants' or scope == collection:
-            LOG.debug('adeu')
             query_filtering={}
             query_filtering['$and']=[]
             query_filtering['$and'].append(dict_scope)
@@ -143,7 +142,7 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
                 query_id[query_term]=simil
                 query['$or'].append(query_id)
         else:
-            LOG.debug('hola')
+            pass
         
 
     # Apply descendant terms
@@ -152,12 +151,12 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
         final_term_list.append(filter.id)
         is_filter_id_required = False
         ontology=filter.id.replace("\n","")
-        LOG.debug(ontology)
+        #LOG.debug(ontology)
         ontology_list=ontology.split(':')
         list_descendant = []
         try:
             path = "./beacon/descendants/{}{}.txt".format(ontology_list[0],ontology_list[1])
-            LOG.debug(path)
+            #LOG.debug(path)
             with open(path, 'r') as f:
                 for line in f:
                     line=line.replace("\n","")
@@ -196,7 +195,6 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
             scope = doc_term['scope']
             label = doc_term['label']
         
-        LOG.debug('adeu')
         query_filtering={}
         query_filtering['$and']=[]
         dict_regex={}
@@ -301,7 +299,7 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
 
    
 
-    LOG.debug("QUERY: %s", query)
+    #LOG.debug("QUERY: %s", query)
     return query
 
 def format_value(value: Union[str, List[int]]) -> Union[List[int], str, int, float]:
@@ -333,11 +331,11 @@ def format_operator(operator: Operator) -> str:
         return "$lte"
 
 def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collection: str) -> dict:
-    LOG.debug(filter.value)
+    #LOG.debug(filter.value)
     formatted_value = format_value(filter.value)
     formatted_operator = format_operator(filter.operator)
-    LOG.debug(collection)
-    LOG.debug(filter.id)
+    #LOG.debug(collection)
+    #LOG.debug(filter.id)
     if collection == 'g_variants':
         if filter.id == "identifiers.genomicHGVSId":
             list_chromosomes = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22']
@@ -463,7 +461,7 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
             query['assayCode.id']=filter.id
         else:
             query['assayCode.label']=filter.id
-        LOG.debug(query)
+        #LOG.debug(query)
         dict_elemmatch={}
         dict_elemmatch['$elemMatch']=query
         dict_measures={}
@@ -493,18 +491,18 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
             query={}
             query['$or']=def_list
 
-    LOG.debug("QUERY: %s", query)
+    #LOG.debug("QUERY: %s", query)
     return query
 
 
 
 def apply_custom_filter(query: dict, filter: CustomFilter, collection:str) -> dict:
-    LOG.debug(query)
+    #LOG.debug(query)
 
     value_splitted = filter.id.split(':')
     query_term = value_splitted[0] + '.label'
     query[query_term]=value_splitted[1]
 
 
-    LOG.debug("QUERY: %s", query)
+    #LOG.debug("QUERY: %s", query)
     return query

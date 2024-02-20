@@ -27,12 +27,12 @@ VARIANTS_PROPERTY_MAP = {
 }
 
 def include_resultset_responses(query: Dict[str, List[dict]], qparams: RequestParams):
-    LOG.debug("Include Resultset Responses = {}".format(qparams.query.include_resultset_responses))
+    #LOG.debug("Include Resultset Responses = {}".format(qparams.query.include_resultset_responses))
     return query
 
 
 def generate_position_filter_start(key: str, value: List[int]) -> List[AlphanumericFilter]:
-    LOG.debug("len value = {}".format(len(value)))
+    #LOG.debug("len value = {}".format(len(value)))
     filters = []
     if len(value) == 1:
         filters.append(AlphanumericFilter(
@@ -55,7 +55,7 @@ def generate_position_filter_start(key: str, value: List[int]) -> List[Alphanume
 
 
 def generate_position_filter_end(key: str, value: List[int]) -> List[AlphanumericFilter]:
-    LOG.debug("len value = {}".format(len(value)))
+    #LOG.debug("len value = {}".format(len(value)))
     filters = []
     if len(value) == 1:
         filters.append(AlphanumericFilter(
@@ -79,7 +79,7 @@ def generate_position_filter_end(key: str, value: List[int]) -> List[Alphanumeri
 
 def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParams):
     collection = 'g_variants'
-    LOG.debug("Request parameters len = {}".format(len(qparams.query.request_parameters)))
+    #LOG.debug("Request parameters len = {}".format(len(qparams.query.request_parameters)))
     if len(qparams.query.request_parameters) > 0 and "$and" not in query:
         query["$and"] = []
     for k, v in qparams.query.request_parameters.items():
@@ -127,13 +127,10 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
 def get_variants(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'g_variants'
     mongo_collection = client.beacon.genomicVariations
-    match_list=[]
     query = apply_request_parameters({}, qparams)
-    matching = apply_request_parameters({}, qparams)
-    match_list.append(matching)
-    LOG.debug(qparams.query.filters)
+    #LOG.debug(qparams.query.filters)
     query = apply_filters(query, qparams.query.filters, collection)
-    LOG.debug(query)
+    #LOG.debug(query)
     include = qparams.query.include_resultset_responses
     limit = qparams.query.pagination.limit
     skip = qparams.query.pagination.skip
@@ -145,7 +142,7 @@ def get_variants(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     #with open("beacon/request/datasets.yml", 'r') as datasets_file:
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)
-    LOG.debug(query)
+    #LOG.debug(query)
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
     return schema, count, dataset_count, docs
 
@@ -179,7 +176,10 @@ def get_biosamples_of_variant(entry_id: Optional[str], qparams: RequestParams, d
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
-    finalid=biosample_id[0]["biosampleId"]
+    try:
+        finalid=biosample_id[0]["biosampleId"]
+    except Exception:
+        finalid=biosample_id["biosampleId"]
     query = {"id": finalid}
     query = apply_filters(query, qparams.query.filters, collection)
     query = include_resultset_responses(query, qparams)
@@ -204,7 +204,10 @@ def get_runs_of_variant(entry_id: Optional[str], qparams: RequestParams, dataset
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
-    finalid=biosample_id[0]["biosampleId"]
+    try:
+        finalid=biosample_id[0]["biosampleId"]
+    except Exception:
+        finalid=biosample_id["biosampleId"]
     query = {"biosampleId": finalid}
     query = apply_filters(query, qparams.query.filters, collection)
     query = include_resultset_responses(query, qparams)
@@ -230,7 +233,10 @@ def get_analyses_of_variant(entry_id: Optional[str], qparams: RequestParams, dat
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
-    finalid=biosample_id[0]["biosampleId"]
+    try:
+        finalid=biosample_id[0]["biosampleId"]
+    except Exception:
+        finalid=biosample_id["biosampleId"]
     query = {"biosampleId": finalid}
     query = apply_filters(query, qparams.query.filters, collection)
     query = include_resultset_responses(query, qparams)
@@ -269,7 +275,10 @@ def get_individuals_of_variant(entry_id: Optional[str], qparams: RequestParams, 
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
-    finalid=biosample_id[0]["biosampleId"]
+    try:
+        finalid=biosample_id[0]["biosampleId"]
+    except Exception:
+        finalid=biosample_id["biosampleId"]
     query = {"id": finalid}
     query = apply_filters(query, qparams.query.filters, collection)
     query = include_resultset_responses(query, qparams)

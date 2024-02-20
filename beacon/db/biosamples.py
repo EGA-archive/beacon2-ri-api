@@ -62,7 +62,7 @@ def get_biosample_with_id(entry_id: Optional[str], qparams: RequestParams, datas
     mongo_collection = client.beacon.biosamples
     query = apply_request_parameters({}, qparams)
     query = apply_filters(query, qparams.query.filters, collection)
-    query = query_id(query, entry_id, collection)
+    query = query_id(query, entry_id)
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.BIOSAMPLES
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:

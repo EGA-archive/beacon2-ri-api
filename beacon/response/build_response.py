@@ -80,6 +80,7 @@ def build_response_by_dataset(data, dict_counts, qparams, func):
     """"Fills the `response` part with the correct format in `results`"""
     list_of_responses=[]
     for k,v in data.items():
+
         if v:
             response = {
                 'id': k, # TODO: Set the name of the dataset/cohort
