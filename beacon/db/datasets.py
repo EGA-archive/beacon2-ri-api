@@ -251,15 +251,13 @@ def get_analyses_of_dataset(entry_id: Optional[str], qparams: RequestParams, dat
     dataset_count=0
     limit = qparams.query.pagination.limit
     query = apply_filters({}, qparams.query.filters, collection)
-    query = query_id(query, entry_id,idq)
+    query = query_id(query, entry_id)
     count = get_count(client.beacon.datasets, query)
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)
-    biosample_ids=get_cross_query(datasets_dict[entry_id],'biosampleIds','id')
+    biosample_ids=get_cross_query(datasets_dict[entry_id],'biosampleIds','biosampleId')
     query = apply_filters(biosample_ids, qparams.query.filters, collection)
     schema = DefaultSchemas.ANALYSES
-    with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
-        datasets_dict = yaml.safe_load(datasets_file)
     include = qparams.query.include_resultset_responses
     limit = qparams.query.pagination.limit
     skip = qparams.query.pagination.skip
