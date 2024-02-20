@@ -21,7 +21,7 @@ client.beacon.datasets.create_index([("$**", "text")])
 client.beacon.genomicVariations.create_index([("$**", "text")])
 client.beacon.genomicVariations.create_index([("caseLevelData.biosampleId", 1)])
 client.beacon.genomicVariations.create_index([("variation.location.interval.end.value", -1), ("variation.location.interval.start.value", 1)])
-client.genomicVariations.createIndex({"variantInternalId":1, "caseLevelData.biosampleId":1})
+client.beacon.genomicVariations.createIndex({"variantInternalId":1, "caseLevelData.biosampleId":1})
 client.beacon.individuals.create_index([("$**", "text")])
 client.beacon.runs.create_index([("$**", "text")])
 #collection_name = client.beacon.analyses
