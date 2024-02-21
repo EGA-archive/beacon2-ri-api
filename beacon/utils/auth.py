@@ -50,13 +50,13 @@ async def resolve_token(token, requested_datasets_ids):
                 username = username_list[1]
             except Exception:
                 username = ''
-            LOG.debug(username)
+            #LOG.debug(username)
             auth_datasets = []
             for auth_dataset in authorized_datasets_list:
                 if ',' not in auth_dataset:
                     if '[' not in auth_dataset:
                         if ']' not in auth_dataset:
                             auth_datasets.append(auth_dataset)
-            LOG.debug(auth_datasets)
+            #LOG.debug(auth_datasets)
             return auth_datasets, True, username
         

@@ -2,7 +2,7 @@ import logging
 from typing import Dict, List, Optional
 from beacon.db.filters import apply_alphanumeric_filter, apply_filters
 from beacon.db.schemas import DefaultSchemas
-from beacon.db.utils import query_id, query_ids, get_count, get_documents, get_cross_query, get_cross_query_variants, get_filtering_documents
+from beacon.db.utils import query_id, query_ids, get_count, get_documents, join_query, get_filtering_documents, get_aggregated_documents, get_docs_by_response_type
 from beacon.request.model import AlphanumericFilter, Operator, RequestParams
 from beacon.db import client
 import yaml
@@ -27,12 +27,12 @@ VARIANTS_PROPERTY_MAP = {
 }
 
 def include_resultset_responses(query: Dict[str, List[dict]], qparams: RequestParams):
-    LOG.debug("Include Resultset Responses = {}".format(qparams.query.include_resultset_responses))
+    #LOG.debug("Include Resultset Responses = {}".format(qparams.query.include_resultset_responses))
     return query
 
 
 def generate_position_filter_start(key: str, value: List[int]) -> List[AlphanumericFilter]:
-    LOG.debug("len value = {}".format(len(value)))
+    #LOG.debug("len value = {}".format(len(value)))
     filters = []
     if len(value) == 1:
         filters.append(AlphanumericFilter(
@@ -55,7 +55,7 @@ def generate_position_filter_start(key: str, value: List[int]) -> List[Alphanume
 
 
 def generate_position_filter_end(key: str, value: List[int]) -> List[AlphanumericFilter]:
-    LOG.debug("len value = {}".format(len(value)))
+    #LOG.debug("len value = {}".format(len(value)))
     filters = []
     if len(value) == 1:
         filters.append(AlphanumericFilter(
@@ -79,7 +79,7 @@ def generate_position_filter_end(key: str, value: List[int]) -> List[Alphanumeri
 
 def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParams):
     collection = 'g_variants'
-    LOG.debug("Request parameters len = {}".format(len(qparams.query.request_parameters)))
+    #LOG.debug("Request parameters len = {}".format(len(qparams.query.request_parameters)))
     if len(qparams.query.request_parameters) > 0 and "$and" not in query:
         query["$and"] = []
     for k, v in qparams.query.request_parameters.items():
@@ -126,125 +126,30 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
 
 def get_variants(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'g_variants'
+    mongo_collection = client.beacon.genomicVariations
     query = apply_request_parameters({}, qparams)
-    LOG.debug(qparams.query.filters)
+    #LOG.debug(qparams.query.filters)
     query = apply_filters(query, qparams.query.filters, collection)
+    #LOG.debug(query)
+    include = qparams.query.include_resultset_responses
+    limit = qparams.query.pagination.limit
+    skip = qparams.query.pagination.skip
+    if limit > 100 or limit == 0:
+        limit = 100
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.GENOMICVARIATIONS
+    idq="caseLevelData.biosampleId"
     #with open("beacon/request/datasets.yml", 'r') as datasets_file:
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)
-    include = qparams.query.include_resultset_responses
-    limit = qparams.query.pagination.limit
-    if limit > 100 or limit == 0:
-        limit = 100
-    if include == 'MISS':
-        count = get_count(client.beacon.genomicVariations, query)
-        query_count=query
-        i=1
-        for k, v in datasets_dict.items():
-            query_count["$or"]=[]
-            if k == dataset:
-                for id in v:
-                    if i < len(v):
-                        queryid={}
-                        queryid["caseLevelData.biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["caseLevelData.biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.genomicVariations, query_count)
-                    LOG.debug(dataset_count)
-                    if dataset_count!=0:
-                        return schema, count, -1, None
-                    docs = get_documents(
-                        client.beacon.genomicVariations,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
-
-    elif include == 'NONE':
-            count = get_count(client.beacon.genomicVariations, query)
-            dataset_count=0
-            docs = get_documents(
-            client.beacon.genomicVariations,
-            query,
-            qparams.query.pagination.skip*limit,
-            limit
-        )
-    elif include == 'HIT':
-        count = get_count(client.beacon.genomicVariations, query)
-        query_count=query
-        i=1
-        query_count["$or"]=[]
-        for k, v in datasets_dict.items():
-            if k == dataset:
-                for id in v:
-                    
-                    if i < len(v):
-                        queryid={}
-                        queryid["caseLevelData.biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["caseLevelData.biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.genomicVariations, query_count)
-                    LOG.debug(dataset_count)
-                    docs = get_documents(
-                        client.beacon.genomicVariations,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
-        if dataset_count==0:
-            return schema, count, -1, None
-    elif include == 'ALL':
-        count = get_count(client.beacon.genomicVariations, query)
-        query_count=query
-        i=1
-        for k, v in datasets_dict.items():
-            query_count["$or"]=[]
-            if k == dataset:
-                for id in v:
-                    if i < len(v):
-                        queryid={}
-                        queryid["caseLevelData.biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["caseLevelData.biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.genomicVariations, query_count)
-                    LOG.debug(dataset_count)
-                    docs = get_documents(
-                        client.beacon.genomicVariations,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
+    #LOG.debug(query)
+    count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
     return schema, count, dataset_count, docs
 
 
 def get_variant_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'g_variants'
+    mongo_collection = client.beacon.genomicVariations
     query = {"$and": [{"variantInternalId": entry_id}]}
     query = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters, collection)
@@ -254,123 +159,27 @@ def get_variant_with_id(entry_id: Optional[str], qparams: RequestParams, dataset
         datasets_dict = yaml.safe_load(datasets_file)
     include = qparams.query.include_resultset_responses
     limit = qparams.query.pagination.limit
+    skip = qparams.query.pagination.skip
     if limit > 100 or limit == 0:
         limit = 100
-    if include == 'MISS':
-        count = get_count(client.beacon.genomicVariations, query)
-        query_count=query
-        i=1
-        for k, v in datasets_dict.items():
-            query_count["$or"]=[]
-            if k == dataset:
-                for id in v:
-                    if i < len(v):
-                        queryid={}
-                        queryid["caseLevelData.biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["caseLevelData.biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.genomicVariations, query_count)
-                    LOG.debug(dataset_count)
-                    if dataset_count!=0:
-                        return schema, count, -1, None
-                    docs = get_documents(
-                        client.beacon.genomicVariations,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
-
-    elif include == 'NONE':
-            count = get_count(client.beacon.genomicVariations, query)
-            dataset_count=0
-            docs = get_documents(
-            client.beacon.genomicVariations,
-            query,
-            qparams.query.pagination.skip*limit,
-            limit
-        )
-    elif include == 'HIT':
-        count = get_count(client.beacon.genomicVariations, query)
-        query_count=query
-        i=1
-        query_count["$or"]=[]
-        for k, v in datasets_dict.items():
-            if k == dataset:
-                for id in v:
-                    
-                    if i < len(v):
-                        queryid={}
-                        queryid["caseLevelData.biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["caseLevelData.biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.genomicVariations, query_count)
-                    LOG.debug(dataset_count)
-                    docs = get_documents(
-                        client.beacon.genomicVariations,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
-        if dataset_count==0:
-            return schema, count, -1, None
-    elif include == 'ALL':
-        count = get_count(client.beacon.genomicVariations, query)
-        query_count=query
-        i=1
-        for k, v in datasets_dict.items():
-            query_count["$or"]=[]
-            if k == dataset:
-                for id in v:
-                    if i < len(v):
-                        queryid={}
-                        queryid["caseLevelData.biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["caseLevelData.biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.genomicVariations, query_count)
-                    LOG.debug(dataset_count)
-                    docs = get_documents(
-                        client.beacon.genomicVariations,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
+    idq="caseLevelData.biosampleId"
+    count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
     return schema, count, dataset_count, docs
 
 
 def get_biosamples_of_variant(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'g_variants'
+    mongo_collection = client.beacon.biosamples
     query = {"$and": [{"variantInternalId": entry_id}]}
     query = apply_request_parameters(query, qparams)
     query = query = apply_filters(query, qparams.query.filters, collection)
-    count = get_count(client.beacon.genomicVariations, query)
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
-    finalid=biosample_id[0]["biosampleId"]
+    try:
+        finalid=biosample_id[0]["biosampleId"]
+    except Exception:
+        finalid=biosample_id["biosampleId"]
     query = {"id": finalid}
     query = apply_filters(query, qparams.query.filters, collection)
     query = include_resultset_responses(query, qparams)
@@ -379,122 +188,26 @@ def get_biosamples_of_variant(entry_id: Optional[str], qparams: RequestParams, d
         datasets_dict = yaml.safe_load(datasets_file)
     include = qparams.query.include_resultset_responses
     limit = qparams.query.pagination.limit
+    skip = qparams.query.pagination.skip
     if limit > 100 or limit == 0:
         limit = 100
-    if include == 'MISS':
-        count = get_count(client.beacon.biosamples, query)
-        query_count=query
-        i=1
-        for k, v in datasets_dict.items():
-            query_count["$or"]=[]
-            if k == dataset:
-                for id in v:
-                    if i < len(v):
-                        queryid={}
-                        queryid["id"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["id"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.biosamples, query_count)
-                    LOG.debug(dataset_count)
-                    if dataset_count!=0:
-                        return schema, count, -1, None
-                    docs = get_documents(
-                        client.beacon.biosamples,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
-
-    elif include == 'NONE':
-            count = get_count(client.beacon.biosamples, query)
-            dataset_count=0
-            docs = get_documents(
-            client.beacon.biosamples,
-            query,
-            qparams.query.pagination.skip*limit,
-            limit
-        )
-    elif include == 'HIT':
-        count = get_count(client.beacon.biosamples, query)
-        query_count=query
-        i=1
-        query_count["$or"]=[]
-        for k, v in datasets_dict.items():
-            if k == dataset:
-                for id in v:
-                    
-                    if i < len(v):
-                        queryid={}
-                        queryid["id"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["id"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.biosamples, query_count)
-                    LOG.debug(dataset_count)
-                    docs = get_documents(
-                        client.beacon.biosamples,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
-        if dataset_count==0:
-            return schema, count, -1, None
-    elif include == 'ALL':
-        count = get_count(client.beacon.biosamples, query)
-        query_count=query
-        i=1
-        for k, v in datasets_dict.items():
-            query_count["$or"]=[]
-            if k == dataset:
-                for id in v:
-                    if i < len(v):
-                        queryid={}
-                        queryid["id"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["id"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.biosamples, query_count)
-                    LOG.debug(dataset_count)
-                    docs = get_documents(
-                        client.beacon.biosamples,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
+    idq="id"
+    count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
     return schema, count, dataset_count, docs
 
 def get_runs_of_variant(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'g_variants'
+    mongo_collection = client.beacon.runs
     query = {"$and": [{"variantInternalId": entry_id}]}
     query = apply_request_parameters(query, qparams)
     query = query = apply_filters(query, qparams.query.filters, collection)
-    count = get_count(client.beacon.genomicVariations, query)
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
-    finalid=biosample_id[0]["biosampleId"]
+    try:
+        finalid=biosample_id[0]["biosampleId"]
+    except Exception:
+        finalid=biosample_id["biosampleId"]
     query = {"biosampleId": finalid}
     query = apply_filters(query, qparams.query.filters, collection)
     query = include_resultset_responses(query, qparams)
@@ -503,123 +216,27 @@ def get_runs_of_variant(entry_id: Optional[str], qparams: RequestParams, dataset
         datasets_dict = yaml.safe_load(datasets_file)
     include = qparams.query.include_resultset_responses
     limit = qparams.query.pagination.limit
+    skip = qparams.query.pagination.skip
     if limit > 100 or limit == 0:
         limit = 100
-    if include == 'MISS':
-        count = get_count(client.beacon.runs, query)
-        query_count=query
-        i=1
-        for k, v in datasets_dict.items():
-            query_count["$or"]=[]
-            if k == dataset:
-                for id in v:
-                    if i < len(v):
-                        queryid={}
-                        queryid["biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.runs, query_count)
-                    LOG.debug(dataset_count)
-                    if dataset_count!=0:
-                        return schema, count, -1, None
-                    docs = get_documents(
-                        client.beacon.runs,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
-
-    elif include == 'NONE':
-            count = get_count(client.beacon.runs, query)
-            dataset_count=0
-            docs = get_documents(
-            client.beacon.runs,
-            query,
-            qparams.query.pagination.skip*limit,
-            limit
-        )
-    elif include == 'HIT':
-        count = get_count(client.beacon.runs, query)
-        query_count=query
-        i=1
-        query_count["$or"]=[]
-        for k, v in datasets_dict.items():
-            if k == dataset:
-                for id in v:
-                    
-                    if i < len(v):
-                        queryid={}
-                        queryid["biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.runs, query_count)
-                    LOG.debug(dataset_count)
-                    docs = get_documents(
-                        client.beacon.runs,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
-        if dataset_count==0:
-            return schema, count, -1, None
-    elif include == 'ALL':
-        count = get_count(client.beacon.runs, query)
-        query_count=query
-        i=1
-        for k, v in datasets_dict.items():
-            query_count["$or"]=[]
-            if k == dataset:
-                for id in v:
-                    if i < len(v):
-                        queryid={}
-                        queryid["biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.runs, query_count)
-                    LOG.debug(dataset_count)
-                    docs = get_documents(
-                        client.beacon.runs,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
+    idq="biosampleId"
+    count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
     return schema, count, dataset_count, docs
 
 
 def get_analyses_of_variant(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'g_variants'
+    mongo_collection = client.beacon.analyses
     query = {"$and": [{"variantInternalId": entry_id}]}
     query = apply_request_parameters(query, qparams)
     query = query = apply_filters(query, qparams.query.filters, collection)
-    count = get_count(client.beacon.genomicVariations, query)
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
-    finalid=biosample_id[0]["biosampleId"]
+    try:
+        finalid=biosample_id[0]["biosampleId"]
+    except Exception:
+        finalid=biosample_id["biosampleId"]
     query = {"biosampleId": finalid}
     query = apply_filters(query, qparams.query.filters, collection)
     query = include_resultset_responses(query, qparams)
@@ -628,110 +245,11 @@ def get_analyses_of_variant(entry_id: Optional[str], qparams: RequestParams, dat
         datasets_dict = yaml.safe_load(datasets_file)
     include = qparams.query.include_resultset_responses
     limit = qparams.query.pagination.limit
+    skip = qparams.query.pagination.skip
     if limit > 100 or limit == 0:
         limit = 100
-    if include == 'MISS':
-        count = get_count(client.beacon.analyses, query)
-        query_count=query
-        i=1
-        for k, v in datasets_dict.items():
-            query_count["$or"]=[]
-            if k == dataset:
-                for id in v:
-                    if i < len(v):
-                        queryid={}
-                        queryid["biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.analyses, query_count)
-                    if dataset_count!=0:
-                        return schema, count, -1, None
-                    LOG.debug(dataset_count)
-                    docs = get_documents(
-                        client.beacon.analyses,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
-
-    elif include == 'NONE':
-            count = get_count(client.beacon.analyses, query)
-            dataset_count=0
-            docs = get_documents(
-            client.beacon.analyses,
-            query,
-            qparams.query.pagination.skip*limit,
-            limit
-        )
-    elif include == 'HIT':
-        count = get_count(client.beacon.analyses, query)
-        query_count=query
-        i=1
-        query_count["$or"]=[]
-        for k, v in datasets_dict.items():
-            if k == dataset:
-                for id in v:
-                    
-                    if i < len(v):
-                        queryid={}
-                        queryid["biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.analyses, query_count)
-                    LOG.debug(dataset_count)
-                    docs = get_documents(
-                        client.beacon.analyses,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
-        if dataset_count==0:
-            return schema, count, -1, None
-    elif include == 'ALL':
-        count = get_count(client.beacon.analyses, query)
-        query_count=query
-        i=1
-        for k, v in datasets_dict.items():
-            query_count["$or"]=[]
-            if k == dataset:
-                for id in v:
-                    if i < len(v):
-                        queryid={}
-                        queryid["biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["biosampleId"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.analyses, query_count)
-                    LOG.debug(dataset_count)
-                    docs = get_documents(
-                        client.beacon.analyses,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
+    idq="biosampleId"
+    count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
     return schema, count, dataset_count, docs
 
 def get_filtering_terms_of_genomicvariation(entry_id: Optional[str], qparams: RequestParams):
@@ -750,14 +268,17 @@ def get_filtering_terms_of_genomicvariation(entry_id: Optional[str], qparams: Re
 
 def get_individuals_of_variant(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'g_variants'
+    mongo_collection = client.beacon.individuals
     query = {"$and": [{"variantInternalId": entry_id}]}
     query = apply_request_parameters(query, qparams)
     query = query = apply_filters(query, qparams.query.filters, collection)
-    count = get_count(client.beacon.genomicVariations, query)
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
-    finalid=biosample_id[0]["biosampleId"]
+    try:
+        finalid=biosample_id[0]["biosampleId"]
+    except Exception:
+        finalid=biosample_id["biosampleId"]
     query = {"id": finalid}
     query = apply_filters(query, qparams.query.filters, collection)
     query = include_resultset_responses(query, qparams)
@@ -766,107 +287,9 @@ def get_individuals_of_variant(entry_id: Optional[str], qparams: RequestParams, 
         datasets_dict = yaml.safe_load(datasets_file)
     include = qparams.query.include_resultset_responses
     limit = qparams.query.pagination.limit
+    skip = qparams.query.pagination.skip
     if limit > 100 or limit == 0:
         limit = 100
-    if include == 'MISS':
-        count = get_count(client.beacon.individuals, query)
-        query_count=query
-        i=1
-        for k, v in datasets_dict.items():
-            query_count["$or"]=[]
-            if k == dataset:
-                for id in v:
-                    if i < len(v):
-                        queryid={}
-                        queryid["id"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["id"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.individuals, query_count)
-                    LOG.debug(dataset_count)
-                    if dataset_count!=0:
-                        return schema, count, -1, None
-                    docs = get_documents(
-                        client.beacon.individuals,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
-    elif include == 'NONE':
-            count = get_count(client.beacon.individuals, query)
-            dataset_count=0
-            docs = get_documents(
-            client.beacon.analyses,
-            query,
-            qparams.query.pagination.skip*limit,
-            limit
-        )
-    elif include == 'HIT':
-        count = get_count(client.beacon.individuals, query)
-        query_count=query
-        i=1
-        query_count["$or"]=[]
-        for k, v in datasets_dict.items():
-            if k == dataset:
-                for id in v:
-                    
-                    if i < len(v):
-                        queryid={}
-                        queryid["id"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["id"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.individuals, query_count)
-                    LOG.debug(dataset_count)
-                    docs = get_documents(
-                        client.beacon.individuals,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
-        if dataset_count==0:
-            return schema, count, -1, None
-    elif include == 'ALL':
-        count = get_count(client.beacon.individuals, query)
-        query_count=query
-        i=1
-        for k, v in datasets_dict.items():
-            query_count["$or"]=[]
-            if k == dataset:
-                for id in v:
-                    if i < len(v):
-                        queryid={}
-                        queryid["id"]=id
-                        query_count["$or"].append(queryid)
-                        i+=1
-                    else:
-                        queryid={}
-                        queryid["id"]=id
-                        query_count["$or"].append(queryid)
-                        i=1
-                if query_count["$or"]!=[]:
-                    dataset_count = get_count(client.beacon.individuals, query_count)
-                    LOG.debug(dataset_count)
-                    docs = get_documents(
-                        client.beacon.individuals,
-                        query_count,
-                        qparams.query.pagination.skip*limit,
-                        limit
-                    )
-                else:
-                    dataset_count=0
+    idq="id"
+    count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
     return schema, count, dataset_count, docs

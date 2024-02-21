@@ -50,13 +50,13 @@ def generic_handler(db_fn, request=None):
         qparams = RequestParams(**json_body).from_request(request)
         skip = qparams.query.pagination.skip
         limit = qparams.query.pagination.limit
-        LOG.debug(limit)
+        #LOG.debug(limit)
         LOG.debug(qparams)
         search_datasets = []
         authenticated=False
         access_token = request.headers.get('Authorization')
         
-        LOG.debug(access_token)
+        #LOG.debug(access_token)
         if access_token is not None:
             pass
         else:
@@ -66,19 +66,19 @@ def generic_handler(db_fn, request=None):
         except Exception:
             specific_datasets = []
         access_token = access_token[7:]  # cut out 7 characters: len('Bearer ')
-        LOG.debug(access_token)
+        #LOG.debug(access_token)
 
     
 
         authorized_datasets, authenticated, username = await resolve_token(access_token, search_datasets)
 
-        LOG.debug(authorized_datasets)
-        LOG.debug(username)
+        #LOG.debug(authorized_datasets)
+        #LOG.debug(username)
         
-        #LOG.debug('all datasets:  %s', all_datasets)
+        ##LOG.debug('all datasets:  %s', all_datasets)
         LOG.info('resolved datasets:  %s', authorized_datasets)
-        LOG.debug(authenticated)
-        LOG.debug(specific_datasets)
+        #LOG.debug(authenticated)
+        #LOG.debug(specific_datasets)
 
 
         specific_datasets_unauthorized = []
@@ -104,11 +104,11 @@ def generic_handler(db_fn, request=None):
             qparams.query.request_parameters['datasets'] = '*******'
             _, _, datasets = get_datasets(None, qparams)
             beacon_datasets = [ r for r in datasets ]
-            LOG.debug(authorized_datasets)
+            #LOG.debug(authorized_datasets)
             specific_datasets = [ r['id'] for r in beacon_datasets if r['id'] not in authorized_datasets]
             response_datasets = [ r['id'] for r in beacon_datasets if r['id'] in authorized_datasets]
-            LOG.debug(specific_datasets)
-            LOG.debug(response_datasets)
+            #LOG.debug(specific_datasets)
+            #LOG.debug(response_datasets)
             specific_datasets_unauthorized.append(specific_datasets)
 
 
@@ -121,15 +121,15 @@ def generic_handler(db_fn, request=None):
 
             with open("/beacon/beacon/request/response_type.yml", 'r') as response_type_file:
                 response_type_dict = yaml.safe_load(response_type_file)
-            LOG.debug(response_type_dict)
+            #LOG.debug(response_type_dict)
             try:
                 response_type = response_type_dict[username]
             except Exception:
-                LOG.debug(Exception)
+                #LOG.debug(Exception)
                 response_type = ['boolean']
             if response_type is not None:
                 for response_typed in response_type:    
-                    LOG.debug(response_typed)        
+                    #LOG.debug(response_typed)        
                     if response_typed == 'boolean':
                         qparams.query.requested_granularity = Granularity.BOOLEAN
                     elif response_typed == 'count':
@@ -143,23 +143,30 @@ def generic_handler(db_fn, request=None):
             entry_id = request.match_info.get('variantInternalId', None)
         datasets_docs={}
         datasets_count={}
-        LOG.debug(response_datasets)
+        #LOG.debug(response_datasets)
         new_count=0
         for dataset in response_datasets:
-            LOG.debug(dataset)
+            #LOG.debug(dataset)
             entity_schema, count, dataset_count, records = db_fn(entry_id, qparams, dataset)
             
             if dataset_count != -1:
                 new_count+=dataset_count
                 datasets_docs[dataset]=records
                 datasets_count[dataset]=dataset_count
+        
         if include != 'NONE':
             count=new_count
-
+        else:
+            if limit == 0 or new_count < limit:
+                pass
+            else:
+                count = limit
+        
+        #LOG.debug(count)
         response_converted = records
 
 
-        LOG.debug(qparams.query.requested_granularity)
+        #LOG.debug(qparams.query.requested_granularity)
         
         if qparams.query.requested_granularity == Granularity.BOOLEAN:
             response = build_beacon_boolean_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
@@ -192,12 +199,12 @@ def filtering_terms_handler(db_fn, request=None):
         json_body = await request.json() if request.method == "POST" and request.has_body and request.can_read_body else {}
         qparams = RequestParams(**json_body).from_request(request)
 
-        LOG.debug(qparams)
+        #LOG.debug(qparams)
         
         search_datasets = []
         authenticated=False
         access_token = request.headers.get('Authorization')
-        LOG.debug(access_token)
+        #LOG.debug(access_token)
         if access_token is not None:
             try:
                 specific_datasets = qparams.query.request_parameters['datasets']
@@ -207,11 +214,11 @@ def filtering_terms_handler(db_fn, request=None):
 
             
             authorized_datasets, authenticated = await resolve_token(access_token, search_datasets)
-            #LOG.debug(authorized_datasets)
-            #LOG.debug('all datasets:  %s', all_datasets)
+            ##LOG.debug(authorized_datasets)
+            ##LOG.debug('all datasets:  %s', all_datasets)
             LOG.info('resolved datasets:  %s', authorized_datasets)
-            #LOG.debug(authenticated)
-            #LOG.debug(specific_datasets)
+            ##LOG.debug(authenticated)
+            ##LOG.debug(specific_datasets)
 
             specific_datasets_unauthorized = []
             specific_datasets_unauthorized_and_found = []
@@ -233,8 +240,8 @@ def filtering_terms_handler(db_fn, request=None):
                 all_datasets = [r['id'] for r in beacon_datasets]
                 
                 response_datasets = [ r['id'] for r in beacon_datasets if r['id'] in search_and_authorized_datasets]
-                LOG.debug(specific_search_datasets)
-                LOG.debug(response_datasets)
+                #LOG.debug(specific_search_datasets)
+                #LOG.debug(response_datasets)
 
             else:
                 qparams.query.request_parameters = {}
@@ -243,8 +250,8 @@ def filtering_terms_handler(db_fn, request=None):
                 beacon_datasets = [ r for r in datasets ]
                 specific_datasets = [ r['id'] for r in beacon_datasets if r['id'] not in authorized_datasets]
                 response_datasets = [ r['id'] for r in beacon_datasets if r['id'] in authorized_datasets]
-                #LOG.debug(specific_datasets)
-                #LOG.debug(response_datasets)
+                ##LOG.debug(specific_datasets)
+                ##LOG.debug(response_datasets)
 
         else:
             list_of_dataset_dicts=[]

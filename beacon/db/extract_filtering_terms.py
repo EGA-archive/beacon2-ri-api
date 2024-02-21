@@ -1,24 +1,12 @@
 import os.path
-import urllib.request
 from typing import List, Dict, Optional
 import re
-from urllib.error import HTTPError
-
-import requests
-import owlready2
 from pymongo.mongo_client import MongoClient
 import progressbar
 from bson.objectid import ObjectId
-from owlready2 import OwlReadyOntologyParsingError
 from tqdm import tqdm
-import obonet
 from bson.json_util import dumps
 import json
-import networkx
-import os
-import scipy
-import numpy as np
-from utils import get_filtering_documents
 
 import sys
 import os
