@@ -242,10 +242,6 @@ def get_docs_by_response_type(include: str, query: dict, datasets_dict: dict, da
                         i=1
                 if query_count["$or"]!=[]:
                     dataset_count = get_count(mongo_collection, query_count)
-                    if limit == 0 or dataset_count < limit:
-                        pass
-                    else:
-                        dataset_count = limit
                     #LOG.debug(dataset_count)
                     docs = get_documents(
                         mongo_collection,
