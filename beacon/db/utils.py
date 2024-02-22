@@ -41,21 +41,38 @@ def get_count(collection: Collection, query: dict) -> int:
         #LOG.debug("Returning estimated count")
         return collection.estimated_document_count()
     else:
-        ##LOG.debug("FINAL QUERY (COUNT): {}".format(query))
-        #LOG.debug("Returning count")
-        match_dict={}
-        match_dict['$match']=query
-        count_dict={}
-        aggregated_query=[]
-        count_dict["$count"]='Total'
-        aggregated_query.append(match_dict)
-        aggregated_query.append({"$limit": 10})
-        aggregated_query.append(count_dict)
-        total=list(collection.aggregate(aggregated_query))
+        counts=client.beacon.counts.find({"id": str(query), "collection": str(collection)})
         try:
-            return total[0]['Total']
+            LOG.debug('adeu')
+            counts=list(counts)
+            if counts == []:
+                match_dict={}
+                match_dict['$match']=query
+                count_dict={}
+                aggregated_query=[]
+                count_dict["$count"]='Total'
+                aggregated_query.append(match_dict)
+                aggregated_query.append(count_dict)
+                total=list(collection.aggregate(aggregated_query))
+                insert_dict={}
+                insert_dict['id']=str(query)
+                total_counts=total[0]['Total']
+                insert_dict['num_results']=total_counts
+                insert_dict['collection']=str(collection)
+                insert_total=client.beacon.counts.insert_one(insert_dict)
+            else:
+                total_counts=counts[0]["num_results"]
         except Exception:
-            return 0
+            try:
+                total_counts=client.beacon.counts.count_documents(query)
+                insert_dict={}
+                insert_dict['id']=str(query)
+                insert_dict['num_results']=total_counts
+                insert_dict['collection']=str(collection)
+                insert_total=client.beacon.counts.insert_one(insert_dict)
+            except Exception:
+                total_counts=15
+        return total_counts
 
 def get_documents(collection: Collection, query: dict, skip: int, limit: int) -> Cursor:
     LOG.debug("FINAL QUERY: {}".format(query))

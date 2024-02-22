@@ -13,7 +13,10 @@ client = MongoClient(
         )
     )
 
-
+try:
+    client.beacon.validate_collection("counts")
+except Exception:
+    db=client.beacon.create_collection(name="counts")
 client.beacon.analyses.create_index([("$**", "text")])
 client.beacon.biosamples.create_index([("$**", "text")])
 client.beacon.cohorts.create_index([("$**", "text")])
