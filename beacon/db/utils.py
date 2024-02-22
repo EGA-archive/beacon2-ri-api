@@ -179,7 +179,7 @@ def get_docs_by_response_type(include: str, query: dict, datasets_dict: dict, da
                 else:
                     dataset_count=0
     elif include == 'NONE':
-        count = get_total_count(mongo_collection, query)
+        count = get_count(mongo_collection, query)
         dataset_count=0
         docs = get_documents(
         mongo_collection,
