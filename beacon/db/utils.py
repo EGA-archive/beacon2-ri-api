@@ -43,7 +43,6 @@ def get_count(collection: Collection, query: dict) -> int:
     else:
         counts=client.beacon.counts.find({"id": str(query), "collection": str(collection)})
         try:
-            LOG.debug('adeu')
             counts=list(counts)
             if counts == []:
                 match_dict={}
