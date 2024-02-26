@@ -44,7 +44,7 @@ docker cp /path/to/analyses.json deploy_db_1:tmp/analyses.json
 docker cp /path/to/biosamples.json deploy_db_1:tmp/biosamples.json
 docker cp /path/to/cohorts.json deploy_db_1:tmp/cohorts.json
 docker cp /path/to/datasets.json deploy_db_1:tmp/datasets.json
-docker cp /path/to/genomicVariationsVcf.json deploy_db_1:tmp/genomicVariations.json
+docker cp /path/to/genomicVariations.json deploy_db_1:tmp/genomicVariations.json
 docker cp /path/to/individuals.json deploy_db_1:tmp/individuals.json
 docker cp /path/to/runs.json deploy_db_1:tmp/runs.json
 ```
