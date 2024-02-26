@@ -347,12 +347,16 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
             elif filter.value == 'NCBI36':
                 dict_regex['$regex']="9:"
             elif filter.value in list_chromosomes:
-                dict_regex['$regex']='NC_0000'+filter.value
+                dict_regex['$regex']='^NC_0000'+filter.value
+            elif '>' in filter.value:
+                dict_regex=filter.value
             elif '.' in filter.value:
                 valuesplitted = filter.value.split('.')
                 dict_regex['$regex']=valuesplitted[0]+".*"+valuesplitted[-1]+":"
                 dict_regex['$options']= "si"
             query[filter.id] = dict_regex
+        elif filter.id == 'molecularAttributes.aminoacidChanges':
+            query[filter.id] = filter.value
         elif filter.id == "variantInternalId":
             if 'max' in filter.value:
                 valuereplaced = filter.value.replace('max', '')
@@ -441,7 +445,6 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                 query_id={}
                 query_id[query_term]=regex_dict
                 query['$nor'].append(query_id)
-
             else:
                 try: 
                     if query['$nor']:
