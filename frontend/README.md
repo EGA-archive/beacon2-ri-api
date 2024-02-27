@@ -1,6 +1,9 @@
-## Instructions on how to deploy the Beacon User Interface
- 
+## Deploy
 
+Use the deployment for all the containers for beacon to also deploy the UI [Deployment](https://github.com/EGA-archive/beacon2-ri-api/blob/develop/deploy/README.md). You will find it running in http://localhost:3000
+
+## Instructions on how to configure the Beacon User Interface
+ 
 Please first create a .env file inside the frontend folder so that you can modify some variables as follows:
 
 ```bash
