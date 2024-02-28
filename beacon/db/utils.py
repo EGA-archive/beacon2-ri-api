@@ -214,8 +214,8 @@ def get_docs_by_response_type(include: str, query: dict, datasets_dict: dict, da
                     docs = get_documents(
                         mongo_collection,
                         query_count,
-                        0,
-                        10
+                        skip*limit,
+                        limit
                     )
                 else:
                     dataset_count=0
