@@ -37,7 +37,7 @@ export default function SignInFormNoLS () {
       var details = {
         grant_type: 'password',
         client_id: 'beacon',
-        client_secret: 'WGahOcaJcbQ2srhBsNH56NhhDxH5M51f',
+        client_secret: 'b26ca0f9-1137-4bee-b453-ee51eefbe7ba',
         username: userName,
         password: password,
         realm: 'Beacon',
@@ -54,7 +54,7 @@ export default function SignInFormNoLS () {
       formBody = formBody.join('&')
 
       const response = await fetch(
-        'https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon/protocol/openid-connect/token',
+        'https://beaker:9991/auth/realms/Beacon/protocol/openid-connect/token',
         {
           method: 'POST',
           headers: {

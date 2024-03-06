@@ -102,17 +102,18 @@ CA_cert = '/etc/ega/CA.cert'
 #
 # Permissions server configuration
 #
-permissions_url = 'http://beacon-permissions:5051/'
-#permissions_url = 'http://localhost:5051/'
+#permissions_url = 'http://beacon-permissions:5051/'
+permissions_url = 'http://beaker:5051/'
 
 #
 # IdP endpoints (OpenID Connect/Oauth2)
 #
 # or use Elixir AAI (see https://elixir-europe.org/services/compute/aai)
 #
-idp_user_info = 'https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon/protocol/openid-connect/userinfo'
+# idp_user_info = 'https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon/protocol/openid-connect/userinfo'
+idp_user_info = 'https://beaker:9991/auth/realms/Beacon/protocol/openid-connect/userinfo'
 lsaai_user_info = 'https://login.elixir-czech.org/oidc/userinfo'
-trusted_issuers = ['https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon', 'https://login.elixir-czech.org/oidc/']
+trusted_issuers = ['https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon', 'https://login.elixir-czech.org/oidc/'] #, 'http://beaker:5051']
 
 
 #
