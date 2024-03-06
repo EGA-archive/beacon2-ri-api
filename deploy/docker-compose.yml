@@ -124,6 +124,7 @@ services:
     image: ${B2RI_IDP_IMAGE:-keycloak/keycloak:24.0.1-0}
     hostname: idp
     container_name: idp
+    entrypoint: /opt/keycloak/bin/keycloak-entrypoint.sh
     environment:
       # - KEYCLOAK_FRONTEND_URL=http://idp:8080/auth
       # - KEYCLOAK_LOGLEVEL=DEBUG
@@ -145,6 +146,7 @@ services:
       #- PROXY_ADDRESS_FORWARDING=true
     volumes:
       - ./beacon-realm.json:/tmp/beacon-realm.json
+      - ./keycloak-entrypoint.sh:/opt/keycloak/bin/keycloak-entrypoint.sh
     ports:
       - "8080:8080"
       - "9991:8443"
