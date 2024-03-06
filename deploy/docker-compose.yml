@@ -121,8 +121,7 @@ services:
   # and we don't need a delay in-between. We can rely on the depends_on only.
 
   idp:
-    #image: jboss/keycloak
-    image: sleighzy/keycloak
+    image: ${B2RI_IDP_IMAGE:-keycloak/keycloak:24.0.1-0}
     hostname: idp
     container_name: idp
     environment:
