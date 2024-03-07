@@ -44,7 +44,7 @@ docker cp /path/to/analyses.json deploy_db_1:tmp/analyses.json
 docker cp /path/to/biosamples.json deploy_db_1:tmp/biosamples.json
 docker cp /path/to/cohorts.json deploy_db_1:tmp/cohorts.json
 docker cp /path/to/datasets.json deploy_db_1:tmp/datasets.json
-docker cp /path/to/genomicVariationsVcf.json deploy_db_1:tmp/genomicVariations.json
+docker cp /path/to/genomicVariations.json deploy_db_1:tmp/genomicVariations.json
 docker cp /path/to/individuals.json deploy_db_1:tmp/individuals.json
 docker cp /path/to/runs.json deploy_db_1:tmp/runs.json
 ```
@@ -59,20 +59,22 @@ docker exec deploy_db_1 mongoimport --jsonArray --uri "mongodb://root:example@12
 docker exec deploy_db_1 mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27017/beacon?authSource=admin" --file /tmp/runs.json --collection runs
 ```
 
-This loads the JSON files inside of the `data` folder into the MongoDB database container.
-
-#### List the ids
-
-After deploying all the data, you will need to tell the beacon which are the individual and biosample ids belonging to each dataset and cohort. In order to do that, please, add the name of each dataset with the respective array of all the ids together in this file [datasets.yml](https://github.com/EGA-archive/beacon2-ri-api/blob/master/beacon/request/datasets.yml).
-Then, repeat the same for the cohorts modifying this file [cohorts.yml](https://github.com/EGA-archive/beacon2-ri-api/blob/master/beacon/request/cohorts.yml).
+This loads the JSON files inside of the `data` folder into the MongoDB database container. Each time you import data you will have to create indexes for the queries to run smoothly. Please, check the next point about how to Create the indexes.
 
 #### Create the indexes
+
+Remember to do this step every time you import new data!!
 
 You can create the necessary indexes running the following Python script:
 
 ```bash
 docker exec beacon python beacon/reindex.py
 ```
+
+#### List the ids
+
+After deploying all the data, you will need to tell the beacon which are the individual and biosample ids belonging to each dataset and cohort. In order to do that, please, add the name of each dataset with the respective array of all the ids together in this file [datasets.yml](https://github.com/EGA-archive/beacon2-ri-api/blob/master/beacon/request/datasets.yml).
+Then, repeat the same for the cohorts modifying this file [cohorts.yml](https://github.com/EGA-archive/beacon2-ri-api/blob/master/beacon/request/cohorts.yml).
 
 #### Fetch the ontologies and extract the filtering terms
 
