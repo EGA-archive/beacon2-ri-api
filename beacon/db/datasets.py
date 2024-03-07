@@ -86,7 +86,7 @@ def get_variants_of_biosample(entry_id: Optional[str], qparams: RequestParams, d
     mongo_collection = client.beacon.genomicVariations
     query = {"caseLevelData.biosampleId": entry_id}
     query = apply_request_parameters(query, qparams)
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.GENOMICVARIATIONS
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
@@ -134,7 +134,7 @@ def get_variants_of_dataset(entry_id: Optional[str], qparams: RequestParams, dat
     else:
         schema = DefaultSchemas.GENOMICVARIATIONS
         return schema, 0, -1, None
-    query = apply_filters(query_count, qparams.query.filters, collection)
+    query = apply_filters(query_count, qparams.query.filters, collection, {})
     schema = DefaultSchemas.GENOMICVARIATIONS
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)
@@ -153,13 +153,13 @@ def get_biosamples_of_dataset(entry_id: Optional[str], qparams: RequestParams, d
     mongo_collection = client.beacon.biosamples
     dataset_count=0
     limit = qparams.query.pagination.limit
-    query = apply_filters({}, qparams.query.filters, collection)
+    query = apply_filters({}, qparams.query.filters, collection, {})
     query = query_id(query, entry_id)
     count = get_count(client.beacon.datasets, query)
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)
     biosample_ids=get_cross_query(datasets_dict[entry_id],'biosampleIds','id')
-    query = apply_filters(biosample_ids, qparams.query.filters, collection)
+    query = apply_filters(biosample_ids, qparams.query.filters, collection, {})
     #LOG.debug(query)
     schema = DefaultSchemas.BIOSAMPLES
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
@@ -179,13 +179,13 @@ def get_individuals_of_dataset(entry_id: Optional[str], qparams: RequestParams, 
     mongo_collection = client.beacon.individuals
     dataset_count=0
     limit = qparams.query.pagination.limit
-    query = apply_filters({}, qparams.query.filters, collection)
+    query = apply_filters({}, qparams.query.filters, collection, {})
     query = query_id(query, entry_id)
     count = get_count(client.beacon.datasets, query)
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)
     individual_ids=get_cross_query(datasets_dict[entry_id],'individualIds','id')
-    query = apply_filters(individual_ids, qparams.query.filters, collection)
+    query = apply_filters(individual_ids, qparams.query.filters, collection, {})
     schema = DefaultSchemas.INDIVIDUALS
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)
@@ -223,14 +223,14 @@ def get_runs_of_dataset(entry_id: Optional[str], qparams: RequestParams, dataset
     mongo_collection = client.beacon.runs
     dataset_count=0
     limit = qparams.query.pagination.limit
-    query = apply_filters({}, qparams.query.filters, collection)
+    query = apply_filters({}, qparams.query.filters, collection, {})
     query = query_id(query, entry_id)
     count = get_count(client.beacon.datasets, query)
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)
     biosample_ids=get_cross_query(datasets_dict[entry_id],'biosampleIds','biosampleId')
     LOG.debug(biosample_ids)
-    query = apply_filters(biosample_ids, qparams.query.filters, collection)
+    query = apply_filters(biosample_ids, qparams.query.filters, collection, {})
     schema = DefaultSchemas.RUNS
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)
@@ -250,13 +250,13 @@ def get_analyses_of_dataset(entry_id: Optional[str], qparams: RequestParams, dat
     mongo_collection = client.beacon.analyses
     dataset_count=0
     limit = qparams.query.pagination.limit
-    query = apply_filters({}, qparams.query.filters, collection)
+    query = apply_filters({}, qparams.query.filters, collection, {})
     query = query_id(query, entry_id)
     count = get_count(client.beacon.datasets, query)
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)
     biosample_ids=get_cross_query(datasets_dict[entry_id],'biosampleIds','biosampleId')
-    query = apply_filters(biosample_ids, qparams.query.filters, collection)
+    query = apply_filters(biosample_ids, qparams.query.filters, collection, {})
     schema = DefaultSchemas.ANALYSES
     include = qparams.query.include_resultset_responses
     limit = qparams.query.pagination.limit

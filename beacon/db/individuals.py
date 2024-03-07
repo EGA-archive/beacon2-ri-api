@@ -8,96 +8,129 @@ from beacon.db.schemas import DefaultSchemas
 from beacon.db.utils import query_id, get_count, get_documents
 from beacon.request.model import RequestParams
 import yaml
+from aiohttp import web
 
 LOG = logging.getLogger(__name__)
 
 
 VARIANTS_PROPERTY_MAP = {
-    "assemblyId": "_position.assemblyId",
-    "Chromosome": "_position.refseqId",
-    "start": "_position.start",
-    "end": "_position.end",
+    "start": "variation.location.interval.start.value",
+    "end": "variation.location.interval.end.value",
+    "assemblyId": "identifiers.genomicHGVSId",
+    "referenceName": "identifiers.genomicHGVSId",
     "referenceBases": "variation.referenceBases",
     "alternateBases": "variation.alternateBases",
     "variantType": "variation.variantType",
-    "variantMinLength": None,
-    "variantMaxLength": None,
-    "mateName": None,
-    "gene": "molecularAttributes.geneIds",
-    "aachange": "molecularAttributes.aminoacidChanges"
+    "variantMinLength": "variantInternalId",
+    "variantMaxLength": "variantInternalId",
+    "geneId": "molecularAttributes.geneIds",
+    "genomicAlleleShortForm": "identifiers.genomicHGVSId",
+    "aminoacidChange": "molecularAttributes.aminoacidChanges"
 }
-
 
 def include_resultset_responses(query: Dict[str, List[dict]], qparams: RequestParams):
     LOG.debug("Include Resultset Responses = {}".format(qparams.query.include_resultset_responses))
     return query
 
-def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParams):
-    LOG.debug("Request parameters len = {}".format(len(qparams.query.request_parameters)))
-    v_list=[]
-    query_2={}
-    limit = qparams.query.pagination.limit
-    for k, v in qparams.query.request_parameters.items():
-        LOG.debug(k)
-        
-        if k == 'filters':
-            if 'genomicVariations' in v:
-                LOG.debug("yes")
-                listing = v.split('"')
-                value_list = listing[1].split('.')
-                value_equal = value_list[1]
-                final_list = value_equal.split('=')
-                final_value = final_list[1]
-                query["$and"] = []
-                collection = 'g_variants'
-                query["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
-                    id=VARIANTS_PROPERTY_MAP[final_list[0]],
-                    value=final_value
-                ), collection))
-                count = get_count(client.beacon.genomicVariations, query)
-                docs = get_documents(
-                client.beacon.genomicVariations,
-                query,
-                qparams.query.pagination.skip*limit,
-                count
-            )
-                biosample_IDS =[]
-                query_2["$or"] = []
-                for doc in docs:
-                    caseLevelData = doc['caseLevelData']
-                    for case in caseLevelData:
-                        if case["biosampleId"] not in biosample_IDS:
-                            biosample_IDS.append(case["biosampleId"])
-                            query_2["$or"].append({'id': case["biosampleId"]})
+def generate_position_filter_start(key: str, value: List[int]) -> List[AlphanumericFilter]:
+    #LOG.debug("len value = {}".format(len(value)))
+    filters = []
+    if len(value) == 1:
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=value[0],
+            operator=Operator.GREATER_EQUAL
+        ))
+    elif len(value) == 2:
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=value[0],
+            operator=Operator.GREATER_EQUAL
+        ))
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=value[1],
+            operator=Operator.LESS_EQUAL
+        ))
+    return filters
 
-                LOG.debug(query_2)
-                
-            elif ',' in v:
-                v_list =v.split(',')
-                LOG.debug(v_list)
-            else:
-                v_list.append(v)
-            for id in v_list:
-                v_dict={}
-                v_dict['id']=id
-                qparams.query.filters.append(v_dict)        
-    if query_2 != {}:  
-        return query_2
-    else:
-        return query
+
+def generate_position_filter_end(key: str, value: List[int]) -> List[AlphanumericFilter]:
+    #LOG.debug("len value = {}".format(len(value)))
+    filters = []
+    if len(value) == 1:
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=value[0],
+            operator=Operator.LESS_EQUAL
+        ))
+    elif len(value) == 2:
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=value[0],
+            operator=Operator.GREATER_EQUAL
+        ))
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=value[1],
+            operator=Operator.LESS_EQUAL
+        ))
+    return filters
+
+def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParams):
+    collection = 'g_variants'
+    #LOG.debug("Request parameters len = {}".format(len(qparams.query.request_parameters)))
+    if len(qparams.query.request_parameters) > 0 and "$and" not in query:
+        query["$and"] = []
+    for k, v in qparams.query.request_parameters.items():
+        if k == "start":
+            if isinstance(v, str):
+                v = v.split(',')
+            filters = generate_position_filter_start(k, v)
+            for filter in filters:
+                query["$and"].append(apply_alphanumeric_filter({}, filter, collection))
+        elif k == "end":
+            if isinstance(v, str):
+                v = v.split(',')
+            filters = generate_position_filter_end(k, v)
+            for filter in filters:
+                query["$and"].append(apply_alphanumeric_filter({}, filter, collection))
+        elif k == "datasets":
+            pass
+        elif k == "variantMinLength":
+            try:
+                query["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
+                    id=VARIANTS_PROPERTY_MAP[k],
+                    value='min'+v
+                ), collection))
+            except KeyError:
+                raise web.HTTPNotFound
+        elif k == "variantMaxLength":
+            try:
+                query["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
+                    id=VARIANTS_PROPERTY_MAP[k],
+                    value='max'+v
+                ), collection))
+            except KeyError:
+                raise web.HTTPNotFound    
+        else:
+            try:
+                query["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
+                    id=VARIANTS_PROPERTY_MAP[k],
+                    value=v
+                ), collection))
+            except KeyError:
+                raise web.HTTPNotFound
+    return query
 
 
 def get_individuals(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'individuals'
     mongo_collection = client.beacon.individuals
-    query = apply_request_parameters({}, qparams)
-    match_list=[]
-    matching = apply_request_parameters({}, qparams)
-    match_list.append(matching)
-    match_big={}
-    match_big["$match"]=match_list[0]
+    query_parameters = apply_request_parameters({}, qparams)
     LOG.debug(qparams.query.filters)
-    query = apply_filters(query, qparams.query.filters, collection)
+    query={}
+    query = apply_filters(query, qparams.query.filters, collection, query_parameters)
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.INDIVIDUALS
     #with open("beacon/request/datasets.yml", 'r') as datasets_file:
@@ -118,7 +151,7 @@ def get_individual_with_id(entry_id: Optional[str], qparams: RequestParams, data
     idq="id"
     mongo_collection = client.beacon.individuals
     query = apply_request_parameters({}, qparams)
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = query_id(query, entry_id)
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.INDIVIDUALS
@@ -138,7 +171,7 @@ def get_variants_of_individual(entry_id: Optional[str], qparams: RequestParams, 
     mongo_collection = client.beacon.genomicVariations
     query = {"caseLevelData.biosampleId": entry_id}
     query = apply_request_parameters(query, qparams)
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.GENOMICVARIATIONS
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
@@ -157,13 +190,9 @@ def get_biosamples_of_individual(entry_id: Optional[str], qparams: RequestParams
     collection = 'biosamples'
     mongo_collection = client.beacon.biosamples
     query = {"individualId": entry_id}
-    LOG.debug(query)
     query = apply_request_parameters(query, qparams)
-    LOG.debug(query)
-    query = apply_filters(query, qparams.query.filters, collection)
-    LOG.debug(query)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
-    LOG.debug(query)
     schema = DefaultSchemas.BIOSAMPLES
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
         datasets_dict = yaml.safe_load(datasets_file)
@@ -197,7 +226,7 @@ def get_runs_of_individual(entry_id: Optional[str], qparams: RequestParams, data
     mongo_collection = client.beacon.runs
     query = {"individualId": entry_id}
     query = apply_request_parameters(query, qparams)
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.RUNS
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
@@ -216,7 +245,7 @@ def get_analyses_of_individual(entry_id: Optional[str], qparams: RequestParams, 
     mongo_collection = client.beacon.analyses
     query = {"individualId": entry_id}
     query = apply_request_parameters(query, qparams)
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.ANALYSES
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:

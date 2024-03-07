@@ -39,7 +39,7 @@ def get_runs(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     match_big={}
     match_big["$match"]=match_list[0]
     LOG.debug(qparams.query.filters)
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.RUNS
     #with open("beacon/request/datasets.yml", 'r') as datasets_file:
@@ -58,7 +58,7 @@ def get_run_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: st
     collection = 'runs'
     mongo_collection = client.beacon.runs
     query = apply_request_parameters({}, qparams)
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = query_id(query, entry_id)
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.RUNS
@@ -80,11 +80,11 @@ def get_variants_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
     mongo_collection = client.beacon.genomicVariations
     query = {"$and": [{"id": entry_id}]}
     query = apply_request_parameters(query, qparams)
-    query = query = apply_filters(query, qparams.query.filters, collection)
+    query = query = apply_filters(query, qparams.query.filters, collection, {})
     run_ids = client.beacon.runs \
         .find_one(query, {"individualId": 1, "_id": 0})
     query = {"caseLevelData.biosampleId": run_ids["individualId"]}
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.GENOMICVARIATIONS
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
@@ -103,7 +103,7 @@ def get_analyses_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
     mongo_collection = client.beacon.analyses
     query = {"runId": entry_id}
     query = apply_request_parameters(query, qparams)
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     LOG.debug(query)
     schema = DefaultSchemas.RUNS

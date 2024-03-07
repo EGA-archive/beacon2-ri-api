@@ -129,7 +129,7 @@ def get_variants(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     mongo_collection = client.beacon.genomicVariations
     query = apply_request_parameters({}, qparams)
     #LOG.debug(qparams.query.filters)
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection,{})
     #LOG.debug(query)
     include = qparams.query.include_resultset_responses
     limit = qparams.query.pagination.limit
@@ -152,7 +152,7 @@ def get_variant_with_id(entry_id: Optional[str], qparams: RequestParams, dataset
     mongo_collection = client.beacon.genomicVariations
     query = {"$and": [{"variantInternalId": entry_id}]}
     query = apply_request_parameters(query, qparams)
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.GENOMICVARIATIONS
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
@@ -172,7 +172,7 @@ def get_biosamples_of_variant(entry_id: Optional[str], qparams: RequestParams, d
     mongo_collection = client.beacon.biosamples
     query = {"$and": [{"variantInternalId": entry_id}]}
     query = apply_request_parameters(query, qparams)
-    query = query = apply_filters(query, qparams.query.filters, collection)
+    query = query = apply_filters(query, qparams.query.filters, collection, {})
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
@@ -181,7 +181,7 @@ def get_biosamples_of_variant(entry_id: Optional[str], qparams: RequestParams, d
     except Exception:
         finalid=biosample_id["biosampleId"]
     query = {"id": finalid}
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.BIOSAMPLES
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
@@ -200,7 +200,7 @@ def get_runs_of_variant(entry_id: Optional[str], qparams: RequestParams, dataset
     mongo_collection = client.beacon.runs
     query = {"$and": [{"variantInternalId": entry_id}]}
     query = apply_request_parameters(query, qparams)
-    query = query = apply_filters(query, qparams.query.filters, collection)
+    query = query = apply_filters(query, qparams.query.filters, collection, {})
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
@@ -209,7 +209,7 @@ def get_runs_of_variant(entry_id: Optional[str], qparams: RequestParams, dataset
     except Exception:
         finalid=biosample_id["biosampleId"]
     query = {"biosampleId": finalid}
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.RUNS
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
@@ -229,7 +229,7 @@ def get_analyses_of_variant(entry_id: Optional[str], qparams: RequestParams, dat
     mongo_collection = client.beacon.analyses
     query = {"$and": [{"variantInternalId": entry_id}]}
     query = apply_request_parameters(query, qparams)
-    query = query = apply_filters(query, qparams.query.filters, collection)
+    query = query = apply_filters(query, qparams.query.filters, collection, {})
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
@@ -238,7 +238,7 @@ def get_analyses_of_variant(entry_id: Optional[str], qparams: RequestParams, dat
     except Exception:
         finalid=biosample_id["biosampleId"]
     query = {"biosampleId": finalid}
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.ANALYSES
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
@@ -271,7 +271,7 @@ def get_individuals_of_variant(entry_id: Optional[str], qparams: RequestParams, 
     mongo_collection = client.beacon.individuals
     query = {"$and": [{"variantInternalId": entry_id}]}
     query = apply_request_parameters(query, qparams)
-    query = query = apply_filters(query, qparams.query.filters, collection)
+    query = query = apply_filters(query, qparams.query.filters, collection, {})
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
@@ -280,7 +280,7 @@ def get_individuals_of_variant(entry_id: Optional[str], qparams: RequestParams, 
     except Exception:
         finalid=biosample_id["biosampleId"]
     query = {"id": finalid}
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.INDIVIDUALS
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:

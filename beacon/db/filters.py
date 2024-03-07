@@ -1,7 +1,7 @@
 from collections import defaultdict
 from typing import List, Union
 import re
-import itertools
+import json
 from copy import deepcopy
 
 from beacon.request import ontologies
@@ -15,8 +15,9 @@ LOG = logging.getLogger(__name__)
 
 CURIE_REGEX = r'^([a-zA-Z0-9]*):\/?[a-zA-Z0-9]*$'
 
-def apply_filters(query: dict, filters: List[dict], collection: str) -> dict:
+def apply_filters(query: dict, filters: List[dict], collection: str, query_parameters: dict) -> dict:
     #LOG.debug("Filters len = {}".format(len(filters)))
+    request_parameters = query_parameters
     if len(filters) >= 1:
         query["$and"] = []
         for filter in filters:
@@ -32,8 +33,7 @@ def apply_filters(query: dict, filters: List[dict], collection: str) -> dict:
                 #LOG.debug("Ontology filter: %s", filter.id)
                 #partial_query = {"$text": defaultdict(str) }
                 #partial_query =  { "$text": { "$search": "" } } 
-                #LOG.debug(partial_query)
-                partial_query = apply_ontology_filter(partial_query, filter, collection)
+                partial_query = apply_ontology_filter(partial_query, filter, collection, request_parameters)
             elif "similarity" in filter or "includeDescendantTerms" in filter or re.match(CURIE_REGEX, filter["id"]) and filter["id"].isupper():
                 filter = OntologyFilter(**filter)
                 #LOG.debug("Ontology filter: %s", filter.id)
@@ -53,8 +53,7 @@ def apply_filters(query: dict, filters: List[dict], collection: str) -> dict:
     return query
 
 
-def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) -> dict:
-    
+def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, request_parameters: dict) -> dict:
     is_filter_id_required = True
 
     # Search similar
@@ -163,6 +162,7 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
                     list_descendant.append(line)
         except Exception:
             pass
+
         try: 
             if query['$or']:
                 pass
@@ -190,7 +190,7 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
             0,
             1
         )
-            
+
         for doc_term in docs:
             scope = doc_term['scope']
             label = doc_term['label']
@@ -224,7 +224,26 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
             query['$or'].append(query_id)
         
         if scope == 'genomicVariations' and collection == 'g_variants' or scope == collection:
-            pass
+            if request_parameters != {}:
+                biosample_ids = client.beacon.genomicVariations.find(request_parameters, {"caseLevelData.biosampleId": 1, "_id": 0})
+                final_id='id'
+                original_id="biosampleId"
+                def_list=[]
+                for iditem in biosample_ids:
+                    for id_item in iditem['caseLevelData']:
+                        if isinstance(id_item, dict):
+                            new_id={}
+                            new_id[final_id] = id_item[original_id]
+                            try:
+                                query['$or'].append(new_id)
+                            except Exception:
+                                def_list.append(new_id)
+                if def_list != []:
+                    try:
+                        query['$or'].def_list
+                    except Exception:
+                        query={}
+                        query['$or']=def_list
         else:
             def_list=[]
             if scope == 'individuals' and collection == 'g_variants':
@@ -249,11 +268,39 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
                     def_list.append(new_id)
                 query={}
                 query['$or']=def_list
-
-            
-            
-
-
+            elif scope == 'runs' and collection == 'g_variants':
+                mongo_collection=client.beacon.runs
+                original_id="biosampleId"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="caseLevelData.biosampleId"
+                for id_item in join_ids:
+                    new_id={}
+                    new_id[final_id] = id_item.pop(original_id)
+                    def_list.append(new_id)
+                query={}
+                query['$or']=def_list
+            elif scope == 'runs' and collection == 'individuals':
+                mongo_collection=client.beacon.runs
+                original_id="individualId"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="id"
+                for id_item in join_ids:
+                    new_id={}
+                    new_id[final_id] = id_item.pop(original_id)
+                    def_list.append(new_id)
+                query={}
+                query['$or']=def_list
+            elif scope == 'individuals' and collection == 'runs':
+                mongo_collection=client.beacon.individuals
+                original_id="id"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="individualId"
+                for id_item in join_ids:
+                    new_id={}
+                    new_id[final_id] = id_item.pop(original_id)
+                    def_list.append(new_id)
+                query={}
+                query['$or']=def_list
             
     if is_filter_id_required:
         query_filtering={}
