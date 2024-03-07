@@ -128,27 +128,9 @@ services:
       context: .
       dockerfile: ./keycloak/Dockerfile
       #    entrypoint: /opt/keycloak/bin/keycloak-entrypoint.sh
-      #     environment:
-      #       - KC_HOSTNAME_STRICT_BACKCHANNEL=true
-      #       - KC_HOSTNAME_URL=https://beaker:9991
-      #       - KEYCLOAK_ADMIN=admin
-      #       - KEYCLOAK_ADMIN_PASSWORD=secret
-      #       - KC_USER=admin
-      #       - KC_PASSWORD=secret
-      #       - KC_DB_USERNAME=admin
-      #       - KC_DB_PASSWORD=secret
-      #       - KC_DB_URL_HOST=idp-db
-      #       - KC_DB_URL_PORT=5432
-      #       - KC_DB=postgres 
-      #       - KC_DB_URL_DATABASE=keycloak
-      #       - KC_DB_SCHEMA=public
-      #       - KC_FILE=/tmp/beacon-realm.json
-      #       - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/conf/certs/server-cert.pem
-      #       - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/conf/certs/server-key.pem 
-        #    volumes:
-        #      - ./beacon-realm.json:/tmp/beacon-realm.json
-        #      - ./keycloak-entrypoint.sh:/opt/keycloak/bin/keycloak-entrypoint.sh
-      #      - ./certs:/opt/keycloak/conf/certs   
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=secret
     ports:
       - "8080:8080"
       - "9991:8443"
