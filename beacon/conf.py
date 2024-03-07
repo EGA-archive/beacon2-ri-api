@@ -113,7 +113,7 @@ permissions_url = 'http://beaker:5051/'
 # idp_user_info = 'https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon/protocol/openid-connect/userinfo'
 idp_user_info = 'https://beaker:9991/auth/realms/Beacon/protocol/openid-connect/userinfo'
 lsaai_user_info = 'https://login.elixir-czech.org/oidc/userinfo'
-trusted_issuers = ['https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon', 'https://login.elixir-czech.org/oidc/'] #, 'http://beaker:5051']
+trusted_issuers = ['https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon', 'https://login.elixir-czech.org/oidc/', 'http://beaker:5051', 'https://beaker:9991/auth/realms/Beacon' ]
 
 
 #
