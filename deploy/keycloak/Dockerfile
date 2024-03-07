@@ -5,7 +5,7 @@ COPY certs/ /var/tmp/certs/
 WORKDIR /var/tmp/certs
 RUN ./gencerts.sh self_cert.conf rsa
 
-FROM ${B2RI_IDP_IMAGE:-keycloak/keycloak:24.0.1-0}
+FROM ${B2RI_IDP_IMAGE:-keycloak/keycloak:24.0.1-0} as builder
 
 RUN mkdir -p /opt/keycloak/conf/certs 
 RUN mkdir -p /opt/keycloak/data/import
@@ -20,4 +20,6 @@ COPY --from=alpine-gencerts --chown=keycloak /var/tmp/certs /opt/keycloak/conf/c
 USER keycloak
 RUN /opt/keycloak/bin/kc.sh build
 
+FROM ${B2RI_IDP_IMAGE:-keycloak/keycloak:24.0.1-0}
+COPY --from=builder /opt/keycloak/ /opt/keycloak/
 ENTRYPOINT ["/opt/keycloak/bin/keycloak-entrypoint.sh"]
