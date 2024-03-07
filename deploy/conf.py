@@ -99,8 +99,7 @@ CA_cert = '/etc/ega/CA.cert'
 #
 # Permissions server configuration
 #
-#permissions_url = 'http://beacon-permissions:5051/'
-permissions_url = 'http://beaker:5051/'
+permissions_url = 'http://beacon-permissions:5051/'
 
 #
 # IdP endpoints (OpenID Connect/Oauth2)
