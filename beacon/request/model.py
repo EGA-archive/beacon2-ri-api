@@ -79,6 +79,7 @@ class RequestQuery(CamelModel):
     request_parameters: dict = {}
     test_mode: bool = False
     requested_granularity: Granularity = Granularity(conf.default_beacon_granularity)
+    scope: str = 'individuals'
 
 
 class RequestParams(CamelModel):

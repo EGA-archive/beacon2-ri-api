@@ -113,7 +113,7 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                 ), collection))
             except KeyError:
                 raise web.HTTPNotFound    
-        else:
+        elif k != 'filters':
             try:
                 query["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
                     id=VARIANTS_PROPERTY_MAP[k],
@@ -121,15 +121,34 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                 ), collection))
             except KeyError:
                 raise web.HTTPNotFound
-    return query
+
+        elif k == 'filters':
+            v_list=[]
+            if ',' in v:
+                v_list =v.split(',')
+                LOG.debug(v_list)
+            else:
+                v_list.append(v)
+            for id in v_list:
+                v_dict={}
+                v_dict['id']=id
+                qparams.query.filters.append(v_dict)        
+            return query, True
+
+    return query, False
 
 
 def get_individuals(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'individuals'
     mongo_collection = client.beacon.individuals
-    query_parameters = apply_request_parameters({}, qparams)
-    LOG.debug(qparams.query.filters)
-    query={}
+    parameters_as_filters=False
+    query_parameters, parameters_as_filters = apply_request_parameters({}, qparams)
+    LOG.debug(parameters_as_filters)
+    if parameters_as_filters == True:
+        query, parameters_as_filters = apply_request_parameters({}, qparams)
+        query_parameters={}
+    else:
+        query={}
     query = apply_filters(query, qparams.query.filters, collection, query_parameters)
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.INDIVIDUALS
