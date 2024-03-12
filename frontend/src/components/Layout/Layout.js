@@ -356,7 +356,7 @@ function Layout (props) {
       try {
         if (props.collection === 'Individuals') {
           try {
-            let res = await axios.get(configData.API_URL + '/filtering_terms')
+            let res = await axios.get(configData.API_URL + '/filtering_terms?limit=0')
             setTimeOut(true)
 
             if (res.data.response.filteringTerms !== undefined) {
@@ -385,7 +385,7 @@ function Layout (props) {
         } else if (props.collection === 'Cohorts') {
           try {
             let res = await axios.get(
-              configData.API_URL + '/cohorts/filtering_terms'
+              configData.API_URL + '/cohorts/filtering_terms?limit=0'
             )
             setTimeOut(true)
             if (res.data.response.filteringTerms !== undefined) {
@@ -415,7 +415,7 @@ function Layout (props) {
         } else if (props.collection === 'Analyses') {
           try {
             let res = await axios.get(
-              configData.API_URL + '/analyses/filtering_terms'
+              configData.API_URL + '/analyses/filtering_terms?limit=0'
             )
             setTimeOut(true)
             if (res.data.response.filteringTerms !== undefined) {
@@ -430,7 +430,7 @@ function Layout (props) {
           }
         } else if (props.collection === 'Runs') {
           try {
-            let res = await axios.get(configData.API_URL + '/filtering_terms')
+            let res = await axios.get(configData.API_URL + '/filtering_terms?limit=0')
             setTimeOut(true)
             if (res.data.response.filteringTerms !== undefined) {
               setFilteringTerms(res)
@@ -445,7 +445,7 @@ function Layout (props) {
         } else if (props.collection === 'Biosamples') {
           try {
             let res = await axios.get(
-              configData.API_URL + '/biosamples/filtering_terms'
+              configData.API_URL + '/biosamples/filtering_terms?limit=0'
             )
             setTimeOut(true)
             if (res.data.response.filteringTerms !== undefined) {

@@ -41,7 +41,6 @@ function VariantsResults (props) {
   const [isActive3, setIsActive3] = useState(false)
 
   let queryStringTerm = ''
- 
 
   const handleTypeResults1 = () => {
     setShow1(true)
@@ -83,18 +82,15 @@ function VariantsResults (props) {
           isAuthenticated = true
         }
       }
-      console.log(props.variantMinLength)
+
       try {
         let res = await axios.get(configData.API_URL + '/info')
 
-        res.data.responses.forEach(element => {
-          beaconsList.push(element)
-        })
-
-        beaconsList.reverse()
+        beaconsList.push(res.data.response)
 
         if (props.showBar === false) {
           setShowVariantsResults(true)
+
           if (props.query !== null) {
             if (props.query.includes(',')) {
               queryStringTerm = props.query.split(',')
@@ -136,7 +132,9 @@ function VariantsResults (props) {
                   }
                   props.filteringTerms.data.response.filteringTerms.forEach(
                     element2 => {
-                      if (element === element2.label) {
+                      if (
+                        element.toLowerCase() === element2.label.toLowerCase()
+                      ) {
                         filter2 = {
                           id: element2.id,
                           includeDescendantTerms: props.descendantTerm
@@ -182,9 +180,15 @@ function VariantsResults (props) {
               } else {
                 let filter = { id: props.query }
                 let labelToOntology = 0
+                console.log('holi')
+                let queryTermLowerCase = props.query.toLowerCase()
+                console.log(props.filteringTerms)
                 props.filteringTerms.data.response.filteringTerms.forEach(
                   element => {
-                    if (props.query === element.label) {
+                    if (element.label) {
+                      element.label = element.label.toLowerCase()
+                    }
+                    if (queryTermLowerCase === element.label) {
                       labelToOntology = element.id
                       filter = {
                         id: labelToOntology
@@ -209,8 +213,8 @@ function VariantsResults (props) {
                   filters: arrayFilter,
                   includeResultsetResponses: `${props.resultSets}`,
                   pagination: {
-                    skip: 0,
-                    limit: 0
+                    skip: skip,
+                    limit: limit
                   },
                   testMode: false,
                   requestedGranularity: 'record'
@@ -254,31 +258,13 @@ function VariantsResults (props) {
                   if (element.id && element.id !== '') {
                     if (resultsPerDataset.length > 0) {
                       resultsPerDataset.forEach(element2 => {
-                        if (element2[0] === element.beaconId) {
-                          element2[1].push(element.id)
-                          element2[2].push(element.exists)
-                          element2[3].push(element.resultsCount)
-                        } else {
-                          let arrayResultsPerDataset = [
-                            element.beaconId,
-                            [element.id],
-                            [element.exists],
-                            [element.resultsCount]
-                          ]
-                          let found = false
-                          resultsPerDataset.forEach(element => {
-                            if (element[0] === arrayResultsPerDataset[0]) {
-                              found = true
-                            }
-                          })
-                          if (found === false) {
-                            resultsPerDataset.push(arrayResultsPerDataset)
-                          }
-                        }
+                        element2[0].push(element.id)
+                        element2[1].push(element.exists)
+                        element2[2].push(element.resultsCount)
                       })
                     } else {
                       let arrayResultsPerDataset = [
-                        element.beaconId,
+                        //element.beaconId,
                         [element.id],
                         [element.exists],
                         [element.resultsCount]
@@ -286,18 +272,17 @@ function VariantsResults (props) {
                       resultsPerDataset.push(arrayResultsPerDataset)
                     }
                   }
-
+    
                   if (element.id === undefined || element.id === '') {
                     let arrayResultsNoDatasets = [element.beaconId]
                     resultsNotPerDataset.push(arrayResultsNoDatasets)
-                    console.log(arrayResultsNoDatasets)
                   }
-
+    
                   if (res.data.response.resultSets[index].results) {
                     res.data.response.resultSets[index].results.forEach(
                       (element2, index2) => {
                         let arrayResult = [
-                          res.data.response.resultSets[index].beaconId,
+                          res.data.meta.beaconId,
                           res.data.response.resultSets[index].results[index2]
                         ]
                         results.push(arrayResult)
@@ -362,49 +347,39 @@ function VariantsResults (props) {
                   if (element.id && element.id !== '') {
                     if (resultsPerDataset.length > 0) {
                       resultsPerDataset.forEach(element2 => {
-                        if (element2[0] === element.beaconId) {
-                          element2[1].push(element.id)
-                          element2[2].push(element.exists)
-                          element2[3].push(element.resultsCount)
-                        } else {
-                          let arrayResultsPerDataset = [
-                            element.beaconId,
-                            [element.id],
-                            [element.exists],
-                            [element.resultsCount]
-                          ]
-                          let found = false
-                          resultsPerDataset.forEach(element => {
-                            if (element[0] === arrayResultsPerDataset[0]) {
-                              found = true
-                            }
-                          })
-                          if (found === false) {
-                            resultsPerDataset.push(arrayResultsPerDataset)
-                          }
-                        }
+                        element2[1].push(element.id)
+                        element2[2].push(element.exists)
+                        element2[3].push(element.resultsCount)
                       })
                     } else {
                       let arrayResultsPerDataset = [
-                        element.beaconId,
+                        //element.beaconId,
                         [element.id],
                         [element.exists],
                         [element.resultsCount]
                       ]
-                      resultsPerDataset.push(arrayResultsPerDataset)
+                      let found = false
+                      resultsPerDataset.forEach(element => {
+                        if (element[0] === arrayResultsPerDataset[0]) {
+                          found = true
+                        }
+                      })
+                      if (found === false) {
+                        resultsPerDataset.push(arrayResultsPerDataset)
+                      }
                     }
                   }
-
+    
                   if (element.id === undefined || element.id === '') {
                     let arrayResultsNoDatasets = [element.beaconId]
                     resultsNotPerDataset.push(arrayResultsNoDatasets)
                   }
-
+    
                   if (res.data.response.resultSets[index].results) {
                     res.data.response.resultSets[index].results.forEach(
                       (element2, index2) => {
                         let arrayResult = [
-                          res.data.response.resultSets[index].beaconId,
+                          res.data.meta.beaconId,
                           res.data.response.resultSets[index].results[index2]
                         ]
                         results.push(arrayResult)
@@ -583,7 +558,6 @@ function VariantsResults (props) {
               res.data.responseSummary.numTotalResults === undefined) &&
             props.resultSets !== 'MISS'
           ) {
-            setTimeOut(true)
             setError('No results. Please try another query')
             setNumberResults(0)
             setBoolean(false)
@@ -592,36 +566,26 @@ function VariantsResults (props) {
               if (element.id && element.id !== '') {
                 if (resultsPerDataset.length > 0) {
                   resultsPerDataset.forEach(element2 => {
-                    if (element2[0] === element.beaconId) {
-                      element2[1].push(element.id)
-                      element2[2].push(element.exists)
-                      element2[3].push(element.resultsCount)
-                    } else {
-                      let arrayResultsPerDataset = [
-                        element.beaconId,
-                        [element.id],
-                        [element.exists],
-                        [element.resultsCount]
-                      ]
-                      let found = false
-                      resultsPerDataset.forEach(element => {
-                        if (element[0] === arrayResultsPerDataset[0]) {
-                          found = true
-                        }
-                      })
-                      if (found === false) {
-                        resultsPerDataset.push(arrayResultsPerDataset)
-                      }
-                    }
+                    element2[1].push(element.id)
+                    element2[2].push(element.exists)
+                    element2[3].push(element.resultsCount)
                   })
                 } else {
                   let arrayResultsPerDataset = [
-                    element.beaconId,
+                    //element.beaconId,
                     [element.id],
                     [element.exists],
                     [element.resultsCount]
                   ]
-                  resultsPerDataset.push(arrayResultsPerDataset)
+                  let found = false
+                  resultsPerDataset.forEach(element => {
+                    if (element[0] === arrayResultsPerDataset[0]) {
+                      found = true
+                    }
+                  })
+                  if (found === false) {
+                    resultsPerDataset.push(arrayResultsPerDataset)
+                  }
                 }
               }
 
@@ -634,7 +598,7 @@ function VariantsResults (props) {
                 res.data.response.resultSets[index].results.forEach(
                   (element2, index2) => {
                     let arrayResult = [
-                      res.data.response.resultSets[index].beaconId,
+                      res.data.meta.beaconId,
                       res.data.response.resultSets[index].results[index2]
                     ]
                     results.push(arrayResult)
@@ -668,7 +632,7 @@ function VariantsResults (props) {
           )}
           {timeOut && error !== 'Connection error. Please retry' && (
             <div>
-               <div className='selectGranularity'>
+              <div className='selectGranularity'>
                 <h4>Granularity:</h4>
                 <button className='typeResults' onClick={handleTypeResults1}>
                   <h5

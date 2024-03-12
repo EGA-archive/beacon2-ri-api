@@ -118,7 +118,7 @@
   .resultsRecord {
     display: flex;
     flex-direction: row;
-  
+    min-height: 70vh;
     flex-wrap: wrap;
     justify-content: center;
     align-content: center;
@@ -348,7 +348,7 @@
   .resultsRecord {
     display: flex;
     flex-direction: row;
-  
+    min-height: 70vh;
     flex-wrap: wrap;
     justify-content: center;
     align-content: center;
@@ -379,6 +379,7 @@
       justify-content: center;
       align-content: center;
       width: 100vw;
+      min-height: 40vh;
     }
   
     .tittle4 {

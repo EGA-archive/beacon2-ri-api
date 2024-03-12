@@ -16,11 +16,6 @@ function TableResultsVariant (props) {
 
   const [stringDataToCopy, setStringDataToCopy] = useState('')
 
-  const [beaconsArrayResults, setBeaconsArrayResults] = useState([])
-
-  const [beaconsArrayResultsOrdered, setBeaconsArrayResultsOrdered] = useState(
-    []
-  )
 
   const [resultsSelected, setResultsSelected] = useState(props.results)
   const [resultsSelectedFinal, setResultsSelectedFinal] = useState([])
@@ -47,34 +42,16 @@ function TableResultsVariant (props) {
       })
   }
 
-  const handleClickDatasets = e => {
-    openDatasetArray[e] = true
-    triggerArray[e] = true
-    setTrigger(!trigger)
-  }
 
-  const handleClickDatasets2 = e => {
-    openDatasetArray2[e] = true
-    triggerArray2[e] = true
-    setTrigger(!trigger)
-  }
 
   const handleSeeResults = e => {
-    resultsSelected.forEach(element => {
-      if (element[0] === e) {
-        resultsSelectedFinal.push(element)
-      }
-    })
+    setResultsSelectedFinal(resultsSelected)
     setShowResults(true)
     setShowDatasets(false)
     setTrigger(true)
   }
 
-  function getOccurrence (array, value) {
-    var count = 0
-    array.forEach(v => v === value && count++)
-    return count
-  }
+
 
   useEffect(() => {
     props.results.forEach((element, index) => {
@@ -89,27 +66,27 @@ function TableResultsVariant (props) {
   }, [trigger, resultsSelectedFinal])
 
   useEffect(() => {
-    console.log(props.resultsPerDataset)
-    let count = 0
-    props.beaconsList.forEach((element2, index2) => {
-      count = getOccurrence(arrayBeaconsIds, element2.meta.beaconId)
-      if (count > 0) {
-        beaconsArrayResults.push([element2, count, true])
-      } else {
-        beaconsArrayResults.push([element2, count, false])
-      }
-    })
-    beaconsArrayResults.forEach(element => {
-      if (element[2] === true) {
-        beaconsArrayResultsOrdered.push(element)
-      }
-    })
-    beaconsArrayResults.forEach(element => {
-      if (element[2] === false) {
-        beaconsArrayResultsOrdered.push(element)
-      }
-    })
-    console.log(beaconsArrayResults)
+    // console.log(props.resultsPerDataset)
+    // let count = 0
+    // props.beaconsList.forEach((element2, index2) => {
+    //   count = getOccurrence(arrayBeaconsIds, element2.meta.beaconId)
+    //   if (count > 0) {
+    //     beaconsArrayResults.push([element2, count, true])
+    //   } else {
+    //     beaconsArrayResults.push([element2, count, false])
+    //   }
+    // })
+    // beaconsArrayResults.forEach(element => {
+    //   if (element[2] === true) {
+    //     beaconsArrayResultsOrdered.push(element)
+    //   }
+    // })
+    // beaconsArrayResults.forEach(element => {
+    //   if (element[2] === false) {
+    //     beaconsArrayResultsOrdered.push(element)
+    //   }
+    // })
+    // console.log(beaconsArrayResults)
 
     setShowDatasets(true)
   }, [])
@@ -118,8 +95,7 @@ function TableResultsVariant (props) {
     <div className='containerResultsVariants'>
       <div className='containerBeaconResults'>
         {showDatsets === true &&
-          beaconsArrayResultsOrdered.length > 0 &&
-          beaconsArrayResultsOrdered.map(result => {
+           props.beaconsList.map(result => {
             return (
               <>
                 {props.show !== 'full' && (

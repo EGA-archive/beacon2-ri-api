@@ -52,33 +52,6 @@ function RunsResults (props) {
   const auth = useAuth()
   let isAuthenticated = auth.userData?.id_token ? true : false
 
-  const handleTypeResults1 = () => {
-    setShow1(true)
-    setShow2(false)
-    setShow3(false)
-    setIsActive1(true)
-    setIsActive2(false)
-    setIsActive3(false)
-  }
-
-  const handleTypeResults2 = () => {
-    setShow2(true)
-    setShow1(false)
-    setShow3(false)
-    setIsActive2(true)
-    setIsActive3(false)
-    setIsActive1(false)
-  }
-
-  const handleTypeResults3 = () => {
-    setShow3(true)
-    setShow1(false)
-    setShow2(false)
-    setIsActive3(true)
-    setIsActive1(false)
-    setIsActive2(false)
-  }
-
   useEffect(() => {
     const apiCall = async () => {
       if (isAuthenticated === false) {
@@ -131,7 +104,7 @@ function RunsResults (props) {
               }
               props.filteringTerms.data.response.filteringTerms.forEach(
                 element2 => {
-                  if (element === element2.label) {
+                  if (element.toLowerCase() === element2.label.toLowerCase()) {
                     filter2 = {
                       id: element2.id,
                       includeDescendantTerms: props.descendantTerm
@@ -177,9 +150,15 @@ function RunsResults (props) {
           } else {
             let filter = { id: props.query }
             let labelToOntology = 0
+            console.log("holi")
+            let queryTermLowerCase = props.query.toLowerCase()
+            console.log(props.filteringTerms)
             props.filteringTerms.data.response.filteringTerms.forEach(
               element => {
-                if (props.query === element.label) {
+                if (element.label){
+                  element.label = element.label.toLowerCase()
+                }
+                if (queryTermLowerCase === element.label) {
                   labelToOntology = element.id
                   filter = {
                     id: labelToOntology
@@ -195,11 +174,7 @@ function RunsResults (props) {
       try {
         let res = await axios.get(configData.API_URL + '/info')
 
-        res.data.responses.forEach(element => {
-          beaconsList.push(element)
-        })
-
-        beaconsList.reverse()
+        beaconsList.push(res.data.response)
 
         if (props.query === null) {
           // show all individuals
@@ -229,13 +204,18 @@ function RunsResults (props) {
           }
 
           if (token === null) {
-            res = await axios.post(configData.API_URL + '/runs', jsonData1)
+            res = await axios.post(
+              configData.API_URL + '/runs',
+              jsonData1
+            )
           } else {
             const headers = { Authorization: `Bearer ${token}` }
 
-            res = await axios.post(configData.API_URL + '/runs', jsonData1, {
-              headers: headers
-            })
+            res = await axios.post(
+              configData.API_URL + '/runs',
+              jsonData1,
+              { headers: headers }
+            )
           }
           setTimeOut(true)
 
@@ -252,31 +232,13 @@ function RunsResults (props) {
               if (element.id && element.id !== '') {
                 if (resultsPerDataset.length > 0) {
                   resultsPerDataset.forEach(element2 => {
-                    if (element2[0] === element.beaconId) {
-                      element2[1].push(element.id)
-                      element2[2].push(element.exists)
-                      element2[3].push(element.resultsCount)
-                    } else {
-                      let arrayResultsPerDataset = [
-                        element.beaconId,
-                        [element.id],
-                        [element.exists],
-                        [element.resultsCount]
-                      ]
-                      let found = false
-                      resultsPerDataset.forEach(element => {
-                        if (element[0] === arrayResultsPerDataset[0]) {
-                          found = true
-                        }
-                      })
-                      if (found === false) {
-                        resultsPerDataset.push(arrayResultsPerDataset)
-                      }
-                    }
+                    element2[0].push(element.id)
+                    element2[1].push(element.exists)
+                    element2[2].push(element.resultsCount)
                   })
                 } else {
                   let arrayResultsPerDataset = [
-                    element.beaconId,
+                    //element.beaconId,
                     [element.id],
                     [element.exists],
                     [element.resultsCount]
@@ -288,14 +250,13 @@ function RunsResults (props) {
               if (element.id === undefined || element.id === '') {
                 let arrayResultsNoDatasets = [element.beaconId]
                 resultsNotPerDataset.push(arrayResultsNoDatasets)
-                console.log(arrayResultsNoDatasets)
               }
 
               if (res.data.response.resultSets[index].results) {
                 res.data.response.resultSets[index].results.forEach(
                   (element2, index2) => {
                     let arrayResult = [
-                      res.data.response.resultSets[index].beaconId,
+                      res.data.meta.beaconId,
                       res.data.response.resultSets[index].results[index2]
                     ]
                     results.push(arrayResult)
@@ -321,27 +282,33 @@ function RunsResults (props) {
             }
           }
           jsonData2 = JSON.stringify(jsonData2)
-          console.log(jsonData2)
+
           let token = null
           if (auth.userData === null) {
             token = getStoredToken()
           } else {
             token = auth.userData.access_token
           }
-
+          console.log(jsonData2)
           if (token === null) {
             console.log('Querying without token')
-            res = await axios.post(configData.API_URL + '/runs', jsonData2)
+            res = await axios.post(
+              configData.API_URL + '/runs',
+              jsonData2
+            )
+            
           } else {
             console.log('Querying WITH token')
             const headers = { Authorization: `Bearer ${token}` }
-            res = await axios.post(configData.API_URL + '/runs', jsonData2, {
-              headers: headers
-            })
+            res = await axios.post(
+              configData.API_URL + '/runs',
+              jsonData2,
+              { headers: headers }
+            )
           }
 
           setTimeOut(true)
-          console.log(res.data)
+
           if (
             (res.data.responseSummary.numTotalResults < 1 ||
               res.data.responseSummary.numTotalResults === undefined) &&
@@ -355,36 +322,26 @@ function RunsResults (props) {
               if (element.id && element.id !== '') {
                 if (resultsPerDataset.length > 0) {
                   resultsPerDataset.forEach(element2 => {
-                    if (element2[0] === element.beaconId) {
-                      element2[1].push(element.id)
-                      element2[2].push(element.exists)
-                      element2[3].push(element.resultsCount)
-                    } else {
-                      let arrayResultsPerDataset = [
-                        element.beaconId,
-                        [element.id],
-                        [element.exists],
-                        [element.resultsCount]
-                      ]
-                      let found = false
-                      resultsPerDataset.forEach(element => {
-                        if (element[0] === arrayResultsPerDataset[0]) {
-                          found = true
-                        }
-                      })
-                      if (found === false) {
-                        resultsPerDataset.push(arrayResultsPerDataset)
-                      }
-                    }
+                    element2[1].push(element.id)
+                    element2[2].push(element.exists)
+                    element2[3].push(element.resultsCount)
                   })
                 } else {
                   let arrayResultsPerDataset = [
-                    element.beaconId,
+                    //element.beaconId,
                     [element.id],
                     [element.exists],
                     [element.resultsCount]
                   ]
-                  resultsPerDataset.push(arrayResultsPerDataset)
+                  let found = false
+                  resultsPerDataset.forEach(element => {
+                    if (element[0] === arrayResultsPerDataset[0]) {
+                      found = true
+                    }
+                  })
+                  if (found === false) {
+                    resultsPerDataset.push(arrayResultsPerDataset)
+                  }
                 }
               }
 
@@ -397,7 +354,7 @@ function RunsResults (props) {
                 res.data.response.resultSets[index].results.forEach(
                   (element2, index2) => {
                     let arrayResult = [
-                      res.data.response.resultSets[index].beaconId,
+                      res.data.meta.beaconId,
                       res.data.response.resultSets[index].results[index2]
                     ]
                     results.push(arrayResult)
@@ -415,6 +372,32 @@ function RunsResults (props) {
     apiCall()
   }, [])
 
+  const handleTypeResults1 = () => {
+    setShow1(true)
+    setShow2(false)
+    setShow3(false)
+    setIsActive1(true)
+    setIsActive2(false)
+    setIsActive3(false)
+  }
+
+  const handleTypeResults2 = () => {
+    setShow2(true)
+    setShow1(false)
+    setShow3(false)
+    setIsActive2(true)
+    setIsActive3(false)
+    setIsActive1(false)
+  }
+
+  const handleTypeResults3 = () => {
+    setShow3(true)
+    setShow1(false)
+    setShow2(false)
+    setIsActive3(true)
+    setIsActive1(false)
+    setIsActive2(false)
+  }
   const onSubmit = () => {
     setSkipTrigger(skip)
     setLimitTrigger(limit)

@@ -236,25 +236,8 @@ p a {
   margin-top: 2px;
 }
 
-.resultsRecord h3 {
-  color: #34495e;
-  text-transform: uppercase;
-  margin-left: 50px;
-  margin-top: 15px;
-  font-size: 16px;
-}
 
-.resultsRecord {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  width: 100vw;
-  margin-top: 20px;
-  padding-bottom: 60px;
-  min-height: 700px;
-  justify-content: center;
-}
+
 
 @media (max-width: 860px) {
   .datasetCardResults {
@@ -274,16 +257,6 @@ p a {
     border-radius: 8px;
   }
 
-  .resultsRecord {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-content: flex-start;
-    width: 100vw;
-    margin-top: 20px;
-    padding-bottom: 60px;
-  }
 
   .tittle4 {
     display: flex;

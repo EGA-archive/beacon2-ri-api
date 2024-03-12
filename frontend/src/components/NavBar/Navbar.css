@@ -629,13 +629,13 @@
 
   .Variants:hover ~ .animation {
     width: 120px;
-    left: 240px;
+    left: 120px;
     background-color: #3498db;
   }
 
   .Runs:hover ~ .animation {
     width: 120px;
-    left: 360px;
+    left: 240px;
     background-color: #9b59b6;
   }
   .Analyses:hover ~ .animation {
