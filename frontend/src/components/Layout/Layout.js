@@ -1,16 +1,12 @@
 import '../../App.css'
 import './LayoutVariantsTable.css'
 import FilteringTerms from '../FilteringTerms/FilteringTerms'
-import { NavLink } from 'react-router-dom'
 
-import BeaconInfo from '../Dataset/BeaconInfo'
 import VariantsResults from '../GenomicVariations/VariantsResults'
 import HorizontalExpansion from '../QueryExpansion/HorizontalExpansion'
 import BiosamplesResults from '../Biosamples/BiosamplesResults'
-
+import BeaconInfo from '../Dataset/BeaconInfo'
 import React, { useState, useEffect } from 'react'
-
-import OutsideClickHandler from 'react-outside-click-handler'
 
 import Switch from '@mui/material/Switch'
 import MultiSwitch from 'react-multi-switch-toggle'
@@ -41,8 +37,8 @@ function Layout (props) {
   const [expansionSection, setExpansionSection] = useState(false)
   const [arrayFilteringTermsQE, setArrayFilteringTermsQE] = useState([])
 
-  const [resultSet, setResultset] = useState('HIT')
-  const [resultSetAux, setResultsetAux] = useState('HIT')
+  const [resultSet, setResultset] = useState('ALL')
+  const [resultSetAux, setResultsetAux] = useState('ALL')
 
   const [descendantTerm, setDescendantTerm] = useState('true')
 
@@ -62,7 +58,7 @@ function Layout (props) {
 
   const [showFilteringTerms, setShowFilteringTerms] = useState(false)
   const [filteringTerms, setFilteringTerms] = useState(false)
-
+  const [filteringTermsButton, setShowFilteringTermsButton] = useState(false)
   const [showVariants, setShowVariants] = useState(false)
 
   const [showResultsVariants, setShowResultsVariants] = useState(true)
@@ -181,125 +177,28 @@ function Layout (props) {
     setIsOpenModal6(true)
   }
 
-  const handleFilteringTerms = async e => {
-    setTimeOut(false)
-    if (props.collection === 'Individuals') {
-      try {
-        let res = await axios.get(
-          configData.API_URL + '/individuals/filtering_terms'
-        )
-        setTimeOut(true)
-
-        if (res.data.response.filteringTerms !== undefined) {
-          setFilteringTerms(res)
-          setResults(null)
-        } else {
-          setError('No filtering terms now available')
-        }
-      } catch (error) {
-        setError('No filtering terms now available for Individuals collection')
-        setTimeOut(true)
-      }
-    } else if (props.collection === 'Cohorts') {
-      try {
-        let res = await axios.get(
-          configData.API_URL + '/cohorts/filtering_terms'
-        )
-        setTimeOut(true)
-        if (res.data.response.filteringTerms !== undefined) {
-          setFilteringTerms(res)
-          setResults(null)
-        } else {
-          setError('No filtering terms now available')
-        }
-      } catch (error) {
-        setError('No filtering terms now available for Cohorts collection')
-        setTimeOut(true)
-      }
-    } else if (props.collection === 'Variant') {
-      try {
-        let res = await axios.get(
-          configData.API_URL + '/g_variants/filtering_terms'
-        )
-        setTimeOut(true)
-        if (res.data.response.filteringTerms !== undefined) {
-          setFilteringTerms(res)
-          setResults(null)
-        } else {
-          setError('No filtering terms now available')
-        }
-      } catch (error) {
-        setError('No filtering terms now available for Variant collection')
-        setTimeOut(true)
-      }
-    } else if (props.collection === 'Analyses') {
-      try {
-        let res = await axios.get(
-          configData.API_URL + '/analyses/filtering_terms'
-        )
-        setTimeOut(true)
-        if (res.data.response.filteringTerms !== undefined) {
-          setFilteringTerms(res)
-          setResults(null)
-        } else {
-          setError('No filtering terms now available')
-        }
-      } catch (error) {
-        setError('No filtering terms now available for Analyses collection')
-        setTimeOut(true)
-      }
-    } else if (props.collection === 'Runs') {
-      try {
-        let res = await axios.get(configData.API_URL + '/runs/filtering_terms')
-        setTimeOut(true)
-        if (res.data.response.filteringTerms !== undefined) {
-          setFilteringTerms(res)
-          setResults(null)
-        } else {
-          setError('No filtering terms now available')
-        }
-      } catch (error) {
-        setError('No filtering terms now available for Runs collection')
-        setTimeOut(true)
-      }
-    } else if (props.collection === 'Biosamples') {
-      try {
-        let res = await axios.get(
-          configData.API_URL + '/biosamples/filtering_terms'
-        )
-        setTimeOut(true)
-        if (res.data.response.filteringTerms !== undefined) {
-          setFilteringTerms(res)
-          setResults(null)
-        } else {
-          setTimeOut(true)
-          setError('No filtering terms now available')
-        }
-      } catch (error) {
-        setError('No filtering terms now available for Biosamples collection')
-        setTimeOut(true)
-      }
-    }
-
+  const handleSeeFilteringTerms = () => {
     setShowFilteringTerms(true)
+    setResults(null)
+    setTimeOut(true)
   }
 
   const handleExQueries = () => {
     if (props.collection === 'Individuals') {
       setExampleQ([
+        ['female', 'NCIT:C16576'],
+        ['African', 'NCIT:C42331'],
+        ['Cardiovascular Neoplasm', 'NCIT:C4784'],
         ['Weight>100'],
-        ['NCIT:C16576', 'female'],
         ['geographicOrigin=%land%'],
-        ['geographicOrigin!England'],
-        ['NCIT:C42331', 'African'],
-        ['NCIT:C4784', 'Cardiovascular Neoplasm']
+        ['geographicOrigin!England']
       ])
     } else if (props.collection === 'Variant') {
       setExampleQ([['GENO:GENO_0000458']])
     } else if (props.collection === 'Biosamples') {
       setExampleQ([
-        ['UBERON:0000178', 'blood'],
-        ['EFO:0009654', 'reference sample'],
+        ['blood', 'UBERON:0000178'],
+        ['reference sample', 'EFO:0009654'],
         ['sampleOriginType:blood']
       ])
     } else if (props.collection === 'Runs') {
@@ -410,18 +309,22 @@ function Layout (props) {
   }
 
   const handleRangeExample = e => {
-    setAlternateBases2('A')
-    setRefBases2('G')
-    setStart2('16050114')
-    setEnd('16050115')
+    setAlternateBases2('CTT')
+    setRefBases2('C')
+    setStart2('16055848')
+    setEnd('16055849')
+    setAssemblyId2('GRCh38')
+    setRefName2('22')
+    setVariantMinLength('2')
+    setVariantMaxLength('3')
   }
 
   const handleGeneExample = e => {
-    setGeneId('EIF4A1')
-    setVariantType2('DEL')
+    setGeneId('CHR_START-DUXAP8')
   }
 
   useEffect(() => {
+    setError('')
     if (props.collection === 'Individuals') {
       setPlaceholder('filtering term comma-separated, ID><=value')
       setExtraIndividuals(true)
@@ -451,25 +354,118 @@ function Layout (props) {
     const fetchData = async () => {
       //for query expansion
       try {
-        let res = await axios.get(
-          configData.API_URL + '/individuals/filtering_terms'
-        )
-        if (res !== null) {
-          res.data.response.filteringTerms.forEach(element => {
-            if (element.type !== 'custom') {
-              arrayFilteringTerms.push(element.id)
-              arrayFilteringTermsQE.push(element)
-            }
-          })
+        if (props.collection === 'Individuals') {
+          try {
+            let res = await axios.get(configData.API_URL + '/filtering_terms')
+            setTimeOut(true)
 
-          setstate({
-            query: '',
-            list: arrayFilteringTerms
-          })
+            if (res.data.response.filteringTerms !== undefined) {
+              setFilteringTerms(res)
+              setResults(null)
+            }
+            if (res !== null) {
+              res.data.response.filteringTerms.forEach(element => {
+                if (element.type !== 'custom') {
+                  arrayFilteringTerms.push(element.id)
+                  arrayFilteringTermsQE.push(element)
+                }
+              })
+
+              setstate({
+                query: '',
+                list: arrayFilteringTerms
+              })
+            }
+          } catch (error) {
+            setError(
+              'No filtering terms now available for Individuals collection'
+            )
+            setTimeOut(true)
+          }
+        } else if (props.collection === 'Cohorts') {
+          try {
+            let res = await axios.get(
+              configData.API_URL + '/cohorts/filtering_terms'
+            )
+            setTimeOut(true)
+            if (res.data.response.filteringTerms !== undefined) {
+              setFilteringTerms(res)
+              setResults(null)
+            } else {
+              setError('No filtering terms now available')
+            }
+          } catch (error) {
+            setError('No filtering terms now available for Cohorts collection')
+            setTimeOut(true)
+          }
+        } else if (props.collection === 'Variant') {
+          try {
+            let res = await axios.get(configData.API_URL + '/filtering_terms')
+            setTimeOut(true)
+            if (res.data.response.filteringTerms !== undefined) {
+              setFilteringTerms(res)
+              setResults(null)
+            } else {
+              setError('No filtering terms now available')
+            }
+          } catch (error) {
+            setError('No filtering terms now available for Variant collection')
+            setTimeOut(true)
+          }
+        } else if (props.collection === 'Analyses') {
+          try {
+            let res = await axios.get(
+              configData.API_URL + '/analyses/filtering_terms'
+            )
+            setTimeOut(true)
+            if (res.data.response.filteringTerms !== undefined) {
+              setFilteringTerms(res)
+              setResults(null)
+            } else {
+              setError('No filtering terms now available')
+            }
+          } catch (error) {
+            setError('No filtering terms now available for Analyses collection')
+            setTimeOut(true)
+          }
+        } else if (props.collection === 'Runs') {
+          try {
+            let res = await axios.get(configData.API_URL + '/filtering_terms')
+            setTimeOut(true)
+            if (res.data.response.filteringTerms !== undefined) {
+              setFilteringTerms(res)
+              setResults(null)
+            } else {
+              setError('No filtering terms now available')
+            }
+          } catch (error) {
+            setError('No filtering terms now available for Runs collection')
+            setTimeOut(true)
+          }
+        } else if (props.collection === 'Biosamples') {
+          try {
+            let res = await axios.get(
+              configData.API_URL + '/biosamples/filtering_terms'
+            )
+            setTimeOut(true)
+            if (res.data.response.filteringTerms !== undefined) {
+              setFilteringTerms(res)
+              setResults(null)
+            } else {
+              setTimeOut(true)
+              setError('No filtering terms now available')
+            }
+          } catch (error) {
+            setError(
+              'No filtering terms now available for Biosamples collection'
+            )
+            setTimeOut(true)
+          }
         }
       } catch (error) {
         console.log(error)
       }
+      setShowFilteringTermsButton(true)
     }
 
     // call the function
@@ -479,6 +475,8 @@ function Layout (props) {
   }, [])
 
   const onSubmit = async event => {
+    console.log(query)
+    console.log(value)
     event.preventDefault()
 
     setIsSub(true)
@@ -527,25 +525,22 @@ function Layout (props) {
   return (
     <div className='container1'>
       <div className='container2'>
-        <button className='helpButton' onClick={handleHelpModal2}>
-          <img
-            className='questionLogo2'
-            src='./question.png'
-            alt='questionIcon'
-          ></img>
-        </button>
-        <NavLink className='NavlinkVerifier' exact to='/validator'>
-          BEACON VALIDATOR
-        </NavLink>
-        <div className='logos'>
-          <a href='https://ega-archive.org/' target='_blank' rel="noreferrer">
-            <img
-              className='beaconLogo'
-              src='https://legacy.ega-archive.org/images/logo.png'
-              alt='beaconEgaLogo'
-            ></img>
-          </a>
-          <h1 className='version'>v0.5.0</h1>
+        <div className='logosVersionContainer'>
+          <div className='logos'>
+            <a
+              href='https://eosc4cancer.eu/'
+              className='logoInstitution'
+              target='_blank'
+              rel='noreferrer'
+            >
+              <img
+                className='eosc4cancer'
+                src='../eosc4cancer.png'
+                alt='eosc4cancer'
+              ></img>
+            </a>
+          </div>
+          <h1 className='version'>v0.5.2</h1>
         </div>
       </div>
 
@@ -597,30 +592,374 @@ function Layout (props) {
           </button>
         )}
         <div className='container-fluid'>
-          {cohorts === false &&
-            props.collection !== 'Variant' &&
-            showBar === true && (
-              <div>
-                <form className='d-flex' onSubmit={onSubmit}>
-                  <input
-                    className='formSearch'
-                    type='search'
-                    placeholder={placeholder}
-                    value={query}
-                    onChange={e => search(e)}
-                    aria-label='Search'
-                  />
+          {cohorts === false && showBar === true && (
+            <div className='containerForm'>
+              <form className='d-flex' onSubmit={onSubmit}>
+                <input
+                  className='formSearch'
+                  type='search'
+                  placeholder={placeholder}
+                  value={query}
+                  onChange={e => search(e)}
+                  aria-label='Search'
+                />
 
-                  <button className='searchButton' type='submit'>
-                    <img
-                      className='searchIcon'
-                      src='./magnifier.png'
-                      alt='searchIcon'
-                    ></img>
-                  </button>
-                </form>
+                <button className='searchButton' type='submit'>
+                  <img
+                    className='searchIcon'
+                    src='./magnifier.png'
+                    alt='searchIcon'
+                  ></img>
+                </button>
+              </form>
+              <div className='additionalOptions'>
+                <div className='example'>
+                  {cohorts === false &&
+                    props.collection !== '' &&
+                    showBar === true && (
+                      <div className='bulbExample'>
+                        <button
+                          className='exampleQueries'
+                          onClick={handleExQueries}
+                        >
+                          Query Examples
+                        </button>
+                        <img
+                          className='bulbLogo'
+                          src='../light-bulb.png'
+                          alt='bulbIcon'
+                        ></img>
+                        <div className='examplesQueriesList'>
+                          {exampleQ[0] &&
+                            exampleQ.map(result => {
+                              return (
+                                <div id='exampleQueries'>
+                                  <button
+                                    className='exampleQuery'
+                                    onClick={() => {
+                                      setPlaceholder(`${result[0]}`)
+                                      setQuery(`${[result[0]]}`)
+                                      setValue(`${result[1]}`)
+                                      setExampleQ([])
+                                    }}
+                                  >
+                                    {result[1] !== undefined && (
+                                      <div className='text-example'>
+                                        {result[1]}
+                                      </div>
+                                    )}
+
+                                    {result[0]}
+                                  </button>
+                                </div>
+                              )
+                            })}
+                        </div>
+                      </div>
+                    )}
+                  {props.collection !== '' &&
+                    showBar === true &&
+                    filteringTermsButton && (
+                      <button
+                        className='filters'
+                        onClick={handleSeeFilteringTerms}
+                      >
+                        Filtering Terms{' '}
+                      </button>
+                    )}
+                  {props.collection !== '' &&
+                    showBar === true &&
+                    !filteringTermsButton && (
+                      <button className='filters'>Filtering Terms </button>
+                    )}
+                </div>
               </div>
+            </div>
+          )}
+          <form className='variantsForm' onSubmit={handleSubmit}>
+            {props.collection !== 'Variant' && (
+              <h7 className='crossQueriesTittle'>
+                Cross queries from {props.collection} to Variants
+              </h7>
             )}
+            <div className='tabset'>
+              <input
+                type='radio'
+                name='tabset'
+                id='tab1'
+                aria-controls='sequence'
+              />
+              <label for='tab1'>Sequence queries</label>
+
+              <input
+                type='radio'
+                name='tabset'
+                id='tab2'
+                aria-controls='range'
+              />
+              <label for='tab2'>Range queries</label>
+
+              <input
+                type='radio'
+                name='tabset'
+                id='tab3'
+                aria-controls='gene'
+              />
+              <label for='tab3'>Gene ID queries</label>
+
+              <div className='tab-panels'>
+                <section id='sequence' class='tab-panel'>
+                  <button
+                    className='variantExampleButton'
+                    onClick={handleSequenceExample}
+                    type='button'
+                  >
+                    Query example
+                  </button>
+                  <div>
+                    <label className='labelVariants'>AssemblyID</label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={assemblyId}
+                      onChange={handleChangeAssembly}
+                    ></input>
+                  </div>
+                  <div>
+                    <label className='labelVariants'>Reference name</label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={referenceName}
+                      onChange={handleChangeRefN}
+                    ></input>
+                  </div>
+                  <div>
+                    <label className='labelVariants'>
+                      Start (single value)
+                    </label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={start}
+                      onChange={handleChangeStart}
+                    ></input>
+                  </div>
+                  <div>
+                    <label className='labelVariants'>referenceBases</label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={referenceBases}
+                      onChange={handleChangeReferenceB}
+                    ></input>
+                  </div>
+                  <div>
+                    <label className='labelVariants'>alternateBases</label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={alternateBases}
+                      onChange={handleChangeAlternateB}
+                    ></input>
+                  </div>
+                  <div className='DivButtonVariants'>
+                    <input
+                      className='buttonVariants'
+                      type='submit'
+                      value='Search'
+                      onClick={() => setSequenceSub(true)}
+                    />
+                  </div>
+                </section>
+                <section id='range' className='tab-panel'>
+                  <button
+                    className='variantExampleButton'
+                    onClick={handleRangeExample}
+                    type='button'
+                  >
+                    Query example
+                  </button>
+                  <div>
+                    <label className='labelVariants'>AssemblyID</label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={assemblyId2}
+                      onChange={handleChangeAssembly2}
+                    ></input>
+                  </div>
+                  <div>
+                    <label className='labelVariants'>Reference name</label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={referenceName2}
+                      onChange={handleChangeRefN2}
+                    ></input>
+                  </div>
+                  <div>
+                    <label className='labelVariants'>
+                      Start (single value)
+                    </label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={start2}
+                      onChange={handleChangeStart2}
+                    ></input>
+                  </div>
+                  <div>
+                    <label className='labelVariants'>End (single value)</label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={end}
+                      onChange={handleChangeEnd}
+                    ></input>
+                  </div>
+                  <div>
+                    <label className='labelVariants'>Variant type:</label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={variantType}
+                      onChange={handleChangeVariantType}
+                    ></input>{' '}
+                  </div>
+                  <div>
+                    <h3>OR</h3>
+                    <div className='basesSection'>
+                      <div className='referenceBasesContainer'>
+                        <label className='labelVariants'>referenceBases:</label>
+                        <input
+                          className='inputVariants'
+                          type='text'
+                          value={referenceBases2}
+                          onChange={handleChangeReferenceB2}
+                        ></input>
+                      </div>
+                      <div>
+                        <label className='labelVariants'>alternateBases:</label>
+                        <input
+                          className='inputVariants'
+                          type='text'
+                          value={alternateBases2}
+                          onChange={handleChangeAlternateB2}
+                        ></input>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h3>OR</h3>
+                    <label className='labelVariants'>Aminoacid Change:</label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={aminoacid}
+                      onChange={handleChangeAminoacid}
+                    ></input>
+                  </div>
+                  <div>
+                    <label className='labelVariants'>
+                      Variant min. length:
+                    </label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={variantMinLength}
+                      onChange={handleChangeVariantMinLength}
+                    ></input>
+                  </div>
+                  <div>
+                    <label className='labelVariants'>
+                      Variant max. length:
+                    </label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={variantMaxLength}
+                      onChange={handleChangeVariantMaxLength}
+                    ></input>
+                  </div>
+                  <div className='DivButtonVariants'>
+                    <input
+                      className='buttonVariants'
+                      type='submit'
+                      value='Search'
+                      onClick={() => setRangeSub(true)}
+                    />
+                  </div>
+                </section>
+                <section id='gene' className='tab-panel'>
+                  <button
+                    className='variantExampleButton'
+                    onClick={handleGeneExample}
+                    type='button'
+                  >
+                    Query example
+                  </button>
+                  <div>
+                    <label className='labelVariants'>Gene ID</label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={geneID}
+                      onChange={handleChangeGeneId}
+                    ></input>
+                  </div>
+                  <div>
+                    <label className='labelVariants'>AssemblyID</label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={assemblyId3}
+                      onChange={handleChangeAssembly3}
+                    ></input>
+                  </div>
+                  <div>
+                    <label className='labelVariants'>Variant type:</label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={variantType2}
+                      onChange={handleChangeVariantType2}
+                    ></input>
+                  </div>
+                  <div>
+                    <label className='labelVariants'>
+                      Variant min. length:
+                    </label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={variantMinLength2}
+                      onChange={handleChangeVariantMinLength2}
+                    ></input>
+                  </div>
+                  <div>
+                    <label className='labelVariants'>
+                      Variant max. length:
+                    </label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={variantMaxLength2}
+                      onChange={handleChangeVariantMaxLength2}
+                    ></input>
+                  </div>
+                  <div className='DivButtonVariants'>
+                    <input
+                      className='buttonVariants'
+                      type='submit'
+                      value='Search'
+                      onClick={() => setGeneSub(true)}
+                    />
+                  </div>
+                </section>
+              </div>
+            </div>
+          </form>
           {props.collection === 'Variant' && showBar === false && (
             <div>
               <form className='d-flex' onSubmit={onSubmit}>
@@ -652,60 +991,7 @@ function Layout (props) {
             />
           )}
         </div>
-        {showBar === true && props.collection !== 'Variant' && (
-          <div className='additionalOptions'>
-            <div className='example'>
-              {cohorts === false &&
-                props.collection !== '' &&
-                showBar === true && (
-                  <div className='bulbExample'>
-                    <button
-                      className='exampleQueries'
-                      onClick={handleExQueries}
-                    >
-                      Query Examples
-                    </button>
-                    <img
-                      className='bulbLogo'
-                      src='../light-bulb.png'
-                      alt='bulbIcon'
-                    ></img>
-                    <div className='examplesQueriesList'>
-                      {exampleQ[0] &&
-                        exampleQ.map(result => {
-                          return (
-                            <div id='exampleQueries'>
-                              <button
-                                className='exampleQuery'
-                                onClick={() => {
-                                  setPlaceholder(`${result[0]}`)
-                                  setQuery(`${result[0]}`)
-                                  setValue(`${result[0]}`)
-                                  setExampleQ([])
-                                }}
-                              >
-                                {result[1] !== undefined && (
-                                  <div className='text-example'>
-                                    {result[1]}
-                                  </div>
-                                )}
 
-                                {result[0]}
-                              </button>
-                            </div>
-                          )
-                        })}
-                    </div>
-                  </div>
-                )}
-              {props.collection !== '' && showBar === true && (
-                <button className='filters' onClick={handleFilteringTerms}>
-                  Filtering Terms
-                </button>
-              )}
-            </div>
-          </div>
-        )}
         {showBar === false && props.collection === 'Variant' && (
           <div className='additionalOptions'>
             <div className='example'>
@@ -728,7 +1014,7 @@ function Layout (props) {
                             onClick={() => {
                               setPlaceholder(`${result[0]}`)
                               setQuery(`${result[0]}`)
-                              setValue(`${result[0]}`)
+                              setValue(`${result[1]}`)
                               setExampleQ([])
                             }}
                           >
@@ -744,18 +1030,18 @@ function Layout (props) {
                 </div>
               </div>
 
-              <button className='filters' onClick={handleFilteringTerms}>
+              <button className='filters' onClick={handleSeeFilteringTerms}>
                 Filtering Terms
               </button>
             </div>
           </div>
         )}
 
-        {showVariants === true && showBar === true && (
+        {/* {showVariants === true && showBar === true && (
           <button className='modeVariants' onClick={handleClick}>
             <h2 className='modeVariantsQueries2'>Change to BAR mode </h2>
           </button>
-        )}
+        )} */}
         <hr></hr>
         {!showVariants && (
           <div className='containerExtraSections'>
@@ -796,7 +1082,7 @@ function Layout (props) {
                           {resultSet === 'HIT' && (
                             <MultiSwitch
                               texts={['HIT', 'MISS', 'NONE', 'ALL']}
-                              selectedSwitch={0}
+                              selectedSwitch={3}
                               bgColor={'white'}
                               onToggleCallback={onToggle2}
                               fontColor={'black'}
@@ -917,7 +1203,7 @@ function Layout (props) {
             )}
           </div>
         )}
-        {showVariants && showBar === false && (
+        {showVariants && (
           <div className='containerExtraSections'>
             {showButton && (
               <button
@@ -1086,7 +1372,7 @@ function Layout (props) {
             />
           </button>
         )}
-        {showVariants && showBar === true && hideForm === false && (
+        {/* {showVariants && showBar === true && hideForm === false && (
           <div className='extraSectionVariantFormMode'>
             <div className='containerExtraSections2'>
               <div className='extraSections2'>
@@ -1249,7 +1535,7 @@ function Layout (props) {
                       Query example
                     </button>
                     <div>
-                      <label className='labelVariants'>AssemblyID*</label>
+                      <label className='labelVariants'>AssemblyID</label>
                       <input
                         className='inputVariants'
                         type='text'
@@ -1258,7 +1544,7 @@ function Layout (props) {
                       ></input>
                     </div>
                     <div>
-                      <label className='labelVariants'>Reference name*</label>
+                      <label className='labelVariants'>Reference name</label>
                       <input
                         className='inputVariants'
                         type='text'
@@ -1268,7 +1554,7 @@ function Layout (props) {
                     </div>
                     <div>
                       <label className='labelVariants'>
-                        Start (single value)*
+                        Start (single value)
                       </label>
                       <input
                         className='inputVariants'
@@ -1287,7 +1573,7 @@ function Layout (props) {
                       ></input>
                     </div>
                     <div>
-                      <label className='labelVariants'>alternateBases*</label>
+                      <label className='labelVariants'>alternateBases</label>
                       <input
                         className='inputVariants'
                         type='text'
@@ -1313,7 +1599,7 @@ function Layout (props) {
                       Query example
                     </button>
                     <div>
-                      <label className='labelVariants'>AssemblyID*</label>
+                      <label className='labelVariants'>AssemblyID</label>
                       <input
                         className='inputVariants'
                         type='text'
@@ -1322,7 +1608,7 @@ function Layout (props) {
                       ></input>
                     </div>
                     <div>
-                      <label className='labelVariants'>Reference name*</label>
+                      <label className='labelVariants'>Reference name</label>
                       <input
                         className='inputVariants'
                         type='text'
@@ -1332,7 +1618,7 @@ function Layout (props) {
                     </div>
                     <div>
                       <label className='labelVariants'>
-                        Start (single value)*
+                        Start (single value)
                       </label>
                       <input
                         className='inputVariants'
@@ -1343,7 +1629,7 @@ function Layout (props) {
                     </div>
                     <div>
                       <label className='labelVariants'>
-                        End (single value)*
+                        End (single value)
                       </label>
                       <input
                         className='inputVariants'
@@ -1438,7 +1724,7 @@ function Layout (props) {
                       Query example
                     </button>
                     <div>
-                      <label className='labelVariants'>Gene ID*</label>
+                      <label className='labelVariants'>Gene ID</label>
                       <input
                         className='inputVariants'
                         type='text'
@@ -1499,7 +1785,7 @@ function Layout (props) {
               </div>
             </form>
           </div>
-        )}
+        )} */}
       </nav>
 
       <div>
@@ -1573,14 +1859,15 @@ function Layout (props) {
             </div>
           </div>
         )}
-        {results === null && !showFilteringTerms && (
+          {results === null && !showFilteringTerms && (
           <BeaconInfo trigger={trigger} />
         )}
         {isSubmitted && results === 'Individuals' && triggerQuery && (
           <div>
             <IndividualsResults
+              filteringTerms={filteringTerms}
               query={query}
-              resultSets={resultSet}
+              resultSets={resultSetAux}
               ID={ID}
               operator={operator}
               valueFree={valueFree}
@@ -1593,8 +1880,9 @@ function Layout (props) {
         {isSubmitted && results === 'Individuals' && !triggerQuery && (
           <div>
             <IndividualsResults
+              filteringTerms={filteringTerms}
               query={query}
-              resultSets={resultSet}
+              resultSets={resultSetAux}
               ID={ID}
               operator={operator}
               valueFree={valueFree}
@@ -1607,8 +1895,9 @@ function Layout (props) {
         {isSubmitted && results === 'Analyses' && triggerQuery && (
           <div>
             <AnalysesResults
+              filteringTerms={filteringTerms}
               query={query}
-              resultSets={resultSet}
+              resultSets={resultSetAux}
               ID={ID}
               operator={operator}
               valueFree={valueFree}
@@ -1621,8 +1910,9 @@ function Layout (props) {
         {isSubmitted && results === 'Analyses' && !triggerQuery && (
           <div>
             <AnalysesResults
+              filteringTerms={filteringTerms}
               query={query}
-              resultSets={resultSet}
+              resultSets={resultSetAux}
               ID={ID}
               operator={operator}
               valueFree={valueFree}
@@ -1635,8 +1925,9 @@ function Layout (props) {
         {isSubmitted && results === 'Runs' && triggerQuery && (
           <div>
             <RunsResults
+              filteringTerms={filteringTerms}
               query={query}
-              resultSets={resultSet}
+              resultSets={resultSetAux}
               ID={ID}
               operator={operator}
               valueFree={valueFree}
@@ -1649,8 +1940,9 @@ function Layout (props) {
         {isSubmitted && results === 'Runs' && !triggerQuery && (
           <div>
             <RunsResults
+              filteringTerms={filteringTerms}
               query={query}
-              resultSets={resultSet}
+              resultSets={resultSetAux}
               ID={ID}
               operator={operator}
               valueFree={valueFree}
@@ -1663,11 +1955,12 @@ function Layout (props) {
         {isSubmitted && results === 'Variant' && triggerQuery && (
           <div>
             <VariantsResults
+              filteringTerms={filteringTerms}
               geneSubmitted={geneSubmitted}
               sequenceSubmitted={sequenceSubmitted}
               rangeSubmitted={rangeSubmitted}
               query={query}
-              resultSets={resultSet}
+              resultSets={resultSetAux}
               showResultsVariants={showResultsVariants}
               setHideForm={setHideForm}
               showBar={showBar}
@@ -1700,11 +1993,12 @@ function Layout (props) {
         {isSubmitted && results === 'Variant' && !triggerQuery && (
           <div>
             <VariantsResults
+              filteringTerms={filteringTerms}
               geneSubmitted={geneSubmitted}
               sequenceSubmitted={sequenceSubmitted}
               rangeSubmitted={rangeSubmitted}
               query={query}
-              resultSets={resultSet}
+              resultSets={resultSetAux}
               showResultsVariants={showResultsVariants}
               setHideForm={setHideForm}
               showBar={showBar}
@@ -1737,11 +2031,12 @@ function Layout (props) {
         {!isSubmitted && results === 'Variant' && !triggerQuery && (
           <div>
             <VariantsResults
+              filteringTerms={filteringTerms}
               geneSubmitted={geneSubmitted}
               sequenceSubmitted={sequenceSubmitted}
               rangeSubmitted={rangeSubmitted}
               query={query}
-              resultSets={resultSet}
+              resultSets={resultSetAux}
               showResultsVariants={showResultsVariants}
               setHideForm={setHideForm}
               showBar={showBar}
@@ -1774,8 +2069,9 @@ function Layout (props) {
         {isSubmitted && results === 'Biosamples' && triggerQuery && (
           <div>
             <BiosamplesResults
+              filteringTerms={filteringTerms}
               query={query}
-              resultSets={resultSet}
+              resultSets={resultSetAux}
               descendantTerm={descendantTerm}
               similarity={similarity}
               isSubmitted={isSubmitted}
@@ -1785,8 +2081,9 @@ function Layout (props) {
         {isSubmitted && results === 'Biosamples' && !triggerQuery && (
           <div>
             <BiosamplesResults
+              filteringTerms={filteringTerms}
               query={query}
-              resultSets={resultSet}
+              resultSets={resultSetAux}
               descendantTerm={descendantTerm}
               similarity={similarity}
               isSubmitted={isSubmitted}
@@ -1803,7 +2100,8 @@ function Layout (props) {
             setQuery={setQuery}
           />
         )}
-        {timeOut === true && error && <h5>{error}</h5>}
+
+        {timeOut === true && error && showFilteringTerms && <h5>{error}</h5>}
       </div>
     </div>
   )

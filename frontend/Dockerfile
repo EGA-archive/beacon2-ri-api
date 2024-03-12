@@ -12,6 +12,6 @@ COPY yarn.lock .
 COPY public ./public
 COPY src ./src
 
-
 RUN yarn install --production
+
 

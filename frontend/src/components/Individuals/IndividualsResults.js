@@ -40,6 +40,10 @@ function IndividualsResults (props) {
   const [queryArray, setQueryArray] = useState([])
   const [arrayFilter, setArrayFilter] = useState([])
 
+  const [isActive1, setIsActive1] = useState(false)
+  const [isActive2, setIsActive2] = useState(false)
+  const [isActive3, setIsActive3] = useState(false)
+
   const { getStoredToken, authenticateUser } = useContext(AuthContext)
   let queryStringTerm = ''
 
@@ -94,10 +98,21 @@ function IndividualsResults (props) {
               }
               arrayFilter.push(alphaNumFilter)
             } else {
-              const filter2 = {
+              let filter2 = {
                 id: element,
                 includeDescendantTerms: props.descendantTerm
               }
+              props.filteringTerms.data.response.filteringTerms.forEach(
+                element2 => {
+                  if (element === element2.label) {
+                    filter2 = {
+                      id: element2.id,
+                      includeDescendantTerms: props.descendantTerm
+                    }
+                  }
+                }
+              )
+
               arrayFilter.push(filter2)
             }
           })
@@ -133,9 +148,18 @@ function IndividualsResults (props) {
             }
             arrayFilter.push(alphaNumFilter)
           } else {
-            const filter = {
-              id: props.query
-            }
+            let filter = { id: props.query }
+            let labelToOntology = 0
+            props.filteringTerms.data.response.filteringTerms.forEach(
+              element => {
+                if (props.query === element.label) {
+                  labelToOntology = element.id
+                  filter = {
+                    id: labelToOntology
+                  }
+                }
+              }
+            )
             arrayFilter.push(filter)
           }
         }
@@ -144,7 +168,11 @@ function IndividualsResults (props) {
       try {
         let res = await axios.get(configData.API_URL + '/info')
 
-        beaconsList.push(res.data.response)
+        res.data.responses.forEach(element => {
+          beaconsList.push(element)
+        })
+
+        beaconsList.reverse()
 
         if (props.query === null) {
           // show all individuals
@@ -190,10 +218,11 @@ function IndividualsResults (props) {
           setTimeOut(true)
 
           if (
-            res.data.responseSummary.numTotalResults < 1 ||
-            res.data.responseSummary.numTotalResults === undefined
+            (res.data.responseSummary.numTotalResults < 1 ||
+              res.data.responseSummary.numTotalResults === undefined) &&
+            props.resultSets !== 'MISS'
           ) {
-            setError('ERROR. Please check the query and retry')
+            setError('No results. Please try another query')
             setNumberResults(0)
             setBoolean(false)
           } else {
@@ -201,13 +230,31 @@ function IndividualsResults (props) {
               if (element.id && element.id !== '') {
                 if (resultsPerDataset.length > 0) {
                   resultsPerDataset.forEach(element2 => {
-                    element2[0].push(element.id)
-                    element2[1].push(element.exists)
-                    element2[2].push(element.resultsCount)
+                    if (element2[0] === element.beaconId) {
+                      element2[1].push(element.id)
+                      element2[2].push(element.exists)
+                      element2[3].push(element.resultsCount)
+                    } else {
+                      let arrayResultsPerDataset = [
+                        element.beaconId,
+                        [element.id],
+                        [element.exists],
+                        [element.resultsCount]
+                      ]
+                      let found = false
+                      resultsPerDataset.forEach(element => {
+                        if (element[0] === arrayResultsPerDataset[0]) {
+                          found = true
+                        }
+                      })
+                      if (found === false) {
+                        resultsPerDataset.push(arrayResultsPerDataset)
+                      }
+                    }
                   })
                 } else {
                   let arrayResultsPerDataset = [
-                    //element.beaconId,
+                    element.beaconId,
                     [element.id],
                     [element.exists],
                     [element.resultsCount]
@@ -219,14 +266,14 @@ function IndividualsResults (props) {
               if (element.id === undefined || element.id === '') {
                 let arrayResultsNoDatasets = [element.beaconId]
                 resultsNotPerDataset.push(arrayResultsNoDatasets)
+                console.log(arrayResultsNoDatasets)
               }
 
               if (res.data.response.resultSets[index].results) {
-           
                 res.data.response.resultSets[index].results.forEach(
                   (element2, index2) => {
                     let arrayResult = [
-                      res.data.meta.beaconId,
+                      res.data.response.resultSets[index].beaconId,
                       res.data.response.resultSets[index].results[index2]
                     ]
                     results.push(arrayResult)
@@ -252,6 +299,7 @@ function IndividualsResults (props) {
             }
           }
           jsonData2 = JSON.stringify(jsonData2)
+          console.log(jsonData2)
           let token = null
           if (auth.userData === null) {
             token = getStoredToken()
@@ -274,35 +322,51 @@ function IndividualsResults (props) {
               { headers: headers }
             )
           }
-          setTimeOut(true)
 
+          setTimeOut(true)
+          console.log(res.data)
           if (
-            res.data.responseSummary.numTotalResults < 1 ||
-            res.data.responseSummary.numTotalResults === undefined
+            (res.data.responseSummary.numTotalResults < 1 ||
+              res.data.responseSummary.numTotalResults === undefined) &&
+            props.resultSets !== 'MISS'
           ) {
-            setError('ERROR. Please check the query and retry')
+            setError('No results. Please try another query')
             setNumberResults(0)
             setBoolean(false)
           } else {
             res.data.response.resultSets.forEach((element, index) => {
-            
               if (element.id && element.id !== '') {
-   
                 if (resultsPerDataset.length > 0) {
                   resultsPerDataset.forEach(element2 => {
-              
-                    element2[0].push(element.id)
-                    element2[1].push(element.exists)
-                    element2[2].push(element.resultsCount)
+                    if (element2[0] === element.beaconId) {
+                      element2[1].push(element.id)
+                      element2[2].push(element.exists)
+                      element2[3].push(element.resultsCount)
+                    } else {
+                      let arrayResultsPerDataset = [
+                        element.beaconId,
+                        [element.id],
+                        [element.exists],
+                        [element.resultsCount]
+                      ]
+                      let found = false
+                      resultsPerDataset.forEach(element => {
+                        if (element[0] === arrayResultsPerDataset[0]) {
+                          found = true
+                        }
+                      })
+                      if (found === false) {
+                        resultsPerDataset.push(arrayResultsPerDataset)
+                      }
+                    }
                   })
                 } else {
                   let arrayResultsPerDataset = [
-                    //element.beaconId,
+                    element.beaconId,
                     [element.id],
                     [element.exists],
                     [element.resultsCount]
                   ]
-       
                   resultsPerDataset.push(arrayResultsPerDataset)
                 }
               }
@@ -313,11 +377,10 @@ function IndividualsResults (props) {
               }
 
               if (res.data.response.resultSets[index].results) {
-         
                 res.data.response.resultSets[index].results.forEach(
                   (element2, index2) => {
                     let arrayResult = [
-                      res.data.meta.beaconId,
+                      res.data.response.resultSets[index].beaconId,
                       res.data.response.resultSets[index].results[index2]
                     ]
                     results.push(arrayResult)
@@ -329,7 +392,6 @@ function IndividualsResults (props) {
         }
       } catch (error) {
         setError('Connection error. Please retry')
-        console.log(error)
         setTimeOut(true)
       }
     }
@@ -340,18 +402,27 @@ function IndividualsResults (props) {
     setShow1(true)
     setShow2(false)
     setShow3(false)
+    setIsActive1(true)
+    setIsActive2(false)
+    setIsActive3(false)
   }
 
   const handleTypeResults2 = () => {
     setShow2(true)
     setShow1(false)
     setShow3(false)
+    setIsActive2(true)
+    setIsActive3(false)
+    setIsActive1(false)
   }
 
   const handleTypeResults3 = () => {
     setShow3(true)
     setShow1(false)
     setShow2(false)
+    setIsActive3(true)
+    setIsActive1(false)
+    setIsActive2(false)
   }
   const onSubmit = () => {
     setSkipTrigger(skip)
@@ -380,14 +451,34 @@ function IndividualsResults (props) {
               <div className='selectGranularity'>
                 <h4>Granularity:</h4>
                 <button className='typeResults' onClick={handleTypeResults1}>
-                  <h5>Boolean</h5>
+                  <h5
+                    className={
+                      isActive1 ? 'granularityActive' : 'granularityNoActive'
+                    }
+                  >
+                    Boolean
+                  </h5>
                 </button>
                 <button className='typeResults' onClick={handleTypeResults2}>
-                  <h5>Count</h5>
+                  <h5
+                    className={
+                      isActive2 ? 'granularityActive' : 'granularityNoActive'
+                    }
+                  >
+                    Count
+                  </h5>
                 </button>
-                <button className='typeResults' onClick={handleTypeResults3}>
-                  <h5>Full response</h5>
-                </button>
+                {props.resultSets !== 'MISS' && (
+                  <button className='typeResults' onClick={handleTypeResults3}>
+                    <h5
+                      className={
+                        isActive3 ? 'granularityActive' : 'granularityNoActive'
+                      }
+                    >
+                      Full response
+                    </h5>
+                  </button>
+                )}
               </div>
             </div>
           )}

@@ -1,0 +1,411 @@
+.datasetsContainer {
+  width: 100vw;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+p a {
+  width: fit-content;
+  display: inline !important;
+  margin: 0px !important;
+}
+
+.logoBeacon {
+  height: 30px;
+  padding-left: 10px;
+  margin-top: 8px;
+}
+
+#descriptionEGA {
+  display: inline;
+  margin: 0px;
+}
+
+.datasetCard {
+  width: 40vw;
+  margin: 30px;
+
+  /* border: 2px solid #3b9ad5; */
+  padding: 16px;
+  display: flex;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 3px,
+    rgba(179, 179, 179, 0.22) 0px -4px 3px;
+  align-items: center;
+  align-content: center;
+  flex-direction: column;
+  background-color: white;
+  justify-content: flex-start;
+}
+
+@media (min-width: 860px) {
+  .datasetCardResults {
+    /* width: 20vw; */
+    height: 207px;
+    margin: 54px;
+    /* border: 2px solid #3b9ad5; */
+    padding: 3px;
+    display: flex;
+    box-shadow: 18 (0, 0, 0, -0.75) 0px 1px 0px, rgba(1, 1, 2, 12);
+    align-items: center;
+    align-content: center;
+    flex-direction: column;
+    background-color: #495782;
+    justify-content: center;
+    border-radius: 8px;
+  }
+}
+
+.tittle h2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 7px !important;
+  margin-bottom: 5px !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  color: rgba(12, 16, 64, 0.606);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.tittleResults h2 {
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+}
+
+.datasetCard p {
+  font-size: 12px;
+  font-weight: normal;
+  color: rgb(61 60 60);
+  line-height: 20px;
+  margin-top: -5px;
+}
+.datasetCardResults p {
+  font-size: 12px;
+  font-weight: normal;
+  background-color: #fbf9f9;
+  line-height: 20px;
+  margin-top: -5px;
+}
+
+.tittle2 h1 {
+  font-size: 12.5px;
+  font-weight: 500;
+  /* margin: 14px; */
+  margin-right: 14px;
+  margin-left: 14px;
+  margin-bottom: 14px;
+  margin-top: 27px;
+  color: #5d5454 !important;
+}
+
+.tittle2 h1:hover {
+  color: #5d5454 !important;
+  font-weight: 500;
+}
+
+.line {
+  width: 37vw;
+  margin: 18px;
+}
+
+.datasetCard a {
+  margin: 10px;
+  font-size: 12px;
+  color: #0158aa;
+}
+
+.datasetCardResults a {
+  margin: 10px;
+  font-size: 12px;
+  color: #0158aa;
+}
+
+.datasetCard a:hover {
+  margin: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #539ce6;
+}
+.datasetCardResults a:hover {
+  margin: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #539ce6;
+}
+
+.linksBeacons {
+  display: flex;
+  margin-top: 6px;
+  margin-bottom: -3px;
+}
+
+.tittle {
+  width: 38vw;
+  background: #c8d4e6;
+  border-radius: 2px;
+  /* height: 80px; */
+  display: flex;
+  padding: 2px;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.tittleResults {
+  width: 34vw;
+  background: white;
+  border-radius: 2px;
+  height: 167px;
+  display: flex;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 5px;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: scroll;
+}
+
+.seeResultsContainer {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.resultSetsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  margin-top: 7px;
+  margin-bottom: 7px;
+}
+
+.resultSetsContainer h5 {
+  /* padding: 0px; */
+  margin-top: 6px !important;
+  margin-bottom: 6px !important;
+  margin-right: 0px;
+  margin-left: 5px;
+}
+
+.resultSetsContainer h6 {
+  border-radius: 2px;
+  width: fit-content !important;
+  margin-left: 5px;
+  padding: 3px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.tittleResults h2 {
+  height: 46px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  color: rgba(12, 16, 64, 0.606);
+  font-size: 12px;
+  font-weight: 600;
+  background: #c8d4e6;
+  padding: 9px;
+  margin: 0px;
+  display: flex;
+  align-items: center;
+}
+
+.tittle2 {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background: #c8d4e6;
+  flex-wrap: wrap;
+}
+
+.tittle4 {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background: #c8d4e6;
+  height: 60px;
+  margin-top: 2px;
+}
+
+.resultsRecord h3 {
+  color: #34495e;
+  text-transform: uppercase;
+  margin-left: 50px;
+  margin-top: 15px;
+  font-size: 16px;
+}
+
+.resultsRecord {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  width: 100vw;
+  margin-top: 20px;
+  padding-bottom: 60px;
+  min-height: 700px;
+  justify-content: center;
+}
+
+@media (max-width: 860px) {
+  .datasetCardResults {
+    /* width: 20vw; */
+    height: 247px;
+    margin: 24px !important;
+    width: 47vw;
+    /* border: 2px solid #3b9ad5; */
+    padding: 3px;
+    display: flex;
+    box-shadow: 18 (0, 0, 0, -0.75) 0px 1px 0px, rgba(1, 1, 2, 12);
+    align-items: center;
+    align-content: center;
+    flex-direction: column;
+    background-color: #495782;
+    justify-content: center;
+    border-radius: 8px;
+  }
+
+  .resultsRecord {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: flex-start;
+    width: 100vw;
+    margin-top: 20px;
+    padding-bottom: 60px;
+  }
+
+  .tittle4 {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background: #c8d4e6;
+    height: 60px;
+    margin-top: 2px;
+  }
+  .datasetCard p {
+    font-size: 11px;
+    font-weight: normal;
+    color: rgb(61 60 60);
+    line-height: 18px;
+    margin-top: -5px;
+  }
+
+  .datasetCard {
+    width: 75vw;
+    margin: 30px;
+    /* border: 2px solid #3b9ad5; */
+    padding: 16px;
+    display: flex;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 3px,
+      rgba(179, 179, 179, 0.22) 0px -4px 3px;
+    align-items: center;
+    align-content: center;
+    flex-direction: column;
+    background-color: white;
+    justify-content: flex-start;
+  }
+  .tittle {
+    width: 71vw;
+    background: #c8d4e6;
+    border-radius: 2px;
+    /* height: 80px; */
+    display: flex;
+    padding: 2px;
+    flex-direction: column;
+    font-size: 9px !important;
+    flex-wrap: wrap;
+  }
+
+  .tittle h2 {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+    color: rgba(12, 16, 64, 0.606);
+    font-size: 10px;
+    font-weight: 600;
+    align-items: center;
+  }
+
+  .logoBeacon {
+    margin-left: 10px;
+    margin-top: 8px;
+  }
+
+  .datasetCard a {
+    margin-right: 14px;
+    font-size: 11px;
+    color: #0158aa;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+
+  .datasetCard a:hover {
+    margin-right: 14px;
+    font-size: 10px;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font-weight: 600;
+    color: #539ce6;
+  }
+
+  .tittle2 h1 {
+    font-size: 11px;
+    font-weight: 500;
+    /* margin: 14px; */
+    margin-right: 14px;
+    margin-left: 14px;
+    margin-bottom: 14px;
+    margin-top: 27px;
+    color: #5d5454 !important;
+  }
+
+  .tittle2 h1:hover {
+    color: #5d5454 !important;
+    font-weight: 500;
+  }
+}
+
+@media (max-width: 600px) {
+  .datasetCardResults {
+    width: 49vw;
+    height: 247px;
+    margin: 24px !important;
+    width: 75vw;
+    /* border: 2px solid #3b9ad5; */
+    padding: 3px;
+    display: flex;
+    box-shadow: 18 (0, 0, 0, -0.75) 0px 1px 0px, rgba(1, 1, 2, 12);
+    align-items: center;
+    align-content: center;
+    flex-direction: column;
+    background-color: #495782;
+    justify-content: center;
+    border-radius: 8px;
+  }
+  .tittle4 {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: -moz-fit-content;
+    width: fit-content;
+    background: #c8d4e6;
+    height: fit-content;
+    margin-top: 2px;
+  }
+}

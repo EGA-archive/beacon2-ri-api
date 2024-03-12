@@ -20,13 +20,14 @@ function FilteringTerms (props) {
   const [state, setstate] = useState({
     query: '',
     list:
-      props.filteringTerms !== false
+      props.filteringTerms.data !== undefined
         ? props.filteringTerms.data.response.filteringTerms
         : 'error'
   })
 
   const [trigger, setTrigger] = useState(false)
 
+  const [hide, setHide] = useState(true)
   const remove = tag => {
     setSelected(selected.filter(t => t.value !== tag.value))
 
@@ -92,8 +93,10 @@ function FilteringTerms (props) {
   const [ID, setId] = useState('')
 
   useEffect(() => {
+    console.log(props.filteringTerms)
     if (state.list === 'error') {
       setError(true)
+      console.log('holi')
     } else {
       setError(false)
     }
@@ -298,15 +301,12 @@ function FilteringTerms (props) {
         backspaceDelete={true}
         removeTag={remove}
       />
-      {error && (
-        <h3>No filtering terms available. Please check your connection</h3>
-      )}
 
       {!error && (
         <div className='tableWrapper'>
           <table id='table'>
             <thead className='thead1'>
-              <tr className='search-tr'>
+              <tr className='search-tr1'>
                 <th
                   className='search-box sorting'
                   tabIndex='0'
@@ -316,7 +316,7 @@ function FilteringTerms (props) {
                   aria-sort='ascending'
                   aria-label=': activate to sort column descending'
                 >
-                  <form>
+                  <form className='inputTerm'>
                     <input
                       className='searchTermInput1'
                       type='search'
@@ -327,7 +327,7 @@ function FilteringTerms (props) {
                   </form>
                 </th>
               </tr>
-              <tr className='search-tr'>
+              <tr className='search-tr2'>
                 <th
                   className='search-box sorting'
                   tabIndex='0'
@@ -337,7 +337,7 @@ function FilteringTerms (props) {
                   aria-sort='ascending'
                   aria-label=': activate to sort column descending'
                 >
-                  <form>
+                  <form className='inputLabel'>
                     <input
                       className='searchTermInput'
                       type='search'
@@ -347,53 +347,57 @@ function FilteringTerms (props) {
                   </form>
                 </th>
               </tr>
-              <tr className='search-tr'>
-                <th
-                  className='search-box sorting'
-                  tabIndex='0'
-                  aria-controls='DataTables_Table_0'
-                  rowSpan='1'
-                  colSpan='2'
-                  aria-sort='ascending'
-                  aria-label=': activate to sort column descending'
-                >
-                  <form>
-                    <input
-                      className='searchTermInput'
-                      type='search'
-                      onChange={handleChange3}
-                      placeholder='Search by type'
-                    />
-                  </form>
-                </th>
-              </tr>
-              <tr className='search-tr'>
-                <th
-                  className='search-box sorting'
-                  tabIndex='0'
-                  aria-controls='DataTables_Table_0'
-                  rowSpan='1'
-                  colSpan='2'
-                  aria-sort='ascending'
-                  aria-label=': activate to sort column descending'
-                >
-                  <form>
-                    <input
-                      className='searchTermInput'
-                      type='search'
-                      onChange={handleChange4}
-                      placeholder='Search by scope'
-                    />
-                  </form>
-                </th>
-              </tr>
+              {hide === false && (
+                <tr className='search-tr'>
+                  <th
+                    className='search-box sorting'
+                    tabIndex='0'
+                    aria-controls='DataTables_Table_0'
+                    rowSpan='1'
+                    colSpan='2'
+                    aria-sort='ascending'
+                    aria-label=': activate to sort column descending'
+                  >
+                    <form>
+                      <input
+                        className='searchTermInput'
+                        type='search'
+                        onChange={handleChange3}
+                        placeholder='Search by type'
+                      />
+                    </form>
+                  </th>
+                </tr>
+              )}
+              {hide === false && (
+                <tr className='search-tr'>
+                  <th
+                    className='search-box sorting'
+                    tabIndex='0'
+                    aria-controls='DataTables_Table_0'
+                    rowSpan='1'
+                    colSpan='2'
+                    aria-sort='ascending'
+                    aria-label=': activate to sort column descending'
+                  >
+                    <form>
+                      <input
+                        className='searchTermInput'
+                        type='search'
+                        onChange={handleChange4}
+                        placeholder='Search by scope'
+                      />
+                    </form>
+                  </th>
+                </tr>
+              )}
             </thead>
             <thead className='thead2'>
               <tr>
                 <th className='th4'>term</th>
                 <th className='th5'>label</th>
-                <th className='th6'>type</th>
-                <th className='th7'>scopes</th>
+                {hide === false && <th className='th6'>type</th>}
+                {hide === false && <th className='th7'>scopes</th>}
               </tr>
             </thead>
             {props.filteringTerms.data !== undefined &&
@@ -438,16 +442,20 @@ function FilteringTerms (props) {
                             <td className='th1'>-</td>
                           )}
 
-                          <td className='th3'>{term.type}</td>
+                          {hide === false && (
+                            <td className='th3'>{term.type}</td>
+                          )}
 
-                          <td className='th1'>
-                            {term.scopes !== undefined &&
-                              term.scopes.map((term2, index) => {
-                                return index < term.scopes.length - 1
-                                  ? term2 + '' + ','
-                                  : term2 + ''
-                              })}
-                          </td>
+                          {hide === false && (
+                            <td className='th1'>
+                              {term.scopes !== undefined &&
+                                term.scopes.map((term2, index) => {
+                                  return index < term.scopes.length - 1
+                                    ? term2 + '' + ','
+                                    : term2 + ''
+                                })}
+                            </td>
+                          )}
                         </tr>
                       )}
                       {index % 2 == !0 && (
@@ -486,9 +494,11 @@ function FilteringTerms (props) {
                             <td className='th1'>-</td>
                           )}
 
-                          <td className='th3'>{term.type}</td>
+                          {hide === false && (
+                            <td className='th3'>{term.type}</td>
+                          )}
 
-                          {term.scopes && (
+                          {hide === false && (
                             <td className='th1'>
                               {term.scopes.map((term2, index) => {
                                 return index < term.scopes.length - 1
@@ -497,7 +507,6 @@ function FilteringTerms (props) {
                               })}
                             </td>
                           )}
-                          {term.scope && <td className='th1'>{term.scope}</td>}
                         </tr>
                       )}
 
@@ -554,7 +563,7 @@ function FilteringTerms (props) {
                                 className='buttonAlphanum'
                                 onClick={handdleInclude}
                               >
-                                Include
+                                <ion-icon name='add-circle'></ion-icon>
                               </button>
                             </div>
                           </tr>

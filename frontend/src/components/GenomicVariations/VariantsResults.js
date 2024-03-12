@@ -36,23 +36,38 @@ function VariantsResults (props) {
   const [resultsPerDataset, setResultsDataset] = useState([])
   const [resultsNotPerDataset, setResultsNotPerDataset] = useState([])
 
+  const [isActive1, setIsActive1] = useState(false)
+  const [isActive2, setIsActive2] = useState(false)
+  const [isActive3, setIsActive3] = useState(false)
+
   let queryStringTerm = ''
+ 
+
   const handleTypeResults1 = () => {
     setShow1(true)
     setShow2(false)
     setShow3(false)
+    setIsActive1(true)
+    setIsActive2(false)
+    setIsActive3(false)
   }
 
   const handleTypeResults2 = () => {
     setShow2(true)
     setShow1(false)
     setShow3(false)
+    setIsActive2(true)
+    setIsActive3(false)
+    setIsActive1(false)
   }
 
   const handleTypeResults3 = () => {
     setShow3(true)
     setShow1(false)
     setShow2(false)
+    setIsActive3(true)
+    setIsActive1(false)
+    setIsActive2(false)
   }
 
   const auth = useAuth()
@@ -68,11 +83,15 @@ function VariantsResults (props) {
           isAuthenticated = true
         }
       }
-
+      console.log(props.variantMinLength)
       try {
         let res = await axios.get(configData.API_URL + '/info')
 
-        beaconsList.push(res.data.response)
+        res.data.responses.forEach(element => {
+          beaconsList.push(element)
+        })
+
+        beaconsList.reverse()
 
         if (props.showBar === false) {
           setShowVariantsResults(true)
@@ -111,10 +130,21 @@ function VariantsResults (props) {
                   }
                   arrayFilter.push(alphaNumFilter)
                 } else {
-                  const filter2 = {
+                  let filter2 = {
                     id: element,
                     includeDescendantTerms: props.descendantTerm
                   }
+                  props.filteringTerms.data.response.filteringTerms.forEach(
+                    element2 => {
+                      if (element === element2.label) {
+                        filter2 = {
+                          id: element2.id,
+                          includeDescendantTerms: props.descendantTerm
+                        }
+                      }
+                    }
+                  )
+
                   arrayFilter.push(filter2)
                 }
               })
@@ -150,106 +180,243 @@ function VariantsResults (props) {
                 }
                 arrayFilter.push(alphaNumFilter)
               } else {
-                const filter = {
-                  id: props.query
-                }
+                let filter = { id: props.query }
+                let labelToOntology = 0
+                props.filteringTerms.data.response.filteringTerms.forEach(
+                  element => {
+                    if (props.query === element.label) {
+                      labelToOntology = element.id
+                      filter = {
+                        id: labelToOntology
+                      }
+                    }
+                  }
+                )
                 arrayFilter.push(filter)
               }
             }
           }
 
-          if (props.query === null) {
-            // show all individuals
+          try {
+            if (props.query === null) {
+              // show all individuals
 
-            var jsonData1 = {
-              meta: {
-                apiVersion: '2.0'
-              },
-              query: {
-                filters: arrayFilter,
-                includeResultsetResponses: `${props.resultSets}`,
-                pagination: {
-                  skip: skip,
-                  limit: limit
+              var jsonData1 = {
+                meta: {
+                  apiVersion: '2.0'
                 },
-                testMode: false,
-                requestedGranularity: 'record'
+                query: {
+                  filters: arrayFilter,
+                  includeResultsetResponses: `${props.resultSets}`,
+                  pagination: {
+                    skip: 0,
+                    limit: 0
+                  },
+                  testMode: false,
+                  requestedGranularity: 'record'
+                }
+              }
+              jsonData1 = JSON.stringify(jsonData1)
+
+              let token = null
+              if (auth.userData === null) {
+                token = getStoredToken()
+              } else {
+                token = auth.userData.access_token
+              }
+
+              if (token === null) {
+                res = await axios.post(
+                  configData.API_URL + '/g_variants',
+                  jsonData1
+                )
+              } else {
+                const headers = { Authorization: `Bearer ${token}` }
+
+                res = await axios.post(
+                  configData.API_URL + '/g_variants',
+                  jsonData1,
+                  { headers: headers }
+                )
+              }
+              setTimeOut(true)
+
+              if (
+                (res.data.responseSummary.numTotalResults < 1 ||
+                  res.data.responseSummary.numTotalResults === undefined) &&
+                props.resultSets !== 'MISS'
+              ) {
+                setError('No results. Please try another query')
+                setNumberResults(0)
+                setBoolean(false)
+              } else {
+                res.data.response.resultSets.forEach((element, index) => {
+                  if (element.id && element.id !== '') {
+                    if (resultsPerDataset.length > 0) {
+                      resultsPerDataset.forEach(element2 => {
+                        if (element2[0] === element.beaconId) {
+                          element2[1].push(element.id)
+                          element2[2].push(element.exists)
+                          element2[3].push(element.resultsCount)
+                        } else {
+                          let arrayResultsPerDataset = [
+                            element.beaconId,
+                            [element.id],
+                            [element.exists],
+                            [element.resultsCount]
+                          ]
+                          let found = false
+                          resultsPerDataset.forEach(element => {
+                            if (element[0] === arrayResultsPerDataset[0]) {
+                              found = true
+                            }
+                          })
+                          if (found === false) {
+                            resultsPerDataset.push(arrayResultsPerDataset)
+                          }
+                        }
+                      })
+                    } else {
+                      let arrayResultsPerDataset = [
+                        element.beaconId,
+                        [element.id],
+                        [element.exists],
+                        [element.resultsCount]
+                      ]
+                      resultsPerDataset.push(arrayResultsPerDataset)
+                    }
+                  }
+
+                  if (element.id === undefined || element.id === '') {
+                    let arrayResultsNoDatasets = [element.beaconId]
+                    resultsNotPerDataset.push(arrayResultsNoDatasets)
+                    console.log(arrayResultsNoDatasets)
+                  }
+
+                  if (res.data.response.resultSets[index].results) {
+                    res.data.response.resultSets[index].results.forEach(
+                      (element2, index2) => {
+                        let arrayResult = [
+                          res.data.response.resultSets[index].beaconId,
+                          res.data.response.resultSets[index].results[index2]
+                        ]
+                        results.push(arrayResult)
+                      }
+                    )
+                  }
+                })
+              }
+            } else {
+              var jsonData2 = {
+                meta: {
+                  apiVersion: '2.0'
+                },
+                query: {
+                  filters: arrayFilter,
+                  includeResultsetResponses: `${props.resultSets}`,
+                  pagination: {
+                    skip: skip,
+                    limit: limit
+                  },
+                  testMode: false,
+                  requestedGranularity: 'record'
+                }
+              }
+              jsonData2 = JSON.stringify(jsonData2)
+              console.log(jsonData2)
+              let token = null
+              if (auth.userData === null) {
+                token = getStoredToken()
+              } else {
+                token = auth.userData.access_token
+              }
+
+              if (token === null) {
+                console.log('Querying without token')
+                res = await axios.post(
+                  configData.API_URL + '/g_variants',
+                  jsonData2
+                )
+              } else {
+                console.log('Querying WITH token')
+                const headers = { Authorization: `Bearer ${token}` }
+                res = await axios.post(
+                  configData.API_URL + '/g_variants',
+                  jsonData2,
+                  { headers: headers }
+                )
+              }
+
+              setTimeOut(true)
+              console.log(res.data)
+              if (
+                (res.data.responseSummary.numTotalResults < 1 ||
+                  res.data.responseSummary.numTotalResults === undefined) &&
+                props.resultSets !== 'MISS'
+              ) {
+                setError('No results. Please try another query')
+                setNumberResults(0)
+                setBoolean(false)
+              } else {
+                res.data.response.resultSets.forEach((element, index) => {
+                  if (element.id && element.id !== '') {
+                    if (resultsPerDataset.length > 0) {
+                      resultsPerDataset.forEach(element2 => {
+                        if (element2[0] === element.beaconId) {
+                          element2[1].push(element.id)
+                          element2[2].push(element.exists)
+                          element2[3].push(element.resultsCount)
+                        } else {
+                          let arrayResultsPerDataset = [
+                            element.beaconId,
+                            [element.id],
+                            [element.exists],
+                            [element.resultsCount]
+                          ]
+                          let found = false
+                          resultsPerDataset.forEach(element => {
+                            if (element[0] === arrayResultsPerDataset[0]) {
+                              found = true
+                            }
+                          })
+                          if (found === false) {
+                            resultsPerDataset.push(arrayResultsPerDataset)
+                          }
+                        }
+                      })
+                    } else {
+                      let arrayResultsPerDataset = [
+                        element.beaconId,
+                        [element.id],
+                        [element.exists],
+                        [element.resultsCount]
+                      ]
+                      resultsPerDataset.push(arrayResultsPerDataset)
+                    }
+                  }
+
+                  if (element.id === undefined || element.id === '') {
+                    let arrayResultsNoDatasets = [element.beaconId]
+                    resultsNotPerDataset.push(arrayResultsNoDatasets)
+                  }
+
+                  if (res.data.response.resultSets[index].results) {
+                    res.data.response.resultSets[index].results.forEach(
+                      (element2, index2) => {
+                        let arrayResult = [
+                          res.data.response.resultSets[index].beaconId,
+                          res.data.response.resultSets[index].results[index2]
+                        ]
+                        results.push(arrayResult)
+                      }
+                    )
+                  }
+                })
               }
             }
-            jsonData1 = JSON.stringify(jsonData1)
-
-            let token = null
-            if (auth.userData === null) {
-              token = getStoredToken()
-            } else {
-              token = auth.userData.access_token
-            }
-
-            if (token === null) {
-              res = await axios.post(
-                configData.API_URL + '/g_variants',
-                jsonData1
-              )
-              // Object.defineProperty(res.data.response.resultSets[0], 'beaconId', {
-              //  value: 'es.chipdb.cnic.beacon'
-              //})
-            } else {
-              const headers = { Authorization: `Bearer ${token}` }
-
-              res = await axios.post(
-                configData.API_URL + '/g_variants',
-                jsonData1,
-                { headers: headers }
-              )
-            }
+          } catch (error) {
+            setError('Connection error. Please retry')
             setTimeOut(true)
-
-            if (
-              res.data.responseSummary.numTotalResults < 1 ||
-              res.data.responseSummary.numTotalResults === undefined
-            ) {
-              setError('ERROR. Please check the query and retry')
-              setNumberResults(0)
-              setBoolean(false)
-            } else {
-              res.data.response.resultSets.forEach((element, index) => {
-                if (element.id && element.id !== '') {
-                  if (resultsPerDataset.length > 0) {
-                    resultsPerDataset.forEach(element2 => {
-                      element2[0].push(element.id)
-                      element2[1].push(element.exists)
-                      element2[2].push(element.resultsCount)
-                    })
-                  } else {
-                    let arrayResultsPerDataset = [
-                      //element.beaconId,
-                      [element.id],
-                      [element.exists],
-                      [element.resultsCount]
-                    ]
-
-                    resultsPerDataset.push(arrayResultsPerDataset)
-                  }
-                }
-
-                if (element.id === undefined || element.id === '') {
-                  let arrayResultsNoDatasets = [element.beaconId]
-                  resultsNotPerDataset.push(arrayResultsNoDatasets)
-                }
-
-                if (res.data.response.resultSets[index].results) {
-                  res.data.response.resultSets[index].results.forEach(
-                    (element2, index2) => {
-                      let arrayResult = [
-                        res.data.meta.beaconId,
-                        res.data.response.resultSets[index].results[index2]
-                      ]
-                      results.push(arrayResult)
-                    }
-                  )
-                }
-              })
-            }
           }
         } else {
           setShowVariantsResults(true)
@@ -394,11 +561,13 @@ function VariantsResults (props) {
 
           if (token === null) {
             console.log('Querying without token')
-
+            console.log(jsonData1)
             res = await axios.post(
               configData.API_URL + '/g_variants',
               jsonData1
             )
+            console.log(res)
+            console.log(jsonData1)
           } else {
             const headers = { Authorization: `Bearer ${token}` }
             res = await axios.post(
@@ -410,10 +579,12 @@ function VariantsResults (props) {
 
           setTimeOut(true)
           if (
-            res.data.responseSummary.numTotalResults < 1 ||
-            res.data.responseSummary.numTotalResults === undefined
+            (res.data.responseSummary.numTotalResults < 1 ||
+              res.data.responseSummary.numTotalResults === undefined) &&
+            props.resultSets !== 'MISS'
           ) {
-            setError('ERROR. Please check the query and retry')
+            setTimeOut(true)
+            setError('No results. Please try another query')
             setNumberResults(0)
             setBoolean(false)
           } else {
@@ -421,13 +592,31 @@ function VariantsResults (props) {
               if (element.id && element.id !== '') {
                 if (resultsPerDataset.length > 0) {
                   resultsPerDataset.forEach(element2 => {
-                    element2[0].push(element.id)
-                    element2[1].push(element.exists)
-                    element2[2].push(element.resultsCount)
+                    if (element2[0] === element.beaconId) {
+                      element2[1].push(element.id)
+                      element2[2].push(element.exists)
+                      element2[3].push(element.resultsCount)
+                    } else {
+                      let arrayResultsPerDataset = [
+                        element.beaconId,
+                        [element.id],
+                        [element.exists],
+                        [element.resultsCount]
+                      ]
+                      let found = false
+                      resultsPerDataset.forEach(element => {
+                        if (element[0] === arrayResultsPerDataset[0]) {
+                          found = true
+                        }
+                      })
+                      if (found === false) {
+                        resultsPerDataset.push(arrayResultsPerDataset)
+                      }
+                    }
                   })
                 } else {
                   let arrayResultsPerDataset = [
-                    //element.beaconId,
+                    element.beaconId,
                     [element.id],
                     [element.exists],
                     [element.resultsCount]
@@ -445,7 +634,7 @@ function VariantsResults (props) {
                 res.data.response.resultSets[index].results.forEach(
                   (element2, index2) => {
                     let arrayResult = [
-                      res.data.meta.beaconId,
+                      res.data.response.resultSets[index].beaconId,
                       res.data.response.resultSets[index].results[index2]
                     ]
                     results.push(arrayResult)
@@ -479,17 +668,37 @@ function VariantsResults (props) {
           )}
           {timeOut && error !== 'Connection error. Please retry' && (
             <div>
-              <div className='selectGranularity'>
+               <div className='selectGranularity'>
                 <h4>Granularity:</h4>
                 <button className='typeResults' onClick={handleTypeResults1}>
-                  <h5>Boolean</h5>
+                  <h5
+                    className={
+                      isActive1 ? 'granularityActive' : 'granularityNoActive'
+                    }
+                  >
+                    Boolean
+                  </h5>
                 </button>
                 <button className='typeResults' onClick={handleTypeResults2}>
-                  <h5>Count</h5>
+                  <h5
+                    className={
+                      isActive2 ? 'granularityActive' : 'granularityNoActive'
+                    }
+                  >
+                    Count
+                  </h5>
                 </button>
-                <button className='typeResults' onClick={handleTypeResults3}>
-                  <h5>Full response</h5>
-                </button>
+                {props.resultSets !== 'MISS' && (
+                  <button className='typeResults' onClick={handleTypeResults3}>
+                    <h5
+                      className={
+                        isActive3 ? 'granularityActive' : 'granularityNoActive'
+                      }
+                    >
+                      Full response
+                    </h5>
+                  </button>
+                )}
               </div>
 
               {show3 && logInRequired === false && !error && (

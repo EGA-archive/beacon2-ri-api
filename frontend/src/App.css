@@ -66,17 +66,20 @@ html {
 }
 
 .version {
-  margin-bottom: 19px;
-  margin-right: 46px;
-  margin-top: 7px;
+  margin-bottom: 40px;
+  margin-right: 37px;
+  margin-top: -18px;
   color: rgb(102 116 152) !important;
   font-weight: 700 !important;
 }
 
-.beaconLogo {
-  height: 45px;
-  margin-top: 41px;
-  margin-right: 31px;
+.logosVersionContainer {
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+  justify-content: center;
+  align-items: flex-end;
+  margin-bottom: 20px;
 }
 
 .searchButton {
@@ -109,10 +112,26 @@ html {
   font-variant-caps: all-petite-caps;
 }
 
+.variantsForm {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+.crossQueriesTittle{
+  margin-bottom: 12px;
+  font-size: 12px;
+  margin-top: -24px;
+}
 .modeVariantsBarMode:hover h2 {
   color: rgb(236, 149, 0) !important;
 }
 
+.containerForm {
+  margin-left: 40px;
+}
 .modeVariants:hover h2 {
   color: rgb(236, 149, 0) !important;
 }
@@ -168,8 +187,10 @@ html {
   width: 100%;
   margin-right: 10px;
   margin-left: 10px;
-  justify-content: center;
-  height: 35px;
+  justify-content: space-around;
+  /* height: 35px; */
+  align-content: center;
+  margin-top: 20px;
 }
 
 .form-select {
@@ -225,7 +246,7 @@ html {
 }
 
 .formSearch {
-  width: 60vw;
+  width: 30vw;
   margin-right: 3px;
   background: white;
   border: 2px solid #8985c1;
@@ -317,6 +338,7 @@ html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
+  color: #756d6d;
 }
 
 .buttonAlphanum:hover {
@@ -505,20 +527,26 @@ html {
 }
 
 .exampleQuery:hover .text-example {
+  margin-right: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: solid #c8c8c8;
   background-color: #c8c8c8;
   color: black;
+  width: -moz-fit-content;
   width: fit-content;
   border-radius: 6px;
-  margin-left: 10px;
-  padding: 1px;
+  margin-left: -98px;
+
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
 .examplesQueriesList {
-  width: 111px;
+  width: fit-content;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -578,11 +606,94 @@ html {
   margin-bottom: 12px;
 }
 
+.cinecaLogo {
+  height: 51px;
+  align-items: center;
+  margin-top: 55px;
+  margin-bottom: 30px;
+  margin-right: 42px;
+}
+
 .container1 a {
   display: flex;
   align-content: center;
   text-underline-offset: 4px;
   align-items: center;
+}
+
+.eosc4cancer {
+  height: 85px;
+  margin-top: 20px;
+  margin-right: 30px;
+  -webkit-filter: grayscale(20%);
+  filter: grayscale(60%);
+  -webkit-transition: 0.2s ease-in-out;
+  transition: 0.2s ease-in-out;
+}
+
+.eosc4cancer:hover {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
+}
+
+.federLogo {
+  height: 33px;
+  margin-top: 42px;
+  margin-right: 14px;
+  -webkit-filter: grayscale(20%);
+  filter: grayscale(100%);
+  -webkit-transition: 0.2s ease-in-out;
+  transition: 0.2s ease-in-out;
+}
+
+.federLogo:hover {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
+}
+
+.iscLogo {
+  height: 33px;
+  margin-top: 42px;
+  margin-right: 14px;
+  -webkit-filter: grayscale(20%);
+  filter: grayscale(100%);
+  -webkit-transition: 0.2s ease-in-out;
+  transition: 0.2s ease-in-out;
+}
+
+.iscLogo:hover {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
+}
+
+.ministerioLogo {
+  height: 33px;
+  margin-top: 42px;
+  margin-right: 14px;
+  -webkit-filter: grayscale(20%);
+  filter: grayscale(100%);
+  -webkit-transition: 0.2s ease-in-out;
+  transition: 0.2s ease-in-out;
+}
+
+.ministerioLogo:hover {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
+}
+
+.laCaixaLogo {
+  height: 33px;
+  margin-top: 42px;
+  margin-right: 30px;
+  -webkit-filter: grayscale(20%);
+  filter: grayscale(100%);
+  -webkit-transition: 0.2s ease-in-out;
+  transition: 0.2s ease-in-out;
+}
+
+.laCaixaLogo:hover {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
 }
 
 .comming_message {
@@ -645,6 +756,8 @@ select {
   /* justify-content: center; */
   align-content: center;
   align-items: center;
+  padding-bottom: 55px;
+  min-height: 280px;
 }
 
 .resultSet2 {
@@ -653,6 +766,7 @@ select {
 
 .cohortsModule {
   display: flex;
+  width: 100vw;
 }
 
 .tittleAlph {
@@ -682,7 +796,6 @@ hr {
     sans-serif;
   text-transform: uppercase;
   font-size: 12px;
-  margin-left: 33px;
 }
 
 .exampleQueries:hover {
@@ -690,9 +803,13 @@ hr {
 }
 
 .bulbExample {
+  margin-right: 48px;
+  padding-right: 19px;
+  border-right: 1.7px solid #f1f1f1;
   display: flex;
+  justify-content: center;
   align-items: center;
-  border-left: 1.7px solid #f1f1f1;
+  flex-direction: row-reverse;
 }
 
 .helpButton {
@@ -705,9 +822,10 @@ hr {
   display: flex;
   width: 100vw;
   align-items: flex-end;
-  margin-bottom: -11px;
-  margin-top: -16px;
-  flex-direction: column;
+  margin-bottom: 19px;
+  margin-top: -8px;
+  flex-direction: row;
+  justify-content: flex-end;
 }
 
 .helpButton:hover {
@@ -761,7 +879,6 @@ hr {
 }
 
 .additionalOptions {
-  width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -770,10 +887,10 @@ hr {
 .example {
   display: flex;
   align-items: center;
-  margin-right: -117px;
+  /* margin-right: -117px; */
   margin-top: 22px;
   margin-bottom: 22px;
-  flex-direction: row-reverse;
+  flex-direction: row;
   align-content: space-between;
   justify-content: center;
 }
@@ -793,7 +910,7 @@ hr {
   padding: 5px;
   cursor: pointer;
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row;
   align-content: center;
   justify-content: center;
   align-items: center;
@@ -999,8 +1116,8 @@ h5 {
   margin: 4px;
   padding: 6px;
   box-shadow: 1px 1px 2px #a3a0a0;
-  width: 222px;
-  height: 12px;
+  width: 168px;
+  height: 27px;
   border-radius: 4px;
   overflow: auto;
 }
@@ -1008,11 +1125,11 @@ h5 {
 .ValueForm {
   background: white;
   border: 2px solid rgba(12, 16, 64, 0.606);
-  margin: 20px;
+  margin-left: 5px;
   padding: 6px;
   box-shadow: 1px 1px 2px #a3a0a0;
-  width: 16%;
-  height: 12px;
+  width: 30%;
+  height: 27px;
   border-radius: 4px;
 }
 
@@ -1053,8 +1170,8 @@ h5 {
     sans-serif;
   text-transform: uppercase;
   font-size: 12px;
-  margin-right: 36px;
-  margin-left: 27px;
+  margin-right: 32px;
+  margin-left: -20px;
 }
 
 .filters:hover {
@@ -1147,18 +1264,70 @@ h5 {
   }
 
   .version {
-    margin-bottom: 46px;
-    margin-right: 36px;
-    margin-top: -35px;
+    margin-bottom: 40px;
+    margin-right: 37px;
+    margin-top: -18px;
     color: rgb(102 116 152) !important;
-    font-weight: 600;
+    font-weight: 700 !important;
   }
 
-  .beaconLogo {
-    height: 45px;
-    margin-top: 18px;
-    margin-bottom: 37px;
-    margin-right: 21px;
+  .logosVersionContainer {
+    display: flex;
+    flex-direction: column;
+    align-content: stretch;
+    justify-content: center;
+    align-items: flex-end;
+    margin-bottom: 20px;
+  }
+
+  .eosc4cancer {
+    height: 61px;
+    margin-top: 20px;
+    margin-right: 33px;
+    -webkit-filter: grayscale(20%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+
+  .federLogo {
+    height: 31px;
+    margin-top: 31px;
+    margin-right: 10px;
+    -webkit-filter: grayscale(20%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+
+  .iscLogo {
+    height: 31px;
+    margin-top: 31px;
+    margin-right: 10px;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+
+  .ministerioLogo {
+    height: 31px;
+    margin-top: 31px;
+    margin-right: 10px;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+
+  .laCaixaLogo {
+    height: 31px;
+    margin-top: 31px;
+    margin-right: 30px;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
   }
 
   .inputVariants {
@@ -1175,7 +1344,7 @@ h5 {
     padding: 5px;
     cursor: pointer;
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     align-content: center;
     justify-content: center;
     align-items: center;
@@ -1262,28 +1431,29 @@ h5 {
       'Helvetica Neue', sans-serif;
     text-transform: uppercase;
     font-size: 10px;
-    margin-left: 2px !important;
-    margin-right: 7px !important;
-    /* margin-right: 36px; */
-    /* margin-left: 27px; */
+    margin-right: 3px;
+    margin-left: -23px;
   }
 
   .container-fluid {
     display: flex;
     width: 100%;
-    margin-right: 0px;
-    margin-left: 0px;
-    justify-content: center;
-    height: 35px;
+    margin-right: 10px;
+    margin-left: 10px;
+    justify-content: space-around;
+    /* height: 35px; */
+    align-content: center;
+    margin-top: 20px;
   }
 
   .example {
     display: flex;
     align-items: center;
     margin-right: 0px;
+    width: 230px;
     margin-top: 22px;
     margin-bottom: 22px;
-    flex-direction: row-reverse;
+    flex-direction: row;
     align-content: space-between;
     justify-content: center;
   }
@@ -1305,8 +1475,8 @@ h5 {
     justify-content: center;
     align-items: center;
     z-index: 0;
-    height: 84px;
-    margin-top: -21px;
+    height: 73px;
+    margin-top: 11px;
   }
 
   .bulbLogo {
@@ -1314,7 +1484,7 @@ h5 {
   }
 
   .formSearch {
-    width: 81vw;
+    width: 31vw;
     margin-right: 3px;
     background: white;
     border: 2px solid #8985c1;
@@ -1325,13 +1495,14 @@ h5 {
     height: 27px;
   }
   .bulbExample {
+    margin-right: 48px;
+    padding-right: 19px;
+    border-right: 1.7px solid #f1f1f1;
     display: flex;
-    border-left: 1.7px solid #f1f1f1;
-    flex-direction: column;
-    justify-content: center;
-    align-content: center;
-    align-items: center;
-    width: 112px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+    text-transform: uppercase;
   }
   .searchIcon {
     width: 26px;
@@ -1362,7 +1533,7 @@ h5 {
     justify-content: center;
     align-content: center;
     align-items: flex-start;
-    width: 189px;
+    width: fit-content;
     border-radius: 5px;
     font-size: 9px;
     margin-left: 10px !important;
@@ -1370,12 +1541,14 @@ h5 {
   }
 
   .bulbExample {
+    margin-right: 49px;
     display: flex;
-    border-left: 1.7px solid #f1f1f1;
-    flex-direction: column;
-    justify-content: center;
-    align-content: center;
-    align-items: center;
+    padding-right: 13px;
+    border-right: 1.7px solid #f1f1f1;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+    text-transform: uppercase;
   }
 
   .NavlinkVerifier {

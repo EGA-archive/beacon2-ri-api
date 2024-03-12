@@ -12,6 +12,7 @@ export default function SignInFormNoLS () {
   const [error, setError] = useState('')
 
   const navigate = useNavigate()
+
   const {
     storeToken,
     setIsLoggedIn,
@@ -37,7 +38,7 @@ export default function SignInFormNoLS () {
       var details = {
         grant_type: 'password',
         client_id: 'beacon',
-        client_secret: 'WGahOcaJcbQ2srhBsNH56NhhDxH5M51f',
+        client_secret: process.env.REACT_APP_KEYCLOAK_CLIENT_SECRET,
         username: userName,
         password: password,
         realm: 'Beacon',
@@ -77,7 +78,7 @@ export default function SignInFormNoLS () {
       if (readableResponse.access_token) {
         navigate('/')
         setIsLoggedIn(true)
-        setUserNameToShare(userName)
+        setUserNameToShare(localStorage.setItem('userName', userName))
       } else {
         setError(
           'User not found. Please check the username and the password and retry'

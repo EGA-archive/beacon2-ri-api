@@ -79,12 +79,15 @@ input:focus-visible + label {
 
 .tabset {
   max-width: 65em;
+
 }
+
 
 @media (max-width: 380px) {
   .tabset {
     display: flex;
     flex-direction: column;
+
   }
 
   .tabset > input:checked + label {

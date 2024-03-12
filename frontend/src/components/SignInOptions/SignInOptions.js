@@ -12,7 +12,7 @@ function SignInOptions () {
                 exact
                 to='/sign-in'
                 className={({ isActive }) =>
-                  isActive ? 'Sign-in2' : 'Sign-in'
+                  isActive ? 'Sign-in2' : 'Sign-inLS'
                 }
               >
                 <img
@@ -22,13 +22,13 @@ function SignInOptions () {
                 />
               </NavLink>
             </div>
-            <hr className='lineLogin'></hr>
+      
             <div className='login__field2'>
               <NavLink
                 exact
                 to='/sign-in-noLS'
                 className={({ isActive }) =>
-                  isActive ? 'Sign-in2' : 'Sign-in'
+                  isActive ? 'Sign-in2' : 'Sign-inNoLs'
                 }
               >
                 <h6>Beacon Network IDP Login</h6>

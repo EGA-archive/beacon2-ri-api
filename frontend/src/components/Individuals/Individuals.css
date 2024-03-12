@@ -23,6 +23,24 @@
   margin: 0px !important;
 }
 
+.granularityActive {
+  color: #3d72a6 !important;
+  text-decoration-color: #3d72a6 !important;
+}
+.granularityActive:hover {
+  color: rgb(118, 151, 228) !important;
+  font-weight: bold;
+}
+
+.granularityNoActive {
+  color: #bcbecb !important;
+}
+
+.granularityNoActive:hover{
+  color: rgb(118, 151, 228) !important;
+  font-weight: bold;
+}
+
 .measuresContainer {
   display: flex;
 }
@@ -118,7 +136,6 @@ h4 {
 .results {
   flex-wrap: wrap;
   justify-content: center;
-
 }
 
 .typeResults {

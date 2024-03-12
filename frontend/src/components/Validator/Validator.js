@@ -25,16 +25,16 @@ function Validator () {
       .catch(() => {
         alert('something went wrong')
       })
-    console.log('COPY DONE')
   }
 
   const submitVerifierUrl = async e => {
     setTimeout(false)
+    setErrorsFound('')
     e.preventDefault()
     try {
       if (verifierUrl !== '') {
         let res = await axios.get(
-          'https://beacon-network-backend-demo.ega-archive.org/beacon-network/v2.0.0' + `/validate?endpoint=${verifierUrl}`
+          configData.API_URL + `/validate?endpoint=${verifierUrl}`
         )
         let stringData = ''
         res.data.forEach(element => {
@@ -66,7 +66,6 @@ function Validator () {
         setTimeout(true)
       }
     } catch (error) {
-      console.log(error)
       setErrror('An error occured. Please check the URL and retry.')
     }
   }
@@ -80,7 +79,7 @@ function Validator () {
           type='text'
           value={verifierUrl}
           onChange={handleChangeVerifierUrl}
-          placeholder={'https://beacon-apis-demo.ega-archive.org/api'}
+          placeholder={'https://beacons.bsc.es/beacon/v2.0.0'}
         ></input>
         <button className='submitButton' onClick={submitVerifierUrl}>
           SUBMIT
