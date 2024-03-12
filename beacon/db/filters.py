@@ -19,8 +19,8 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
     LOG.debug(query)
     #LOG.debug("Filters len = {}".format(len(filters)))
     request_parameters = query_parameters
+    total_query={}
     if len(filters) >= 1:
-        total_query={}
         total_query["$and"] = []
         if query != {}:
             total_query["$and"].append(query)
