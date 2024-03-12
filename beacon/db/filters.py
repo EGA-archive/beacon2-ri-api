@@ -20,7 +20,10 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
     #LOG.debug("Filters len = {}".format(len(filters)))
     request_parameters = query_parameters
     if len(filters) >= 1:
-        query["$and"] = []
+        total_query={}
+        total_query["$and"] = []
+        if query != {}:
+            total_query["$and"].append(query)
         for filter in filters:
             partial_query = {}
             if "value" in filter:
@@ -47,13 +50,13 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
                 #LOG.debug("Custom filter: %s", filter.id)
                 partial_query = apply_custom_filter(partial_query, filter, collection)
             LOG.debug(partial_query)
-            query["$and"].append(partial_query)
-            LOG.debug(query)
-            if query["$and"] == [{'$or': []}]:
-                query = {}
+            total_query["$and"].append(partial_query)
+            #LOG.debug(query)
+            if total_query["$and"] == [{'$or': []}] or total_query['$and'] == []:
+                total_query = {}
 
 
-    return query
+    return total_query
 
 
 def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, request_parameters: dict) -> dict:
@@ -243,6 +246,7 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
         else:
             def_list=[]
             if scope == 'individuals' and collection == 'g_variants':
+                LOG.debug('hola')
                 mongo_collection=client.beacon.individuals
                 original_id="id"
                 join_ids=list(join_query(mongo_collection, query, original_id))

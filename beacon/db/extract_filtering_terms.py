@@ -394,7 +394,8 @@ def merge_terms():
             print(repeated_term)
             id=repeated_term["id"]
             label=repeated_term["label"]
-            array_of_scopes.append(repeated_term['scope'][0])
+            if repeated_term['scope'][0] not in array_of_scopes:
+                array_of_scopes.append(repeated_term['scope'][0])
         print("array_of_scopes are {}".format(array_of_scopes))
         new_terms.append({
             'type': 'ontology',

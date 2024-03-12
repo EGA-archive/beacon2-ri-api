@@ -74,7 +74,7 @@ def get_count(collection: Collection, query: dict) -> int:
         return total_counts
 
 def get_documents(collection: Collection, query: dict, skip: int, limit: int) -> Cursor:
-    LOG.debug("FINAL QUERY: {}".format(query))
+    #LOG.debug("FINAL QUERY: {}".format(query))
     ##LOG.debug(skip)
     return collection.find(query).skip(skip).limit(limit).max_time_ms(100 * 1000)
 

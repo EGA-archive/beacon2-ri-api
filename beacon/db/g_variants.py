@@ -128,7 +128,7 @@ def get_variants(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'g_variants'
     mongo_collection = client.beacon.genomicVariations
     query = apply_request_parameters({}, qparams)
-    #LOG.debug(qparams.query.filters)
+    LOG.debug(query)
     query = apply_filters(query, qparams.query.filters, collection,{})
     #LOG.debug(query)
     include = qparams.query.include_resultset_responses
