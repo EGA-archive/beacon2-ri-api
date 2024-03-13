@@ -166,7 +166,7 @@ def get_runs(entry_id: Optional[str], qparams: RequestParams, dataset: str):
 def get_run_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'runs'
     mongo_collection = client.beacon.runs
-    query = apply_request_parameters({}, qparams)
+    query, parameters_as_filters = apply_request_parameters({}, qparams)
     query = apply_filters(query, qparams.query.filters, collection, {})
     query = query_id(query, entry_id)
     query = include_resultset_responses(query, qparams)
@@ -188,7 +188,7 @@ def get_variants_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
     collection = 'runs'
     mongo_collection = client.beacon.genomicVariations
     query = {"$and": [{"id": entry_id}]}
-    query = apply_request_parameters(query, qparams)
+    query, parameters_as_filters = apply_request_parameters(query, qparams)
     query = query = apply_filters(query, qparams.query.filters, collection, {})
     run_ids = client.beacon.runs \
         .find_one(query, {"individualId": 1, "_id": 0})
@@ -211,7 +211,7 @@ def get_analyses_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
     collection = 'runs'
     mongo_collection = client.beacon.analyses
     query = {"runId": entry_id}
-    query = apply_request_parameters(query, qparams)
+    query, parameters_as_filters = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     LOG.debug(query)

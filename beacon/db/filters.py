@@ -23,7 +23,7 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
     total_query={}
     if len(filters) >= 1:
         total_query["$and"] = []
-        if query != {}:
+        if query != {} and request_parameters == {}:
             total_query["$and"].append(query)
         for filter in filters:
             partial_query = {}
@@ -99,7 +99,7 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
     else:
         total_query=query
 
-    #LOG.debug(total_query)
+    LOG.debug(total_query)
     return total_query
 
 
@@ -267,6 +267,7 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
         LOG.debug(query)
 
         if scope == 'genomicVariations' and collection == 'g_variants' or scope == collection:
+            LOG.debug(request_parameters)
             if request_parameters != {}:
                 biosample_ids = client.beacon.genomicVariations.find(request_parameters, {"caseLevelData.biosampleId": 1, "_id": 0})
                 final_id='id'
@@ -287,6 +288,25 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
                     except Exception:
                         query={}
                         query['$or']=def_list
+                LOG.debug(query)
+                mongo_collection=client.beacon.biosamples
+                original_id="individualId"
+                join_ids2=list(join_query(mongo_collection, query, original_id))
+                def_list=[]
+                final_id="id"
+                for id_item in join_ids2:
+                    new_id={}
+                    new_id[final_id] = id_item.pop(original_id)
+                    def_list.append(new_id)
+                query={}
+                query['$or']=def_list
+                if def_list != []:
+                    try:
+                        query['$or'].def_list
+                    except Exception:
+                        query={}
+                        query['$or']=def_list
+            LOG.debug(query)
         else:
             def_list=[]
             if scope == 'individuals' and collection == 'g_variants':

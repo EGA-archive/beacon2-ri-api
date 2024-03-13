@@ -171,7 +171,7 @@ def get_individual_with_id(entry_id: Optional[str], qparams: RequestParams, data
     collection = 'individuals'
     idq="id"
     mongo_collection = client.beacon.individuals
-    query = apply_request_parameters({}, qparams)
+    query, parameters_as_filters = apply_request_parameters({}, qparams)
     query = apply_filters(query, qparams.query.filters, collection, {})
     query = query_id(query, entry_id)
     query = include_resultset_responses(query, qparams)
@@ -189,9 +189,13 @@ def get_individual_with_id(entry_id: Optional[str], qparams: RequestParams, data
 
 def get_variants_of_individual(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'g_variants'
+    query = {"individualId": entry_id}
+    mongo_collection = client.beacon.biosamples
+    excluding_fields={"_id": 0, "id": 1}
+    biosampleId=mongo_collection.find(query, excluding_fields)
+    query = {"caseLevelData.biosampleId": biosampleId[0]["id"]}
     mongo_collection = client.beacon.genomicVariations
-    query = {"caseLevelData.biosampleId": entry_id}
-    query = apply_request_parameters(query, qparams)
+    query, parameters_as_filters = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.GENOMICVARIATIONS
@@ -211,7 +215,7 @@ def get_biosamples_of_individual(entry_id: Optional[str], qparams: RequestParams
     collection = 'biosamples'
     mongo_collection = client.beacon.biosamples
     query = {"individualId": entry_id}
-    query = apply_request_parameters(query, qparams)
+    query, parameters_as_filters = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.BIOSAMPLES
@@ -246,7 +250,7 @@ def get_runs_of_individual(entry_id: Optional[str], qparams: RequestParams, data
     collection = 'individuals'
     mongo_collection = client.beacon.runs
     query = {"individualId": entry_id}
-    query = apply_request_parameters(query, qparams)
+    query, parameters_as_filters = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.RUNS
@@ -265,7 +269,7 @@ def get_analyses_of_individual(entry_id: Optional[str], qparams: RequestParams, 
     collection = 'individuals'
     mongo_collection = client.beacon.analyses
     query = {"individualId": entry_id}
-    query = apply_request_parameters(query, qparams)
+    query, parameters_as_filters = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.ANALYSES
