@@ -25,7 +25,8 @@ VARIANTS_PROPERTY_MAP = {
     "variantMaxLength": "variantInternalId",
     "geneId": "molecularAttributes.geneIds",
     "genomicAlleleShortForm": "identifiers.genomicHGVSId",
-    "aminoacidChange": "molecularAttributes.aminoacidChanges"
+    "aminoacidChange": "molecularAttributes.aminoacidChanges",
+    "clinicalRelevance": "caseLevelData.clinicalInterpretations.clinicalRelevance"
 }
 
 def include_resultset_responses(query: Dict[str, List[dict]], qparams: RequestParams):
@@ -143,12 +144,13 @@ def get_individuals(entry_id: Optional[str], qparams: RequestParams, dataset: st
     mongo_collection = client.beacon.individuals
     parameters_as_filters=False
     query_parameters, parameters_as_filters = apply_request_parameters({}, qparams)
+    LOG.debug(query_parameters)
     LOG.debug(parameters_as_filters)
     if parameters_as_filters == True:
         query, parameters_as_filters = apply_request_parameters({}, qparams)
         query_parameters={}
     else:
-        query={}
+        query=query_parameters
     query = apply_filters(query, qparams.query.filters, collection, query_parameters)
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.INDIVIDUALS

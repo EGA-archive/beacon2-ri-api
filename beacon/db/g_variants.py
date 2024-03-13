@@ -23,7 +23,8 @@ VARIANTS_PROPERTY_MAP = {
     "variantMaxLength": "variantInternalId",
     "geneId": "molecularAttributes.geneIds",
     "genomicAlleleShortForm": "identifiers.genomicHGVSId",
-    "aminoacidChange": "molecularAttributes.aminoacidChanges"
+    "aminoacidChange": "molecularAttributes.aminoacidChanges",
+    "clinicalRelevance": "caseLevelData.clinicalInterpretations.clinicalRelevance"
 }
 
 def include_resultset_responses(query: Dict[str, List[dict]], qparams: RequestParams):
@@ -130,7 +131,7 @@ def get_variants(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     query = apply_request_parameters({}, qparams)
     LOG.debug(query)
     query = apply_filters(query, qparams.query.filters, collection,{})
-    #LOG.debug(query)
+    LOG.debug(query)
     include = qparams.query.include_resultset_responses
     limit = qparams.query.pagination.limit
     skip = qparams.query.pagination.skip
