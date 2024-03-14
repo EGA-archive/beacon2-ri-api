@@ -120,7 +120,7 @@ html {
   justify-content: center;
   align-items: center;
 }
-.crossQueriesTittle{
+.crossQueriesTittle {
   margin-bottom: 12px;
   font-size: 12px;
   margin-top: -24px;
@@ -191,6 +191,7 @@ html {
   /* height: 35px; */
   align-content: center;
   margin-top: 20px;
+  flex-wrap: wrap;
 }
 
 .form-select {
@@ -1444,6 +1445,7 @@ h5 {
     /* height: 35px; */
     align-content: center;
     margin-top: 20px;
+    flex-wrap: wrap;
   }
 
   .example {
@@ -1559,4 +1561,28 @@ h5 {
     margin-top: 0px;
     font-size: 12px !important;
   }
+}
+
+@media (max-width: 460px) {
+  .containerForm {
+    margin-left: 0px;
+  }
+  .formSearch {
+    width: 71vw;
+    margin-right: 3px;
+    background: white;
+    border: 2px solid #8985c1;
+    font-size: small;
+    /* margin: 10px; */
+    border-radius: 10px;
+    /* box-shadow: 2px 1px 2px #cecece; */
+    height: 30px;
+}
+.crossQueriesTittle {
+  margin-bottom: 12px;
+  font-size: 10px;
+  margin-top: 24px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 }

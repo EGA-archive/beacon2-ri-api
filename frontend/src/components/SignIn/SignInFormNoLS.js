@@ -1,10 +1,11 @@
 import './SignInForm.css'
-import { NavLink } from 'react-router-dom'
+import configData from "../../config.json";
 import React, { Component, useState } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Navbar from '../NavBar/Navbar'
+
+
 
 export default function SignInFormNoLS () {
   const [userName, setUserName] = useState('dummy_user')
@@ -55,7 +56,8 @@ export default function SignInFormNoLS () {
       formBody = formBody.join('&')
 
       const response = await fetch(
-        'https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon/protocol/openid-connect/token',
+        configData.KEYCLOAK_URL +
+          '/auth/realms/Beacon/protocol/openid-connect/token',
         {
           method: 'POST',
           headers: {

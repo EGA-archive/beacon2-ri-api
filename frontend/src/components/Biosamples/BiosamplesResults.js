@@ -150,12 +150,12 @@ function BiosamplesResults (props) {
           } else {
             let filter = { id: props.query }
             let labelToOntology = 0
-            console.log("holi")
+            console.log('holi')
             let queryTermLowerCase = props.query.toLowerCase()
             console.log(props.filteringTerms)
             props.filteringTerms.data.response.filteringTerms.forEach(
               element => {
-                if (element.label){
+                if (element.label) {
                   element.label = element.label.toLowerCase()
                 }
                 if (queryTermLowerCase === element.label) {
@@ -296,7 +296,6 @@ function BiosamplesResults (props) {
               configData.API_URL + '/biosamples',
               jsonData2
             )
-            
           } else {
             console.log('Querying WITH token')
             const headers = { Authorization: `Bearer ${token}` }
@@ -322,9 +321,9 @@ function BiosamplesResults (props) {
               if (element.id && element.id !== '') {
                 if (resultsPerDataset.length > 0) {
                   resultsPerDataset.forEach(element2 => {
-                    element2[1].push(element.id)
-                    element2[2].push(element.exists)
-                    element2[3].push(element.resultsCount)
+                    element2[0].push(element.id)
+                    element2[1].push(element.exists)
+                    element2[2].push(element.resultsCount)
                   })
                 } else {
                   let arrayResultsPerDataset = [
@@ -365,7 +364,7 @@ function BiosamplesResults (props) {
           }
         }
       } catch (error) {
-        setError('Connection error. Please retry')
+        setError('No results. Please retry')
         setTimeOut(true)
       }
     }

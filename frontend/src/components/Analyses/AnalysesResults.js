@@ -150,12 +150,12 @@ function AnalysesResults (props) {
           } else {
             let filter = { id: props.query }
             let labelToOntology = 0
-            console.log("holi")
+            console.log('holi')
             let queryTermLowerCase = props.query.toLowerCase()
             console.log(props.filteringTerms)
             props.filteringTerms.data.response.filteringTerms.forEach(
               element => {
-                if (element.label){
+                if (element.label) {
                   element.label = element.label.toLowerCase()
                 }
                 if (queryTermLowerCase === element.label) {
@@ -204,10 +204,7 @@ function AnalysesResults (props) {
           }
 
           if (token === null) {
-            res = await axios.post(
-              configData.API_URL + '/analyses',
-              jsonData1
-            )
+            res = await axios.post(configData.API_URL + '/analyses', jsonData1)
           } else {
             const headers = { Authorization: `Bearer ${token}` }
 
@@ -292,11 +289,7 @@ function AnalysesResults (props) {
           console.log(jsonData2)
           if (token === null) {
             console.log('Querying without token')
-            res = await axios.post(
-              configData.API_URL + '/analyses',
-              jsonData2
-            )
-            
+            res = await axios.post(configData.API_URL + '/analyses', jsonData2)
           } else {
             console.log('Querying WITH token')
             const headers = { Authorization: `Bearer ${token}` }
@@ -322,9 +315,9 @@ function AnalysesResults (props) {
               if (element.id && element.id !== '') {
                 if (resultsPerDataset.length > 0) {
                   resultsPerDataset.forEach(element2 => {
-                    element2[1].push(element.id)
-                    element2[2].push(element.exists)
-                    element2[3].push(element.resultsCount)
+                    element2[0].push(element.id)
+                    element2[1].push(element.exists)
+                    element2[2].push(element.resultsCount)
                   })
                 } else {
                   let arrayResultsPerDataset = [
@@ -365,7 +358,7 @@ function AnalysesResults (props) {
           }
         }
       } catch (error) {
-        setError('Connection error. Please retry')
+        setError('No results. Please retry')
         setTimeOut(true)
       }
     }

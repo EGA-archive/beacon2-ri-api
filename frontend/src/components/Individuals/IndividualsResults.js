@@ -296,7 +296,7 @@ function IndividualsResults (props) {
               configData.API_URL + '/individuals',
               jsonData2
             )
-            
+              console.log(res)
           } else {
             console.log('Querying WITH token')
             const headers = { Authorization: `Bearer ${token}` }
@@ -322,9 +322,9 @@ function IndividualsResults (props) {
               if (element.id && element.id !== '') {
                 if (resultsPerDataset.length > 0) {
                   resultsPerDataset.forEach(element2 => {
-                    element2[1].push(element.id)
-                    element2[2].push(element.exists)
-                    element2[3].push(element.resultsCount)
+                    element2[0].push(element.id)
+                    element2[1].push(element.exists)
+                    element2[2].push(element.resultsCount)
                   })
                 } else {
                   let arrayResultsPerDataset = [
@@ -365,7 +365,8 @@ function IndividualsResults (props) {
           }
         }
       } catch (error) {
-        setError('Connection error. Please retry')
+        console.log(error)
+        setError('No results. Please retry')
         setTimeOut(true)
       }
     }

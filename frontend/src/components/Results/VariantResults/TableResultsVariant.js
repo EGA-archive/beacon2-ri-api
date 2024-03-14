@@ -1,6 +1,6 @@
 import './TableResultsVariant.css'
 import '../IndividualsResults/TableResultsIndividuals.css'
-import '../../Datasets/ResultsDatasets.css'
+import '../../Dataset/BeaconInfo'
 import { useState, useEffect } from 'react'
 
 function TableResultsVariant (props) {

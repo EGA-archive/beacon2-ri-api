@@ -1,6 +1,6 @@
 import './TableResultsBiosamples.css'
 import '../IndividualsResults/TableResultsIndividuals.css'
-import '../../Datasets/ResultsDatasets.css'
+import '../../Dataset/BeaconInfo'
 import * as React from 'react'
 import {
   DataGrid,

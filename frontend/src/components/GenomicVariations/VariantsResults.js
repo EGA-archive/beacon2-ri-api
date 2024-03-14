@@ -390,7 +390,7 @@ function VariantsResults (props) {
               }
             }
           } catch (error) {
-            setError('Connection error. Please retry')
+            setError('No results. Please retry')
             setTimeOut(true)
           }
         } else {
@@ -566,9 +566,9 @@ function VariantsResults (props) {
               if (element.id && element.id !== '') {
                 if (resultsPerDataset.length > 0) {
                   resultsPerDataset.forEach(element2 => {
-                    element2[1].push(element.id)
-                    element2[2].push(element.exists)
-                    element2[3].push(element.resultsCount)
+                    element2[0].push(element.id)
+                    element2[1].push(element.exists)
+                    element2[2].push(element.resultsCount)
                   })
                 } else {
                   let arrayResultsPerDataset = [
@@ -609,7 +609,7 @@ function VariantsResults (props) {
           }
         }
       } catch (error) {
-        setError('Connection error. Please retry')
+        setError('No results. Please retry')
         setTimeOut(true)
       }
     }
