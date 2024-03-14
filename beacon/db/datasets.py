@@ -5,6 +5,7 @@ from beacon.db.schemas import DefaultSchemas
 from beacon.db.utils import query_id, get_count, get_documents, get_cross_query, get_docs_by_response_type
 from beacon.request.model import RequestParams
 from beacon.db import client
+from beacon import conf
 
 import logging
 import yaml
@@ -265,3 +266,69 @@ def get_analyses_of_dataset(entry_id: Optional[str], qparams: RequestParams, dat
         limit = 100
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
     return schema, count, dataset_count, docs
+
+def beacon_handovers():
+    query = {}
+    docs = get_documents(
+        client.beacon.datasets,
+        query,
+        0,
+        100
+    )
+    beacon_handovers=[]
+    for doc in docs:
+        try:
+            note = doc["description"]
+        except Exception:
+            note = ""
+        try:
+            url = doc["externalUrl"]
+        except Exception:
+            url = ""
+        if doc["id"] == "coadread_tcga_pan_can_atlas_2018":
+            beacon_handovers.append([
+            {
+                'handoverType': {
+                    'id': 'NCIT:C189151',
+                    'label': 'Study Data Repository'
+                },
+                'note': note,
+                'url': url
+            }
+            ])
+        else:
+            beacon_handovers.append(conf.beacon_handovers)
+    return beacon_handovers
+
+def beacon_handovers_by_dataset(dataset: str):
+    query = {"id": dataset}
+    docs = get_documents(
+        client.beacon.datasets,
+        query,
+        0,
+        1
+    )
+    beacon_handovers=[]
+    for doc in docs:
+        try:
+            note = doc["description"]
+        except Exception:
+            note = ""
+        try:
+            url = doc["externalUrl"]
+        except Exception:
+            url = ""
+        if doc["id"] == "coadread_tcga_pan_can_atlas_2018":
+            beacon_handovers=[
+            {
+                'handoverType': {
+                    'id': 'NCIT:C189151',
+                    'label': 'Study Data Repository'
+                },
+                'note': note,
+                'url': url
+            }
+            ]
+        else:
+            beacon_handovers=conf.beacon_handovers
+    return beacon_handovers
