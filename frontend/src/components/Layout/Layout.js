@@ -323,6 +323,10 @@ function Layout (props) {
     setGeneId('CHR_START-DUXAP8')
   }
 
+  const removeModuleQuery = e => {
+    setGeneSub(false)
+  }
+
   useEffect(() => {
     setError('')
     if (props.collection === 'Individuals') {
@@ -356,7 +360,9 @@ function Layout (props) {
       try {
         if (props.collection === 'Individuals') {
           try {
-            let res = await axios.get(configData.API_URL + '/filtering_terms?limit=0')
+            let res = await axios.get(
+              configData.API_URL + '/filtering_terms?limit=0'
+            )
             setTimeOut(true)
 
             if (res.data.response.filteringTerms !== undefined) {
@@ -430,7 +436,9 @@ function Layout (props) {
           }
         } else if (props.collection === 'Runs') {
           try {
-            let res = await axios.get(configData.API_URL + '/filtering_terms?limit=0')
+            let res = await axios.get(
+              configData.API_URL + '/filtering_terms?limit=0'
+            )
             setTimeOut(true)
             if (res.data.response.filteringTerms !== undefined) {
               setFilteringTerms(res)
@@ -506,6 +514,10 @@ function Layout (props) {
     } else if (props.collection === 'Runs') {
       setResults('Runs')
     }
+
+    if (geneSubmitted === true){
+      
+    }
   }
 
   function search (e) {
@@ -524,855 +536,886 @@ function Layout (props) {
 
   return (
     <div className='container1'>
-      <div className='container2'>
-        <div className='logosVersionContainer'>
-          <div className='logos'>
-            <a
-              href='https://eosc4cancer.eu/'
-              className='logoInstitution'
-              target='_blank'
-              rel='noreferrer'
-            >
-              <img
-                className='eosc4cancer'
-                src='../eosc4cancer.png'
-                alt='eosc4cancer'
-              ></img>
-            </a>
+      <div className='sectionModules'>
+        <div className='container2'>
+          <div className='logosVersionContainer'>
+            <div className='logos'>
+              <a
+                href='https://eosc4cancer.eu/'
+                className='logoInstitution'
+                target='_blank'
+                rel='noreferrer'
+              >
+                <img
+                  className='eosc4cancer'
+                  src='../eosc4cancer.png'
+                  alt='eosc4cancer'
+                ></img>
+              </a>
+            </div>
+            <h1 className='version'>v0.5.2</h1>
           </div>
-          <h1 className='version'>v0.5.2</h1>
         </div>
-      </div>
 
-      <div className='Modal1'>
-        {popUp && (
-          <ReactModal
-            isOpen={popUp}
-            onRequestClose={handleCloseModal3}
-            shouldCloseOnOverlayClick={true}
-            style={{
-              overlay: {
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                zIndex: 3,
-                backgroundColor: 'rgba(255, 255, 255, 0.75)'
-              }
-            }}
-          >
-            <button onClick={handleCloseModal3}>
-              <img
-                className='closeLogo'
-                src='./cancel.png'
-                alt='cancelIcon'
-              ></img>
-            </button>
+        <div className='Modal1'>
+          {popUp && (
+            <ReactModal
+              isOpen={popUp}
+              onRequestClose={handleCloseModal3}
+              shouldCloseOnOverlayClick={true}
+              style={{
+                overlay: {
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  zIndex: 3,
+                  backgroundColor: 'rgba(255, 255, 255, 0.75)'
+                }
+              }}
+            >
+              <button onClick={handleCloseModal3}>
+                <img
+                  className='closeLogo'
+                  src='./cancel.png'
+                  alt='cancelIcon'
+                ></img>
+              </button>
 
-            <p>
-              Please, bear in mind that you might have to log in to get
-              information from some datasets.
-            </p>
-          </ReactModal>
-        )}
-      </div>
-      <nav className='navbar'>
-        {expansionSection === true && (
-          <HorizontalExpansion
-            arrayFilteringTermsQE={arrayFilteringTermsQE}
-            query={query}
-            setQuery={setQuery}
-            setExpansionSection={setExpansionSection}
-          />
-        )}
-        {showVariants === true && showBar === false && (
-          <button className='modeVariantsBarMode' onClick={handleClick}>
-            <h2 className='modeVariantsQueries'>Change to FORM mode</h2>
-          </button>
-        )}
-        <div className='container-fluid'>
-          {cohorts === false && showBar === true && (
-            <div className='containerForm'>
-              <form className='d-flex' onSubmit={onSubmit}>
-                <input
-                  className='formSearch'
-                  type='search'
-                  placeholder={placeholder}
-                  value={query}
-                  onChange={e => search(e)}
-                  aria-label='Search'
-                />
-
-                <button className='searchButton' type='submit'>
-                  <img
-                    className='searchIcon'
-                    src='./magnifier.png'
-                    alt='searchIcon'
-                  ></img>
-                </button>
-              </form>
-              <div className='additionalOptions'>
-                <div className='example'>
-                  {cohorts === false &&
-                    props.collection !== '' &&
-                    showBar === true && (
-                      <div className='bulbExample'>
-                        <button
-                          className='exampleQueries'
-                          onClick={handleExQueries}
-                        >
-                          Query Examples
-                        </button>
-                        <img
-                          className='bulbLogo'
-                          src='../light-bulb.png'
-                          alt='bulbIcon'
-                        ></img>
-                        <div className='examplesQueriesList'>
-                          {exampleQ[0] &&
-                            exampleQ.map(result => {
-                              return (
-                                <div id='exampleQueries'>
-                                  <button
-                                    className='exampleQuery'
-                                    onClick={() => {
-                                      setPlaceholder(`${result[0]}`)
-                                      setQuery(`${[result[0]]}`)
-                                      setValue(`${result[1]}`)
-                                      setExampleQ([])
-                                    }}
-                                  >
-                                    {result[1] !== undefined && (
-                                      <div className='text-example'>
-                                        {result[1]}
-                                      </div>
-                                    )}
-
-                                    {result[0]}
-                                  </button>
-                                </div>
-                              )
-                            })}
-                        </div>
-                      </div>
-                    )}
-                  {props.collection !== '' &&
-                    showBar === true &&
-                    filteringTermsButton && (
-                      <button
-                        className='filters'
-                        onClick={handleSeeFilteringTerms}
-                      >
-                        Filtering Terms{' '}
-                      </button>
-                    )}
-                  {props.collection !== '' &&
-                    showBar === true &&
-                    !filteringTermsButton && (
-                      <button className='filters'>Filtering Terms </button>
-                    )}
-                </div>
-              </div>
-            </div>
+              <p>
+                Please, bear in mind that you might have to log in to get
+                information from some datasets.
+              </p>
+            </ReactModal>
           )}
-          <form className='variantsForm' onSubmit={handleSubmit}>
-            {props.collection !== 'Variant' && (
-              <h7 className='crossQueriesTittle'>
-                Cross queries from {props.collection} to Variants
-              </h7>
-            )}
-            <div className='tabset'>
-              <input
-                type='radio'
-                name='tabset'
-                id='tab1'
-                aria-controls='sequence'
-              />
-              <label for='tab1'>Sequence queries</label>
-
-              <input
-                type='radio'
-                name='tabset'
-                id='tab2'
-                aria-controls='range'
-              />
-              <label for='tab2'>Range queries</label>
-
-              <input
-                type='radio'
-                name='tabset'
-                id='tab3'
-                aria-controls='gene'
-              />
-              <label for='tab3'>Gene ID queries</label>
-
-              <div className='tab-panels'>
-                <section id='sequence' class='tab-panel'>
-                  <button
-                    className='variantExampleButton'
-                    onClick={handleSequenceExample}
-                    type='button'
-                  >
-                    Query example
-                  </button>
-                  <div>
-                    <label className='labelVariants'>AssemblyID</label>
-                    <input
-                      className='inputVariants'
-                      type='text'
-                      value={assemblyId}
-                      onChange={handleChangeAssembly}
-                    ></input>
-                  </div>
-                  <div>
-                    <label className='labelVariants'>Reference name</label>
-                    <input
-                      className='inputVariants'
-                      type='text'
-                      value={referenceName}
-                      onChange={handleChangeRefN}
-                    ></input>
-                  </div>
-                  <div>
-                    <label className='labelVariants'>
-                      Start (single value)
-                    </label>
-                    <input
-                      className='inputVariants'
-                      type='text'
-                      value={start}
-                      onChange={handleChangeStart}
-                    ></input>
-                  </div>
-                  <div>
-                    <label className='labelVariants'>referenceBases</label>
-                    <input
-                      className='inputVariants'
-                      type='text'
-                      value={referenceBases}
-                      onChange={handleChangeReferenceB}
-                    ></input>
-                  </div>
-                  <div>
-                    <label className='labelVariants'>alternateBases</label>
-                    <input
-                      className='inputVariants'
-                      type='text'
-                      value={alternateBases}
-                      onChange={handleChangeAlternateB}
-                    ></input>
-                  </div>
-                  <div className='DivButtonVariants'>
-                    <input
-                      className='buttonVariants'
-                      type='submit'
-                      value='Search'
-                      onClick={() => setSequenceSub(true)}
-                    />
-                  </div>
-                </section>
-                <section id='range' className='tab-panel'>
-                  <button
-                    className='variantExampleButton'
-                    onClick={handleRangeExample}
-                    type='button'
-                  >
-                    Query example
-                  </button>
-                  <div>
-                    <label className='labelVariants'>AssemblyID</label>
-                    <input
-                      className='inputVariants'
-                      type='text'
-                      value={assemblyId2}
-                      onChange={handleChangeAssembly2}
-                    ></input>
-                  </div>
-                  <div>
-                    <label className='labelVariants'>Reference name</label>
-                    <input
-                      className='inputVariants'
-                      type='text'
-                      value={referenceName2}
-                      onChange={handleChangeRefN2}
-                    ></input>
-                  </div>
-                  <div>
-                    <label className='labelVariants'>
-                      Start (single value)
-                    </label>
-                    <input
-                      className='inputVariants'
-                      type='text'
-                      value={start2}
-                      onChange={handleChangeStart2}
-                    ></input>
-                  </div>
-                  <div>
-                    <label className='labelVariants'>End (single value)</label>
-                    <input
-                      className='inputVariants'
-                      type='text'
-                      value={end}
-                      onChange={handleChangeEnd}
-                    ></input>
-                  </div>
-                  <div>
-                    <label className='labelVariants'>Variant type:</label>
-                    <input
-                      className='inputVariants'
-                      type='text'
-                      value={variantType}
-                      onChange={handleChangeVariantType}
-                    ></input>{' '}
-                  </div>
-                  <div>
-                    <h3>OR</h3>
-                    <div className='basesSection'>
-                      <div className='referenceBasesContainer'>
-                        <label className='labelVariants'>referenceBases:</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={referenceBases2}
-                          onChange={handleChangeReferenceB2}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>alternateBases:</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={alternateBases2}
-                          onChange={handleChangeAlternateB2}
-                        ></input>
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <h3>OR</h3>
-                    <label className='labelVariants'>Aminoacid Change:</label>
-                    <input
-                      className='inputVariants'
-                      type='text'
-                      value={aminoacid}
-                      onChange={handleChangeAminoacid}
-                    ></input>
-                  </div>
-                  <div>
-                    <label className='labelVariants'>
-                      Variant min. length:
-                    </label>
-                    <input
-                      className='inputVariants'
-                      type='text'
-                      value={variantMinLength}
-                      onChange={handleChangeVariantMinLength}
-                    ></input>
-                  </div>
-                  <div>
-                    <label className='labelVariants'>
-                      Variant max. length:
-                    </label>
-                    <input
-                      className='inputVariants'
-                      type='text'
-                      value={variantMaxLength}
-                      onChange={handleChangeVariantMaxLength}
-                    ></input>
-                  </div>
-                  <div className='DivButtonVariants'>
-                    <input
-                      className='buttonVariants'
-                      type='submit'
-                      value='Search'
-                      onClick={() => setRangeSub(true)}
-                    />
-                  </div>
-                </section>
-                <section id='gene' className='tab-panel'>
-                  <button
-                    className='variantExampleButton'
-                    onClick={handleGeneExample}
-                    type='button'
-                  >
-                    Query example
-                  </button>
-                  <div>
-                    <label className='labelVariants'>Gene ID</label>
-                    <input
-                      className='inputVariants'
-                      type='text'
-                      value={geneID}
-                      onChange={handleChangeGeneId}
-                    ></input>
-                  </div>
-                  <div>
-                    <label className='labelVariants'>AssemblyID</label>
-                    <input
-                      className='inputVariants'
-                      type='text'
-                      value={assemblyId3}
-                      onChange={handleChangeAssembly3}
-                    ></input>
-                  </div>
-                  <div>
-                    <label className='labelVariants'>Variant type:</label>
-                    <input
-                      className='inputVariants'
-                      type='text'
-                      value={variantType2}
-                      onChange={handleChangeVariantType2}
-                    ></input>
-                  </div>
-                  <div>
-                    <label className='labelVariants'>
-                      Variant min. length:
-                    </label>
-                    <input
-                      className='inputVariants'
-                      type='text'
-                      value={variantMinLength2}
-                      onChange={handleChangeVariantMinLength2}
-                    ></input>
-                  </div>
-                  <div>
-                    <label className='labelVariants'>
-                      Variant max. length:
-                    </label>
-                    <input
-                      className='inputVariants'
-                      type='text'
-                      value={variantMaxLength2}
-                      onChange={handleChangeVariantMaxLength2}
-                    ></input>
-                  </div>
-                  <div className='DivButtonVariants'>
-                    <input
-                      className='buttonVariants'
-                      type='submit'
-                      value='Search'
-                      onClick={() => setGeneSub(true)}
-                    />
-                  </div>
-                </section>
-              </div>
-            </div>
-          </form>
-          {props.collection === 'Variant' && showBar === false && (
-            <div>
-              <form className='d-flex' onSubmit={onSubmit}>
-                <input
-                  className='formSearch'
-                  type='search'
-                  placeholder={placeholder}
-                  value={query}
-                  onChange={e => search(e)}
-                  aria-label='Search'
-                />
-
-                <button className='searchButton' type='submit'>
-                  <img
-                    className='searchIcon'
-                    src='./magnifier.png'
-                    alt='searchIcon'
-                  ></img>
-                </button>
-              </form>
-            </div>
-          )}
-          {props.collection === 'Cohorts' && (
-            <CohortsModule
-              optionsCohorts={props.optionsCohorts}
-              selectedCohorts={props.selectedCohorts}
-              setSelectedCohorts={props.setSelectedCohorts}
-              setShowGraphs={props.setShowGraphs}
+        </div>
+        <nav className='navbar'>
+          {expansionSection === true && (
+            <HorizontalExpansion
+              arrayFilteringTermsQE={arrayFilteringTermsQE}
+              query={query}
+              setQuery={setQuery}
+              setExpansionSection={setExpansionSection}
             />
           )}
-        </div>
+          {showVariants === true && showBar === false && (
+            <button className='modeVariantsBarMode' onClick={handleClick}>
+              <h2 className='modeVariantsQueries'>Change to FORM mode</h2>
+            </button>
+          )}
+          <div className='container-fluid'>
+            {cohorts === false && showBar === true && (
+              <div className='containerForm'>
+                <form className='d-flex' onSubmit={onSubmit}>
+                  <input
+                    className='formSearch'
+                    type='search'
+                    placeholder={placeholder}
+                    value={query}
+                    onChange={e => search(e)}
+                    aria-label='Search'
+                  />
 
-        {showBar === false && props.collection === 'Variant' && (
-          <div className='additionalOptions'>
-            <div className='example'>
-              <div className='bulbExample'>
-                <button className='exampleQueries' onClick={handleExQueries}>
-                  Query Examples
-                </button>
-                <img
-                  className='bulbLogo'
-                  src='../light-bulb.png'
-                  alt='bulbIcon'
-                ></img>
-                <div className='examplesQueriesList'>
-                  {exampleQ[0] &&
-                    exampleQ.map(result => {
-                      return (
-                        <div id='exampleQueries'>
+                  <button className='searchButton' type='submit'>
+                    <img
+                      className='searchIcon'
+                      src='./magnifier.png'
+                      alt='searchIcon'
+                    ></img>
+                  </button>
+                </form>
+                <div className='additionalOptions'>
+                  <div className='example'>
+                    {cohorts === false &&
+                      props.collection !== '' &&
+                      showBar === true && (
+                        <div className='bulbExample'>
                           <button
-                            className='exampleQuery'
-                            onClick={() => {
-                              setPlaceholder(`${result[0]}`)
-                              setQuery(`${result[0]}`)
-                              setValue(`${result[1]}`)
-                              setExampleQ([])
-                            }}
+                            className='exampleQueries'
+                            onClick={handleExQueries}
                           >
-                            {result[1] !== undefined && (
-                              <div className='text-example'>{result[1]}</div>
-                            )}
-
-                            {result[0]}
+                            Query Examples
                           </button>
+                          <img
+                            className='bulbLogo'
+                            src='../light-bulb.png'
+                            alt='bulbIcon'
+                          ></img>
+                          <div className='examplesQueriesList'>
+                            {exampleQ[0] &&
+                              exampleQ.map(result => {
+                                return (
+                                  <div id='exampleQueries'>
+                                    <button
+                                      className='exampleQuery'
+                                      onClick={() => {
+                                        setPlaceholder(`${result[0]}`)
+                                        setQuery(`${[result[0]]}`)
+                                        setValue(`${result[1]}`)
+                                        setExampleQ([])
+                                      }}
+                                    >
+                                      {result[1] !== undefined && (
+                                        <div className='text-example'>
+                                          {result[1]}
+                                        </div>
+                                      )}
+
+                                      {result[0]}
+                                    </button>
+                                  </div>
+                                )
+                              })}
+                          </div>
                         </div>
-                      )
-                    })}
+                      )}
+                    {props.collection !== '' &&
+                      showBar === true &&
+                      filteringTermsButton && (
+                        <button
+                          className='filters'
+                          onClick={handleSeeFilteringTerms}
+                        >
+                          Filtering Terms{' '}
+                        </button>
+                      )}
+                    {props.collection !== '' &&
+                      showBar === true &&
+                      !filteringTermsButton && (
+                        <button className='filters'>Filtering Terms </button>
+                      )}
+                  </div>
+                </div>
+                {geneSubmitted && (
+                  <div className='moduleAdded'>
+                   <ion-icon name="checkmark-outline"></ion-icon>
+                    <div className='moduleAddedQuery'>
+                      <div className='removeButton'>
+                        <button onClick={removeModuleQuery}>
+                        <ion-icon name='remove-circle-outline'></ion-icon>
+                        </button>
+                      </div>
+                      <h13>Gene module</h13>
+                      <h14>{geneID}</h14>
+                      <h14>{variantType2}</h14>
+                      <h14>{assemblyId3}</h14>
+                      <h14>{variantMinLength2}</h14>
+                      <h14>{variantMaxLength2}</h14>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+            <form className='variantsForm' onSubmit={handleSubmit}>
+              {props.collection !== 'Variant' && (
+                <h7 className='crossQueriesTittle'>
+                  Cross queries from {props.collection} to Variants
+                </h7>
+              )}
+              <div className='tabset'>
+                <input
+                  type='radio'
+                  name='tabset'
+                  id='tab1'
+                  aria-controls='sequence'
+                />
+                <label for='tab1'>Sequence queries</label>
+
+                <input
+                  type='radio'
+                  name='tabset'
+                  id='tab2'
+                  aria-controls='range'
+                />
+                <label for='tab2'>Range queries</label>
+
+                <input
+                  type='radio'
+                  name='tabset'
+                  id='tab3'
+                  aria-controls='gene'
+                />
+                <label for='tab3'>Gene ID queries</label>
+
+                <div className='tab-panels'>
+                  <section id='sequence' class='tab-panel'>
+                    <button
+                      className='variantExampleButton'
+                      onClick={handleSequenceExample}
+                      type='button'
+                    >
+                      Query example
+                    </button>
+                    <div>
+                      <label className='labelVariants'>AssemblyID</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={assemblyId}
+                        onChange={handleChangeAssembly}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>Reference name</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={referenceName}
+                        onChange={handleChangeRefN}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>
+                        Start (single value)
+                      </label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={start}
+                        onChange={handleChangeStart}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>referenceBases</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={referenceBases}
+                        onChange={handleChangeReferenceB}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>alternateBases</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={alternateBases}
+                        onChange={handleChangeAlternateB}
+                      ></input>
+                    </div>
+                    <div className='DivButtonVariants'>
+                      <button
+                        className='buttonVariants'
+                        type='button'
+                        onClick={() => setSequenceSub(true)}
+                      >
+                        {' '}
+                        <ion-icon name='add-circle'></ion-icon>
+                      </button>
+                    </div>
+                  </section>
+                  <section id='range' className='tab-panel'>
+                    <button
+                      className='variantExampleButton'
+                      onClick={handleRangeExample}
+                      type='button'
+                    >
+                      Query example
+                    </button>
+                    <div>
+                      <label className='labelVariants'>AssemblyID</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={assemblyId2}
+                        onChange={handleChangeAssembly2}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>Reference name</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={referenceName2}
+                        onChange={handleChangeRefN2}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>
+                        Start (single value)
+                      </label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={start2}
+                        onChange={handleChangeStart2}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>
+                        End (single value)
+                      </label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={end}
+                        onChange={handleChangeEnd}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>Variant type:</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={variantType}
+                        onChange={handleChangeVariantType}
+                      ></input>{' '}
+                    </div>
+                    <div>
+                      <h3>OR</h3>
+                      <div className='basesSection'>
+                        <div className='referenceBasesContainer'>
+                          <label className='labelVariants'>
+                            referenceBases:
+                          </label>
+                          <input
+                            className='inputVariants'
+                            type='text'
+                            value={referenceBases2}
+                            onChange={handleChangeReferenceB2}
+                          ></input>
+                        </div>
+                        <div>
+                          <label className='labelVariants'>
+                            alternateBases:
+                          </label>
+                          <input
+                            className='inputVariants'
+                            type='text'
+                            value={alternateBases2}
+                            onChange={handleChangeAlternateB2}
+                          ></input>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h3>OR</h3>
+                      <label className='labelVariants'>Aminoacid Change:</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={aminoacid}
+                        onChange={handleChangeAminoacid}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>
+                        Variant min. length:
+                      </label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={variantMinLength}
+                        onChange={handleChangeVariantMinLength}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>
+                        Variant max. length:
+                      </label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={variantMaxLength}
+                        onChange={handleChangeVariantMaxLength}
+                      ></input>
+                    </div>
+                    <div className='DivButtonVariants'>
+                      <button
+                        className='buttonVariants'
+                        type='button'
+                        onClick={() => setRangeSub(true)}
+                      >
+                        {' '}
+                        <ion-icon name='add-circle'></ion-icon>
+                      </button>
+                    </div>
+                  </section>
+                  <section id='gene' className='tab-panel'>
+                    <button
+                      className='variantExampleButton'
+                      onClick={handleGeneExample}
+                      type='button'
+                    >
+                      Query example
+                    </button>
+                    <div>
+                      <label className='labelVariants'>Gene ID</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={geneID}
+                        onChange={handleChangeGeneId}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>AssemblyID</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={assemblyId3}
+                        onChange={handleChangeAssembly3}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>Variant type:</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={variantType2}
+                        onChange={handleChangeVariantType2}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>
+                        Variant min. length:
+                      </label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={variantMinLength2}
+                        onChange={handleChangeVariantMinLength2}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>
+                        Variant max. length:
+                      </label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={variantMaxLength2}
+                        onChange={handleChangeVariantMaxLength2}
+                      ></input>
+                    </div>
+                    <div className='DivButtonVariants'>
+                      <button
+                        className='buttonVariants'
+                        type='button'
+                        onClick={() => setGeneSub(true)}
+                      >
+                        {' '}
+                        <ion-icon name='add-circle'></ion-icon>
+                      </button>
+                    </div>
+                  </section>
                 </div>
               </div>
+            </form>
+            {props.collection === 'Variant' && showBar === false && (
+              <div>
+                <form className='d-flex' onSubmit={onSubmit}>
+                  <input
+                    className='formSearch'
+                    type='search'
+                    placeholder={placeholder}
+                    value={query}
+                    onChange={e => search(e)}
+                    aria-label='Search'
+                  />
 
-              <button className='filters' onClick={handleSeeFilteringTerms}>
-                Filtering Terms
-              </button>
-            </div>
+                  <button className='searchButton' type='submit'>
+                    <img
+                      className='searchIcon'
+                      src='./magnifier.png'
+                      alt='searchIcon'
+                    ></img>
+                  </button>
+                </form>
+              </div>
+            )}
+            {props.collection === 'Cohorts' && (
+              <CohortsModule
+                optionsCohorts={props.optionsCohorts}
+                selectedCohorts={props.selectedCohorts}
+                setSelectedCohorts={props.setSelectedCohorts}
+                setShowGraphs={props.setShowGraphs}
+              />
+            )}
           </div>
-        )}
 
-        {/* {showVariants === true && showBar === true && (
+          {showBar === false && props.collection === 'Variant' && (
+            <div className='additionalOptions'>
+              <div className='example'>
+                <div className='bulbExample'>
+                  <button className='exampleQueries' onClick={handleExQueries}>
+                    Query Examples
+                  </button>
+                  <img
+                    className='bulbLogo'
+                    src='../light-bulb.png'
+                    alt='bulbIcon'
+                  ></img>
+                  <div className='examplesQueriesList'>
+                    {exampleQ[0] &&
+                      exampleQ.map(result => {
+                        return (
+                          <div id='exampleQueries'>
+                            <button
+                              className='exampleQuery'
+                              onClick={() => {
+                                setPlaceholder(`${result[0]}`)
+                                setQuery(`${result[0]}`)
+                                setValue(`${result[1]}`)
+                                setExampleQ([])
+                              }}
+                            >
+                              {result[1] !== undefined && (
+                                <div className='text-example'>{result[1]}</div>
+                              )}
+
+                              {result[0]}
+                            </button>
+                          </div>
+                        )
+                      })}
+                  </div>
+                </div>
+
+                <button className='filters' onClick={handleSeeFilteringTerms}>
+                  Filtering Terms
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* {showVariants === true && showBar === true && (
           <button className='modeVariants' onClick={handleClick}>
             <h2 className='modeVariantsQueries2'>Change to BAR mode </h2>
           </button>
         )} */}
-        <hr></hr>
-        {!showVariants && (
-          <div className='containerExtraSections'>
-            {showButton && (
-              <button
-                className='arrowButton'
-                onClick={handleExtraSectionIndividuals}
-              >
-                <img
-                  className='arrowLogo'
-                  src='../arrow-down.png'
-                  alt='arrowIcon'
-                ></img>
-              </button>
-            )}
-            {!showButton && (
-              <button
-                className='arrowButton'
-                onClick={handleExtraSectionIndividuals}
-              >
-                <img
-                  className='arrowLogo'
-                  src='../arrow-up.png'
-                  alt='arrowUpIcon'
-                ></img>
-              </button>
-            )}
-            {showOptions && (
-              <div className='extraSections'>
-                <div className='advContainer'>
-                  <form className='advSearchForm' onSubmit={onSubmit}>
-                    <div>
-                      <div className='resultset'>
-                        <div className='resultSetsDiv'>
-                          <label>
-                            <h2>Include Resultset Responses</h2>
-                          </label>
-                          {resultSet === 'HIT' && (
-                            <MultiSwitch
-                              texts={['HIT', 'MISS', 'NONE', 'ALL']}
-                              selectedSwitch={3}
-                              bgColor={'white'}
-                              onToggleCallback={onToggle2}
-                              fontColor={'black'}
-                              selectedFontColor={'white'}
-                              border='0'
-                              selectedSwitchColor='#e29348'
-                              borderWidth='1'
-                              height={'23px'}
-                              fontSize={'12px'}
-                              eachSwitchWidth={55}
-                            ></MultiSwitch>
-                          )}
-                          {resultSet === 'MISS' && (
-                            <MultiSwitch
-                              texts={['HIT', 'MISS', 'NONE', 'ALL']}
-                              selectedSwitch={1}
-                              bgColor={'white'}
-                              onToggleCallback={onToggle2}
-                              fontColor={'black'}
-                              selectedFontColor={'white'}
-                              border='0'
-                              selectedSwitchColor='#e29348'
-                              borderWidth='1'
-                              height={'23px'}
-                              fontSize={'12px'}
-                              eachSwitchWidth={55}
-                            ></MultiSwitch>
-                          )}
-                          {resultSet === 'NONE' && (
-                            <MultiSwitch
-                              texts={['HIT', 'MISS', 'NONE', 'ALL']}
-                              selectedSwitch={2}
-                              bgColor={'white'}
-                              onToggleCallback={onToggle2}
-                              fontColor={'black'}
-                              selectedFontColor={'white'}
-                              border='0'
-                              selectedSwitchColor='#e29348'
-                              borderWidth='1'
-                              height={'23px'}
-                              fontSize={'12px'}
-                              eachSwitchWidth={55}
-                            ></MultiSwitch>
-                          )}
-                          {resultSet === 'ALL' && (
-                            <MultiSwitch
-                              texts={['HIT', 'MISS', 'NONE', 'ALL']}
-                              selectedSwitch={3}
-                              bgColor={'white'}
-                              onToggleCallback={onToggle2}
-                              fontColor={'black'}
-                              selectedFontColor={'white'}
-                              border='0'
-                              selectedSwitchColor='#e29348'
-                              borderWidth='1'
-                              height={'23px'}
-                              fontSize={'12px'}
-                              eachSwitchWidth={55}
-                            ></MultiSwitch>
-                          )}
-                        </div>
-                        <div className='advSearch-module'>
-                          <label>
-                            <h2>Similarity</h2>
-                          </label>
-                          <input
-                            id='similarityCheck'
-                            type='checkbox'
-                            defaultChecked={false}
-                            onChange={() => setChecked2(!checked2)}
-                          />
-
-                          {checked2 && (
-                            <MultiSwitch
-                              texts={['Low', 'Medium', 'High']}
-                              selectedSwitch={0}
-                              bgColor={'white'}
-                              onToggleCallback={onToggle}
-                              fontColor={'black'}
-                              selectedFontColor={'white'}
-                              border='0'
-                              selectedSwitchColor='#4f85bc'
-                              borderWidth='1'
-                              height={'23px'}
-                              fontSize={'12px'}
-                              eachSwitchWidth={60}
-                            ></MultiSwitch>
-                          )}
-                        </div>
-                        <div className='advSearch-module'>
-                          <label>
-                            <h2>Include Descendant Terms</h2>
-                          </label>
-                          <div className='switchDescendants'>
-                            <h3>False</h3>
-                            <Switch
-                              checked={checked}
-                              onChange={handleChangeSwitch}
-                              inputProps={{ 'aria-label': 'controlled' }}
-                              color='warning'
-                              size='small'
+          <hr></hr>
+          {!showVariants && (
+            <div className='containerExtraSections'>
+              {showButton && (
+                <button
+                  className='arrowButton'
+                  onClick={handleExtraSectionIndividuals}
+                >
+                  <img
+                    className='arrowLogo'
+                    src='../arrow-down.png'
+                    alt='arrowIcon'
+                  ></img>
+                </button>
+              )}
+              {!showButton && (
+                <button
+                  className='arrowButton'
+                  onClick={handleExtraSectionIndividuals}
+                >
+                  <img
+                    className='arrowLogo'
+                    src='../arrow-up.png'
+                    alt='arrowUpIcon'
+                  ></img>
+                </button>
+              )}
+              {showOptions && (
+                <div className='extraSections'>
+                  <div className='advContainer'>
+                    <form className='advSearchForm' onSubmit={onSubmit}>
+                      <div>
+                        <div className='resultset'>
+                          <div className='resultSetsDiv'>
+                            <label>
+                              <h2>Include Resultset Responses</h2>
+                            </label>
+                            {resultSet === 'HIT' && (
+                              <MultiSwitch
+                                texts={['HIT', 'MISS', 'NONE', 'ALL']}
+                                selectedSwitch={3}
+                                bgColor={'white'}
+                                onToggleCallback={onToggle2}
+                                fontColor={'black'}
+                                selectedFontColor={'white'}
+                                border='0'
+                                selectedSwitchColor='#e29348'
+                                borderWidth='1'
+                                height={'23px'}
+                                fontSize={'12px'}
+                                eachSwitchWidth={55}
+                              ></MultiSwitch>
+                            )}
+                            {resultSet === 'MISS' && (
+                              <MultiSwitch
+                                texts={['HIT', 'MISS', 'NONE', 'ALL']}
+                                selectedSwitch={1}
+                                bgColor={'white'}
+                                onToggleCallback={onToggle2}
+                                fontColor={'black'}
+                                selectedFontColor={'white'}
+                                border='0'
+                                selectedSwitchColor='#e29348'
+                                borderWidth='1'
+                                height={'23px'}
+                                fontSize={'12px'}
+                                eachSwitchWidth={55}
+                              ></MultiSwitch>
+                            )}
+                            {resultSet === 'NONE' && (
+                              <MultiSwitch
+                                texts={['HIT', 'MISS', 'NONE', 'ALL']}
+                                selectedSwitch={2}
+                                bgColor={'white'}
+                                onToggleCallback={onToggle2}
+                                fontColor={'black'}
+                                selectedFontColor={'white'}
+                                border='0'
+                                selectedSwitchColor='#e29348'
+                                borderWidth='1'
+                                height={'23px'}
+                                fontSize={'12px'}
+                                eachSwitchWidth={55}
+                              ></MultiSwitch>
+                            )}
+                            {resultSet === 'ALL' && (
+                              <MultiSwitch
+                                texts={['HIT', 'MISS', 'NONE', 'ALL']}
+                                selectedSwitch={3}
+                                bgColor={'white'}
+                                onToggleCallback={onToggle2}
+                                fontColor={'black'}
+                                selectedFontColor={'white'}
+                                border='0'
+                                selectedSwitchColor='#e29348'
+                                borderWidth='1'
+                                height={'23px'}
+                                fontSize={'12px'}
+                                eachSwitchWidth={55}
+                              ></MultiSwitch>
+                            )}
+                          </div>
+                          <div className='advSearch-module'>
+                            <label>
+                              <h2>Similarity</h2>
+                            </label>
+                            <input
+                              id='similarityCheck'
+                              type='checkbox'
+                              defaultChecked={false}
+                              onChange={() => setChecked2(!checked2)}
                             />
-                            <h3>True</h3>
+
+                            {checked2 && (
+                              <MultiSwitch
+                                texts={['Low', 'Medium', 'High']}
+                                selectedSwitch={0}
+                                bgColor={'white'}
+                                onToggleCallback={onToggle}
+                                fontColor={'black'}
+                                selectedFontColor={'white'}
+                                border='0'
+                                selectedSwitchColor='#4f85bc'
+                                borderWidth='1'
+                                height={'23px'}
+                                fontSize={'12px'}
+                                eachSwitchWidth={60}
+                              ></MultiSwitch>
+                            )}
+                          </div>
+                          <div className='advSearch-module'>
+                            <label>
+                              <h2>Include Descendant Terms</h2>
+                            </label>
+                            <div className='switchDescendants'>
+                              <h3>False</h3>
+                              <Switch
+                                checked={checked}
+                                onChange={handleChangeSwitch}
+                                inputProps={{ 'aria-label': 'controlled' }}
+                                color='warning'
+                                size='small'
+                              />
+                              <h3>True</h3>
+                            </div>
                           </div>
                         </div>
+                        <div>
+                          {expansionSection === false && cohorts === false && (
+                            <button onClick={handleQEclick} className='btn-3'>
+                              <span className='spanQE'>Query expansion</span>
+                            </button>
+                          )}
+                        </div>
                       </div>
-                      <div>
-                        {expansionSection === false && cohorts === false && (
-                          <button onClick={handleQEclick} className='btn-3'>
-                            <span className='spanQE'>Query expansion</span>
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </form>
+                    </form>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        )}
-        {showVariants && (
-          <div className='containerExtraSections'>
-            {showButton && (
-              <button
-                className='arrowButton'
-                onClick={handleExtraSectionIndividuals}
-              >
-                <img
-                  className='arrowLogo'
-                  src='../arrow-down.png'
-                  alt='arrowIcon'
-                ></img>
-              </button>
-            )}
-            {!showButton && (
-              <button
-                className='arrowButton'
-                onClick={handleExtraSectionIndividuals}
-              >
-                <img
-                  className='arrowLogo'
-                  src='../arrow-up.png'
-                  alt='arrowUpIcon'
-                ></img>
-              </button>
-            )}
-            {showOptions && (
-              <div className='extraSections'>
-                <div className='advContainer'>
-                  <form className='advSearchForm' onSubmit={onSubmit}>
-                    <div>
-                      <div className='resultset'>
-                        <div className='resultSetsDiv'>
-                          <label>
-                            <h2>Include Resultset Responses</h2>
-                          </label>
-                          {resultSet === 'HIT' && (
-                            <MultiSwitch
-                              texts={['HIT', 'MISS', 'NONE', 'ALL']}
-                              selectedSwitch={0}
-                              bgColor={'white'}
-                              onToggleCallback={onToggle2}
-                              fontColor={'black'}
-                              selectedFontColor={'white'}
-                              border='0'
-                              selectedSwitchColor='#e29348'
-                              borderWidth='1'
-                              height={'23px'}
-                              fontSize={'12px'}
-                              eachSwitchWidth={55}
-                            ></MultiSwitch>
-                          )}
-                          {resultSet === 'MISS' && (
-                            <MultiSwitch
-                              texts={['HIT', 'MISS', 'NONE', 'ALL']}
-                              selectedSwitch={1}
-                              bgColor={'white'}
-                              onToggleCallback={onToggle2}
-                              fontColor={'black'}
-                              selectedFontColor={'white'}
-                              border='0'
-                              selectedSwitchColor='#e29348'
-                              borderWidth='1'
-                              height={'23px'}
-                              fontSize={'12px'}
-                              eachSwitchWidth={55}
-                            ></MultiSwitch>
-                          )}
-                          {resultSet === 'NONE' && (
-                            <MultiSwitch
-                              texts={['HIT', 'MISS', 'NONE', 'ALL']}
-                              selectedSwitch={2}
-                              bgColor={'white'}
-                              onToggleCallback={onToggle2}
-                              fontColor={'black'}
-                              selectedFontColor={'white'}
-                              border='0'
-                              selectedSwitchColor='#e29348'
-                              borderWidth='1'
-                              height={'23px'}
-                              fontSize={'12px'}
-                              eachSwitchWidth={55}
-                            ></MultiSwitch>
-                          )}
-                          {resultSet === 'ALL' && (
-                            <MultiSwitch
-                              texts={['HIT', 'MISS', 'NONE', 'ALL']}
-                              selectedSwitch={3}
-                              bgColor={'white'}
-                              onToggleCallback={onToggle2}
-                              fontColor={'black'}
-                              selectedFontColor={'white'}
-                              border='0'
-                              selectedSwitchColor='#e29348'
-                              borderWidth='1'
-                              height={'23px'}
-                              fontSize={'12px'}
-                              eachSwitchWidth={55}
-                            ></MultiSwitch>
-                          )}
-                        </div>
-                        <div className='advSearch-module'>
-                          <label>
-                            <h2>Similarity</h2>
-                          </label>
-                          <input
-                            id='similarityCheck'
-                            type='checkbox'
-                            defaultChecked={false}
-                            onChange={() => setChecked2(!checked2)}
-                          />
-
-                          {checked2 && (
-                            <MultiSwitch
-                              texts={['Low', 'Medium', 'High']}
-                              selectedSwitch={0}
-                              bgColor={'white'}
-                              onToggleCallback={onToggle}
-                              fontColor={'black'}
-                              selectedFontColor={'white'}
-                              border='0'
-                              selectedSwitchColor='#4f85bc'
-                              borderWidth='1'
-                              height={'23px'}
-                              fontSize={'12px'}
-                              eachSwitchWidth={60}
-                            ></MultiSwitch>
-                          )}
-                        </div>
-                        <div className='advSearch-module'>
-                          <label>
-                            <h2>Include Descendant Terms</h2>
-                          </label>
-                          <div className='switchDescendants'>
-                            <h3>False</h3>
-                            <Switch
-                              checked={checked}
-                              onChange={handleChangeSwitch}
-                              inputProps={{ 'aria-label': 'controlled' }}
-                              color='warning'
-                              size='small'
+              )}
+            </div>
+          )}
+          {showVariants && (
+            <div className='containerExtraSections'>
+              {showButton && (
+                <button
+                  className='arrowButton'
+                  onClick={handleExtraSectionIndividuals}
+                >
+                  <img
+                    className='arrowLogo'
+                    src='../arrow-down.png'
+                    alt='arrowIcon'
+                  ></img>
+                </button>
+              )}
+              {!showButton && (
+                <button
+                  className='arrowButton'
+                  onClick={handleExtraSectionIndividuals}
+                >
+                  <img
+                    className='arrowLogo'
+                    src='../arrow-up.png'
+                    alt='arrowUpIcon'
+                  ></img>
+                </button>
+              )}
+              {showOptions && (
+                <div className='extraSections'>
+                  <div className='advContainer'>
+                    <form className='advSearchForm' onSubmit={onSubmit}>
+                      <div>
+                        <div className='resultset'>
+                          <div className='resultSetsDiv'>
+                            <label>
+                              <h2>Include Resultset Responses</h2>
+                            </label>
+                            {resultSet === 'HIT' && (
+                              <MultiSwitch
+                                texts={['HIT', 'MISS', 'NONE', 'ALL']}
+                                selectedSwitch={0}
+                                bgColor={'white'}
+                                onToggleCallback={onToggle2}
+                                fontColor={'black'}
+                                selectedFontColor={'white'}
+                                border='0'
+                                selectedSwitchColor='#e29348'
+                                borderWidth='1'
+                                height={'23px'}
+                                fontSize={'12px'}
+                                eachSwitchWidth={55}
+                              ></MultiSwitch>
+                            )}
+                            {resultSet === 'MISS' && (
+                              <MultiSwitch
+                                texts={['HIT', 'MISS', 'NONE', 'ALL']}
+                                selectedSwitch={1}
+                                bgColor={'white'}
+                                onToggleCallback={onToggle2}
+                                fontColor={'black'}
+                                selectedFontColor={'white'}
+                                border='0'
+                                selectedSwitchColor='#e29348'
+                                borderWidth='1'
+                                height={'23px'}
+                                fontSize={'12px'}
+                                eachSwitchWidth={55}
+                              ></MultiSwitch>
+                            )}
+                            {resultSet === 'NONE' && (
+                              <MultiSwitch
+                                texts={['HIT', 'MISS', 'NONE', 'ALL']}
+                                selectedSwitch={2}
+                                bgColor={'white'}
+                                onToggleCallback={onToggle2}
+                                fontColor={'black'}
+                                selectedFontColor={'white'}
+                                border='0'
+                                selectedSwitchColor='#e29348'
+                                borderWidth='1'
+                                height={'23px'}
+                                fontSize={'12px'}
+                                eachSwitchWidth={55}
+                              ></MultiSwitch>
+                            )}
+                            {resultSet === 'ALL' && (
+                              <MultiSwitch
+                                texts={['HIT', 'MISS', 'NONE', 'ALL']}
+                                selectedSwitch={3}
+                                bgColor={'white'}
+                                onToggleCallback={onToggle2}
+                                fontColor={'black'}
+                                selectedFontColor={'white'}
+                                border='0'
+                                selectedSwitchColor='#e29348'
+                                borderWidth='1'
+                                height={'23px'}
+                                fontSize={'12px'}
+                                eachSwitchWidth={55}
+                              ></MultiSwitch>
+                            )}
+                          </div>
+                          <div className='advSearch-module'>
+                            <label>
+                              <h2>Similarity</h2>
+                            </label>
+                            <input
+                              id='similarityCheck'
+                              type='checkbox'
+                              defaultChecked={false}
+                              onChange={() => setChecked2(!checked2)}
                             />
-                            <h3>True</h3>
+
+                            {checked2 && (
+                              <MultiSwitch
+                                texts={['Low', 'Medium', 'High']}
+                                selectedSwitch={0}
+                                bgColor={'white'}
+                                onToggleCallback={onToggle}
+                                fontColor={'black'}
+                                selectedFontColor={'white'}
+                                border='0'
+                                selectedSwitchColor='#4f85bc'
+                                borderWidth='1'
+                                height={'23px'}
+                                fontSize={'12px'}
+                                eachSwitchWidth={60}
+                              ></MultiSwitch>
+                            )}
+                          </div>
+                          <div className='advSearch-module'>
+                            <label>
+                              <h2>Include Descendant Terms</h2>
+                            </label>
+                            <div className='switchDescendants'>
+                              <h3>False</h3>
+                              <Switch
+                                checked={checked}
+                                onChange={handleChangeSwitch}
+                                inputProps={{ 'aria-label': 'controlled' }}
+                                color='warning'
+                                size='small'
+                              />
+                              <h3>True</h3>
+                            </div>
                           </div>
                         </div>
+                        <div>
+                          {expansionSection === false && cohorts === false && (
+                            <button onClick={handleQEclick} className='btn-3'>
+                              <span className='spanQE'>Query expansion</span>
+                            </button>
+                          )}
+                        </div>
                       </div>
-                      <div>
-                        {expansionSection === false && cohorts === false && (
-                          <button onClick={handleQEclick} className='btn-3'>
-                            <span className='spanQE'>Query expansion</span>
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </form>
+                    </form>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        )}
-        {hideForm === true && (
-          <button onClick={handleHideVariantsForm}>
-            <img
-              className='arrowLogo'
-              src='../arrow-down.png'
-              alt='arrowIcon'
-            />
-          </button>
-        )}
-        {/* {showVariants && showBar === true && hideForm === false && (
+              )}
+            </div>
+          )}
+          {hideForm === true && (
+            <button onClick={handleHideVariantsForm}>
+              <img
+                className='arrowLogo'
+                src='../arrow-down.png'
+                alt='arrowIcon'
+              />
+            </button>
+          )}
+          {/* {showVariants && showBar === true && hideForm === false && (
           <div className='extraSectionVariantFormMode'>
             <div className='containerExtraSections2'>
               <div className='extraSections2'>
@@ -1786,8 +1829,8 @@ function Layout (props) {
             </form>
           </div>
         )} */}
-      </nav>
-
+        </nav>
+      </div>
       <div>
         <ReactModal
           isOpen={isOpenModal1}
@@ -1859,7 +1902,7 @@ function Layout (props) {
             </div>
           </div>
         )}
-          {results === null && !showFilteringTerms && (
+        {results === null && !showFilteringTerms && (
           <BeaconInfo trigger={trigger} />
         )}
         {isSubmitted && results === 'Individuals' && triggerQuery && (
@@ -1874,6 +1917,31 @@ function Layout (props) {
               descendantTerm={descendantTerm}
               similarity={similarity}
               isSubmitted={isSubmitted}
+              geneSubmitted={geneSubmitted}
+              sequenceSubmitted={sequenceSubmitted}
+              rangeSubmitted={rangeSubmitted}
+              aminoacid2={aminoacid2}
+              assemblyId2={assemblyId2}
+              assemblyId3={assemblyId3}
+              alternateBases3={alternateBases3}
+              alternateBases2={alternateBases2}
+              variantType2={variantType2}
+              start2={start2}
+              referenceName2={referenceName2}
+              referenceName={referenceName}
+              assemblyId={assemblyId}
+              start={start}
+              end={end}
+              variantType={variantType}
+              alternateBases={alternateBases}
+              referenceBases={referenceBases}
+              referenceBases2={referenceBases2}
+              aminoacid={aminoacid}
+              geneID={geneID}
+              variantMaxLength={variantMaxLength}
+              variantMaxLength2={variantMaxLength2}
+              variantMinLength={variantMinLength}
+              variantMinLength2={variantMinLength2}
             />
           </div>
         )}
@@ -1889,6 +1957,31 @@ function Layout (props) {
               descendantTerm={descendantTerm}
               similarity={similarity}
               isSubmitted={isSubmitted}
+              geneSubmitted={geneSubmitted}
+              sequenceSubmitted={sequenceSubmitted}
+              rangeSubmitted={rangeSubmitted}
+              aminoacid2={aminoacid2}
+              assemblyId2={assemblyId2}
+              assemblyId3={assemblyId3}
+              alternateBases3={alternateBases3}
+              alternateBases2={alternateBases2}
+              variantType2={variantType2}
+              start2={start2}
+              referenceName2={referenceName2}
+              referenceName={referenceName}
+              assemblyId={assemblyId}
+              start={start}
+              end={end}
+              variantType={variantType}
+              alternateBases={alternateBases}
+              referenceBases={referenceBases}
+              referenceBases2={referenceBases2}
+              aminoacid={aminoacid}
+              geneID={geneID}
+              variantMaxLength={variantMaxLength}
+              variantMaxLength2={variantMaxLength2}
+              variantMinLength={variantMinLength}
+              variantMinLength2={variantMinLength2}
             />
           </div>
         )}

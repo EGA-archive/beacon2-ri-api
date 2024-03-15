@@ -63,6 +63,73 @@ function IndividualsResults (props) {
         }
       }
 
+      var requestParametersSequence = {}
+      var requestParametersRange = {}
+      var requestParametersGene = {}
+      if (props.referenceName !== '') {
+        requestParametersSequence['referenceName'] = props.referenceName
+      }
+      if (props.referenceName2 !== '') {
+        requestParametersRange['referenceName'] = props.referenceName2
+      }
+      if (props.start !== '') {
+        requestParametersSequence['start'] = props.start
+      }
+      if (props.start2 !== '') {
+        requestParametersRange['start'] = props.start2
+      }
+      if (props.variantMinLength !== '') {
+        requestParametersRange['variantMinLength'] = props.variantMinLength
+      }
+      if (props.variantMaxLength !== '') {
+        requestParametersRange['variantMaxLength'] = props.variantMaxLength
+      }
+      if (props.variantMinLength2 !== '') {
+        requestParametersGene['variantMinLength'] = props.variantMinLength2
+      }
+      if (props.variantMaxLength2 !== '') {
+        requestParametersGene['variantMaxLength'] = props.variantMaxLength2
+      }
+      if (props.end !== '') {
+        requestParametersRange['end'] = props.end
+      }
+      if (props.variantType !== '') {
+        requestParametersRange['variantType'] = props.variantType
+      }
+      if (props.variantType2 !== '') {
+        requestParametersGene['variantType'] = props.variantType2
+      }
+      if (props.alternateBases !== '') {
+        requestParametersSequence['alternateBases'] = props.alternateBases
+      }
+      if (props.alternateBases2 !== '') {
+        requestParametersRange['alternateBases'] = props.alternateBases2
+      }
+      if (props.referenceBases !== '') {
+        requestParametersSequence['referenceBases'] = props.referenceBases
+      }
+      if (props.referenceBases2 !== '') {
+        requestParametersRange['referenceBases'] = props.referenceBases2
+      }
+      if (props.aminoacid !== '') {
+        requestParametersSequence['aminoacidChange'] = props.aminoacid
+      }
+      if (props.aminoacid2 !== '') {
+        requestParametersRange['aminoacidChange'] = props.aminoacid2
+      }
+      if (props.geneID !== '') {
+        requestParametersGene['geneId'] = props.geneID
+      }
+      if (props.assemblyId !== '') {
+        requestParametersSequence['assemblyId'] = props.assemblyId
+      }
+      if (props.assemblyId2 !== '') {
+        requestParametersRange['assemblyId'] = props.assemblyId2
+      }
+      if (props.assemblyId3 !== '') {
+        requestParametersGene['assemblyId'] = props.assemblyId3
+      }
+
       if (props.query !== null) {
         if (props.query.includes(',')) {
           queryStringTerm = props.query.split(',')
@@ -94,20 +161,23 @@ function IndividualsResults (props) {
               const alphaNumFilter = {
                 id: queryArray[index][0],
                 operator: queryArray[index][2],
-                value: queryArray[index][1]
+                value: queryArray[index][1],
+                scope: "individuals"
               }
               arrayFilter.push(alphaNumFilter)
             } else {
               let filter2 = {
                 id: element,
-                includeDescendantTerms: props.descendantTerm
+                //includeDescendantTerms: props.descendantTerm,
+                scope: "individuals"
               }
               props.filteringTerms.data.response.filteringTerms.forEach(
                 element2 => {
                   if (element.toLowerCase() === element2.label.toLowerCase()) {
                     filter2 = {
                       id: element2.id,
-                      includeDescendantTerms: props.descendantTerm
+                     // includeDescendantTerms: props.descendantTerm,
+                      scope: element2.scope
                     }
                   }
                 }
@@ -144,24 +214,26 @@ function IndividualsResults (props) {
             const alphaNumFilter = {
               id: queryArray[0][0],
               operator: queryArray[0][2],
-              value: queryArray[0][1]
+              value: queryArray[0][1],
+              scope: "individuals"
             }
             arrayFilter.push(alphaNumFilter)
           } else {
-            let filter = { id: props.query }
+            let filter = { id: props.query, scope: "individuals"}
             let labelToOntology = 0
-            console.log("holi")
+
             let queryTermLowerCase = props.query.toLowerCase()
             console.log(props.filteringTerms)
             props.filteringTerms.data.response.filteringTerms.forEach(
               element => {
-                if (element.label){
+                if (element.label) {
                   element.label = element.label.toLowerCase()
                 }
                 if (queryTermLowerCase === element.label) {
                   labelToOntology = element.id
                   filter = {
-                    id: labelToOntology
+                    id: labelToOntology,
+                    scope: element.scope
                   }
                 }
               }
@@ -178,22 +250,77 @@ function IndividualsResults (props) {
 
         if (props.query === null) {
           // show all individuals
+          var jsonData1 = {}
 
-          var jsonData1 = {
-            meta: {
-              apiVersion: '2.0'
-            },
-            query: {
-              filters: arrayFilter,
-              includeResultsetResponses: `${props.resultSets}`,
-              pagination: {
-                skip: 0,
-                limit: 0
+          if (props.sequenceSubmitted) {
+            jsonData1 = {
+              meta: {
+                apiVersion: '2.0'
               },
-              testMode: false,
-              requestedGranularity: 'record'
+              query: {
+                requestParameters: requestParametersSequence,
+                filters: arrayFilter,
+                includeResultsetResponses: `${props.resultSets}`,
+                pagination: {
+                  skip: skip,
+                  limit: limit
+                },
+                testMode: false,
+                requestedGranularity: 'record'
+              }
+            }
+          } else if (props.rangeSubmitted) {
+            jsonData1 = {
+              meta: {
+                apiVersion: '2.0'
+              },
+              query: {
+                requestParameters: requestParametersRange,
+                filters: arrayFilter,
+                includeResultsetResponses: `${props.resultSets}`,
+                pagination: {
+                  skip: skip,
+                  limit: limit
+                },
+                testMode: false,
+                requestedGranularity: 'record'
+              }
+            }
+          } else if (props.geneSubmitted) {
+            jsonData1 = {
+              meta: {
+                apiVersion: '2.0'
+              },
+              query: {
+                requestParameters: requestParametersGene,
+                filters: arrayFilter,
+                includeResultsetResponses: `${props.resultSets}`,
+                pagination: {
+                  skip: skip,
+                  limit: limit
+                },
+                testMode: false,
+                requestedGranularity: 'record'
+              }
+            }
+          } else {
+            jsonData1 = {
+              meta: {
+                apiVersion: '2.0'
+              },
+              query: {
+                filters: arrayFilter,
+                includeResultsetResponses: `${props.resultSets}`,
+                pagination: {
+                  skip: 0,
+                  limit: 0
+                },
+                testMode: false,
+                requestedGranularity: 'record'
+              }
             }
           }
+
           jsonData1 = JSON.stringify(jsonData1)
 
           let token = null
@@ -208,6 +335,8 @@ function IndividualsResults (props) {
               configData.API_URL + '/individuals',
               jsonData1
             )
+            console.log(jsonData1)
+            console.log(res)
           } else {
             const headers = { Authorization: `Bearer ${token}` }
 
@@ -266,19 +395,74 @@ function IndividualsResults (props) {
             })
           }
         } else {
-          var jsonData2 = {
-            meta: {
-              apiVersion: '2.0'
-            },
-            query: {
-              filters: arrayFilter,
-              includeResultsetResponses: `${props.resultSets}`,
-              pagination: {
-                skip: skip,
-                limit: limit
+          var jsonData2 = {}
+
+          if (props.sequenceSubmitted) {
+            jsonData2 = {
+              meta: {
+                apiVersion: '2.0'
               },
-              testMode: false,
-              requestedGranularity: 'record'
+              query: {
+                requestParameters: requestParametersSequence,
+                filters: arrayFilter,
+                includeResultsetResponses: `${props.resultSets}`,
+                pagination: {
+                  skip: skip,
+                  limit: limit
+                },
+                testMode: false,
+                requestedGranularity: 'record'
+              }
+            }
+          } else if (props.rangeSubmitted) {
+            jsonData2 = {
+              meta: {
+                apiVersion: '2.0'
+              },
+              query: {
+                requestParameters: requestParametersRange,
+                filters: arrayFilter,
+                includeResultsetResponses: `${props.resultSets}`,
+                pagination: {
+                  skip: skip,
+                  limit: limit
+                },
+                testMode: false,
+                requestedGranularity: 'record'
+              }
+            }
+          } else if (props.geneSubmitted) {
+            jsonData2 = {
+              meta: {
+                apiVersion: '2.0'
+              },
+              query: {
+                requestParameters: requestParametersGene,
+                filters: arrayFilter,
+                includeResultsetResponses: `${props.resultSets}`,
+                pagination: {
+                  skip: skip,
+                  limit: limit
+                },
+                testMode: false,
+                requestedGranularity: 'record'
+              }
+            }
+          } else {
+            jsonData2 = {
+              meta: {
+                apiVersion: '2.0'
+              },
+              query: {
+                filters: arrayFilter,
+                includeResultsetResponses: `${props.resultSets}`,
+                pagination: {
+                  skip: 0,
+                  limit: 0
+                },
+                testMode: false,
+                requestedGranularity: 'record'
+              }
             }
           }
           jsonData2 = JSON.stringify(jsonData2)
@@ -296,7 +480,8 @@ function IndividualsResults (props) {
               configData.API_URL + '/individuals',
               jsonData2
             )
-              console.log(res)
+            console.log(jsonData2)
+            console.log(res)
           } else {
             console.log('Querying WITH token')
             const headers = { Authorization: `Bearer ${token}` }

@@ -96,7 +96,6 @@ function FilteringTerms (props) {
     console.log(props.filteringTerms)
     if (state.list === 'error') {
       setError(true)
-      console.log('holi')
     } else {
       setError(false)
     }
@@ -104,6 +103,8 @@ function FilteringTerms (props) {
       query: '',
       list: props.filteringTerms !== false ? state.list : 'error'
     })
+
+    console.log(state.list)
 
     if (state.list !== 'error') {
       const sampleTags = state.list.map(t => ({
@@ -369,7 +370,7 @@ function FilteringTerms (props) {
                   </th>
                 </tr>
               )}
-              {hide === false && (
+              {
                 <tr className='search-tr'>
                   <th
                     className='search-box sorting'
@@ -390,14 +391,14 @@ function FilteringTerms (props) {
                     </form>
                   </th>
                 </tr>
-              )}
+              }
             </thead>
             <thead className='thead2'>
               <tr>
                 <th className='th4'>term</th>
                 <th className='th5'>label</th>
                 {hide === false && <th className='th6'>type</th>}
-                {hide === false && <th className='th7'>scopes</th>}
+                <th className='th7'>scopes</th>
               </tr>
             </thead>
             {props.filteringTerms.data !== undefined &&
@@ -446,16 +447,14 @@ function FilteringTerms (props) {
                             <td className='th3'>{term.type}</td>
                           )}
 
-                          {hide === false && (
-                            <td className='th1'>
-                              {term.scopes !== undefined &&
-                                term.scopes.map((term2, index) => {
-                                  return index < term.scopes.length - 1
-                                    ? term2 + '' + ','
-                                    : term2 + ''
-                                })}
-                            </td>
-                          )}
+                          <td className='th4'>
+                            {Array.isArray(term.scope) &&
+                              term.scope.map((term2, index) => {
+                                return index < term.scope.length - 1
+                                  ? term2 + '' + ','
+                                  : term2 + ''
+                              })}
+                          </td>
                         </tr>
                       )}
                       {index % 2 == !0 && (
@@ -498,15 +497,14 @@ function FilteringTerms (props) {
                             <td className='th3'>{term.type}</td>
                           )}
 
-                          {hide === false && (
-                            <td className='th1'>
-                              {term.scopes.map((term2, index) => {
-                                return index < term.scopes.length - 1
+                          <td className='th4'>
+                            {Array.isArray(term.scope) &&
+                              term.scope.map((term2, index) => {
+                                return index < term.scope.length - 1
                                   ? term2 + '' + ','
                                   : term2 + ''
                               })}
-                            </td>
-                          )}
+                          </td>
                         </tr>
                       )}
 

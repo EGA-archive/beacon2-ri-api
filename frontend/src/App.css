@@ -66,7 +66,6 @@ html {
 }
 
 .version {
-  margin-bottom: 40px;
   margin-right: 37px;
   margin-top: -18px;
   color: rgb(102 116 152) !important;
@@ -119,19 +118,17 @@ html {
   align-content: center;
   justify-content: center;
   align-items: center;
+  margin-left: -160px;
 }
 .crossQueriesTittle {
-  margin-bottom: 12px;
+  margin-bottom: 40px;
   font-size: 12px;
-  margin-top: -24px;
+  margin-top: -66px;
 }
 .modeVariantsBarMode:hover h2 {
   color: rgb(236, 149, 0) !important;
 }
 
-.containerForm {
-  margin-left: 40px;
-}
 .modeVariants:hover h2 {
   color: rgb(236, 149, 0) !important;
 }
@@ -159,6 +156,63 @@ html {
   color: rgb(118, 151, 228);
 }
 
+.moduleAddedQuery {
+  display: flex;
+  flex-direction: column;
+  width: 220px;
+  justify-content: center;
+  border: 0px solid #f2eded;
+  padding: 28px;
+  border-radius: 15px;
+  margin-top: 30px;
+  box-shadow: rgba(192, 200, 227, 0.27) 0px 0px 0.25em, rgba(159, 167, 184, 0.05) 0px 0.25em 1em;
+}
+
+.removeButton{
+  width: 122%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -20px;
+}
+
+.removeButton ion-icon{
+  color: rgb(186, 108, 108) !important;
+  font-size: 12px;
+  margin-right: 0px;
+}
+
+.removeButton ion-icon:hover{
+  color: rgb(187, 24, 24) !important;
+}
+
+.moduleAdded {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.moduleAddedQuery h13 {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  color: #bac0c6;
+  text-transform: capitalize;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.moduleAdded ion-icon {
+  color: rgb(174 182 189);
+  margin-right: 12px;
+  font-size: 25px;
+}
+
+h14 {
+  color: #64646a;
+  font-size: 12px;
+}
 .searchButton2 {
   cursor: pointer;
   /* margin-left: 26px; */
@@ -247,8 +301,8 @@ html {
 }
 
 .formSearch {
-  width: 30vw;
-  margin-right: 3px;
+  width: 35vw;
+  margin-right: 0px;
   background: white;
   border: 2px solid #8985c1;
   font-size: medium;
@@ -282,7 +336,6 @@ html {
   flex-direction: column;
   align-content: center;
   align-items: center;
-  margin-top: -48px;
 }
 
 .variantsContainer {
@@ -463,11 +516,7 @@ html {
 }
 
 .buttonVariants {
-  margin-top: 9px;
   margin-bottom: -14px;
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 1px,
-    rgba(179, 179, 179, 0.22) 0px 1px 1px;
-  padding: 6px;
   cursor: pointer;
 }
 
@@ -1217,6 +1266,10 @@ h5 {
     align-items: center;
     align-content: center;
   }
+
+  .variantsForm {
+    margin-left: 0px;
+  }
   .containerExtraSections2 {
     display: flex;
     flex-direction: column;
@@ -1252,6 +1305,14 @@ h5 {
     text-underline-offset: 1px;
   }
 
+  .crossQueriesTittle {
+    margin-bottom: 12px;
+    font-size: 12px;
+    margin-top: 37px;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
   .resultset2 {
     display: flex;
     align-items: flex-start;
@@ -1265,7 +1326,7 @@ h5 {
   }
 
   .version {
-    margin-bottom: 40px;
+    margin-bottom: 0px;
     margin-right: 37px;
     margin-top: -18px;
     color: rgb(102 116 152) !important;
@@ -1339,6 +1400,10 @@ h5 {
     font-size: 12px;
   }
 
+  .container2 {
+    margin-bottom: 0px;
+  }
+
   .exampleQuery {
     border: none;
     /* border-color: #5454bc; */
@@ -1363,11 +1428,7 @@ h5 {
   }
 
   .buttonVariants {
-    margin-top: 12px;
     margin-bottom: 20px;
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 1px,
-      rgba(179, 179, 179, 0.22) 0px 1px 1px;
-    padding: 5px;
     cursor: pointer;
     font-size: 12px;
     margin-right: 7px;
@@ -1486,7 +1547,7 @@ h5 {
   }
 
   .formSearch {
-    width: 31vw;
+    width: 81vw;
     margin-right: 3px;
     background: white;
     border: 2px solid #8985c1;
@@ -1577,12 +1638,12 @@ h5 {
     border-radius: 10px;
     /* box-shadow: 2px 1px 2px #cecece; */
     height: 30px;
-}
-.crossQueriesTittle {
-  margin-bottom: 12px;
-  font-size: 10px;
-  margin-top: 24px;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
+  }
+  .crossQueriesTittle {
+    margin-bottom: 12px;
+    font-size: 10px;
+    margin-top: 24px;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
 }
