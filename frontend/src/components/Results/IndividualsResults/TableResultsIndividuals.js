@@ -42,6 +42,8 @@ function TableResultsIndividuals (props) {
   const [triggerArray, setTriggerArray] = useState([])
   const [triggerArray2, setTriggerArray2] = useState([])
 
+  const [errorMessage, setErrorMessage]= useState('')
+
   const getSelectedRowsToExport = ({ apiRef }) => {
     const selectedRowIds = selectedGridRowsSelector(apiRef)
     if (selectedRowIds.size > 0) {
@@ -133,7 +135,9 @@ function TableResultsIndividuals (props) {
   useEffect(() => {
     setRows([])
     setIds([])
-
+    if (resultsSelected.length === 0){
+      setErrorMessage("NO RESULTS")
+    }
     resultsSelected.forEach((element, index) => {
       arrayBeaconsIds.push(element[0])
     })

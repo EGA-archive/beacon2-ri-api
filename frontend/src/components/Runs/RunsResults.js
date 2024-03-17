@@ -62,7 +62,72 @@ function RunsResults (props) {
           isAuthenticated = true
         }
       }
-
+      var requestParametersSequence = {}
+      var requestParametersRange = {}
+      var requestParametersGene = {}
+      if (props.referenceName !== '') {
+        requestParametersSequence['referenceName'] = props.referenceName
+      }
+      if (props.referenceName2 !== '') {
+        requestParametersRange['referenceName'] = props.referenceName2
+      }
+      if (props.start !== '') {
+        requestParametersSequence['start'] = props.start
+      }
+      if (props.start2 !== '') {
+        requestParametersRange['start'] = props.start2
+      }
+      if (props.variantMinLength !== '') {
+        requestParametersRange['variantMinLength'] = props.variantMinLength
+      }
+      if (props.variantMaxLength !== '') {
+        requestParametersRange['variantMaxLength'] = props.variantMaxLength
+      }
+      if (props.variantMinLength2 !== '') {
+        requestParametersGene['variantMinLength'] = props.variantMinLength2
+      }
+      if (props.variantMaxLength2 !== '') {
+        requestParametersGene['variantMaxLength'] = props.variantMaxLength2
+      }
+      if (props.end !== '') {
+        requestParametersRange['end'] = props.end
+      }
+      if (props.variantType !== '') {
+        requestParametersRange['variantType'] = props.variantType
+      }
+      if (props.variantType2 !== '') {
+        requestParametersGene['variantType'] = props.variantType2
+      }
+      if (props.alternateBases !== '') {
+        requestParametersSequence['alternateBases'] = props.alternateBases
+      }
+      if (props.alternateBases2 !== '') {
+        requestParametersRange['alternateBases'] = props.alternateBases2
+      }
+      if (props.referenceBases !== '') {
+        requestParametersSequence['referenceBases'] = props.referenceBases
+      }
+      if (props.referenceBases2 !== '') {
+        requestParametersRange['referenceBases'] = props.referenceBases2
+      }
+      if (props.aminoacid !== '') {
+        requestParametersSequence['aminoacidChange'] = props.aminoacid
+      }
+      if (props.aminoacid2 !== '') {
+        requestParametersRange['aminoacidChange'] = props.aminoacid2
+      }
+      if (props.geneID !== '') {
+        requestParametersGene['geneId'] = props.geneID
+      }
+      if (props.assemblyId !== '') {
+        requestParametersSequence['assemblyId'] = props.assemblyId
+      }
+      if (props.assemblyId2 !== '') {
+        requestParametersRange['assemblyId'] = props.assemblyId2
+      }
+      if (props.assemblyId3 !== '') {
+        requestParametersGene['assemblyId'] = props.assemblyId3
+      }
       if (props.query !== null) {
         if (props.query.includes(',')) {
           queryStringTerm = props.query.split(',')
@@ -150,12 +215,12 @@ function RunsResults (props) {
           } else {
             let filter = { id: props.query }
             let labelToOntology = 0
-            console.log("holi")
+            console.log('holi')
             let queryTermLowerCase = props.query.toLowerCase()
             console.log(props.filteringTerms)
             props.filteringTerms.data.response.filteringTerms.forEach(
               element => {
-                if (element.label){
+                if (element.label) {
                   element.label = element.label.toLowerCase()
                 }
                 if (queryTermLowerCase === element.label) {
@@ -204,18 +269,13 @@ function RunsResults (props) {
           }
 
           if (token === null) {
-            res = await axios.post(
-              configData.API_URL + '/runs',
-              jsonData1
-            )
+            res = await axios.post(configData.API_URL + '/runs', jsonData1)
           } else {
             const headers = { Authorization: `Bearer ${token}` }
 
-            res = await axios.post(
-              configData.API_URL + '/runs',
-              jsonData1,
-              { headers: headers }
-            )
+            res = await axios.post(configData.API_URL + '/runs', jsonData1, {
+              headers: headers
+            })
           }
           setTimeOut(true)
 
@@ -292,19 +352,13 @@ function RunsResults (props) {
           console.log(jsonData2)
           if (token === null) {
             console.log('Querying without token')
-            res = await axios.post(
-              configData.API_URL + '/runs',
-              jsonData2
-            )
-            
+            res = await axios.post(configData.API_URL + '/runs', jsonData2)
           } else {
             console.log('Querying WITH token')
             const headers = { Authorization: `Bearer ${token}` }
-            res = await axios.post(
-              configData.API_URL + '/runs',
-              jsonData2,
-              { headers: headers }
-            )
+            res = await axios.post(configData.API_URL + '/runs', jsonData2, {
+              headers: headers
+            })
           }
 
           setTimeOut(true)

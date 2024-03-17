@@ -149,6 +149,8 @@ h4 {
   background: white;
   cursor: pointer;
   text-underline-offset: 2px;
+  margin-bottom: 5px;
+  margin-top: 5px;
 }
 
 .skipForm {

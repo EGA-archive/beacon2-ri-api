@@ -122,6 +122,10 @@ function Layout (props) {
 
   const [arrayFilteringTerms, setArrayFilteringTerms] = useState([])
 
+  const [countGeneModule, setCountGeneModule] = useState(0)
+  const [countSeqModule, setCountSeqModule] = useState(0)
+  const [countRangeModule, setCountRangeModule] = useState(0)
+
   const handleChangeSwitch = e => {
     setDescendantTerm(e.target.checked)
     setChecked(e.target.checked)
@@ -324,7 +328,24 @@ function Layout (props) {
   }
 
   const removeModuleQuery = e => {
+    console.log(e.target)
+    console.log(e)
     setGeneSub(false)
+  }
+
+  const handleRangeModule = e => {
+    setRangeSub(true)
+    setCountRangeModule(countRangeModule + 1)
+  }
+  const handleSeqeModule = e => {
+    setSequenceSub(true)
+    setCountSeqModule(countSeqModule + 1)
+  }
+
+  const handleGeneModule = e => {
+    setGeneSub(true)
+    setCountGeneModule(countGeneModule + 1)
+    
   }
 
   useEffect(() => {
@@ -515,8 +536,7 @@ function Layout (props) {
       setResults('Runs')
     }
 
-    if (geneSubmitted === true){
-      
+    if (geneSubmitted === true) {
     }
   }
 
@@ -689,11 +709,11 @@ function Layout (props) {
                 </div>
                 {geneSubmitted && (
                   <div className='moduleAdded'>
-                   <ion-icon name="checkmark-outline"></ion-icon>
+                    <ion-icon name='checkmark-outline'></ion-icon>
                     <div className='moduleAddedQuery'>
                       <div className='removeButton'>
                         <button onClick={removeModuleQuery}>
-                        <ion-icon name='remove-circle-outline'></ion-icon>
+                          <ion-icon name='remove-circle-outline'></ion-icon>
                         </button>
                       </div>
                       <h13>Gene module</h13>
@@ -702,6 +722,47 @@ function Layout (props) {
                       <h14>{assemblyId3}</h14>
                       <h14>{variantMinLength2}</h14>
                       <h14>{variantMaxLength2}</h14>
+                    </div>
+                  </div>
+                )}
+                {sequenceSubmitted && (
+                  <div className='moduleAdded'>
+                    <ion-icon name='checkmark-outline'></ion-icon>
+                    <div className='moduleAddedQuery'>
+                      <div className='removeButton'>
+                        <button onClick={removeModuleQuery}>
+                          <ion-icon name='remove-circle-outline'></ion-icon>
+                        </button>
+                      </div>
+                      <h13>Sequence module</h13>
+                      <h14>{assemblyId}</h14>
+                      <h14>{referenceName}</h14>
+                      <h14>{start}</h14>
+                      <h14>{referenceBases}</h14>
+                      <h14>{alternateBases}</h14>
+                    </div>
+                  </div>
+                )}
+                {rangeSubmitted && (
+                  <div className='moduleAdded'>
+                    <ion-icon name='checkmark-outline'></ion-icon>
+                    <div className='moduleAddedQuery'>
+                      <div className='removeButton'>
+                        <button onClick={removeModuleQuery}>
+                          <ion-icon name='remove-circle-outline'></ion-icon>
+                        </button>
+                      </div>
+                      <h13>Range module</h13>
+                      <h14>{assemblyId2}</h14>
+                      <h14>{referenceName2}</h14>
+                      <h14>{start2}</h14>
+                      <h14>{end}</h14>
+                      <h14>{variantType}</h14>
+                      <h14>{alternateBases2}</h14>
+                      <h14>{referenceBases2}</h14>
+                      <h14>{aminoacid}</h14>
+                      <h14>{variantMinLength}</h14>
+                      <h14>{variantMaxLength}</h14>
                     </div>
                   </div>
                 )}
@@ -798,7 +859,7 @@ function Layout (props) {
                       <button
                         className='buttonVariants'
                         type='button'
-                        onClick={() => setSequenceSub(true)}
+                        onClick={handleSeqeModule}
                       >
                         {' '}
                         <ion-icon name='add-circle'></ion-icon>
@@ -925,7 +986,7 @@ function Layout (props) {
                       <button
                         className='buttonVariants'
                         type='button'
-                        onClick={() => setRangeSub(true)}
+                        onClick={handleRangeModule}
                       >
                         {' '}
                         <ion-icon name='add-circle'></ion-icon>
@@ -993,7 +1054,7 @@ function Layout (props) {
                       <button
                         className='buttonVariants'
                         type='button'
-                        onClick={() => setGeneSub(true)}
+                        onClick={handleGeneModule}
                       >
                         {' '}
                         <ion-icon name='add-circle'></ion-icon>

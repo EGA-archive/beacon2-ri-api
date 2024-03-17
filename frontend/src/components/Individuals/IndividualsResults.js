@@ -158,26 +158,56 @@ function IndividualsResults (props) {
                 queryArray[index] = element.split('%')
                 queryArray[index].push('%')
               }
-              const alphaNumFilter = {
+              let alphaNumFilter = {
                 id: queryArray[index][0],
                 operator: queryArray[index][2],
                 value: queryArray[index][1],
-                scope: "individuals"
+                scope: 'individuals'
               }
+
+              props.filteringTerms.data.response.filteringTerms.forEach(
+                element2 => {
+                  if (
+                    queryArray[index][0].toLowerCase() ===
+                      element2.id.toLowerCase() ||
+                    queryArray[index][0].toLowerCase() ===
+                      element2.label.toLowerCase()
+                  ) {
+                    alphaNumFilter = {
+                      id: queryArray[index][0],
+                      operator: queryArray[index][2],
+                      value: queryArray[index][1],
+                      scope: element2.scope[0]
+                    }
+                  }
+                }
+              )
               arrayFilter.push(alphaNumFilter)
             } else {
               let filter2 = {
                 id: element,
                 //includeDescendantTerms: props.descendantTerm,
-                scope: "individuals"
+                scope: 'individuals'
               }
               props.filteringTerms.data.response.filteringTerms.forEach(
                 element2 => {
+                  console.log(element2)
+                  if (element2.label !== undefined) {
+                    if (
+                      element.toLowerCase() === element2.label.toLowerCase()
+                    ) {
+                      filter2 = {
+                        id: element2.id,
+                        // includeDescendantTerms: props.descendantTerm,
+                        scope: element2.scope[0]
+                      }
+                    }
+                  }
                   if (element.toLowerCase() === element2.label.toLowerCase()) {
                     filter2 = {
                       id: element2.id,
-                     // includeDescendantTerms: props.descendantTerm,
-                      scope: element2.scope
+                      // includeDescendantTerms: props.descendantTerm,
+                      scope: element2.scope[0]
                     }
                   }
                 }
@@ -211,15 +241,34 @@ function IndividualsResults (props) {
               queryArray[0].push('%')
             }
 
-            const alphaNumFilter = {
+            let alphaNumFilter = {
               id: queryArray[0][0],
               operator: queryArray[0][2],
               value: queryArray[0][1],
-              scope: "individuals"
+              scope: 'individuals'
             }
+            props.filteringTerms.data.response.filteringTerms.forEach(
+              element2 => {
+                if (element2.label !== undefined) {
+                  if (
+                    queryArray[0][0].toLowerCase() ===
+                      element2.id.toLowerCase() ||
+                    queryArray[0][0].toLowerCase() ===
+                      element2.label.toLowerCase()
+                  ) {
+                    alphaNumFilter = {
+                      id: queryArray[0][0],
+                      operator: queryArray[0][2],
+                      value: queryArray[0][1],
+                      scope: element2.scope[0]
+                    }
+                  }
+                }
+              }
+            )
             arrayFilter.push(alphaNumFilter)
           } else {
-            let filter = { id: props.query, scope: "individuals"}
+            let filter = { id: props.query, scope: 'individuals' }
             let labelToOntology = 0
 
             let queryTermLowerCase = props.query.toLowerCase()
@@ -233,7 +282,7 @@ function IndividualsResults (props) {
                   labelToOntology = element.id
                   filter = {
                     id: labelToOntology,
-                    scope: element.scope
+                    scope: element.scope[0]
                   }
                 }
               }
@@ -628,7 +677,7 @@ function IndividualsResults (props) {
                     Count
                   </h5>
                 </button>
-                {props.resultSets !== 'MISS' && (
+                {props.resultSets !== 'MISS' && results.length > 0 && (
                   <button className='typeResults' onClick={handleTypeResults3}>
                     <h5
                       className={

@@ -198,9 +198,11 @@ function FilteringTerms (props) {
         if (e.target.value === '') {
           return props.filteringTerms.data.response.filteringTerms
         } else {
-          if (post.scopes !== undefined) {
+          if (post.scope !== undefined) {
             var returnedPosts = []
-            post.scopes.forEach(element => {
+            post.scope.forEach(element => {
+              console.log(element.toLowerCase())
+              console.log(e.target.value.toLowerCase())
               if (
                 element.toLowerCase().includes(e.target.value.toLowerCase())
               ) {
