@@ -132,6 +132,8 @@ function Layout (props) {
 
   const [trigger3, setTrigger3] = useState(false)
 
+  const [arrayRequestParameters, setArrayReqParameters] = useState([])
+
   const handleChangeSwitch = e => {
     setDescendantTerm(e.target.checked)
     setChecked(e.target.checked)
@@ -409,8 +411,8 @@ function Layout (props) {
       geneID: geneID,
       assemblyId: assemblyId3,
       variantType: variantType2,
-      variantMinLength2: variantMinLength2,
-      variantMaxLength2: variantMaxLength2
+      variantMinLength: variantMinLength2,
+      variantMaxLength: variantMaxLength2
     }
 
     geneModuleArray.push(objectGene)
@@ -593,6 +595,14 @@ function Layout (props) {
       setTriggerQuery(!triggerQuery)
     }
 
+    let arrayRequestParameters2 =
+      geneModuleArray + seqModuleArray + rangeModuleArray
+
+    setArrayReqParameters(geneModuleArray + seqModuleArray + rangeModuleArray)
+    if (arrayRequestParameters !== arrayRequestParameters2) {
+      setTriggerQuery(!triggerQuery)
+    }
+
     setExampleQ([])
 
     if (query === '1' || query === '') {
@@ -608,9 +618,6 @@ function Layout (props) {
       setResults('Analyses')
     } else if (props.collection === 'Runs') {
       setResults('Runs')
-    }
-
-    if (geneSubmitted === true) {
     }
   }
 
@@ -2360,31 +2367,9 @@ function Layout (props) {
               descendantTerm={descendantTerm}
               similarity={similarity}
               isSubmitted={isSubmitted}
-              geneSubmitted={geneSubmitted}
-              sequenceSubmitted={sequenceSubmitted}
-              rangeSubmitted={rangeSubmitted}
-              aminoacid2={aminoacid2}
-              assemblyId2={assemblyId2}
-              assemblyId3={assemblyId3}
-              alternateBases3={alternateBases3}
-              alternateBases2={alternateBases2}
-              variantType2={variantType2}
-              start2={start2}
-              referenceName2={referenceName2}
-              referenceName={referenceName}
-              assemblyId={assemblyId}
-              start={start}
-              end={end}
-              variantType={variantType}
-              alternateBases={alternateBases}
-              referenceBases={referenceBases}
-              referenceBases2={referenceBases2}
-              aminoacid={aminoacid}
-              geneID={geneID}
-              variantMaxLength={variantMaxLength}
-              variantMaxLength2={variantMaxLength2}
-              variantMinLength={variantMinLength}
-              variantMinLength2={variantMinLength2}
+              rangeModuleArray={rangeModuleArray}
+              seqModuleArray={seqModuleArray}
+              geneModuleArray={geneModuleArray}
             />
           </div>
         )}
@@ -2400,31 +2385,9 @@ function Layout (props) {
               descendantTerm={descendantTerm}
               similarity={similarity}
               isSubmitted={isSubmitted}
-              geneSubmitted={geneSubmitted}
-              sequenceSubmitted={sequenceSubmitted}
-              rangeSubmitted={rangeSubmitted}
-              aminoacid2={aminoacid2}
-              assemblyId2={assemblyId2}
-              assemblyId3={assemblyId3}
-              alternateBases3={alternateBases3}
-              alternateBases2={alternateBases2}
-              variantType2={variantType2}
-              start2={start2}
-              referenceName2={referenceName2}
-              referenceName={referenceName}
-              assemblyId={assemblyId}
-              start={start}
-              end={end}
-              variantType={variantType}
-              alternateBases={alternateBases}
-              referenceBases={referenceBases}
-              referenceBases2={referenceBases2}
-              aminoacid={aminoacid}
-              geneID={geneID}
-              variantMaxLength={variantMaxLength}
-              variantMaxLength2={variantMaxLength2}
-              variantMinLength={variantMinLength}
-              variantMinLength2={variantMinLength2}
+              rangeModuleArray={rangeModuleArray}
+              seqModuleArray={seqModuleArray}
+              geneModuleArray={geneModuleArray}
             />
           </div>
         )}
@@ -2470,6 +2433,9 @@ function Layout (props) {
               descendantTerm={descendantTerm}
               similarity={similarity}
               isSubmitted={isSubmitted}
+              rangeModuleArray={rangeModuleArray}
+              seqModuleArray={seqModuleArray}
+              geneModuleArray={geneModuleArray}
             />
           </div>
         )}
@@ -2485,6 +2451,9 @@ function Layout (props) {
               descendantTerm={descendantTerm}
               similarity={similarity}
               isSubmitted={isSubmitted}
+              rangeModuleArray={rangeModuleArray}
+              seqModuleArray={seqModuleArray}
+              geneModuleArray={geneModuleArray}
             />
           </div>
         )}

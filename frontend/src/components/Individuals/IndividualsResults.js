@@ -63,71 +63,95 @@ function IndividualsResults (props) {
         }
       }
 
+      var arrayRequestParameters = []
       var requestParametersSequence = {}
+
       var requestParametersRange = {}
+
       var requestParametersGene = {}
-      if (props.referenceName !== '') {
-        requestParametersSequence['referenceName'] = props.referenceName
+
+      if (props.seqModuleArray.length > 0) {
+        props.seqModuleArray.forEach(element => {
+          if (element.assemblyId !== '') {
+            requestParametersSequence['assemblyId'] = element.assemblyId
+          }
+          if (element.referenceName !== '') {
+            requestParametersSequence['referenceName'] = element.referenceName
+          }
+          if (element.start !== '') {
+            requestParametersSequence['start'] = element.start
+          }
+          if (element.referenceBases !== '') {
+            requestParametersSequence['referenceBases'] = element.referenceBases
+          }
+          if (element.alternateBases !== '') {
+            requestParametersSequence['alternateBases'] = element.alternateBases
+          }
+
+          arrayRequestParameters.push(requestParametersSequence)
+        })
       }
-      if (props.referenceName2 !== '') {
-        requestParametersRange['referenceName'] = props.referenceName2
+
+      if (props.rangeModuleArray.length > 0) {
+        props.rangeModuleArray.forEach(element => {
+          if (element.assemblyId !== '') {
+            requestParametersRange['assemblyId'] = element.assemblyId
+          }
+          if (element.referenceName !== '') {
+            requestParametersRange['referenceName'] = element.referenceName
+          }
+          if (element.start !== '') {
+            requestParametersRange['start'] = element.start
+          }
+          if (element.end !== '') {
+            requestParametersRange['end'] = element.end
+          }
+          if (element.variantType !== '') {
+            requestParametersRange['variantType'] = element.variantType
+          }
+          if (element.alternateBases !== '') {
+            requestParametersRange['alternateBases'] = element.alternateBases
+          }
+
+          if (element.referenceBases !== '') {
+            requestParametersRange['referenceBases'] = element.referenceBases
+          }
+          if (element.aminoacid !== '') {
+            requestParametersSequence['aminoacidChange'] = element.aminoacid
+          }
+          if (element.variantMinLength !== '') {
+            requestParametersRange['variantMinLength'] =
+              element.variantMinLength
+          }
+          if (element.variantMaxLength !== '') {
+            requestParametersRange['variantMaxLength'] =
+              element.variantMaxLength
+          }
+
+          arrayRequestParameters.push(requestParametersRange)
+        })
       }
-      if (props.start !== '') {
-        requestParametersSequence['start'] = props.start
-      }
-      if (props.start2 !== '') {
-        requestParametersRange['start'] = props.start2
-      }
-      if (props.variantMinLength !== '') {
-        requestParametersRange['variantMinLength'] = props.variantMinLength
-      }
-      if (props.variantMaxLength !== '') {
-        requestParametersRange['variantMaxLength'] = props.variantMaxLength
-      }
-      if (props.variantMinLength2 !== '') {
-        requestParametersGene['variantMinLength'] = props.variantMinLength2
-      }
-      if (props.variantMaxLength2 !== '') {
-        requestParametersGene['variantMaxLength'] = props.variantMaxLength2
-      }
-      if (props.end !== '') {
-        requestParametersRange['end'] = props.end
-      }
-      if (props.variantType !== '') {
-        requestParametersRange['variantType'] = props.variantType
-      }
-      if (props.variantType2 !== '') {
-        requestParametersGene['variantType'] = props.variantType2
-      }
-      if (props.alternateBases !== '') {
-        requestParametersSequence['alternateBases'] = props.alternateBases
-      }
-      if (props.alternateBases2 !== '') {
-        requestParametersRange['alternateBases'] = props.alternateBases2
-      }
-      if (props.referenceBases !== '') {
-        requestParametersSequence['referenceBases'] = props.referenceBases
-      }
-      if (props.referenceBases2 !== '') {
-        requestParametersRange['referenceBases'] = props.referenceBases2
-      }
-      if (props.aminoacid !== '') {
-        requestParametersSequence['aminoacidChange'] = props.aminoacid
-      }
-      if (props.aminoacid2 !== '') {
-        requestParametersRange['aminoacidChange'] = props.aminoacid2
-      }
-      if (props.geneID !== '') {
-        requestParametersGene['geneId'] = props.geneID
-      }
-      if (props.assemblyId !== '') {
-        requestParametersSequence['assemblyId'] = props.assemblyId
-      }
-      if (props.assemblyId2 !== '') {
-        requestParametersRange['assemblyId'] = props.assemblyId2
-      }
-      if (props.assemblyId3 !== '') {
-        requestParametersGene['assemblyId'] = props.assemblyId3
+
+      if (props.geneModuleArray.length > 0) {
+        props.geneModuleArray.forEach(element => {
+          if (element.geneID !== '') {
+            requestParametersGene['geneId'] = element.geneID
+          }
+          if (element.assemblyId !== '') {
+            requestParametersGene['assemblyId'] = element.assemblyId
+          }
+          if (element.variantType !== '') {
+            requestParametersGene['variantType'] = element.variantType
+          }
+          if (element.variantMinLength !== '') {
+            requestParametersGene['variantMinLength'] = element.variantMinLength
+          }
+          if (element.variantMaxLength !== '') {
+            requestParametersGene['variantMaxLength'] = element.variantMaxLength
+          }
+
+          arrayRequestParameters.push(requestParametersGene)
+        })
       }
 
       if (props.query !== null) {
@@ -272,7 +296,7 @@ function IndividualsResults (props) {
             let labelToOntology = 0
 
             let queryTermLowerCase = props.query.toLowerCase()
-            console.log(props.filteringTerms)
+    
             props.filteringTerms.data.response.filteringTerms.forEach(
               element => {
                 if (element.label) {
@@ -301,47 +325,13 @@ function IndividualsResults (props) {
           // show all individuals
           var jsonData1 = {}
 
-          if (props.sequenceSubmitted) {
+          if (arrayRequestParameters.length > 0) {
             jsonData1 = {
               meta: {
                 apiVersion: '2.0'
               },
               query: {
-                requestParameters: requestParametersSequence,
-                filters: arrayFilter,
-                includeResultsetResponses: `${props.resultSets}`,
-                pagination: {
-                  skip: skip,
-                  limit: limit
-                },
-                testMode: false,
-                requestedGranularity: 'record'
-              }
-            }
-          } else if (props.rangeSubmitted) {
-            jsonData1 = {
-              meta: {
-                apiVersion: '2.0'
-              },
-              query: {
-                requestParameters: requestParametersRange,
-                filters: arrayFilter,
-                includeResultsetResponses: `${props.resultSets}`,
-                pagination: {
-                  skip: skip,
-                  limit: limit
-                },
-                testMode: false,
-                requestedGranularity: 'record'
-              }
-            }
-          } else if (props.geneSubmitted) {
-            jsonData1 = {
-              meta: {
-                apiVersion: '2.0'
-              },
-              query: {
-                requestParameters: requestParametersGene,
+                requestParameters: arrayRequestParameters,
                 filters: arrayFilter,
                 includeResultsetResponses: `${props.resultSets}`,
                 pagination: {
@@ -371,7 +361,7 @@ function IndividualsResults (props) {
           }
 
           jsonData1 = JSON.stringify(jsonData1)
-
+          console.log(jsonData1)
           let token = null
           if (auth.userData === null) {
             token = getStoredToken()
@@ -446,47 +436,13 @@ function IndividualsResults (props) {
         } else {
           var jsonData2 = {}
 
-          if (props.sequenceSubmitted) {
+          if (arrayRequestParameters.length > 0) {
             jsonData2 = {
               meta: {
                 apiVersion: '2.0'
               },
               query: {
-                requestParameters: requestParametersSequence,
-                filters: arrayFilter,
-                includeResultsetResponses: `${props.resultSets}`,
-                pagination: {
-                  skip: skip,
-                  limit: limit
-                },
-                testMode: false,
-                requestedGranularity: 'record'
-              }
-            }
-          } else if (props.rangeSubmitted) {
-            jsonData2 = {
-              meta: {
-                apiVersion: '2.0'
-              },
-              query: {
-                requestParameters: requestParametersRange,
-                filters: arrayFilter,
-                includeResultsetResponses: `${props.resultSets}`,
-                pagination: {
-                  skip: skip,
-                  limit: limit
-                },
-                testMode: false,
-                requestedGranularity: 'record'
-              }
-            }
-          } else if (props.geneSubmitted) {
-            jsonData2 = {
-              meta: {
-                apiVersion: '2.0'
-              },
-              query: {
-                requestParameters: requestParametersGene,
+                requestParameters: arrayRequestParameters,
                 filters: arrayFilter,
                 includeResultsetResponses: `${props.resultSets}`,
                 pagination: {
