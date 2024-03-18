@@ -118,12 +118,22 @@ html {
   align-content: center;
   justify-content: center;
   align-items: center;
-  margin-left: -160px;
+  margin-left: -70px;
+}
+
+.variantsFormVariant {
+  margin-top: -14px;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  margin-left: -70px;
 }
 .crossQueriesTittle {
-  margin-bottom: 40px;
+  margin-bottom: 18px;
   font-size: 12px;
-  margin-top: -66px;
+  margin-top: -56px;
 }
 .modeVariantsBarMode:hover h2 {
   color: rgb(236, 149, 0) !important;
@@ -159,36 +169,56 @@ html {
 .moduleAddedQuery {
   display: flex;
   flex-direction: column;
-  width: 220px;
+  width: 145px;
   justify-content: center;
   border: 0px solid #f2eded;
-  padding: 28px;
+  padding: 11px;
   border-radius: 15px;
-  margin-top: 30px;
-  box-shadow: rgba(192, 200, 227, 0.27) 0px 0px 0.25em, rgba(159, 167, 184, 0.05) 0px 0.25em 1em;
+  margin-top: 11px;
+  margin-bottom: 11px;
+  box-shadow: rgba(192, 200, 227, 0.27) 0px 0px 0.25em,
+    rgba(159, 167, 184, 0.05) 0px 0.25em 1em;
+  margin-left: 14px;
+  animation: slide-in-blurred-right 0.4s ease-in both;
 }
 
-.removeButton{
-  width: 122%;
+.removeButton {
+  width: 130%;
   display: flex;
   justify-content: flex-end;
-  margin-top: -20px;
+  margin-top: -18px;
 }
 
-.removeButton ion-icon{
-  color: rgb(186, 108, 108) !important;
-  font-size: 12px;
+.removeButton ion-icon {
+  color: rgb(221 221 221) !important;
+  font-size: 11px;
   margin-right: 0px;
 }
 
-.removeButton ion-icon:hover{
-  color: rgb(187, 24, 24) !important;
+.removeButton ion-icon:hover {
+  color: rgb(212, 6, 6) !important;
+  font-weight: 800;
 }
 
 .moduleAdded {
   display: flex;
   align-items: center;
-  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+}
+@keyframes slide-in-blurred-right {
+  0% {
+    transform: translateX(1000px) scaleX(2.5) scaleY(0.2);
+    transform-origin: 0% 50%;
+    filter: blur(40px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0) scaleY(1) scaleX(1);
+    transform-origin: 50% 50%;
+    filter: blur(0);
+    opacity: 1;
+  }
 }
 
 .moduleAddedQuery h13 {
@@ -200,18 +230,26 @@ html {
   text-transform: uppercase;
   font-weight: 600;
   margin-bottom: 8px;
-  font-size: 13px;
+  font-size: 12px;
+  margin-top: -6px;
 }
 
 .moduleAdded ion-icon {
   color: rgb(174 182 189);
   margin-right: 12px;
-  font-size: 25px;
+  font-size: 22px;
 }
-
+.moduleAddedContainer {
+  display: flex;
+  align-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  flex-wrap: wrap;
+}
 h14 {
   color: #64646a;
-  font-size: 12px;
+  font-size: 11px;
 }
 .searchButton2 {
   cursor: pointer;
@@ -246,6 +284,7 @@ h14 {
   align-content: center;
   margin-top: 20px;
   flex-wrap: wrap;
+  align-items: flex-start;
 }
 
 .form-select {
@@ -301,7 +340,7 @@ h14 {
 }
 
 .formSearch {
-  width: 35vw;
+  width: 45vw;
   margin-right: 0px;
   background: white;
   border: 2px solid #8985c1;
@@ -309,7 +348,7 @@ h14 {
   /* margin: 10px; */
   border-radius: 10px;
   /* box-shadow: 2px 1px 2px #cecece; */
-  height: 32px;
+  height: 30px;
 }
 
 .searchIcon {
@@ -349,15 +388,16 @@ h14 {
 
 .inputVariants {
   height: 24px;
-  border: 1.5px solid #dfdfdf;
+  border: 0.5px solid #dfdfdf;
   border-radius: 2px;
-  margin-bottom: 30px;
-  font-size: 12.5px;
+  margin-bottom: 17px;
+  font-size: 11.5px;
   padding: 5px;
+  box-shadow: rgba(187, 184, 184, 0.16) 0px 1px 4px;
 }
 
 .labelVariants {
-  font-size: 13.5px;
+  font-size: 11.5px;
   margin-bottom: 18px;
   margin-right: 4px;
   margin-left: 18px;
@@ -527,9 +567,9 @@ h14 {
 }
 
 .basesSection {
-  margin-bottom: 30px;
+  margin-bottom: 15px;
   border: solid 1px #dadada;
-  margin-top: 25px;
+  margin-top: 15px;
   box-shadow: rgba(207, 192, 192, 0.15) 1.4px 1.4px 2.2px;
 }
 
@@ -558,7 +598,7 @@ h14 {
   font-weight: 700;
 }
 .variantExampleButton:hover {
-  background-color: #78beed;
+  background-color: #bfe1f7;
   border: solid #06c;
 }
 
@@ -1298,7 +1338,7 @@ h5 {
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .container1 a {
     display: flex;
     font-size: 11px;
@@ -1547,7 +1587,333 @@ h5 {
   }
 
   .formSearch {
-    width: 81vw;
+    width: 61vw;
+    margin-right: 3px;
+    background: white;
+    border: 2px solid #8985c1;
+    font-size: small;
+    /* margin: 10px; */
+    border-radius: 10px;
+    /* box-shadow: 2px 1px 2px #cecece; */
+    height: 27px;
+  }
+  .bulbExample {
+    margin-right: 48px;
+    padding-right: 19px;
+    border-right: 1.7px solid #f1f1f1;
+    display: flex;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+    text-transform: uppercase;
+  }
+  .searchIcon {
+    width: 26px;
+    margin-top: -1px;
+    margin-left: -8px;
+  }
+  .searchIcon:hover {
+    width: 26px;
+    margin-top: -1px;
+    margin-left: -8px;
+  }
+
+  .elixirLogo {
+    height: 70px;
+    margin-top: 18px;
+    margin-bottom: 37px;
+    margin-right: 21px;
+  }
+
+  .searchButton {
+    height: 30px;
+    cursor: pointer;
+  }
+
+  .examplesQueriesList {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: flex-start;
+    width: fit-content;
+    border-radius: 5px;
+    font-size: 9px;
+    margin-left: 10px !important;
+    background: #8dbde0;
+  }
+
+  .bulbExample {
+    margin-right: 49px;
+    display: flex;
+    padding-right: 13px;
+    border-right: 1.7px solid #f1f1f1;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+    text-transform: uppercase;
+  }
+
+  .NavlinkVerifier {
+    color: rgba(12, 16, 64, 0.606);
+    font-size: 15px !important;
+    font-feature-settings: 'pcap', 'c2pc', 'pcap', 'c2pc';
+    font-variant-caps: all-petite-caps;
+    margin-top: 0px;
+    font-size: 12px !important;
+  }
+}
+
+@media (max-width: 750px) {
+  .container1 a {
+    display: flex;
+    font-size: 11px;
+    text-underline-offset: 1px;
+  }
+
+  .crossQueriesTittle {
+    margin-bottom: 12px;
+    font-size: 12px;
+    margin-top: 37px;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .resultset2 {
+    display: flex;
+    align-items: flex-start;
+    width: 244px;
+    flex-direction: column;
+    justify-content: center;
+    /* margin-left: 46px; */
+    background: #e0e7ef;
+    padding-top: 10px;
+    padding-bottom: 1px;
+  }
+
+  .version {
+    margin-bottom: 0px;
+    margin-right: 37px;
+    margin-top: -18px;
+    color: rgb(102 116 152) !important;
+    font-weight: 700 !important;
+  }
+
+  .logosVersionContainer {
+    display: flex;
+    flex-direction: column;
+    align-content: stretch;
+    justify-content: center;
+    align-items: flex-end;
+    margin-bottom: 20px;
+  }
+
+  .eosc4cancer {
+    height: 61px;
+    margin-top: 20px;
+    margin-right: 33px;
+    -webkit-filter: grayscale(20%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+
+  .federLogo {
+    height: 31px;
+    margin-top: 31px;
+    margin-right: 10px;
+    -webkit-filter: grayscale(20%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+
+  .iscLogo {
+    height: 31px;
+    margin-top: 31px;
+    margin-right: 10px;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+
+  .ministerioLogo {
+    height: 31px;
+    margin-top: 31px;
+    margin-right: 10px;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+
+  .laCaixaLogo {
+    height: 31px;
+    margin-top: 31px;
+    margin-right: 30px;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+
+  .inputVariants {
+    height: 24px;
+    border: 1.5px solid #dfdfdf;
+    border-radius: 2px;
+    margin-bottom: 30px;
+    font-size: 12px;
+  }
+
+  .container2 {
+    margin-bottom: 0px;
+  }
+
+  .exampleQuery {
+    border: none;
+    /* border-color: #5454bc; */
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+  }
+
+  .labelVariants {
+    font-size: 11.5px;
+    margin-bottom: 18px;
+    margin-right: 4px;
+    margin-left: 18px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+  }
+
+  .buttonVariants {
+    margin-bottom: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-right: 7px;
+  }
+
+  .switchDescendants h3 {
+    color: #e16e00;
+    text-transform: uppercase;
+    margin-left: 3px !important;
+    margin-top: 6px;
+    font-size: 10px;
+  }
+  .css-1ycxvqq-MuiSwitch-root {
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    width: 40px;
+    height: 24px;
+    overflow: hidden;
+    padding: 7px;
+    box-sizing: border-box;
+    position: relative;
+    -webkit-flex-shrink: 0;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    z-index: 0;
+    margin-top: -3px;
+    vertical-align: middle;
+  }
+  .ReactModal__Content--after-open {
+    width: 269px;
+    font-size: 12px;
+    height: fit-content;
+    position: absolute !important;
+    inset: 35% !important;
+    border: 1px solid rgb(204, 204, 204) !important;
+    background: #be5930 !important;
+    overflow: auto !important;
+    border-radius: 4px !important;
+    outline: none !important;
+    padding: 16px !important;
+  }
+
+  .ReactModal__Content--after-open p {
+    font-size: 14px;
+    font-weight: normal;
+    color: white;
+    line-height: 20px;
+    padding: 2px;
+  }
+
+  .ReactModal__Overlay {
+    z-index: 3;
+  }
+
+  .filters {
+    padding: 4px;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+    text-transform: uppercase;
+    font-size: 10px;
+    margin-right: 3px;
+    margin-left: -23px;
+  }
+
+  .container-fluid {
+    display: flex;
+    width: 100%;
+    margin-right: 10px;
+    margin-left: 10px;
+    justify-content: space-around;
+    /* height: 35px; */
+    align-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  .example {
+    display: flex;
+    align-items: center;
+    margin-right: 0px;
+    width: 230px;
+    margin-top: 22px;
+    margin-bottom: 22px;
+    flex-direction: row;
+    align-content: space-between;
+    justify-content: center;
+  }
+
+  .exampleQueries {
+    border: none;
+    background-color: #ffffff;
+    color: #4d4b4b;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+    text-transform: uppercase;
+    font-size: 10px;
+    margin-left: 0px !important;
+  }
+
+  .additionalOptions {
+    justify-content: center;
+    align-items: center;
+    z-index: 0;
+    height: 73px;
+    margin-top: 11px;
+  }
+
+  .bulbLogo {
+    display: none;
+  }
+
+  .formSearch {
+    width: 71vw;
     margin-right: 3px;
     background: white;
     border: 2px solid #8985c1;

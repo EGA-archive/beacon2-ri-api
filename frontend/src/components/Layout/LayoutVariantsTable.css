@@ -28,6 +28,7 @@
   border-bottom: 0;
   cursor: pointer;
   font-weight: 500;
+  font-size: 11.5px;
 }
 
 .tabset > label::after {
@@ -38,12 +39,15 @@
   width: 22px;
   height: 4px;
   background: #8d8d8d;
+  font-size: 11.5px;
 }
 
 input:focus-visible + label {
   outline: 2px solid rgba(0, 102, 204, 1);
   border-radius: 3px;
+
 }
+
 
 .tabset > label:hover,
 .tabset > input:focus + label,
@@ -61,6 +65,7 @@ input:focus-visible + label {
   border-color: #ccc;
   border-bottom: 1px solid #fff;
   margin-bottom: -1px;
+
 }
 
 .tab-panel {
