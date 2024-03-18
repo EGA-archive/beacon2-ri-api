@@ -58,11 +58,14 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
     elif request_parameters != {}:
         if len(request_parameters["$and"]) > 1:
             array_of_biosamples=[]
+            new_dict={}
+            new_dict["$and"]=[]
             for reqpam in request_parameters["$and"]:
-                biosample_ids = client.beacon.genomicVariations.find(reqpam, {"caseLevelData.biosampleId": 1, "_id": 0})
-                for biosample in biosample_ids:
-                    for bioitem in biosample['caseLevelData']:
-                        array_of_biosamples.append(bioitem["biosampleId"])
+                new_dict["$and"].append(reqpam["$and"][0])
+            biosample_ids = client.beacon.genomicVariations.find(reqpam, {"caseLevelData.biosampleId": 1, "_id": 0})
+            for biosample in biosample_ids:
+                for bioitem in biosample['caseLevelData']:
+                    array_of_biosamples.append(bioitem["biosampleId"])
             dict_counts={}
             for item in array_of_biosamples:
                 try:
@@ -137,7 +140,7 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
     else:
         total_query=query
 
-    #LOG.debug(total_query)
+    LOG.debug(total_query)
     return total_query
 
 
@@ -541,6 +544,9 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                 dict_regex['$options']= "si"
             query[filter.id] = dict_regex
         elif filter.id == 'molecularAttributes.aminoacidChanges':
+            query[filter.id] = filter.value
+        elif filter.id == 'molecularAttributes.geneIds':
+            LOG.debug('holaaaa')
             query[filter.id] = filter.value
         elif filter.id == "caseLevelData.clinicalInterpretations.clinicalRelevance":
             query[filter.id] = filter.value
