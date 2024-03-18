@@ -622,17 +622,16 @@ h14 {
   align-items: center;
   justify-content: center;
   border: solid #c8c8c8;
-  background-color: #c8c8c8;
+  background-color: #e1dddd;
   color: black;
   width: -moz-fit-content;
   width: fit-content;
   border-radius: 6px;
-  margin-left: -98px;
-
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 2px;
   padding-right: 2px;
+  margin-bottom: 6px;
 }
 
 .examplesQueriesList {
@@ -995,15 +994,16 @@ hr {
 }
 
 .exampleQuery {
+  width: 100%;
   border: none;
   /* border-color: #5454bc; */
   padding: 5px;
   cursor: pointer;
   display: flex;
-  flex-direction: row;
-  align-content: center;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column-reverse;
+  align-items: flex-start;
+  justify-content: space-around;
+  align-content: space-around;
 }
 
 .exampleQueriesAlph {
@@ -1445,16 +1445,16 @@ h5 {
   }
 
   .exampleQuery {
+    width: 100%;
     border: none;
     /* border-color: #5454bc; */
     padding: 5px;
     cursor: pointer;
     display: flex;
-    flex-direction: row;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
-    font-size: 12px;
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    justify-content: space-around;
+    align-content: space-around;
   }
 
   .labelVariants {
@@ -1771,17 +1771,17 @@ h5 {
   }
 
   .exampleQuery {
+    width: 100%;
     border: none;
     /* border-color: #5454bc; */
     padding: 5px;
     cursor: pointer;
     display: flex;
-    flex-direction: row;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
-    font-size: 12px;
-  }
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    justify-content: space-around;
+    align-content: space-around;
+}
 
   .labelVariants {
     font-size: 11.5px;

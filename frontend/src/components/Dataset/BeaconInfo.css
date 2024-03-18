@@ -288,7 +288,7 @@
 .resultSetsContainer h6 {
   background: #86e4a8;
   border-radius: 2px;
-  width: fit-content;
+  width: fit-content !important;
   margin-left: 5px;
   padding: 3px;
   margin-bottom: 0px;

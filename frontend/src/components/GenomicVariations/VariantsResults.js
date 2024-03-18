@@ -71,7 +71,6 @@ function VariantsResults (props) {
 
   const auth = useAuth()
   let isAuthenticated = auth.userData?.id_token ? true : false
-
   useEffect(() => {
     const apiCall = async () => {
       if (isAuthenticated === false) {
@@ -83,441 +82,323 @@ function VariantsResults (props) {
         }
       }
 
+      var arrayRequestParameters = []
+      var requestParametersSequence = {}
+
+      var requestParametersRange = {}
+
+      var requestParametersGene = {}
+
+      if (props.seqModuleArray.length > 0) {
+        props.seqModuleArray.forEach(element => {
+          if (element.assemblyId !== '') {
+            requestParametersSequence['assemblyId'] = element.assemblyId
+          }
+          if (element.referenceName !== '') {
+            requestParametersSequence['referenceName'] = element.referenceName
+          }
+          if (element.start !== '') {
+            requestParametersSequence['start'] = element.start
+          }
+          if (element.referenceBases !== '') {
+            requestParametersSequence['referenceBases'] = element.referenceBases
+          }
+          if (element.alternateBases !== '') {
+            requestParametersSequence['alternateBases'] = element.alternateBases
+          }
+          if (element.clinicalRelevance !== '') {
+            requestParametersSequence['clinicalRelevance'] =
+              element.clinicalRelevance
+          }
+
+          arrayRequestParameters.push(requestParametersSequence)
+        })
+      }
+
+      if (props.rangeModuleArray.length > 0) {
+        props.rangeModuleArray.forEach(element => {
+          if (element.assemblyId !== '') {
+            requestParametersRange['assemblyId'] = element.assemblyId
+          }
+          if (element.referenceName !== '') {
+            requestParametersRange['referenceName'] = element.referenceName
+          }
+          if (element.start !== '') {
+            requestParametersRange['start'] = element.start
+          }
+          if (element.end !== '') {
+            requestParametersRange['end'] = element.end
+          }
+          if (element.variantType !== '') {
+            requestParametersRange['variantType'] = element.variantType
+          }
+          if (element.alternateBases !== '') {
+            requestParametersRange['alternateBases'] = element.alternateBases
+          }
+
+          if (element.referenceBases !== '') {
+            requestParametersRange['referenceBases'] = element.referenceBases
+          }
+          if (element.aminoacid !== '') {
+            requestParametersSequence['aminoacidChange'] = element.aminoacid
+          }
+          if (element.variantMinLength !== '') {
+            requestParametersRange['variantMinLength'] =
+              element.variantMinLength
+          }
+          if (element.variantMaxLength !== '') {
+            requestParametersRange['variantMaxLength'] =
+              element.variantMaxLength
+          }
+          if (element.clinicalRelevance !== '') {
+            requestParametersSequence['clinicalRelevance'] =
+              element.clinicalRelevance
+          }
+          arrayRequestParameters.push(requestParametersRange)
+        })
+      }
+
+      if (props.geneModuleArray.length > 0) {
+        props.geneModuleArray.forEach(element => {
+          if (element.geneID !== '') {
+            requestParametersGene['geneId'] = element.geneID
+          }
+          if (element.assemblyId !== '') {
+            requestParametersGene['assemblyId'] = element.assemblyId
+          }
+          if (element.variantType !== '') {
+            requestParametersGene['variantType'] = element.variantType
+          }
+          if (element.variantMinLength !== '') {
+            requestParametersGene['variantMinLength'] = element.variantMinLength
+          }
+          if (element.variantMaxLength !== '') {
+            requestParametersGene['variantMaxLength'] = element.variantMaxLength
+          }
+          if (element.clinicalRelevance !== '') {
+            requestParametersSequence['clinicalRelevance'] =
+              element.clinicalRelevance
+          }
+          arrayRequestParameters.push(requestParametersGene)
+        })
+      }
+
+      if (props.query !== null) {
+        if (props.query.includes(',')) {
+          queryStringTerm = props.query.split(',')
+          queryStringTerm.forEach((element, index) => {
+            element = element.trim()
+            if (
+              element.includes('=') ||
+              element.includes('>') ||
+              element.includes('<') ||
+              element.includes('!') ||
+              element.includes('%')
+            ) {
+              if (element.includes('=')) {
+                queryArray[index] = element.split('=')
+                queryArray[index].push('=')
+              } else if (element.includes('>')) {
+                queryArray[index] = element.split('>')
+                queryArray[index].push('>')
+              } else if (element.includes('<')) {
+                queryArray[index] = element.split('<')
+                queryArray[index].push('<')
+              } else if (element.includes('!')) {
+                queryArray[index] = element.split('!')
+                queryArray[index].push('!')
+              } else {
+                queryArray[index] = element.split('%')
+                queryArray[index].push('%')
+              }
+              let alphaNumFilter = {
+                id: queryArray[index][0],
+                operator: queryArray[index][2],
+                value: queryArray[index][1],
+                scope: 'individuals'
+              }
+
+              props.filteringTerms.data.response.filteringTerms.forEach(
+                element2 => {
+                  if (
+                    queryArray[index][0].toLowerCase() ===
+                      element2.id.toLowerCase() ||
+                    queryArray[index][0].toLowerCase() ===
+                      element2.label.toLowerCase()
+                  ) {
+                    alphaNumFilter = {
+                      id: queryArray[index][0],
+                      operator: queryArray[index][2],
+                      value: queryArray[index][1],
+                      scope: element2.scope[0]
+                    }
+                  }
+                }
+              )
+              arrayFilter.push(alphaNumFilter)
+            } else {
+              let filter2 = {}
+
+              props.filteringTerms.data.response.filteringTerms.forEach(
+                element2 => {
+                  console.log(element2)
+                  if (element2.label !== undefined) {
+                    if (
+                      element.toLowerCase() === element2.label.toLowerCase()
+                    ) {
+                      filter2 = {
+                        id: element2.id,
+                        // includeDescendantTerms: props.descendantTerm,
+                        scope: element2.scope[0]
+                      }
+                    }
+                  }
+                  console.log(element)
+                  if (element.toLowerCase() === element2.id.toLowerCase()) {
+                    filter2 = {
+                      id: element2.id,
+                      // includeDescendantTerms: props.descendantTerm,
+                      scope: element2.scope[0]
+                    }
+                  }
+                }
+              )
+
+              arrayFilter.push(filter2)
+            }
+          })
+        } else {
+          if (
+            props.query.includes('=') ||
+            props.query.includes('>') ||
+            props.query.includes('<') ||
+            props.query.includes('!') ||
+            props.query.includes('%')
+          ) {
+            if (props.query.includes('=')) {
+              queryArray[0] = props.query.split('=')
+              queryArray[0].push('=')
+            } else if (props.query.includes('>')) {
+              queryArray[0] = props.query.split('>')
+              queryArray[0].push('>')
+            } else if (props.query.includes('<')) {
+              queryArray[0] = props.query.split('<')
+              queryArray[0].push('<')
+            } else if (props.query.includes('!')) {
+              queryArray[0] = props.query.split('!')
+              queryArray[0].push('!')
+            } else {
+              queryArray[0] = props.query.split('%')
+              queryArray[0].push('%')
+            }
+
+            let alphaNumFilter = {
+              id: queryArray[0][0],
+              operator: queryArray[0][2],
+              value: queryArray[0][1],
+              scope: 'individuals'
+            }
+            props.filteringTerms.data.response.filteringTerms.forEach(
+              element2 => {
+                if (element2.label !== undefined) {
+                  if (
+                    queryArray[0][0].toLowerCase() ===
+                      element2.id.toLowerCase() ||
+                    queryArray[0][0].toLowerCase() ===
+                      element2.label.toLowerCase()
+                  ) {
+                    alphaNumFilter = {
+                      id: queryArray[0][0],
+                      operator: queryArray[0][2],
+                      value: queryArray[0][1],
+                      scope: element2.scope[0]
+                    }
+                  }
+                }
+              }
+            )
+            arrayFilter.push(alphaNumFilter)
+          } else {
+            let filter = { id: props.query, scope: 'genomicVariations' }
+            let labelToOntology = 0
+
+            let queryTermLowerCase = props.query.toLowerCase()
+
+            props.filteringTerms.data.response.filteringTerms.forEach(
+              element => {
+                if (element.label) {
+                  element.label = element.label.toLowerCase()
+                }
+                if (queryTermLowerCase === element.label) {
+                  labelToOntology = element.id
+                  filter = {
+                    id: labelToOntology,
+                    scope: element.scope[0]
+                  }
+                }
+              }
+            )
+            arrayFilter.push(filter)
+          }
+        }
+      }
+
       try {
         let res = await axios.get(configData.API_URL + '/info')
 
         beaconsList.push(res.data.response)
 
-        if (props.showBar === false) {
-          setShowVariantsResults(true)
-
-          if (props.query !== null) {
-            if (props.query.includes(',')) {
-              queryStringTerm = props.query.split(',')
-              queryStringTerm.forEach((element, index) => {
-                element = element.trim()
-                if (
-                  element.includes('=') ||
-                  element.includes('>') ||
-                  element.includes('<') ||
-                  element.includes('!') ||
-                  element.includes('%')
-                ) {
-                  if (element.includes('=')) {
-                    queryArray[index] = element.split('=')
-                    queryArray[index].push('=')
-                  } else if (element.includes('>')) {
-                    queryArray[index] = element.split('>')
-                    queryArray[index].push('>')
-                  } else if (element.includes('<')) {
-                    queryArray[index] = element.split('<')
-                    queryArray[index].push('<')
-                  } else if (element.includes('!')) {
-                    queryArray[index] = element.split('!')
-                    queryArray[index].push('!')
-                  } else {
-                    queryArray[index] = element.split('%')
-                    queryArray[index].push('%')
-                  }
-                  const alphaNumFilter = {
-                    id: queryArray[index][0],
-                    operator: queryArray[index][2],
-                    value: queryArray[index][1]
-                  }
-                  arrayFilter.push(alphaNumFilter)
-                } else {
-                  let filter2 = {
-                    id: element,
-                    includeDescendantTerms: props.descendantTerm
-                  }
-                  props.filteringTerms.data.response.filteringTerms.forEach(
-                    element2 => {
-                      if (
-                        element.toLowerCase() === element2.label.toLowerCase()
-                      ) {
-                        filter2 = {
-                          id: element2.id,
-                          includeDescendantTerms: props.descendantTerm
-                        }
-                      }
-                    }
-                  )
-
-                  arrayFilter.push(filter2)
-                }
-              })
-            } else {
-              if (
-                props.query.includes('=') ||
-                props.query.includes('>') ||
-                props.query.includes('<') ||
-                props.query.includes('!') ||
-                props.query.includes('%')
-              ) {
-                if (props.query.includes('=')) {
-                  queryArray[0] = props.query.split('=')
-                  queryArray[0].push('=')
-                } else if (props.query.includes('>')) {
-                  queryArray[0] = props.query.split('>')
-                  queryArray[0].push('>')
-                } else if (props.query.includes('<')) {
-                  queryArray[0] = props.query.split('<')
-                  queryArray[0].push('<')
-                } else if (props.query.includes('!')) {
-                  queryArray[0] = props.query.split('!')
-                  queryArray[0].push('!')
-                } else {
-                  queryArray[0] = props.query.split('%')
-                  queryArray[0].push('%')
-                }
-
-                const alphaNumFilter = {
-                  id: queryArray[0][0],
-                  operator: queryArray[0][2],
-                  value: queryArray[0][1]
-                }
-                arrayFilter.push(alphaNumFilter)
-              } else {
-                let filter = { id: props.query }
-                let labelToOntology = 0
-                console.log('holi')
-                let queryTermLowerCase = props.query.toLowerCase()
-                console.log(props.filteringTerms)
-                props.filteringTerms.data.response.filteringTerms.forEach(
-                  element => {
-                    if (element.label) {
-                      element.label = element.label.toLowerCase()
-                    }
-                    if (queryTermLowerCase === element.label) {
-                      labelToOntology = element.id
-                      filter = {
-                        id: labelToOntology
-                      }
-                    }
-                  }
-                )
-                arrayFilter.push(filter)
-              }
-            }
-          }
-
-          try {
-            if (props.query === null) {
-              // show all individuals
-
-              var jsonData1 = {
-                meta: {
-                  apiVersion: '2.0'
-                },
-                query: {
-                  filters: arrayFilter,
-                  includeResultsetResponses: `${props.resultSets}`,
-                  pagination: {
-                    skip: skip,
-                    limit: limit
-                  },
-                  testMode: false,
-                  requestedGranularity: 'record'
-                }
-              }
-              jsonData1 = JSON.stringify(jsonData1)
-
-              let token = null
-              if (auth.userData === null) {
-                token = getStoredToken()
-              } else {
-                token = auth.userData.access_token
-              }
-
-              if (token === null) {
-                res = await axios.post(
-                  configData.API_URL + '/g_variants',
-                  jsonData1
-                )
-              } else {
-                const headers = { Authorization: `Bearer ${token}` }
-
-                res = await axios.post(
-                  configData.API_URL + '/g_variants',
-                  jsonData1,
-                  { headers: headers }
-                )
-              }
-              setTimeOut(true)
-
-              if (
-                (res.data.responseSummary.numTotalResults < 1 ||
-                  res.data.responseSummary.numTotalResults === undefined) &&
-                props.resultSets !== 'MISS'
-              ) {
-                setError('No results. Please try another query')
-                setNumberResults(0)
-                setBoolean(false)
-              } else {
-                res.data.response.resultSets.forEach((element, index) => {
-                  if (element.id && element.id !== '') {
-                    if (resultsPerDataset.length > 0) {
-                      resultsPerDataset.forEach(element2 => {
-                        element2[0].push(element.id)
-                        element2[1].push(element.exists)
-                        element2[2].push(element.resultsCount)
-                      })
-                    } else {
-                      let arrayResultsPerDataset = [
-                        //element.beaconId,
-                        [element.id],
-                        [element.exists],
-                        [element.resultsCount]
-                      ]
-                      resultsPerDataset.push(arrayResultsPerDataset)
-                    }
-                  }
-    
-                  if (element.id === undefined || element.id === '') {
-                    let arrayResultsNoDatasets = [element.beaconId]
-                    resultsNotPerDataset.push(arrayResultsNoDatasets)
-                  }
-    
-                  if (res.data.response.resultSets[index].results) {
-                    res.data.response.resultSets[index].results.forEach(
-                      (element2, index2) => {
-                        let arrayResult = [
-                          res.data.meta.beaconId,
-                          res.data.response.resultSets[index].results[index2]
-                        ]
-                        results.push(arrayResult)
-                      }
-                    )
-                  }
-                })
-              }
-            } else {
-              var jsonData2 = {
-                meta: {
-                  apiVersion: '2.0'
-                },
-                query: {
-                  filters: arrayFilter,
-                  includeResultsetResponses: `${props.resultSets}`,
-                  pagination: {
-                    skip: skip,
-                    limit: limit
-                  },
-                  testMode: false,
-                  requestedGranularity: 'record'
-                }
-              }
-              jsonData2 = JSON.stringify(jsonData2)
-              console.log(jsonData2)
-              let token = null
-              if (auth.userData === null) {
-                token = getStoredToken()
-              } else {
-                token = auth.userData.access_token
-              }
-
-              if (token === null) {
-                console.log('Querying without token')
-                res = await axios.post(
-                  configData.API_URL + '/g_variants',
-                  jsonData2
-                )
-              } else {
-                console.log('Querying WITH token')
-                const headers = { Authorization: `Bearer ${token}` }
-                res = await axios.post(
-                  configData.API_URL + '/g_variants',
-                  jsonData2,
-                  { headers: headers }
-                )
-              }
-
-              setTimeOut(true)
-              console.log(res.data)
-              if (
-                (res.data.responseSummary.numTotalResults < 1 ||
-                  res.data.responseSummary.numTotalResults === undefined) &&
-                props.resultSets !== 'MISS'
-              ) {
-                setError('No results. Please try another query')
-                setNumberResults(0)
-                setBoolean(false)
-              } else {
-                res.data.response.resultSets.forEach((element, index) => {
-                  if (element.id && element.id !== '') {
-                    if (resultsPerDataset.length > 0) {
-                      resultsPerDataset.forEach(element2 => {
-                        element2[1].push(element.id)
-                        element2[2].push(element.exists)
-                        element2[3].push(element.resultsCount)
-                      })
-                    } else {
-                      let arrayResultsPerDataset = [
-                        //element.beaconId,
-                        [element.id],
-                        [element.exists],
-                        [element.resultsCount]
-                      ]
-                      let found = false
-                      resultsPerDataset.forEach(element => {
-                        if (element[0] === arrayResultsPerDataset[0]) {
-                          found = true
-                        }
-                      })
-                      if (found === false) {
-                        resultsPerDataset.push(arrayResultsPerDataset)
-                      }
-                    }
-                  }
-    
-                  if (element.id === undefined || element.id === '') {
-                    let arrayResultsNoDatasets = [element.beaconId]
-                    resultsNotPerDataset.push(arrayResultsNoDatasets)
-                  }
-    
-                  if (res.data.response.resultSets[index].results) {
-                    res.data.response.resultSets[index].results.forEach(
-                      (element2, index2) => {
-                        let arrayResult = [
-                          res.data.meta.beaconId,
-                          res.data.response.resultSets[index].results[index2]
-                        ]
-                        results.push(arrayResult)
-                      }
-                    )
-                  }
-                })
-              }
-            }
-          } catch (error) {
-            setError('No results. Please retry')
-            setTimeOut(true)
-          }
-        } else {
-          setShowVariantsResults(true)
-
-          //   referenceName={referenceName} start={start} end={end} variantType={variantType} alternateBases={alternateBases} referenceBases={referenceBases} aminoacid={aminoacid} geneID={geneID} />
-          //    </div>
-
-          var requestParametersSequence = {}
-          var requestParametersRange = {}
-          var requestParametersGene = {}
-          if (props.referenceName !== '') {
-            requestParametersSequence['referenceName'] = props.referenceName
-          }
-          if (props.referenceName2 !== '') {
-            requestParametersRange['referenceName'] = props.referenceName2
-          }
-          if (props.start !== '') {
-            requestParametersSequence['start'] = props.start
-          }
-          if (props.start2 !== '') {
-            requestParametersRange['start'] = props.start2
-          }
-          if (props.variantMinLength !== '') {
-            requestParametersRange['variantMinLength'] = props.variantMinLength
-          }
-          if (props.variantMaxLength !== '') {
-            requestParametersRange['variantMaxLength'] = props.variantMaxLength
-          }
-          if (props.variantMinLength2 !== '') {
-            requestParametersGene['variantMinLength'] = props.variantMinLength2
-          }
-          if (props.variantMaxLength2 !== '') {
-            requestParametersGene['variantMaxLength'] = props.variantMaxLength2
-          }
-          if (props.end !== '') {
-            requestParametersRange['end'] = props.end
-          }
-          if (props.variantType !== '') {
-            requestParametersRange['variantType'] = props.variantType
-          }
-          if (props.variantType2 !== '') {
-            requestParametersGene['variantType'] = props.variantType2
-          }
-          if (props.alternateBases !== '') {
-            requestParametersSequence['alternateBases'] = props.alternateBases
-          }
-          if (props.alternateBases2 !== '') {
-            requestParametersRange['alternateBases'] = props.alternateBases2
-          }
-          if (props.referenceBases !== '') {
-            requestParametersSequence['referenceBases'] = props.referenceBases
-          }
-          if (props.referenceBases2 !== '') {
-            requestParametersRange['referenceBases'] = props.referenceBases2
-          }
-          if (props.aminoacid !== '') {
-            requestParametersSequence['aminoacidChange'] = props.aminoacid
-          }
-          if (props.aminoacid2 !== '') {
-            requestParametersRange['aminoacidChange'] = props.aminoacid2
-          }
-          if (props.geneID !== '') {
-            requestParametersGene['geneId'] = props.geneID
-          }
-          if (props.assemblyId !== '') {
-            requestParametersSequence['assemblyId'] = props.assemblyId
-          }
-          if (props.assemblyId2 !== '') {
-            requestParametersRange['assemblyId'] = props.assemblyId2
-          }
-          if (props.assemblyId3 !== '') {
-            requestParametersGene['assemblyId'] = props.assemblyId3
-          }
-
+        if (props.query === null) {
+          // show all individuals
           var jsonData1 = {}
 
-          if (props.sequenceSubmitted) {
-            jsonData1 = {
-              meta: {
-                apiVersion: '2.0'
-              },
-              query: {
-                requestParameters: requestParametersSequence,
-                filters: [],
-                includeResultsetResponses: `${props.resultSets}`,
-                pagination: {
-                  skip: skip,
-                  limit: limit
+          if (arrayRequestParameters.length > 0) {
+            if (arrayRequestParameters.length === 1) {
+              jsonData1 = {
+                meta: {
+                  apiVersion: '2.0'
                 },
-                testMode: false,
-                requestedGranularity: 'record'
+                query: {
+                  requestParameters: arrayRequestParameters[0],
+                  filters: arrayFilter,
+                  includeResultsetResponses: `${props.resultSets}`,
+                  pagination: {
+                    skip: skip,
+                    limit: limit
+                  },
+                  testMode: false,
+                  requestedGranularity: 'record'
+                }
+              }
+            } else {
+              jsonData1 = {
+                meta: {
+                  apiVersion: '2.0'
+                },
+                query: {
+                  requestParameters: arrayRequestParameters,
+                  filters: arrayFilter,
+                  includeResultsetResponses: `${props.resultSets}`,
+                  pagination: {
+                    skip: skip,
+                    limit: limit
+                  },
+                  testMode: false,
+                  requestedGranularity: 'record'
+                }
               }
             }
-          }
-
-          if (props.rangeSubmitted) {
+          } else {
             jsonData1 = {
               meta: {
                 apiVersion: '2.0'
               },
               query: {
-                requestParameters: requestParametersRange,
-                filters: [],
+                filters: arrayFilter,
                 includeResultsetResponses: `${props.resultSets}`,
                 pagination: {
-                  skip: skip,
-                  limit: limit
-                },
-                testMode: false,
-                requestedGranularity: 'record'
-              }
-            }
-          }
-
-          if (props.geneSubmitted) {
-            jsonData1 = {
-              meta: {
-                apiVersion: '2.0'
-              },
-              query: {
-                requestParameters: requestParametersGene,
-                filters: [],
-                includeResultsetResponses: `${props.resultSets}`,
-                pagination: {
-                  skip: skip,
-                  limit: limit
+                  skip: 0,
+                  limit: 0
                 },
                 testMode: false,
                 requestedGranularity: 'record'
@@ -526,7 +407,7 @@ function VariantsResults (props) {
           }
 
           jsonData1 = JSON.stringify(jsonData1)
-
+          console.log(jsonData1)
           let token = null
           if (auth.userData === null) {
             token = getStoredToken()
@@ -535,24 +416,154 @@ function VariantsResults (props) {
           }
 
           if (token === null) {
-            console.log('Querying without token')
-            console.log(jsonData1)
             res = await axios.post(
               configData.API_URL + '/g_variants',
               jsonData1
             )
-            console.log(res)
             console.log(jsonData1)
+            console.log(res)
           } else {
             const headers = { Authorization: `Bearer ${token}` }
+
             res = await axios.post(
               configData.API_URL + '/g_variants',
               jsonData1,
               { headers: headers }
             )
           }
+          setTimeOut(true)
+
+          if (
+            (res.data.responseSummary.numTotalResults < 1 ||
+              res.data.responseSummary.numTotalResults === undefined) &&
+            props.resultSets !== 'MISS'
+          ) {
+            setError('No results. Please try another query')
+            setNumberResults(0)
+            setBoolean(false)
+          } else {
+            res.data.response.resultSets.forEach((element, index) => {
+              if (element.id && element.id !== '') {
+                if (resultsPerDataset.length > 0) {
+                  resultsPerDataset.forEach(element2 => {
+                    element2[0].push(element.id)
+                    element2[1].push(element.exists)
+                    element2[2].push(element.resultsCount)
+                  })
+                } else {
+                  let arrayResultsPerDataset = [
+                    //element.beaconId,
+                    [element.id],
+                    [element.exists],
+                    [element.resultsCount]
+                  ]
+                  resultsPerDataset.push(arrayResultsPerDataset)
+                }
+              }
+
+              if (element.id === undefined || element.id === '') {
+                let arrayResultsNoDatasets = [element.beaconId]
+                resultsNotPerDataset.push(arrayResultsNoDatasets)
+              }
+
+              if (res.data.response.resultSets[index].results) {
+                res.data.response.resultSets[index].results.forEach(
+                  (element2, index2) => {
+                    let arrayResult = [
+                      res.data.meta.beaconId,
+                      res.data.response.resultSets[index].results[index2]
+                    ]
+                    results.push(arrayResult)
+                  }
+                )
+              }
+            })
+          }
+        } else {
+          var jsonData2 = {}
+
+          if (arrayRequestParameters.length > 0) {
+            if (arrayRequestParameters.length === 1) {
+              jsonData2 = {
+                meta: {
+                  apiVersion: '2.0'
+                },
+                query: {
+                  requestParameters: arrayRequestParameters[0],
+                  filters: arrayFilter,
+                  includeResultsetResponses: `${props.resultSets}`,
+                  pagination: {
+                    skip: skip,
+                    limit: limit
+                  },
+                  testMode: false,
+                  requestedGranularity: 'record'
+                }
+              }
+            } else {
+              jsonData2 = {
+                meta: {
+                  apiVersion: '2.0'
+                },
+                query: {
+                  requestParameters: arrayRequestParameters,
+                  filters: arrayFilter,
+                  includeResultsetResponses: `${props.resultSets}`,
+                  pagination: {
+                    skip: skip,
+                    limit: limit
+                  },
+                  testMode: false,
+                  requestedGranularity: 'record'
+                }
+              }
+            }
+          } else {
+            jsonData2 = {
+              meta: {
+                apiVersion: '2.0'
+              },
+              query: {
+                filters: arrayFilter,
+                includeResultsetResponses: `${props.resultSets}`,
+                pagination: {
+                  skip: 0,
+                  limit: 0
+                },
+                testMode: false,
+                requestedGranularity: 'record'
+              }
+            }
+          }
+          jsonData2 = JSON.stringify(jsonData2)
+
+          let token = null
+          if (auth.userData === null) {
+            token = getStoredToken()
+          } else {
+            token = auth.userData.access_token
+          }
+          console.log(jsonData2)
+          if (token === null) {
+            console.log('Querying without token')
+            res = await axios.post(
+              configData.API_URL + '/g_variants',
+              jsonData2
+            )
+            console.log(jsonData2)
+            console.log(res)
+          } else {
+            console.log('Querying WITH token')
+            const headers = { Authorization: `Bearer ${token}` }
+            res = await axios.post(
+              configData.API_URL + '/g_variants',
+              jsonData2,
+              { headers: headers }
+            )
+          }
 
           setTimeOut(true)
+
           if (
             (res.data.responseSummary.numTotalResults < 1 ||
               res.data.responseSummary.numTotalResults === undefined) &&
@@ -609,27 +620,30 @@ function VariantsResults (props) {
           }
         }
       } catch (error) {
+        console.log(error)
         setError('No results. Please retry')
         setTimeOut(true)
       }
     }
     apiCall()
-  }, [props.showBar])
+  }, [])
   return (
     <div>
-      {showVariantsResults === true && (
-        <div className='resultsOptions'>
-          {timeOut === false && (
-            <div className='loaderLogo'>
-              <div className='loader2'>
-                <div id='ld3'>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-              </div>
+      {timeOut === false && (
+        <div className='loaderLogo'>
+          <div className='loader2'>
+            <div id='ld3'>
+              <div></div>
+              <div></div>
+              <div></div>
             </div>
-          )}
+          </div>
+        </div>
+      )}
+
+      <div>
+        <div>
+          {' '}
           {timeOut && error !== 'Connection error. Please retry' && (
             <div>
               <div className='selectGranularity'>
@@ -652,7 +666,7 @@ function VariantsResults (props) {
                     Count
                   </h5>
                 </button>
-                {props.resultSets !== 'MISS' && (
+                {props.resultSets !== 'MISS' && results.length > 0 && (
                   <button className='typeResults' onClick={handleTypeResults3}>
                     <h5
                       className={
@@ -664,56 +678,51 @@ function VariantsResults (props) {
                   </button>
                 )}
               </div>
-
-              {show3 && logInRequired === false && !error && (
-                <div>
-                  <TableResultsVariant
-                    show={'full'}
-                    results={results}
-                    resultsPerDataset={resultsPerDataset}
-                    beaconsList={beaconsList}
-                    resultSets={props.resultSets}
-                  ></TableResultsVariant>
-                </div>
-              )}
-
-              {show3 && error && <h3>&nbsp; {error} </h3>}
-
-              {show2 && logInRequired === false && !error && (
-                <div>
-                  <TableResultsVariant
-                    show={'count'}
-                    resultsPerDataset={resultsPerDataset}
-                    resultsNotPerDataset={resultsNotPerDataset}
-                    results={results}
-                    beaconsList={beaconsList}
-                    resultSets={props.resultSets}
-                  ></TableResultsVariant>
-                </div>
-              )}
-
-              {show1 && logInRequired === false && !error && (
-                <div className='containerTableResults'>
-                  <TableResultsVariant
-                    show={'boolean'}
-                    resultsPerDataset={resultsPerDataset}
-                    resultsNotPerDataset={resultsNotPerDataset}
-                    results={results}
-                    beaconsList={beaconsList}
-                    resultSets={props.resultSets}
-                  ></TableResultsVariant>
-                </div>
-              )}
-
-              {show1 && error && <h3>&nbsp; {error} </h3>}
-              {show2 && error && <h3>&nbsp; {error} </h3>}
             </div>
           )}
           {timeOut && error === 'Connection error. Please retry' && (
             <h3>&nbsp; {error} </h3>
           )}
+          {show3 && logInRequired === false && !error && (
+            <div className='containerTableResults'>
+              <TableResultsVariant
+                show={'full'}
+                results={results}
+                resultsPerDataset={resultsPerDataset}
+                beaconsList={beaconsList}
+                resultSets={props.resultSets}
+              ></TableResultsVariant>
+            </div>
+          )}
+          {show3 && error && <h3>&nbsp; {error} </h3>}
+          {show2 && !error && (
+            <div className='containerTableResults'>
+              <TableResultsVariant
+                show={'count'}
+                resultsPerDataset={resultsPerDataset}
+                resultsNotPerDataset={resultsNotPerDataset}
+                results={results}
+                beaconsList={beaconsList}
+                resultSets={props.resultSets}
+              ></TableResultsVariant>
+            </div>
+          )}
+          {show1 && !error && (
+            <div className='containerTableResults'>
+              <TableResultsVariant
+                show={'boolean'}
+                resultsPerDataset={resultsPerDataset}
+                resultsNotPerDataset={resultsNotPerDataset}
+                results={results}
+                beaconsList={beaconsList}
+                resultSets={props.resultSets}
+              ></TableResultsVariant>
+            </div>
+          )}
+          {show2 && error && <h3>&nbsp; {error} </h3>}
+          {show1 && error && <h3>&nbsp; {error} </h3>}
         </div>
-      )}
+      </div>
     </div>
   )
 }

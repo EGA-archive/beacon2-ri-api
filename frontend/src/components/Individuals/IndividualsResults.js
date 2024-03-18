@@ -87,6 +87,10 @@ function IndividualsResults (props) {
           if (element.alternateBases !== '') {
             requestParametersSequence['alternateBases'] = element.alternateBases
           }
+          if (element.clinicalRelevance !== '') {
+            requestParametersSequence['clinicalRelevance'] =
+              element.clinicalRelevance
+          }
 
           arrayRequestParameters.push(requestParametersSequence)
         })
@@ -127,7 +131,10 @@ function IndividualsResults (props) {
             requestParametersRange['variantMaxLength'] =
               element.variantMaxLength
           }
-
+          if (element.clinicalRelevance !== '') {
+            requestParametersSequence['clinicalRelevance'] =
+              element.clinicalRelevance
+          }
           arrayRequestParameters.push(requestParametersRange)
         })
       }
@@ -149,7 +156,10 @@ function IndividualsResults (props) {
           if (element.variantMaxLength !== '') {
             requestParametersGene['variantMaxLength'] = element.variantMaxLength
           }
-
+          if (element.clinicalRelevance !== '') {
+            requestParametersSequence['clinicalRelevance'] =
+              element.clinicalRelevance
+          }
           arrayRequestParameters.push(requestParametersGene)
         })
       }
@@ -296,7 +306,7 @@ function IndividualsResults (props) {
             let labelToOntology = 0
 
             let queryTermLowerCase = props.query.toLowerCase()
-    
+
             props.filteringTerms.data.response.filteringTerms.forEach(
               element => {
                 if (element.label) {
@@ -326,20 +336,39 @@ function IndividualsResults (props) {
           var jsonData1 = {}
 
           if (arrayRequestParameters.length > 0) {
-            jsonData1 = {
-              meta: {
-                apiVersion: '2.0'
-              },
-              query: {
-                requestParameters: arrayRequestParameters,
-                filters: arrayFilter,
-                includeResultsetResponses: `${props.resultSets}`,
-                pagination: {
-                  skip: skip,
-                  limit: limit
+            if (arrayRequestParameters.length === 1) {
+              jsonData1 = {
+                meta: {
+                  apiVersion: '2.0'
                 },
-                testMode: false,
-                requestedGranularity: 'record'
+                query: {
+                  requestParameters: arrayRequestParameters[0],
+                  filters: arrayFilter,
+                  includeResultsetResponses: `${props.resultSets}`,
+                  pagination: {
+                    skip: skip,
+                    limit: limit
+                  },
+                  testMode: false,
+                  requestedGranularity: 'record'
+                }
+              }
+            } else {
+              jsonData1 = {
+                meta: {
+                  apiVersion: '2.0'
+                },
+                query: {
+                  requestParameters: arrayRequestParameters,
+                  filters: arrayFilter,
+                  includeResultsetResponses: `${props.resultSets}`,
+                  pagination: {
+                    skip: skip,
+                    limit: limit
+                  },
+                  testMode: false,
+                  requestedGranularity: 'record'
+                }
               }
             }
           } else {
@@ -437,20 +466,39 @@ function IndividualsResults (props) {
           var jsonData2 = {}
 
           if (arrayRequestParameters.length > 0) {
-            jsonData2 = {
-              meta: {
-                apiVersion: '2.0'
-              },
-              query: {
-                requestParameters: arrayRequestParameters,
-                filters: arrayFilter,
-                includeResultsetResponses: `${props.resultSets}`,
-                pagination: {
-                  skip: skip,
-                  limit: limit
+            if (arrayRequestParameters.length === 1) {
+              jsonData2 = {
+                meta: {
+                  apiVersion: '2.0'
                 },
-                testMode: false,
-                requestedGranularity: 'record'
+                query: {
+                  requestParameters: arrayRequestParameters[0],
+                  filters: arrayFilter,
+                  includeResultsetResponses: `${props.resultSets}`,
+                  pagination: {
+                    skip: skip,
+                    limit: limit
+                  },
+                  testMode: false,
+                  requestedGranularity: 'record'
+                }
+              }
+            } else {
+              jsonData2 = {
+                meta: {
+                  apiVersion: '2.0'
+                },
+                query: {
+                  requestParameters: arrayRequestParameters,
+                  filters: arrayFilter,
+                  includeResultsetResponses: `${props.resultSets}`,
+                  pagination: {
+                    skip: skip,
+                    limit: limit
+                  },
+                  testMode: false,
+                  requestedGranularity: 'record'
+                }
               }
             }
           } else {

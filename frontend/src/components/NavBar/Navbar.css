@@ -764,7 +764,7 @@
 
   .Individuals2 {
     width: 157px;
-    height: 20px;
+    height: 27px;
     margin-left: 2px;
     background-color: #1abc9c;
     border-radius: 4px;
@@ -773,28 +773,28 @@
 
   .Variants2 {
     width: 157px;
-    height: 23px;
+    height: 27px;
     margin-left: 2px;
     border-radius: 4px;
   }
 
   .Biosamples2 {
     width: 157px;
-    height: 23px;
+    height: 27px;
     margin-left: 2px;
     border-radius: 4px;
   }
 
   .Members2 {
-    width: 146px;
-    height: 23px;
+    width: 160px;
+    height: 27px;
     border-radius: 4px;
     background-color: #4961b8;
   }
 
   .Sign-in5 {
     width: 157px;
-    height: 23px;
+    height: 27px;
     margin-top: 2px;
     margin-left: 2px;
     border-radius: 4px;
@@ -803,21 +803,21 @@
 
   .Runs2 {
     width: 157px;
-    height: 23px;
+    height: 27px;
     margin-left: 2px;
     border-radius: 4px;
   }
 
   .Cohorts2 {
     width: 157px;
-    height: 23px;
+    height: 27px;
     margin-left: 2px;
     border-radius: 4px;
   }
 
   .Cross-queries2 {
     width: 157px;
-    height: 23px;
+    height: 27px;
     margin-left: 2px;
     border-radius: 4px;
   }
@@ -834,7 +834,7 @@
 
   .Analyses2 {
     width: 157px;
-    height: 23px;
+    height: 27px;
     margin-left: 2px;
     border-radius: 4px;
   }
@@ -914,7 +914,7 @@
   }
   .menuNav2 {
     background-color: #235c94;
-    height: 147px;
+    height: 165px;
     width: 161px;
     margin-top: 22px;
     border-radius: 9px;

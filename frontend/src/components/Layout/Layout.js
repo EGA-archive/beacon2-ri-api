@@ -101,6 +101,9 @@ function Layout (props) {
   const [variantMaxLength, setVariantMaxLength] = useState('')
   const [variantMinLength2, setVariantMinLength2] = useState('')
   const [variantMaxLength2, setVariantMaxLength2] = useState('')
+  const [clinicalRelevance, setClinicalRelevance] = useState('')
+  const [clinicalRelevance2, setClinicalRelevance2] = useState('')
+  const [clinicalRelevance3, setClinicalRelevance3] = useState('')
 
   const [sequenceSubmitted, setSequenceSub] = useState(false)
   const [rangeSubmitted, setRangeSub] = useState(false)
@@ -198,15 +201,20 @@ function Layout (props) {
   const handleExQueries = () => {
     if (props.collection === 'Individuals') {
       setExampleQ([
-        ['female', 'NCIT:C16576'],
-        ['African', 'NCIT:C42331'],
-        ['Cardiovascular Neoplasm', 'NCIT:C4784'],
-        ['Weight>100'],
-        ['geographicOrigin=%land%'],
-        ['geographicOrigin!England']
+        [
+          'libraryStrategy=%WES%, non_coding_transcript_exon_variant',
+          'libraryStrategy=%WES%, SO:0001792'
+        ],
+        ['Capecitabine', 'NCIT:C1794'],
+        ['Mucinous Adenocarcinoma of the Colon and Rectum', 'NCIT:C7966'],
+        ['Oxaliplatin', 'NCIT:C1181'],
+        ['STAGE IVA', 'NCIT:C27979']
       ])
     } else if (props.collection === 'Variant') {
-      setExampleQ([['GENO:GENO_0000458']])
+      setExampleQ([
+        ['libraryStrategy=%WES%, Colon Andenocarcinoma', 'libraryStrategy=%WES%, NCIT:C4349'],
+        ['GENO:GENO_0000458']
+      ])
     } else if (props.collection === 'Biosamples') {
       setExampleQ([
         ['blood', 'UBERON:0000178'],
@@ -214,7 +222,7 @@ function Layout (props) {
         ['sampleOriginType:blood']
       ])
     } else if (props.collection === 'Runs') {
-      setExampleQ([['OBI:0002048']])
+      setExampleQ([['']])
     } else if (props.collection === 'Analyses') {
       setExampleQ([['']])
     }
@@ -301,6 +309,17 @@ function Layout (props) {
     setVariantMinLength2(e.target.value)
   }
 
+  const handleChangeClinicalRelevance = e => {
+    setClinicalRelevance(e.target.value)
+  }
+
+  const handleChangeClinicalRelevance2 = e => {
+    setClinicalRelevance2(e.target.value)
+  }
+  const handleChangeClinicalRelevance3 = e => {
+    setClinicalRelevance3(e.target.value)
+  }
+
   const handleClick = () => {
     setShowBar(!showBar)
     setShowResultsVariants(false)
@@ -321,18 +340,41 @@ function Layout (props) {
   }
 
   const handleRangeExample = e => {
-    setAlternateBases2('CTT')
-    setRefBases2('C')
-    setStart2('16055848')
-    setEnd('16055849')
-    setAssemblyId2('GRCh38')
-    setRefName2('22')
-    setVariantMinLength('2')
-    setVariantMaxLength('3')
+    if (props.collection === 'Variant') {
+      setAlternateBases2('T')
+      setRefBases2('C')
+      setStart2('110173330')
+      setEnd('110173331')
+      setVariantType('SNP')
+    }
+    console.log(props.collection)
+    if (props.collection === 'Individuals') {
+      setAlternateBases2('A')
+      setRefBases2('T')
+      setStart2('1334544')
+      setEnd('1334545')
+      setVariantType('SNP')
+    }
+  }
+
+  const handleRangeExample2 = e => {
+    if (props.collection === 'Individuals') {
+      setAlternateBases2('T')
+      setRefBases2('C')
+      setStart2('3670751')
+      setEnd('3670752')
+      setVariantType('SNP')
+    }
   }
 
   const handleGeneExample = e => {
-    setGeneId('CHR_START-DUXAP8')
+    setGeneId('CTNNB1')
+    setQuery('NCIT:C15632,NCIT:C27967,NCIT:C4349')
+  }
+
+  const handleGeneExample2 = e => {
+    setGeneId('CSDE1')
+    setQuery('NCIT:C505,NCIT:C27979,NCIT:C9383')
   }
 
   const removeModuleQueryGene = e => {
@@ -364,7 +406,8 @@ function Layout (props) {
       referenceBases: referenceBases2,
       aminoacid: aminoacid,
       variantMinLength: variantMinLength,
-      variantMaxLength: variantMaxLength
+      variantMaxLength: variantMaxLength,
+      clinicalRelevance: clinicalRelevance2
     }
 
     rangeModuleArray.push(objectRange)
@@ -379,6 +422,7 @@ function Layout (props) {
     setAminoacid('')
     setVariantMinLength('')
     setVariantMaxLength('')
+    setClinicalRelevance2('')
   }
 
   const handleSeqeModule = e => {
@@ -390,7 +434,8 @@ function Layout (props) {
       referenceName: referenceName,
       start: start,
       referenceBases: referenceBases,
-      alternateBases: alternateBases
+      alternateBases: alternateBases,
+      clinicalRelevance: clinicalRelevance
     }
 
     seqModuleArray.push(objectSeq)
@@ -400,7 +445,7 @@ function Layout (props) {
     setStart('')
     setRefBases('')
     setAlternateBases('')
-    console.log(seqModuleArray)
+    setClinicalRelevance('')
   }
 
   const handleGeneModule = e => {
@@ -412,7 +457,8 @@ function Layout (props) {
       assemblyId: assemblyId3,
       variantType: variantType2,
       variantMinLength: variantMinLength2,
-      variantMaxLength: variantMaxLength2
+      variantMaxLength: variantMaxLength2,
+      clinicalRelevance: clinicalRelevance3
     }
 
     geneModuleArray.push(objectGene)
@@ -422,6 +468,7 @@ function Layout (props) {
     setVariantType2('')
     setVariantMinLength2('')
     setVariantMaxLength2('')
+    setClinicalRelevance3('')
   }
 
   useEffect(() => {
@@ -503,7 +550,9 @@ function Layout (props) {
           }
         } else if (props.collection === 'Variant') {
           try {
-            let res = await axios.get(configData.API_URL + '/filtering_terms')
+            let res = await axios.get(
+              configData.API_URL + '/filtering_terms?limit=0'
+            )
             setTimeOut(true)
             if (res.data.response.filteringTerms !== undefined) {
               setFilteringTerms(res)
@@ -804,6 +853,7 @@ function Layout (props) {
                           <h14>{element.start}</h14>
                           <h14>{element.referenceBases}</h14>
                           <h14>{element.alternateBases}</h14>
+                          <h14>{element.clinicalRelevance}</h14>
                         </div>
                       )
                     })}
@@ -826,11 +876,12 @@ function Layout (props) {
                           <h14>{element.start}</h14>
                           <h14>{element.end}</h14>
                           <h14>{element.variantType}</h14>
-                          <h14>{element.alternateBases}</h14>
                           <h14>{element.referenceBases}</h14>
+                          <h14>{element.alternateBases}</h14>
                           <h14>{element.aminoacid}</h14>
                           <h14>{element.variantMinLength}</h14>
                           <h14>{element.variantMaxLength}</h14>
+                          <h14>{element.clinicalRelevance}</h14>
                         </div>
                       )
                     })}
@@ -852,6 +903,7 @@ function Layout (props) {
                           <h14>{element.assemblyId}</h14>
                           <h14>{element.variantMinLength}</h14>
                           <h14>{element.variantMaxLength}</h14>
+                          <h14>{element.clinicalRelevance}</h14>
                         </div>
                       )
                     })}
@@ -859,599 +911,355 @@ function Layout (props) {
                 </div>
               </div>
             )}
-            {props.collection !== 'Variant' && (
-              <form className='variantsForm' onSubmit={handleSubmit}>
-                <h7 className='crossQueriesTittle'>
-                  Cross queries from {props.collection} to Variants
-                </h7>
-                <div className='tabset'>
-                  <input
-                    type='radio'
-                    name='tabset'
-                    id='tab1'
-                    aria-controls='sequence'
-                  />
-                  <label for='tab1'>Sequence queries</label>
 
-                  <input
-                    type='radio'
-                    name='tabset'
-                    id='tab2'
-                    aria-controls='range'
-                  />
-                  <label for='tab2'>Range queries</label>
+            <form className='variantsForm' onSubmit={handleSubmit}>
+              <h7 className='crossQueriesTittle'>
+                Cross queries from {props.collection} to Variants
+              </h7>
+              <div className='tabset'>
+                <input
+                  type='radio'
+                  name='tabset'
+                  id='tab1'
+                  aria-controls='sequence'
+                />
+                <label for='tab1'>Sequence queries</label>
 
-                  <input
-                    type='radio'
-                    name='tabset'
-                    id='tab3'
-                    aria-controls='gene'
-                  />
-                  <label for='tab3'>Gene ID queries</label>
+                <input
+                  type='radio'
+                  name='tabset'
+                  id='tab2'
+                  aria-controls='range'
+                />
+                <label for='tab2'>Range queries</label>
 
-                  <div className='tab-panels'>
-                    <section id='sequence' class='tab-panel'>
+                <input
+                  type='radio'
+                  name='tabset'
+                  id='tab3'
+                  aria-controls='gene'
+                />
+                <label for='tab3'>Gene ID queries</label>
+
+                <div className='tab-panels'>
+                  <section id='sequence' class='tab-panel'>
+                    {/* <button
+                      className='variantExampleButton'
+                      onClick={handleSequenceExample}
+                      type='button'
+                    >
+                      Query example
+                    </button> */}
+                    <div>
+                      <label className='labelVariants'>AssemblyID</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={assemblyId}
+                        onChange={handleChangeAssembly}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>Reference name</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={referenceName}
+                        onChange={handleChangeRefN}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>
+                        Start (single value)
+                      </label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={start}
+                        onChange={handleChangeStart}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>referenceBases</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={referenceBases}
+                        onChange={handleChangeReferenceB}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>alternateBases</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={alternateBases}
+                        onChange={handleChangeAlternateB}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>
+                        Clinical Relevance
+                      </label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={clinicalRelevance}
+                        onChange={handleChangeClinicalRelevance}
+                      ></input>
+                    </div>
+                    <div className='DivButtonVariants'>
+                      <button
+                        className='buttonVariants'
+                        type='button'
+                        onClick={handleSeqeModule}
+                      >
+                        {' '}
+                        <ion-icon name='add-circle'></ion-icon>
+                      </button>
+                    </div>
+                  </section>
+                  <section id='range' className='tab-panel'>
+                    <button
+                      className='variantExampleButton'
+                      onClick={handleRangeExample}
+                      type='button'
+                    >
+                      Query example
+                    </button>
+                    {props.collection === 'Individuals' && (
                       <button
                         className='variantExampleButton'
-                        onClick={handleSequenceExample}
+                        onClick={handleRangeExample2}
                         type='button'
                       >
-                        Query example
+                        Query example 2
                       </button>
-                      <div>
-                        <label className='labelVariants'>AssemblyID</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={assemblyId}
-                          onChange={handleChangeAssembly}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>Reference name</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={referenceName}
-                          onChange={handleChangeRefN}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>
-                          Start (single value)
-                        </label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={start}
-                          onChange={handleChangeStart}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>referenceBases</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={referenceBases}
-                          onChange={handleChangeReferenceB}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>alternateBases</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={alternateBases}
-                          onChange={handleChangeAlternateB}
-                        ></input>
-                      </div>
-                      <div className='DivButtonVariants'>
-                        <button
-                          className='buttonVariants'
-                          type='button'
-                          onClick={handleSeqeModule}
-                        >
-                          {' '}
-                          <ion-icon name='add-circle'></ion-icon>
-                        </button>
-                      </div>
-                    </section>
-                    <section id='range' className='tab-panel'>
-                      <button
-                        className='variantExampleButton'
-                        onClick={handleRangeExample}
-                        type='button'
-                      >
-                        Query example
-                      </button>
-                      <div>
-                        <label className='labelVariants'>AssemblyID</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={assemblyId2}
-                          onChange={handleChangeAssembly2}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>Reference name</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={referenceName2}
-                          onChange={handleChangeRefN2}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>
-                          Start (single value)
-                        </label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={start2}
-                          onChange={handleChangeStart2}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>
-                          End (single value)
-                        </label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={end}
-                          onChange={handleChangeEnd}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>Variant type:</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={variantType}
-                          onChange={handleChangeVariantType}
-                        ></input>{' '}
-                      </div>
-                      <div>
-                        <h3>OR</h3>
-                        <div className='basesSection'>
-                          <div className='referenceBasesContainer'>
-                            <label className='labelVariants'>
-                              referenceBases:
-                            </label>
-                            <input
-                              className='inputVariants'
-                              type='text'
-                              value={referenceBases2}
-                              onChange={handleChangeReferenceB2}
-                            ></input>
-                          </div>
-                          <div>
-                            <label className='labelVariants'>
-                              alternateBases:
-                            </label>
-                            <input
-                              className='inputVariants'
-                              type='text'
-                              value={alternateBases2}
-                              onChange={handleChangeAlternateB2}
-                            ></input>
-                          </div>
+                    )}
+                    <div>
+                      <label className='labelVariants'>AssemblyID</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={assemblyId2}
+                        onChange={handleChangeAssembly2}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>Reference name</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={referenceName2}
+                        onChange={handleChangeRefN2}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>
+                        Start (single value)
+                      </label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={start2}
+                        onChange={handleChangeStart2}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>
+                        End (single value)
+                      </label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={end}
+                        onChange={handleChangeEnd}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>Variant type:</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={variantType}
+                        onChange={handleChangeVariantType}
+                      ></input>{' '}
+                    </div>
+                    <div>
+                      <h3>OR</h3>
+                      <div className='basesSection'>
+                        <div className='referenceBasesContainer'>
+                          <label className='labelVariants'>
+                            referenceBases:
+                          </label>
+                          <input
+                            className='inputVariants'
+                            type='text'
+                            value={referenceBases2}
+                            onChange={handleChangeReferenceB2}
+                          ></input>
+                        </div>
+                        <div>
+                          <label className='labelVariants'>
+                            alternateBases:
+                          </label>
+                          <input
+                            className='inputVariants'
+                            type='text'
+                            value={alternateBases2}
+                            onChange={handleChangeAlternateB2}
+                          ></input>
                         </div>
                       </div>
-                      <div>
-                        <h3>OR</h3>
-                        <label className='labelVariants'>
-                          Aminoacid Change:
-                        </label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={aminoacid}
-                          onChange={handleChangeAminoacid}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>
-                          Variant min. length:
-                        </label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={variantMinLength}
-                          onChange={handleChangeVariantMinLength}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>
-                          Variant max. length:
-                        </label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={variantMaxLength}
-                          onChange={handleChangeVariantMaxLength}
-                        ></input>
-                      </div>
-                      <div className='DivButtonVariants'>
-                        <button
-                          className='buttonVariants'
-                          type='button'
-                          onClick={handleRangeModule}
-                        >
-                          {' '}
-                          <ion-icon name='add-circle'></ion-icon>
-                        </button>
-                      </div>
-                    </section>
-                    <section id='gene' className='tab-panel'>
+                    </div>
+                    <div>
+                      <h3>OR</h3>
+                      <label className='labelVariants'>Aminoacid Change:</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={aminoacid}
+                        onChange={handleChangeAminoacid}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>
+                        Variant min. length:
+                      </label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={variantMinLength}
+                        onChange={handleChangeVariantMinLength}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>
+                        Variant max. length:
+                      </label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={variantMaxLength}
+                        onChange={handleChangeVariantMaxLength}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>
+                        Clinical Relevance
+                      </label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={clinicalRelevance2}
+                        onChange={handleChangeClinicalRelevance2}
+                      ></input>
+                    </div>
+                    <div className='DivButtonVariants'>
                       <button
-                        className='variantExampleButton'
-                        onClick={handleGeneExample}
+                        className='buttonVariants'
                         type='button'
+                        onClick={handleRangeModule}
                       >
-                        Query example
+                        {' '}
+                        <ion-icon name='add-circle'></ion-icon>
                       </button>
-                      <div>
-                        <label className='labelVariants'>Gene ID</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={geneID}
-                          onChange={handleChangeGeneId}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>AssemblyID</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={assemblyId3}
-                          onChange={handleChangeAssembly3}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>Variant type:</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={variantType2}
-                          onChange={handleChangeVariantType2}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>
-                          Variant min. length:
-                        </label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={variantMinLength2}
-                          onChange={handleChangeVariantMinLength2}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>
-                          Variant max. length:
-                        </label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={variantMaxLength2}
-                          onChange={handleChangeVariantMaxLength2}
-                        ></input>
-                      </div>
-                      <div className='DivButtonVariants'>
+                    </div>
+                  </section>
+                  <section id='gene' className='tab-panel'>
+                    {props.collection === 'Variant' && (
+                      <>
                         <button
-                          className='buttonVariants'
+                          className='variantExampleButton'
+                          onClick={handleGeneExample}
                           type='button'
-                          onClick={handleGeneModule}
                         >
-                          {' '}
-                          <ion-icon name='add-circle'></ion-icon>
+                          Query example
                         </button>
-                      </div>
-                    </section>
-                  </div>
+                        <button
+                          className='variantExampleButton'
+                          onClick={handleGeneExample2}
+                          type='button'
+                        >
+                          Query example 2
+                        </button>
+                      </>
+                    )}
+
+                    <div>
+                      <label className='labelVariants'>Gene ID</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={geneID}
+                        onChange={handleChangeGeneId}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>AssemblyID</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={assemblyId3}
+                        onChange={handleChangeAssembly3}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>Variant type:</label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={variantType2}
+                        onChange={handleChangeVariantType2}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>
+                        Variant min. length:
+                      </label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={variantMinLength2}
+                        onChange={handleChangeVariantMinLength2}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>
+                        Variant max. length:
+                      </label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={variantMaxLength2}
+                        onChange={handleChangeVariantMaxLength2}
+                      ></input>
+                    </div>
+                    <div>
+                      <label className='labelVariants'>
+                        Clinical Relevance
+                      </label>
+                      <input
+                        className='inputVariants'
+                        type='text'
+                        value={clinicalRelevance3}
+                        onChange={handleChangeClinicalRelevance3}
+                      ></input>
+                    </div>
+                    <div className='DivButtonVariants'>
+                      <button
+                        className='buttonVariants'
+                        type='button'
+                        onClick={handleGeneModule}
+                      >
+                        {' '}
+                        <ion-icon name='add-circle'></ion-icon>
+                      </button>
+                    </div>
+                  </section>
                 </div>
-              </form>
-            )}
-            {props.collection === 'Variant' && (
-              <form className='variantsFormVariant' onSubmit={handleSubmit}>
-                <div className='tabset'>
-                  <input
-                    type='radio'
-                    name='tabset'
-                    id='tab1'
-                    aria-controls='sequence'
-                  />
-                  <label for='tab1'>Sequence queries</label>
-
-                  <input
-                    type='radio'
-                    name='tabset'
-                    id='tab2'
-                    aria-controls='range'
-                  />
-                  <label for='tab2'>Range queries</label>
-
-                  <input
-                    type='radio'
-                    name='tabset'
-                    id='tab3'
-                    aria-controls='gene'
-                  />
-                  <label for='tab3'>Gene ID queries</label>
-
-                  <div className='tab-panels'>
-                    <section id='sequence' class='tab-panel'>
-                      <button
-                        className='variantExampleButton'
-                        onClick={handleSequenceExample}
-                        type='button'
-                      >
-                        Query example
-                      </button>
-                      <div>
-                        <label className='labelVariants'>AssemblyID</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={assemblyId}
-                          onChange={handleChangeAssembly}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>Reference name</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={referenceName}
-                          onChange={handleChangeRefN}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>
-                          Start (single value)
-                        </label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={start}
-                          onChange={handleChangeStart}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>referenceBases</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={referenceBases}
-                          onChange={handleChangeReferenceB}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>alternateBases</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={alternateBases}
-                          onChange={handleChangeAlternateB}
-                        ></input>
-                      </div>
-                      <div className='DivButtonVariants'>
-                        <button
-                          className='buttonVariants'
-                          type='button'
-                          onClick={handleSeqeModule}
-                        >
-                          {' '}
-                          <ion-icon name='add-circle'></ion-icon>
-                        </button>
-                      </div>
-                    </section>
-                    <section id='range' className='tab-panel'>
-                      <button
-                        className='variantExampleButton'
-                        onClick={handleRangeExample}
-                        type='button'
-                      >
-                        Query example
-                      </button>
-                      <div>
-                        <label className='labelVariants'>AssemblyID</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={assemblyId2}
-                          onChange={handleChangeAssembly2}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>Reference name</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={referenceName2}
-                          onChange={handleChangeRefN2}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>
-                          Start (single value)
-                        </label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={start2}
-                          onChange={handleChangeStart2}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>
-                          End (single value)
-                        </label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={end}
-                          onChange={handleChangeEnd}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>Variant type:</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={variantType}
-                          onChange={handleChangeVariantType}
-                        ></input>{' '}
-                      </div>
-                      <div>
-                        <h3>OR</h3>
-                        <div className='basesSection'>
-                          <div className='referenceBasesContainer'>
-                            <label className='labelVariants'>
-                              referenceBases:
-                            </label>
-                            <input
-                              className='inputVariants'
-                              type='text'
-                              value={referenceBases2}
-                              onChange={handleChangeReferenceB2}
-                            ></input>
-                          </div>
-                          <div>
-                            <label className='labelVariants'>
-                              alternateBases:
-                            </label>
-                            <input
-                              className='inputVariants'
-                              type='text'
-                              value={alternateBases2}
-                              onChange={handleChangeAlternateB2}
-                            ></input>
-                          </div>
-                        </div>
-                      </div>
-                      <div>
-                        <h3>OR</h3>
-                        <label className='labelVariants'>
-                          Aminoacid Change:
-                        </label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={aminoacid}
-                          onChange={handleChangeAminoacid}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>
-                          Variant min. length:
-                        </label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={variantMinLength}
-                          onChange={handleChangeVariantMinLength}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>
-                          Variant max. length:
-                        </label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={variantMaxLength}
-                          onChange={handleChangeVariantMaxLength}
-                        ></input>
-                      </div>
-                      <div className='DivButtonVariants'>
-                        <button
-                          className='buttonVariants'
-                          type='button'
-                          onClick={handleRangeModule}
-                        >
-                          {' '}
-                          <ion-icon name='add-circle'></ion-icon>
-                        </button>
-                      </div>
-                    </section>
-                    <section id='gene' className='tab-panel'>
-                      <button
-                        className='variantExampleButton'
-                        onClick={handleGeneExample}
-                        type='button'
-                      >
-                        Query example
-                      </button>
-                      <div>
-                        <label className='labelVariants'>Gene ID</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={geneID}
-                          onChange={handleChangeGeneId}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>AssemblyID</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={assemblyId3}
-                          onChange={handleChangeAssembly3}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>Variant type:</label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={variantType2}
-                          onChange={handleChangeVariantType2}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>
-                          Variant min. length:
-                        </label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={variantMinLength2}
-                          onChange={handleChangeVariantMinLength2}
-                        ></input>
-                      </div>
-                      <div>
-                        <label className='labelVariants'>
-                          Variant max. length:
-                        </label>
-                        <input
-                          className='inputVariants'
-                          type='text'
-                          value={variantMaxLength2}
-                          onChange={handleChangeVariantMaxLength2}
-                        ></input>
-                      </div>
-                      <div className='DivButtonVariants'>
-                        <button
-                          className='buttonVariants'
-                          type='button'
-                          onClick={handleGeneModule}
-                        >
-                          {' '}
-                          <ion-icon name='add-circle'></ion-icon>
-                        </button>
-                      </div>
-                    </section>
-                  </div>
-                </div>
-              </form>
-            )}
+              </div>
+            </form>
 
             {props.collection === 'Variant' && showBar === false && (
               <div>
@@ -2492,6 +2300,9 @@ function Layout (props) {
               variantMaxLength2={variantMaxLength2}
               variantMinLength={variantMinLength}
               variantMinLength2={variantMinLength2}
+              rangeModuleArray={rangeModuleArray}
+              seqModuleArray={seqModuleArray}
+              geneModuleArray={geneModuleArray}
             />
           </div>
         )}
@@ -2530,6 +2341,9 @@ function Layout (props) {
               variantMaxLength2={variantMaxLength2}
               variantMinLength={variantMinLength}
               variantMinLength2={variantMinLength2}
+              rangeModuleArray={rangeModuleArray}
+              seqModuleArray={seqModuleArray}
+              geneModuleArray={geneModuleArray}
             />
           </div>
         )}
@@ -2568,6 +2382,9 @@ function Layout (props) {
               variantMaxLength2={variantMaxLength2}
               variantMinLength={variantMinLength}
               variantMinLength2={variantMinLength2}
+              rangeModuleArray={rangeModuleArray}
+              seqModuleArray={seqModuleArray}
+              geneModuleArray={geneModuleArray}
             />
           </div>
         )}
