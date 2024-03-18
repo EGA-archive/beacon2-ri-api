@@ -57,24 +57,29 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
                 total_query = {}
     elif request_parameters != {}:
         if len(request_parameters["$and"]) > 1:
+            array_of_biosamples2=[]
             array_of_biosamples=[]
-            new_dict={}
-            new_dict["$and"]=[]
             for reqpam in request_parameters["$and"]:
-                new_dict["$and"].append(reqpam["$and"][0])
-            biosample_ids = client.beacon.genomicVariations.find(reqpam, {"caseLevelData.biosampleId": 1, "_id": 0})
-            for biosample in biosample_ids:
-                for bioitem in biosample['caseLevelData']:
-                    array_of_biosamples.append(bioitem["biosampleId"])
+                biosample_ids = client.beacon.genomicVariations.find(reqpam, {"caseLevelData.biosampleId": 1, "_id": 0})
+                for biosample in biosample_ids:
+                    for bioitem in biosample['caseLevelData']:
+                        if bioitem not in array_of_biosamples2:
+                            array_of_biosamples2.append(bioitem["biosampleId"])
+                    array_of_biosamples.append(array_of_biosamples2)
+                    array_of_biosamples2=[]
+            
             dict_counts={}
-            for item in array_of_biosamples:
-                try:
-                    dict_counts[item]+=1
-                except Exception:
-                    dict_counts[item]=1
+            for list_bio in array_of_biosamples:
+                for item in list_bio:
+                    if item not in array_of_biosamples2:
+                        array_of_biosamples2.append(item)
+                    try:
+                        dict_counts[item]+=1
+                    except Exception:
+                        dict_counts[item]=1
             partial_query={}
             partial_query['$or']=[]
-            for item in array_of_biosamples:
+            for item in array_of_biosamples2:
                 if dict_counts[item] == len(request_parameters["$and"]):
                     partial_query['$or'].append({"id": item})
 
