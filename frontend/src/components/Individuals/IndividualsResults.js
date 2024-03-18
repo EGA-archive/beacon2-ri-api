@@ -44,6 +44,9 @@ function IndividualsResults (props) {
   const [isActive2, setIsActive2] = useState(false)
   const [isActive3, setIsActive3] = useState(false)
 
+  const [messageScreen, setMessageScreen]= useState('')
+  const [optionsScope, setOptionsScope] = useState([])
+
   const { getStoredToken, authenticateUser } = useContext(AuthContext)
   let queryStringTerm = ''
 
@@ -314,6 +317,10 @@ function IndividualsResults (props) {
                 }
                 if (queryTermLowerCase === element.label) {
                   labelToOntology = element.id
+                  if (element.scope.length >1 ){
+                    setMessageScreen(true)
+                    setOptionsScope(element.scope)
+                  }
                   filter = {
                     id: labelToOntology,
                     scope: element.scope[0]

@@ -40,6 +40,14 @@ function VariantsResults (props) {
   const [isActive2, setIsActive2] = useState(false)
   const [isActive3, setIsActive3] = useState(false)
 
+  const [ontologyMultipleScope, setOntologyMultipleScope] = useState('')
+  const [optionsScope, setOptionsScope] = useState([])
+  const [chosenScope, setChosenScope]= useState('')
+
+  const handleChangeScope = (event) =>{
+    console.log(event.target.value)
+    setChosenScope(event.target.value)
+  }
   let queryStringTerm = ''
 
   const handleTypeResults1 = () => {
@@ -319,7 +327,20 @@ function VariantsResults (props) {
             )
             arrayFilter.push(alphaNumFilter)
           } else {
-            let filter = { id: props.query, scope: 'genomicVariations' }
+            let filter = {}
+            props.filteringTerms.data.response.filteringTerms.forEach(
+              element => {
+                if (props.query === element.id) {
+                  if (element.scope.length > 1) {
+                    setOntologyMultipleScope(element.id)
+                    setOptionsScope(element.scope)
+                  }
+
+                  filter = { id: props.query, scope: 'individuals' }
+                }
+              }
+            )
+
             let labelToOntology = 0
 
             let queryTermLowerCase = props.query.toLowerCase()
@@ -640,7 +661,19 @@ function VariantsResults (props) {
           </div>
         </div>
       )}
-
+      {optionsScope.length > 0 && (
+        <>
+          <h10>Please choose a scope for {ontologyMultipleScope} :</h10>
+          <select id='miSelect' onChange={handleChangeScope}>
+          <option value={''}>{''}</option>
+            {optionsScope.map((element, index) => {
+              return (
+              <option value={element}>{element}</option>)
+            })}
+          </select> 
+          <button>Submit</button>
+        </>
+      )}
       <div>
         <div>
           {' '}
