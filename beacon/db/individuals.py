@@ -84,6 +84,8 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
     if len(qparams.query.request_parameters) > 0 and "$and" not in query:
         query["$and"] = []
     if isinstance(qparams.query.request_parameters, list):
+        query={}
+        query["$or"]=[]
         for reqparam in qparams.query.request_parameters:
             subquery={}
             subquery["$and"] = []
@@ -139,7 +141,7 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                         v_dict['id']=id
                         qparams.query.filters.append(v_dict)        
                     return query, True
-            query["$and"].append(subquery)
+            query["$or"].append(subquery)
     else:
         for k, v in qparams.query.request_parameters.items():
             if k == "start":

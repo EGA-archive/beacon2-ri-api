@@ -313,7 +313,10 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
         LOG.debug(query)
 
         if scope == 'genomicVariations' and collection == 'g_variants' or scope == collection:
+            LOG.debug(query)
             LOG.debug(request_parameters)
+            subquery={}
+            subquery["$or"]=[]
             if request_parameters != {}:
                 biosample_ids = client.beacon.genomicVariations.find(request_parameters, {"caseLevelData.biosampleId": 1, "_id": 0})
                 final_id='id'
@@ -325,33 +328,28 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
                             new_id={}
                             new_id[final_id] = id_item[original_id]
                             try:
-                                query['$or'].append(new_id)
+                                subquery['$or'].append(new_id)
                             except Exception:
                                 def_list.append(new_id)
-                if def_list != []:
-                    try:
-                        query['$or'].def_list
-                    except Exception:
-                        query={}
-                        query['$or']=def_list
-                LOG.debug(query)
+                
+                LOG.debug(subquery)
                 mongo_collection=client.beacon.biosamples
                 original_id="individualId"
-                join_ids2=list(join_query(mongo_collection, query, original_id))
+                join_ids2=list(join_query(mongo_collection, subquery, original_id))
                 def_list=[]
                 final_id="id"
                 for id_item in join_ids2:
                     new_id={}
                     new_id[final_id] = id_item.pop(original_id)
                     def_list.append(new_id)
-                query={}
-                query['$or']=def_list
-                if def_list != []:
-                    try:
-                        query['$or'].def_list
-                    except Exception:
-                        query={}
-                        query['$or']=def_list
+                subquery={}
+                subquery['$or']=def_list
+                try:
+                    LOG.debug(query)
+                    query["$and"] = []
+                    query["$and"].append(subquery)
+                except Exception:
+                    LOG.debug(query)
             LOG.debug(query)
         else:
             def_list=[]
