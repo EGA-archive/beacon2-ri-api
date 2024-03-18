@@ -56,10 +56,11 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
             if total_query["$and"] == [{'$or': []}] or total_query['$and'] == []:
                 total_query = {}
     elif request_parameters != {}:
-        if len(request_parameters["$and"]) > 1:
+        LOG.debug(request_parameters)
+        if len(request_parameters["$or"]) > 1:
             array_of_biosamples2=[]
             array_of_biosamples=[]
-            for reqpam in request_parameters["$and"]:
+            for reqpam in request_parameters["$or"]:
                 biosample_ids = client.beacon.genomicVariations.find(reqpam, {"caseLevelData.biosampleId": 1, "_id": 0})
                 for biosample in biosample_ids:
                     for bioitem in biosample['caseLevelData']:
@@ -80,7 +81,7 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
             partial_query={}
             partial_query['$or']=[]
             for item in array_of_biosamples2:
-                if dict_counts[item] == len(request_parameters["$and"]):
+                if dict_counts[item] == len(request_parameters["$or"]):
                     partial_query['$or'].append({"id": item})
 
             mongo_collection=client.beacon.biosamples
