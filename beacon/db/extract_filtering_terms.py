@@ -225,6 +225,8 @@ def find_ontology_terms_used(collection_name: str) -> List[Dict]:
                         terms_ids.append(term)
             i += 10000
             print(i)
+            if i > 200000:
+                break
     else:
         xs = client.beacon.get_collection(collection_name).find().skip(0).limit(10000)
         for r in tqdm(xs, total=num_total):
