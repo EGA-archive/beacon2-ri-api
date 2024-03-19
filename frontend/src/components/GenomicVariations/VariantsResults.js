@@ -133,10 +133,12 @@ function VariantsResults (props) {
           }
 
           arrayRequestParameters.push(requestParametersSequence)
+          requestParametersSequence = {}
         })
       }
-
+   
       if (props.rangeModuleArray.length > 0) {
+        console.log(props.rangeModuleArray)
         props.rangeModuleArray.forEach(element => {
           if (element.assemblyId !== '') {
             requestParametersRange['assemblyId'] = element.assemblyId
@@ -176,6 +178,7 @@ function VariantsResults (props) {
               element.clinicalRelevance
           }
           arrayRequestParameters.push(requestParametersRange)
+          requestParametersRange = {}
         })
       }
 
@@ -201,6 +204,7 @@ function VariantsResults (props) {
               element.clinicalRelevance
           }
           arrayRequestParameters.push(requestParametersGene)
+          requestParametersGene = {}
         })
       }
 
@@ -232,26 +236,31 @@ function VariantsResults (props) {
                 queryArray[index] = element.split('%')
                 queryArray[index].push('%')
               }
+              let alphanumHardCodedScope = 'individuals'
+              if (props.query.includes('libraryStrategy=%WES%')){
+                alphanumHardCodedScope = 'runs'
+              }
               let alphaNumFilter = {
                 id: queryArray[index][0],
                 operator: queryArray[index][2],
                 value: queryArray[index][1],
-                scope: 'individuals'
+                scope: alphanumHardCodedScope
               }
-
               props.filteringTerms.data.response.filteringTerms.forEach(
                 element2 => {
-                  if (
-                    queryArray[index][0].toLowerCase() ===
-                      element2.id.toLowerCase() ||
-                    queryArray[index][0].toLowerCase() ===
-                      element2.label.toLowerCase()
-                  ) {
-                    alphaNumFilter = {
-                      id: queryArray[index][0],
-                      operator: queryArray[index][2],
-                      value: queryArray[index][1],
-                      scope: element2.scope[0]
+                  if (element2.label){
+                    if (
+                      queryArray[index][0].toLowerCase() ===
+                        element2.id.toLowerCase() ||
+                      queryArray[index][0].toLowerCase() ===
+                        element2.label.toLowerCase()
+                    ) {
+                      alphaNumFilter = {
+                        id: queryArray[index][0],
+                        operator: queryArray[index][2],
+                        value: queryArray[index][1],
+                        scope: element2.scope[0]
+                      }
                     }
                   }
                 }
@@ -281,11 +290,16 @@ function VariantsResults (props) {
                     }
                   } else {
                     let labelToOntology = ''
+                    console.log( element.toLowerCase().replaceAll(" ",""))
+                 
                     if (element2.label) {
+                      console.log(element2.label.toLowerCase().replaceAll(" ",""))
                       if (
-                        element.toLowerCase() === element2.label.toLowerCase()
+                        element.toLowerCase().replaceAll(" ","") === element2.label.toLowerCase().replaceAll(" ","")
                       ) {
+                        console.log("HOLI")
                         labelToOntology = element2.id
+                      
                         if (element2.scope.length > 1) {
                           ontologyMultipleScope.push({
                             ontology: element2.id,
@@ -638,6 +652,7 @@ function VariantsResults (props) {
                 configData.API_URL + '/g_variants',
                 jsonData2
               )
+              console.log(jsonData2)
 
               console.log(res)
             } else {

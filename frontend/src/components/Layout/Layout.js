@@ -37,8 +37,8 @@ function Layout (props) {
   const [expansionSection, setExpansionSection] = useState(false)
   const [arrayFilteringTermsQE, setArrayFilteringTermsQE] = useState([])
 
-  const [resultSet, setResultset] = useState('ALL')
-  const [resultSetAux, setResultsetAux] = useState('ALL')
+  const [resultSet, setResultset] = useState('HIT')
+  const [resultSetAux, setResultsetAux] = useState('HIT')
 
   const [descendantTerm, setDescendantTerm] = useState('true')
 
@@ -203,7 +203,7 @@ function Layout (props) {
       setExampleQ([
         [
           'libraryStrategy=%WES%, non_coding_transcript_exon_variant',
-          'libraryStrategy=%WES%, SO:0001792'
+          'NCIT:C101295, SO:0001792'
         ],
         ['Capecitabine', 'NCIT:C1794'],
         ['Mucinous Adenocarcinoma of the Colon and Rectum', 'NCIT:C7966'],
@@ -212,7 +212,7 @@ function Layout (props) {
       ])
     } else if (props.collection === 'Variant') {
       setExampleQ([
-        ['libraryStrategy=%WES%, Colon Andenocarcinoma', 'libraryStrategy=%WES%, NCIT:C4349'],
+        ['libraryStrategy=%WES%, Colon Adenocarcinoma', 'NCIT:C101295, NCIT:C4349'],
         ['GENO:GENO_0000458']
       ])
     } else if (props.collection === 'Biosamples') {
@@ -409,7 +409,7 @@ function Layout (props) {
       variantMaxLength: variantMaxLength,
       clinicalRelevance: clinicalRelevance2
     }
-
+    console.log(objectRange)
     rangeModuleArray.push(objectRange)
 
     setAssemblyId2('')
@@ -460,7 +460,7 @@ function Layout (props) {
       variantMaxLength: variantMaxLength2,
       clinicalRelevance: clinicalRelevance3
     }
-
+   
     geneModuleArray.push(objectGene)
 
     setGeneId('')
