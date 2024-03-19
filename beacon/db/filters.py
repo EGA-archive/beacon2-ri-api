@@ -159,28 +159,16 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
         ontology_list=filter.id.split(':')
         if filter.similarity == Similarity.HIGH:
             similarity_high=[]
-            path = "./beacon/similarities/{}{}{}.txt".format(ontology_list[0],ontology_list[1],'high')
-            with open(path, 'r') as f:
-                for line in f:
-                    line = line.replace("\n","")
-                    similarity_high.append(line)
-            final_term_list = similarity_high
+            ontology_dict=client.beacon.similarities.find({"id": filter.id})
+            final_term_list = ontology_dict[0]["similarity_high"]
         elif filter.similarity == Similarity.MEDIUM:
             similarity_medium=[]
-            path = "./beacon/similarities/{}{}{}.txt".format(ontology_list[0],ontology_list[1],'medium')
-            with open(path, 'r') as f:
-                for line in f:
-                    line = line.replace("\n","")
-                    similarity_medium.append(line)
-            final_term_list = similarity_medium
+            ontology_dict=client.beacon.similarities.find({"id": filter.id})
+            final_term_list = ontology_dict[0]["similarity_medium"]
         elif filter.similarity == Similarity.LOW:
             similarity_low=[]
-            path = "./beacon/similarities/{}{}{}.txt".format(ontology_list[0],ontology_list[1],'low')
-            with open(path, 'r') as f:
-                for line in f:
-                    line = line.replace("\n","")
-                    similarity_low.append(line)
-            final_term_list = similarity_low
+            ontology_dict=client.beacon.similarities.find({"id": filter.id})
+            final_term_list = ontology_dict[0]["similarity_low"]
         
         final_term_list.append(filter.id)
         query_filtering={}
@@ -240,15 +228,10 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
         is_filter_id_required = False
         ontology=filter.id.replace("\n","")
         #LOG.debug(ontology)
-        ontology_list=ontology.split(':')
         list_descendant = []
         try:
-            path = "./beacon/descendants/{}{}.txt".format(ontology_list[0],ontology_list[1])
-            #LOG.debug(path)
-            with open(path, 'r') as f:
-                for line in f:
-                    line=line.replace("\n","")
-                    list_descendant.append(line)
+            ontology_dict=client.beacon.similarities.find({"id": ontology})
+            list_descendant = ontology_dict[0]["descendants"]
         except Exception:
             pass
 

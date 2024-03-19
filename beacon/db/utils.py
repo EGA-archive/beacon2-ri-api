@@ -225,8 +225,8 @@ def get_docs_by_response_type(include: str, query: dict, datasets_dict: dict, da
         count=0
         query_count=query
         i=1
+        query_count["$or"]=[]
         for k, v in datasets_dict.items():
-            query_count["$or"]=[]
             if k == dataset:
                 for id in v:
                     if i < len(v):
