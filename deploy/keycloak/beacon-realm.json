@@ -517,15 +517,24 @@
     "alwaysDisplayInConsole" : false,
     "clientAuthenticatorType" : "client-secret",
     "secret" : "b26ca0f9-1137-4bee-b453-ee51eefbe7ba",
-    "redirectUris" : [ "http://beacon:5050/*" ],
-    "webOrigins" : [ ],
+    "redirectUris" : [
+      "http://beacon:5050/*",
+      "https://beacon:5050/*",
+      "http://beacon:5051/*",
+      "https://beacon:5051/*",
+      "http://beacon:3000/*",
+      "https://beacon:3000/*"
+     ],
+    "webOrigins" : [
+      "+"
+    ],
     "notBefore" : 0,
     "bearerOnly" : false,
     "consentRequired" : false,
     "standardFlowEnabled" : true,
     "implicitFlowEnabled" : false,
     "directAccessGrantsEnabled" : true,
-    "serviceAccountsEnabled" : false,
+    "serviceAccountsEnabled" : true,
     "publicClient" : false,
     "frontchannelLogout" : false,
     "protocol" : "openid-connect",
@@ -534,6 +543,7 @@
       "saml.force.post.binding" : "false",
       "saml.multivalued.roles" : "false",
       "saml.encrypt" : "false",
+      "post.logout.redirect.uris": "+",
       "saml.server.signature" : "false",
       "saml.server.signature.keyinfo.ext" : "false",
       "exclude.session.state.from.auth.response" : "false",
@@ -813,7 +823,9 @@
     "clientAuthenticatorType" : "client-secret",
     "secret" : "**********",
     "redirectUris" : [ "/admin/Beacon/console/*" ],
-    "webOrigins" : [ "+" ],
+    "webOrigins" : [
+      "+"
+    ],
     "notBefore" : 0,
     "bearerOnly" : false,
     "consentRequired" : false,

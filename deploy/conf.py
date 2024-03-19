@@ -106,9 +106,10 @@ permissions_url = 'http://beacon-permissions:5051/'
 #
 # or use Elixir AAI (see https://elixir-europe.org/services/compute/aai)
 #
-idp_user_info = 'https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon/protocol/openid-connect/userinfo'
+# idp_user_info = 'https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon/protocol/openid-connect/userinfo'
+idp_user_info = 'https://beaker:9991/auth/realms/Beacon/protocol/openid-connect/userinfo'
 lsaai_user_info = 'https://login.elixir-czech.org/oidc/userinfo'
-trusted_issuers = ['https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon', 'https://login.elixir-czech.org/oidc/']
+trusted_issuers = ['https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon', 'https://login.elixir-czech.org/oidc/', 'http://beaker:5051', 'https://beaker:9991/auth/realms/Beacon' ]
 
 
 #
@@ -120,4 +121,6 @@ autocomplete_ellipsis = '...'
 #
 # Ontologies
 #
-ontologies_folder = "ontologies"
+ontologies_folder = "deploy/ontologies/"
+
+#json_buffer_size = 10000

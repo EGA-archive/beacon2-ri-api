@@ -80,7 +80,7 @@ def main(path=None):
     server.add_routes([web.post('/', permission)]) # type: ignore
 
     cors = aiohttp_cors.setup(server, defaults={
-    "https://beacon-network-test.ega-archive.org": aiohttp_cors.ResourceOptions(
+        "http//beaker:3000": aiohttp_cors.ResourceOptions(
             allow_credentials=True,
             expose_headers="*",
             allow_methods=("POST", "PATCH", "GET", "OPTIONS"),
