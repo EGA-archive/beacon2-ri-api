@@ -41,7 +41,7 @@ def get_biosamples(entry_id: Optional[str], qparams: RequestParams, dataset: str
     match_big={}
     match_big["$match"]=match_list[0]
     LOG.debug(qparams.query.filters)
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.BIOSAMPLES
     #with open("beacon/request/datasets.yml", 'r') as datasets_file:
@@ -61,7 +61,7 @@ def get_biosample_with_id(entry_id: Optional[str], qparams: RequestParams, datas
     collection = 'biosamples'
     mongo_collection = client.beacon.biosamples
     query = apply_request_parameters({}, qparams)
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = query_id(query, entry_id)
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.BIOSAMPLES
@@ -81,7 +81,7 @@ def get_variants_of_biosample(entry_id: Optional[str], qparams: RequestParams, d
     mongo_collection = client.beacon.genomicVariations
     query = {"caseLevelData.biosampleId": entry_id}
     query = apply_request_parameters(query, qparams)
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.GENOMICVARIATIONS
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
@@ -101,7 +101,7 @@ def get_analyses_of_biosample(entry_id: Optional[str], qparams: RequestParams, d
     mongo_collection = client.beacon.analyses
     query = {"biosampleId": entry_id}
     query = apply_request_parameters(query, qparams)
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     LOG.debug(query)
     schema = DefaultSchemas.ANALYSES
@@ -121,7 +121,7 @@ def get_runs_of_biosample(entry_id: Optional[str], qparams: RequestParams, datas
     mongo_collection = client.beacon.runs
     query = {"individualId": entry_id}
     query = apply_request_parameters(query, qparams)
-    query = apply_filters(query, qparams.query.filters, collection)
+    query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.RUNS
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:

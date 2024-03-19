@@ -76,9 +76,10 @@ class RequestQuery(CamelModel):
     filters: List[dict] = []
     include_resultset_responses: IncludeResultsetResponses = IncludeResultsetResponses.HIT
     pagination: Pagination = Pagination()
-    request_parameters: dict = {}
+    request_parameters: Union[list,dict] = {}
     test_mode: bool = False
     requested_granularity: Granularity = Granularity(conf.default_beacon_granularity)
+    scope: str = None
 
 
 class RequestParams(CamelModel):

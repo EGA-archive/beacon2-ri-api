@@ -1,7 +1,7 @@
-from collections import defaultdict
+import collections
 from typing import List, Union
 import re
-import itertools
+import json
 from copy import deepcopy
 
 from beacon.request import ontologies
@@ -15,16 +15,22 @@ LOG = logging.getLogger(__name__)
 
 CURIE_REGEX = r'^([a-zA-Z0-9]*):\/?[a-zA-Z0-9]*$'
 
-def apply_filters(query: dict, filters: List[dict], collection: str) -> dict:
+def apply_filters(query: dict, filters: List[dict], collection: str, query_parameters: dict) -> dict:
+    LOG.debug(query)
     #LOG.debug("Filters len = {}".format(len(filters)))
+    request_parameters = query_parameters
+    LOG.debug(request_parameters)
+    total_query={}
     if len(filters) >= 1:
-        query["$and"] = []
+        total_query["$and"] = []
+        if query != {} and request_parameters == {}:
+            total_query["$and"].append(query)
         for filter in filters:
             partial_query = {}
             if "value" in filter:
                 #LOG.debug(filter)
                 filter = AlphanumericFilter(**filter)
-                #LOG.debug("Alphanumeric filter: %s %s %s", filter.id, filter.operator, filter.value)
+                LOG.debug("Alphanumeric filter: %s %s %s", filter.id, filter.operator, filter.value)
                 partial_query = apply_alphanumeric_filter(partial_query, filter, collection)
             elif "includeDescendantTerms" not in filter and '.' not in filter["id"] and filter["id"].isupper():
                 filter=OntologyFilter(**filter)
@@ -32,72 +38,143 @@ def apply_filters(query: dict, filters: List[dict], collection: str) -> dict:
                 #LOG.debug("Ontology filter: %s", filter.id)
                 #partial_query = {"$text": defaultdict(str) }
                 #partial_query =  { "$text": { "$search": "" } } 
-                #LOG.debug(partial_query)
-                partial_query = apply_ontology_filter(partial_query, filter, collection)
+                partial_query = apply_ontology_filter(partial_query, filter, collection, request_parameters)
             elif "similarity" in filter or "includeDescendantTerms" in filter or re.match(CURIE_REGEX, filter["id"]) and filter["id"].isupper():
                 filter = OntologyFilter(**filter)
-                #LOG.debug("Ontology filter: %s", filter.id)
+                LOG.debug("Ontology filter: %s", filter.id)
                 #partial_query = {"$text": defaultdict(str) }
                 #partial_query =  { "$text": { "$search": "" } } 
                 #LOG.debug(partial_query)
                 partial_query = apply_ontology_filter(partial_query, filter, collection)
             else:
                 filter = CustomFilter(**filter)
-                #LOG.debug("Custom filter: %s", filter.id)
+                LOG.debug("Custom filter: %s", filter.id)
                 partial_query = apply_custom_filter(partial_query, filter, collection)
-            query["$and"].append(partial_query)
-            if query["$and"] == [{'$or': []}]:
-                query = {}
+            #LOG.debug(partial_query)
+            total_query["$and"].append(partial_query)
+            #LOG.debug(query)
+            if total_query["$and"] == [{'$or': []}] or total_query['$and'] == []:
+                total_query = {}
+    elif request_parameters != {}:
+        LOG.debug(request_parameters)
+        if len(request_parameters["$or"]) > 1:
+            array_of_biosamples2=[]
+            array_of_biosamples=[]
+            for reqpam in request_parameters["$or"]:
+                biosample_ids = client.beacon.genomicVariations.find(reqpam, {"caseLevelData.biosampleId": 1, "_id": 0})
+                for biosample in biosample_ids:
+                    for bioitem in biosample['caseLevelData']:
+                        if bioitem not in array_of_biosamples2:
+                            array_of_biosamples2.append(bioitem["biosampleId"])
+                    array_of_biosamples.append(array_of_biosamples2)
+                    array_of_biosamples2=[]
+            
+            dict_counts={}
+            for list_bio in array_of_biosamples:
+                for item in list_bio:
+                    if item not in array_of_biosamples2:
+                        array_of_biosamples2.append(item)
+                    try:
+                        dict_counts[item]+=1
+                    except Exception:
+                        dict_counts[item]=1
+            partial_query={}
+            partial_query['$or']=[]
+            for item in array_of_biosamples2:
+                if dict_counts[item] == len(request_parameters["$or"]):
+                    partial_query['$or'].append({"id": item})
+
+            mongo_collection=client.beacon.biosamples
+            original_id="individualId"
+            join_ids2=list(join_query(mongo_collection, partial_query, original_id))
+            def_list=[]
+            final_id="id"
+            for id_item in join_ids2:
+                new_id={}
+                new_id[final_id] = id_item.pop(original_id)
+                def_list.append(new_id)
+            partial_query={}
+            partial_query['$or']=def_list
+            total_query["$and"]=[]
+            total_query["$and"].append(partial_query)
+                    
 
 
-    return query
+
+        elif len(request_parameters["$and"]) <= 1:
+            partial_query = {}
+            LOG.debug(request_parameters)
+            biosample_ids = client.beacon.genomicVariations.find(request_parameters, {"caseLevelData.biosampleId": 1, "_id": 0})
+            LOG.debug(biosample_ids)
+            final_id='id'
+            original_id="biosampleId"
+            def_list=[]
+            partial_query['$or']=[]
+            for iditem in biosample_ids:
+                for id_item in iditem['caseLevelData']:
+                    if isinstance(id_item, dict):
+                        new_id={}
+                        new_id[final_id] = id_item[original_id]
+                        try:
+                            partial_query['$or'].append(new_id)
+                        except Exception:
+                            def_list.append(new_id)
+            LOG.debug(partial_query)
+            
+            mongo_collection=client.beacon.biosamples
+            original_id="individualId"
+            join_ids2=list(join_query(mongo_collection, partial_query, original_id))
+            def_list=[]
+            final_id="id"
+            for id_item in join_ids2:
+                new_id={}
+                new_id[final_id] = id_item.pop(original_id)
+                def_list.append(new_id)
+            partial_query={}
+            partial_query['$or']=def_list
+            if def_list != []:
+                try:
+                    partial_query['$or'].def_list
+                except Exception:
+                    partial_query={}
+                    partial_query['$or']=def_list
+            total_query["$and"]=[]
+            total_query["$and"].append(partial_query)
+            #LOG.debug(query)
+            if total_query["$and"] == [{'$or': []}] or total_query['$and'] == []:
+                total_query = {}
+    else:
+        total_query=query
+
+    LOG.debug(total_query)
+    return total_query
 
 
-def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) -> dict:
-    
+def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, request_parameters: dict) -> dict:
+    scope = filter.scope
     is_filter_id_required = True
-
     # Search similar
     if filter.similarity != Similarity.EXACT:
-        cutoff = 1
         is_filter_id_required = False
         ontology_list=filter.id.split(':')
         if filter.similarity == Similarity.HIGH:
             similarity_high=[]
-            path = "./beacon/similarities/{}{}{}.txt".format(ontology_list[0],ontology_list[1],'high')
-            with open(path, 'r') as f:
-                for line in f:
-                    line = line.replace("\n","")
-                    similarity_high.append(line)
-            final_term_list = similarity_high
+            ontology_dict=client.beacon.similarities.find({"id": filter.id})
+            final_term_list = ontology_dict[0]["similarity_high"]
         elif filter.similarity == Similarity.MEDIUM:
             similarity_medium=[]
-            path = "./beacon/similarities/{}{}{}.txt".format(ontology_list[0],ontology_list[1],'medium')
-            with open(path, 'r') as f:
-                for line in f:
-                    line = line.replace("\n","")
-                    similarity_medium.append(line)
-            final_term_list = similarity_medium
+            ontology_dict=client.beacon.similarities.find({"id": filter.id})
+            final_term_list = ontology_dict[0]["similarity_medium"]
         elif filter.similarity == Similarity.LOW:
             similarity_low=[]
-            path = "./beacon/similarities/{}{}{}.txt".format(ontology_list[0],ontology_list[1],'low')
-            with open(path, 'r') as f:
-                for line in f:
-                    line = line.replace("\n","")
-                    similarity_low.append(line)
-            final_term_list = similarity_low
+            ontology_dict=client.beacon.similarities.find({"id": filter.id})
+            final_term_list = ontology_dict[0]["similarity_low"]
         
         final_term_list.append(filter.id)
         query_filtering={}
         query_filtering['$and']=[]
-        '''
-        dict_scope={}
-        if collection == 'g_variants':
-            dict_scope['scope']='genomicVariations'
-        else:
-            dict_scope['scope']=collection
+        dict_scope['scope']=scope
         query_filtering['$and'].append(dict_scope)
-        '''
         dict_id={}
         dict_id['id']=filter.id
         query_filtering['$and'].append(dict_id)
@@ -109,10 +186,8 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
         )
             
         for doc_term in docs:
-            scope = doc_term['scope']
+            LOG.debug(doc_term)
             label = doc_term['label']
-        #LOG.debug(scope)
-        #LOG.debug(collection)
         if scope == 'genomicVariations' and collection == 'g_variants' or scope == collection:
             query_filtering={}
             query_filtering['$and']=[]
@@ -141,6 +216,7 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
                 query_id={}
                 query_id[query_term]=simil
                 query['$or'].append(query_id)
+            LOG.debug(query)
         else:
             pass
         
@@ -152,17 +228,13 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
         is_filter_id_required = False
         ontology=filter.id.replace("\n","")
         #LOG.debug(ontology)
-        ontology_list=ontology.split(':')
         list_descendant = []
         try:
-            path = "./beacon/descendants/{}{}.txt".format(ontology_list[0],ontology_list[1])
-            #LOG.debug(path)
-            with open(path, 'r') as f:
-                for line in f:
-                    line=line.replace("\n","")
-                    list_descendant.append(line)
+            ontology_dict=client.beacon.similarities.find({"id": ontology})
+            list_descendant = ontology_dict[0]["descendants"]
         except Exception:
             pass
+
         try: 
             if query['$or']:
                 pass
@@ -173,28 +245,24 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
         list_descendant.append(filter.id)
         query_filtering={}
         query_filtering['$and']=[]
-        '''
         dict_scope={}
-        if collection == 'g_variants':
-            dict_scope['scope']='genomicVariations'
-        else:
-            dict_scope['scope']=collection
-        query_filtering['$and'].append(dict_scope)
-        '''
+
+        dict_scope['scope']=scope
         dict_id={}
         dict_id['id']=filter.id
         query_filtering['$and'].append(dict_id)
+        query_filtering['$and'].append(dict_scope)
+        LOG.debug(query_filtering)
         docs = get_documents(
             client.beacon.filtering_terms,
             query_filtering,
             0,
             1
         )
-            
+
         for doc_term in docs:
-            scope = doc_term['scope']
+            LOG.debug(doc_term)
             label = doc_term['label']
-        
         query_filtering={}
         query_filtering['$and']=[]
         dict_regex={}
@@ -204,7 +272,10 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
             dict_regex['$regex']=''
         dict_id={}
         dict_id['id']=dict_regex
+        dict_scope={}
+        dict_scope['scope']=scope
         query_filtering['$and'].append(dict_id)
+        query_filtering['$and'].append(dict_scope)
         docs_2 = get_documents(
             client.beacon.filtering_terms,
             query_filtering,
@@ -223,8 +294,47 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
             query_id[query_term]=simil
             query['$or'].append(query_id)
         
+        LOG.debug(query)
+
         if scope == 'genomicVariations' and collection == 'g_variants' or scope == collection:
-            pass
+            LOG.debug(query)
+            LOG.debug(request_parameters)
+            subquery={}
+            subquery["$or"]=[]
+            if request_parameters != {}:
+                biosample_ids = client.beacon.genomicVariations.find(request_parameters, {"caseLevelData.biosampleId": 1, "_id": 0})
+                final_id='id'
+                original_id="biosampleId"
+                def_list=[]
+                for iditem in biosample_ids:
+                    for id_item in iditem['caseLevelData']:
+                        if isinstance(id_item, dict):
+                            new_id={}
+                            new_id[final_id] = id_item[original_id]
+                            try:
+                                subquery['$or'].append(new_id)
+                            except Exception:
+                                def_list.append(new_id)
+                
+                LOG.debug(subquery)
+                mongo_collection=client.beacon.biosamples
+                original_id="individualId"
+                join_ids2=list(join_query(mongo_collection, subquery, original_id))
+                def_list=[]
+                final_id="id"
+                for id_item in join_ids2:
+                    new_id={}
+                    new_id[final_id] = id_item.pop(original_id)
+                    def_list.append(new_id)
+                subquery={}
+                subquery['$or']=def_list
+                try:
+                    LOG.debug(query)
+                    query["$and"] = []
+                    query["$and"].append(subquery)
+                except Exception:
+                    LOG.debug(query)
+            LOG.debug(query)
         else:
             def_list=[]
             if scope == 'individuals' and collection == 'g_variants':
@@ -249,20 +359,84 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
                     def_list.append(new_id)
                 query={}
                 query['$or']=def_list
-
-            
-            
-
-
+            elif scope == 'genomicVariations' and collection == 'individuals':
+                biosample_ids = client.beacon.genomicVariations.find(query, {"caseLevelData.biosampleId": 1, "_id": 0})
+                final_id='id'
+                original_id="biosampleId"
+                def_list=[]
+                for iditem in biosample_ids:
+                    for id_item in iditem['caseLevelData']:
+                        if isinstance(id_item, dict):
+                            new_id={}
+                            new_id[final_id] = id_item[original_id]
+                            try:
+                                #LOG.debug(new_id)
+                                query['$or'].append(new_id)
+                            except Exception:
+                                def_list.append(new_id)
+                if def_list != []:
+                    try:
+                        query['$or'].def_list
+                    except Exception:
+                        query={}
+                        query['$or']=def_list
+                mongo_collection=client.beacon.biosamples
+                original_id="individualId"
+                join_ids2=list(join_query(mongo_collection, query, original_id))
+                def_list=[]
+                final_id="id"
+                for id_item in join_ids2:
+                    new_id={}
+                    new_id[final_id] = id_item.pop(original_id)
+                    def_list.append(new_id)
+                query={}
+                query['$or']=def_list
+                if def_list != []:
+                    try:
+                        query['$or'].def_list
+                    except Exception:
+                        query={}
+                        query['$or']=def_list
+            elif scope == 'runs' and collection == 'g_variants':
+                mongo_collection=client.beacon.runs
+                original_id="biosampleId"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="caseLevelData.biosampleId"
+                for id_item in join_ids:
+                    new_id={}
+                    new_id[final_id] = id_item.pop(original_id)
+                    def_list.append(new_id)
+                query={}
+                query['$or']=def_list
+            elif scope == 'runs' and collection == 'individuals':
+                LOG.debug(query)
+                mongo_collection=client.beacon.runs
+                original_id="individualId"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="id"
+                for id_item in join_ids:
+                    new_id={}
+                    new_id[final_id] = id_item.pop(original_id)
+                    def_list.append(new_id)
+                query={}
+                query['$or']=def_list
+            elif scope == 'individuals' and collection == 'runs':
+                mongo_collection=client.beacon.individuals
+                original_id="id"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="individualId"
+                for id_item in join_ids:
+                    new_id={}
+                    new_id[final_id] = id_item.pop(original_id)
+                    def_list.append(new_id)
+                query={}
+                query['$or']=def_list
             
     if is_filter_id_required:
         query_filtering={}
         query_filtering['$and']=[]
         dict_scope={}
-        if collection == 'g_variants':
-            dict_scope['scope']='genomicVariations'
-        else:
-            dict_scope['scope']=collection
+        dict_scope['scope']=scope
         query_filtering['$and'].append(dict_scope)
         dict_id={}
         dict_id['id']=filter.id
@@ -275,7 +449,7 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
     )
         
         for doc_term in docs:
-            scope = doc_term['scope']
+            LOG.debug(doc_term)
             label = doc_term['label']
         query_filtering={}
         query_filtering['$and']=[]
@@ -296,7 +470,7 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str) 
         query_terms = query_terms.split(':')
         query_term = query_terms[0] + '.id'
         query[query_term]=filter.id
-
+        LOG.debug(query)
    
 
     #LOG.debug("QUERY: %s", query)
@@ -332,11 +506,12 @@ def format_operator(operator: Operator) -> str:
 
 def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collection: str) -> dict:
     #LOG.debug(filter.value)
+    scope = filter.scope
     formatted_value = format_value(filter.value)
     formatted_operator = format_operator(filter.operator)
     #LOG.debug(collection)
     #LOG.debug(filter.id)
-    if collection == 'g_variants':
+    if collection == 'g_variants' and scope != 'individuals' and scope != 'runs':
         if filter.id == "identifiers.genomicHGVSId":
             list_chromosomes = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22']
             dict_regex={}
@@ -356,6 +531,11 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                 dict_regex['$options']= "si"
             query[filter.id] = dict_regex
         elif filter.id == 'molecularAttributes.aminoacidChanges':
+            query[filter.id] = filter.value
+        elif filter.id == 'molecularAttributes.geneIds':
+            LOG.debug('holaaaa')
+            query[filter.id] = filter.value
+        elif filter.id == "caseLevelData.clinicalInterpretations.clinicalRelevance":
             query[filter.id] = filter.value
         elif filter.id == "variantInternalId":
             if 'max' in filter.value:
@@ -411,10 +591,14 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                 value_splitted=filter.value.split('%')
                 regex_dict={}
                 regex_dict['$regex']=value_splitted[1]
-                query_term = filter.id + '.' + 'label'
+                if filter.id == 'libraryStrategy':
+                    query_term = filter.id
+                else:
+                    query_term = filter.id + '.' + 'label'
                 query_id={}
                 query_id[query_term]=regex_dict
                 query['$or'].append(query_id)
+                
 
             else:
                 try: 
@@ -428,7 +612,34 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                 query_id={}
                 query_id[query_term]=filter.value
                 query['$or'].append(query_id) 
-                    
+            LOG.debug(collection)
+            LOG.debug(scope)
+            if scope == 'runs' and collection == 'individuals':
+                #LOG.debug(query)
+                mongo_collection=client.beacon.runs
+                original_id="individualId"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="id"
+                def_list=[]
+                for id_item in join_ids:
+                    new_id={}
+                    new_id[final_id] = id_item.pop(original_id)
+                    def_list.append(new_id)
+                query={}
+                query['$or']=def_list
+            elif scope == 'runs' and collection == 'g_variants':
+                LOG.debug(query)
+                mongo_collection=client.beacon.runs
+                original_id="biosampleId"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="caseLevelData.biosampleId"
+                def_list=[]
+                for id_item in join_ids:
+                    new_id={}
+                    new_id[final_id] = id_item.pop(original_id)
+                    def_list.append(new_id)
+                query={}
+                query['$or']=def_list
         elif formatted_operator == "$ne":
             if '%' in filter.value:
                 try: 
@@ -471,6 +682,7 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
         dict_measures['measures']=dict_elemmatch
         query = dict_measures
         def_list=[]
+        LOG.debug(collection)
         if collection == 'g_variants':
             mongo_collection=client.beacon.individuals
             original_id="id"
@@ -493,6 +705,7 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                 def_list.append(new_id)
             query={}
             query['$or']=def_list
+            LOG.debug(query)
 
     #LOG.debug("QUERY: %s", query)
     return query

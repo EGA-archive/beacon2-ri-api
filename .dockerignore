@@ -7,3 +7,4 @@ tests
 node_modules
 frontend/node_modules
 frontend2/node_modules
+deploy/cancer_dataset

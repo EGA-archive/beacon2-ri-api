@@ -4,6 +4,7 @@ from beacon import conf
 from beacon.db.schemas import DefaultSchemas
 from beacon.request import RequestParams
 from beacon.request.model import Granularity
+from beacon.db.datasets import beacon_handovers, beacon_handovers_by_dataset
 
 import logging
 
@@ -89,7 +90,7 @@ def build_response_by_dataset(data, dict_counts, qparams, func):
                 'resultsCount': dict_counts[k],
                 'results': v,
                 # 'info': None,
-                'resultsHandover': None,  # build_results_handover
+                'resultsHandover': beacon_handovers_by_dataset(k),  # build_results_handover
             }
             
             list_of_responses.append(response)
@@ -111,7 +112,7 @@ def build_response(data, num_total_results, qparams, func):
             'resultsCount': num_total_results,
             'results': data,
             # 'info': None,
-            'resultsHandover': None,  # build_results_handover
+            'resultsHandover': beacon_handovers(),  # build_results_handover
         }
     elif limit != 0 and limit < num_total_results:
         response = {
@@ -121,7 +122,7 @@ def build_response(data, num_total_results, qparams, func):
             'resultsCount': limit,
             'results': data,
             # 'info': None,
-            'resultsHandover': None,  # build_results_handover
+            'resultsHandover': beacon_handovers(),  # build_results_handover
         }
     else:
         response = {
@@ -131,7 +132,7 @@ def build_response(data, num_total_results, qparams, func):
             'resultsCount': num_total_results,
             'results': data,
             # 'info': None,
-            'resultsHandover': None,  # build_results_handover
+            'resultsHandover': beacon_handovers(),  # build_results_handover
         }
 
     return response
@@ -156,7 +157,7 @@ def build_beacon_resultset_response(data,
         'response': {
             'resultSets': [build_response(data, num_total_results, qparams, func_response_type)]
         },
-        'beaconHandovers': conf.beacon_handovers,
+        'beaconHandovers': beacon_handovers(),
     }
     return beacon_response
 
@@ -177,7 +178,7 @@ def build_beacon_resultset_response_by_dataset(data,
         'response': {
             'resultSets': build_response_by_dataset(data, dict_counts, qparams, func_response_type)
         },
-        'beaconHandovers': conf.beacon_handovers,
+        'beaconHandovers': beacon_handovers(),
     }
     #LOG.debug(beacon_response)
     return beacon_response
@@ -199,7 +200,7 @@ def build_beacon_count_response(data,
         'meta': build_meta(qparams, entity_schema, Granularity.COUNT),
         'responseSummary': build_response_summary(num_total_results > 0, qparams, num_total_results),
         # TODO: 'extendedInfo': build_extended_info(),
-        'beaconHandovers': conf.beacon_handovers,
+        'beaconHandovers': beacon_handovers(),
     }
     return beacon_response
 
@@ -220,7 +221,7 @@ def build_beacon_boolean_response(data,
         'meta': build_meta(qparams, entity_schema, Granularity.BOOLEAN),
         'responseSummary': build_response_summary(num_total_results > 0, qparams, None),
         # TODO: 'extendedInfo': build_extended_info(),
-        'beaconHandovers': conf.beacon_handovers,
+        'beaconHandovers': beacon_handovers(),
     }
     return beacon_response
 
@@ -233,7 +234,7 @@ def build_beacon_collection_response(data, num_total_results, qparams: RequestPa
         'meta': build_meta(qparams, entity_schema, Granularity.RECORD),
         'responseSummary': build_response_summary(num_total_results > 0, qparams, num_total_results),
         # TODO: 'info': build_extended_info(),
-        'beaconHandovers': conf.beacon_handovers,
+        'beaconHandovers': beacon_handovers(),
         'response': {
             'collections': func_response_type(data, qparams)
         }
@@ -324,7 +325,7 @@ def build_filtering_terms_response(data,
         'response': {
             'filteringTerms': data,
         },
-        'beaconHandovers': conf.beacon_handovers,
+        'beaconHandovers': beacon_handovers(),
     }
     return beacon_response
 

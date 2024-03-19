@@ -273,7 +273,7 @@ def get_filtering_object(terms_ids: list, collection_name: str):
                                         'label': ontology_label,
                                         # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
                                         #'count': get_ontology_term_count(collection_name, onto),
-                                        'scope': collection_name                    
+                                        'scope': [collection_name]                 
                                     })
 
                         terms.append({
@@ -281,14 +281,14 @@ def get_filtering_object(terms_ids: list, collection_name: str):
                                                 'id': field,
                                                 # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
                                                 #'count': get_ontology_term_count(collection_name, onto),
-                                                'scope': collection_name
+                                                'scope': [collection_name]     
                                             })
                         terms.append({
                                         'type': 'custom',
                                         'id': '{}:{}'.format(field,label),
                                         # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
                                         #'count': get_ontology_term_count(collection_name, onto),
-                                        'scope': collection_name                    
+                                        'scope': [collection_name]                        
                                     })
                     if label == 'Weight':
                         terms.append({
@@ -297,7 +297,7 @@ def get_filtering_object(terms_ids: list, collection_name: str):
                                                 'label': ontology_label,
                                                 # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
                                                 #'count': get_ontology_term_count(collection_name, onto),
-                                                'scope': collection_name
+                                                'scope': [collection_name]     
                                             })
                     if label == 'BMI':
                         terms.append({
@@ -306,7 +306,7 @@ def get_filtering_object(terms_ids: list, collection_name: str):
                                                 'label': ontology_label,
                                                 # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
                                                 #'count': get_ontology_term_count(collection_name, onto),
-                                                'scope': collection_name
+                                                'scope': [collection_name]     
                                             })
                     if label == 'Height-standing':
                         terms.append({
@@ -315,7 +315,7 @@ def get_filtering_object(terms_ids: list, collection_name: str):
                                                 'label': ontology_label,
                                                 # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
                                                 #'count': get_ontology_term_count(collection_name, onto),
-                                                'scope': collection_name
+                                                'scope': [collection_name]     
                                             })
 
                 print(terms)
@@ -328,6 +328,7 @@ def get_filtering_object(terms_ids: list, collection_name: str):
         for item in list_of_ontologies:
             f.write(item+"\n")
     f.close()
+    '''
     seen = set()
     new_l = []
     for d in terms:
@@ -335,8 +336,9 @@ def get_filtering_object(terms_ids: list, collection_name: str):
         if t not in seen:
             seen.add(t)
             new_l.append(d)
+    '''
 
-    return new_l
+    return terms
 
 
 def get_alphanumeric_term_count(collection_name: str, key: str) -> int:
@@ -373,6 +375,46 @@ def get_properties_of_document(document, prefix="") -> List[str]:
         exit(0)
     return properties
 
+def merge_terms():
+    filtering_terms = client.beacon.filtering_terms.find({"type": "ontology"})
+    array_of_ids=[]
+    repeated_ids=[]
+    new_terms=[]
+    for filtering_term in filtering_terms:
+        new_id=filtering_term["id"]
+        if new_id not in array_of_ids:
+            array_of_ids.append(new_id)
+        else:
+            repeated_ids.append(new_id)
+    print("repeated_ids are {}".format(repeated_ids))
+    for repeated_id in repeated_ids:
+        repeated_terms = client.beacon.filtering_terms.find({"id": repeated_id, "type": "ontology"})
+        array_of_scopes=[]
+        for repeated_term in repeated_terms:
+            print(repeated_term)
+            id=repeated_term["id"]
+            label=repeated_term["label"]
+            if repeated_term['scope'][0] not in array_of_scopes:
+                array_of_scopes.append(repeated_term['scope'][0])
+        print("array_of_scopes are {}".format(array_of_scopes))
+        new_terms.append({
+            'type': 'ontology',
+            'id': id,
+            'label': label,
+            # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
+            #'count': get_ontology_term_count(collection_name, onto),
+            'scope': array_of_scopes        
+                    })
+        client.beacon.filtering_terms.delete_many({"id": repeated_id})
+    client.beacon.filtering_terms.insert_many(new_terms)
+        
+    
+    
+    
+
+
+
 
 
 insert_all_ontology_terms_used()
+merge_terms()
