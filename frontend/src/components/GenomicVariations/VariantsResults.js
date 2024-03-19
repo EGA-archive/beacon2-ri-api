@@ -40,11 +40,15 @@ function VariantsResults (props) {
   const [isActive2, setIsActive2] = useState(false)
   const [isActive3, setIsActive3] = useState(false)
 
-  const [ontologyMultipleScope, setOntologyMultipleScope] = useState('')
+  const [ontologyMultipleScope, setOntologyMultipleScope] = useState([])
+  const [ontologyMultipleScopeFinal, setOntologyMultipleScopeFinal] = useState(
+    []
+  )
   const [optionsScope, setOptionsScope] = useState([])
-  const [chosenScope, setChosenScope]= useState('')
+  const [chosenScope, setChosenScope] = useState('')
 
-  const handleChangeScope = (event) =>{
+  const [triggerSubmit, settriggerSubmit] = useState(false)
+  const handleChangeScope = event => {
     console.log(event.target.value)
     setChosenScope(event.target.value)
   }
@@ -75,6 +79,15 @@ function VariantsResults (props) {
     setIsActive3(true)
     setIsActive1(false)
     setIsActive2(false)
+  }
+
+  const submitScopeChosen = e => {
+    console.log(ontologyMultipleScope)
+    let ontologyMultipleScope2 = ontologyMultipleScope.shift()
+    console.log(ontologyMultipleScope2)
+    ontologyMultipleScope2['scopes'] = chosenScope
+
+    setOntologyMultipleScopeFinal([ontologyMultipleScope2])
   }
 
   const auth = useAuth()
@@ -245,34 +258,60 @@ function VariantsResults (props) {
               )
               arrayFilter.push(alphaNumFilter)
             } else {
-              let filter2 = {}
-
+              let filter = {}
               props.filteringTerms.data.response.filteringTerms.forEach(
                 element2 => {
-                  console.log(element2)
-                  if (element2.label !== undefined) {
-                    if (
-                      element.toLowerCase() === element2.label.toLowerCase()
-                    ) {
-                      filter2 = {
-                        id: element2.id,
-                        // includeDescendantTerms: props.descendantTerm,
-                        scope: element2.scope[0]
-                      }
-                    }
-                  }
                   console.log(element)
                   if (element.toLowerCase() === element2.id.toLowerCase()) {
-                    filter2 = {
-                      id: element2.id,
-                      // includeDescendantTerms: props.descendantTerm,
-                      scope: element2.scope[0]
+                    if (element2.scope.length > 1) {
+                      ontologyMultipleScope.push({
+                        ontology: element2.id,
+                        scopes: element2.scope
+                      })
+                      console.log(ontologyMultipleScope)
+                      setOptionsScope(element2.scope)
+
+                      if (chosenScope === '') {
+                        filter = { id: element2.id, scope: '' }
+                      }
+                    } else {
+                      if (chosenScope === '') {
+                        filter = { id: element2.id, scope: element2.scope[0] }
+                      }
+                    }
+                  } else {
+                    let labelToOntology = ''
+                    if (element2.label) {
+                      if (
+                        element.toLowerCase() === element2.label.toLowerCase()
+                      ) {
+                        labelToOntology = element2.id
+                        if (element2.scope.length > 1) {
+                          ontologyMultipleScope.push({
+                            ontology: element2.id,
+                            scopes: element2.scope
+                          })
+                          console.log(ontologyMultipleScope)
+                          setOptionsScope(element2.scope)
+
+                          if (chosenScope === '') {
+                            filter = { id: element2.id, scope: '' }
+                          }
+                        } else {
+                          filter = {
+                            id: labelToOntology,
+                            scope: element2.scope[0]
+                          }
+                        }
+                      }
                     }
                   }
                 }
               )
 
-              arrayFilter.push(filter2)
+              if (Object.keys(filter).length !== 0) {
+                arrayFilter.push(filter)
+              }
             }
           })
         } else {
@@ -332,313 +371,344 @@ function VariantsResults (props) {
               element => {
                 if (props.query === element.id) {
                   if (element.scope.length > 1) {
-                    setOntologyMultipleScope(element.id)
+                    ontologyMultipleScope.push({
+                      ontology: element.id,
+                      scopes: element.scope
+                    })
+                    console.log(ontologyMultipleScope)
                     setOptionsScope(element.scope)
+
+                    if (chosenScope === '') {
+                      filter = { id: props.query, scope: '' }
+                    }
+                  } else {
+                    filter = { id: props.query, scope: element.scope[0] }
                   }
-
-                  filter = { id: props.query, scope: 'individuals' }
-                }
-              }
-            )
-
-            let labelToOntology = 0
-
-            let queryTermLowerCase = props.query.toLowerCase()
-
-            props.filteringTerms.data.response.filteringTerms.forEach(
-              element => {
-                if (element.label) {
-                  element.label = element.label.toLowerCase()
-                }
-                if (queryTermLowerCase === element.label) {
-                  labelToOntology = element.id
-                  filter = {
-                    id: labelToOntology,
-                    scope: element.scope[0]
+                } else {
+                  let labelToOntology = ''
+                  if (element.label) {
+                    if (
+                      props.query.toLowerCase() === element.label.toLowerCase()
+                    ) {
+                      labelToOntology = element.id
+                      filter = {
+                        id: labelToOntology,
+                        scope: element.scope[0]
+                      }
+                    }
                   }
                 }
               }
             )
-            arrayFilter.push(filter)
+
+            if (Object.keys(filter).length !== 0) {
+              arrayFilter.push(filter)
+            }
           }
         }
       }
 
       try {
         let res = await axios.get(configData.API_URL + '/info')
+        console.log(ontologyMultipleScopeFinal)
+        if (ontologyMultipleScopeFinal.length > 0) {
+          console.log(ontologyMultipleScopeFinal)
 
-        beaconsList.push(res.data.response)
-
-        if (props.query === null) {
-          // show all individuals
-          var jsonData1 = {}
-
-          if (arrayRequestParameters.length > 0) {
-            if (arrayRequestParameters.length === 1) {
-              jsonData1 = {
-                meta: {
-                  apiVersion: '2.0'
-                },
-                query: {
-                  requestParameters: arrayRequestParameters[0],
-                  filters: arrayFilter,
-                  includeResultsetResponses: `${props.resultSets}`,
-                  pagination: {
-                    skip: skip,
-                    limit: limit
-                  },
-                  testMode: false,
-                  requestedGranularity: 'record'
-                }
-              }
-            } else {
-              jsonData1 = {
-                meta: {
-                  apiVersion: '2.0'
-                },
-                query: {
-                  requestParameters: arrayRequestParameters,
-                  filters: arrayFilter,
-                  includeResultsetResponses: `${props.resultSets}`,
-                  pagination: {
-                    skip: skip,
-                    limit: limit
-                  },
-                  testMode: false,
-                  requestedGranularity: 'record'
-                }
-              }
-            }
-          } else {
-            jsonData1 = {
-              meta: {
-                apiVersion: '2.0'
-              },
-              query: {
-                filters: arrayFilter,
-                includeResultsetResponses: `${props.resultSets}`,
-                pagination: {
-                  skip: 0,
-                  limit: 0
-                },
-                testMode: false,
-                requestedGranularity: 'record'
-              }
-            }
-          }
-
-          jsonData1 = JSON.stringify(jsonData1)
-          console.log(jsonData1)
-          let token = null
-          if (auth.userData === null) {
-            token = getStoredToken()
-          } else {
-            token = auth.userData.access_token
-          }
-
-          if (token === null) {
-            res = await axios.post(
-              configData.API_URL + '/g_variants',
-              jsonData1
-            )
-            console.log(jsonData1)
-            console.log(res)
-          } else {
-            const headers = { Authorization: `Bearer ${token}` }
-
-            res = await axios.post(
-              configData.API_URL + '/g_variants',
-              jsonData1,
-              { headers: headers }
-            )
-          }
-          setTimeOut(true)
-
-          if (
-            (res.data.responseSummary.numTotalResults < 1 ||
-              res.data.responseSummary.numTotalResults === undefined) &&
-            props.resultSets !== 'MISS'
-          ) {
-            setError('No results. Please try another query')
-            setNumberResults(0)
-            setBoolean(false)
-          } else {
-            res.data.response.resultSets.forEach((element, index) => {
-              if (element.id && element.id !== '') {
-                if (resultsPerDataset.length > 0) {
-                  resultsPerDataset.forEach(element2 => {
-                    element2[0].push(element.id)
-                    element2[1].push(element.exists)
-                    element2[2].push(element.resultsCount)
-                  })
-                } else {
-                  let arrayResultsPerDataset = [
-                    //element.beaconId,
-                    [element.id],
-                    [element.exists],
-                    [element.resultsCount]
-                  ]
-                  resultsPerDataset.push(arrayResultsPerDataset)
-                }
-              }
-
-              if (element.id === undefined || element.id === '') {
-                let arrayResultsNoDatasets = [element.beaconId]
-                resultsNotPerDataset.push(arrayResultsNoDatasets)
-              }
-
-              if (res.data.response.resultSets[index].results) {
-                res.data.response.resultSets[index].results.forEach(
-                  (element2, index2) => {
-                    let arrayResult = [
-                      res.data.meta.beaconId,
-                      res.data.response.resultSets[index].results[index2]
-                    ]
-                    results.push(arrayResult)
-                  }
-                )
+          ontologyMultipleScopeFinal.forEach(element => {
+            arrayFilter.forEach(element2 => {
+              console.log('')
+              if (element2.id === element.ontology) {
+                element2.scope = element.scopes
               }
             })
+          })
+          console.log(arrayFilter)
+        }
+     
+        let postPoneQuery = false
+        console.log(arrayFilter)
+        arrayFilter.forEach(element => {
+          if (element.scope === '') {
+            postPoneQuery = true
+            setTimeOut(true)
           }
-        } else {
-          var jsonData2 = {}
+        })
 
-          if (arrayRequestParameters.length > 0) {
-            if (arrayRequestParameters.length === 1) {
-              jsonData2 = {
-                meta: {
-                  apiVersion: '2.0'
-                },
-                query: {
-                  requestParameters: arrayRequestParameters[0],
-                  filters: arrayFilter,
-                  includeResultsetResponses: `${props.resultSets}`,
-                  pagination: {
-                    skip: skip,
-                    limit: limit
+        if (postPoneQuery === false) {
+          beaconsList.push(res.data.response)
+          if (props.query === null) {
+            // show all individuals
+            var jsonData1 = {}
+
+            if (arrayRequestParameters.length > 0) {
+              if (arrayRequestParameters.length === 1) {
+                jsonData1 = {
+                  meta: {
+                    apiVersion: '2.0'
                   },
-                  testMode: false,
-                  requestedGranularity: 'record'
+                  query: {
+                    requestParameters: arrayRequestParameters[0],
+                    filters: arrayFilter,
+                    includeResultsetResponses: `${props.resultSets}`,
+                    pagination: {
+                      skip: skip,
+                      limit: limit
+                    },
+                    testMode: false,
+                    requestedGranularity: 'record'
+                  }
+                }
+              } else {
+                jsonData1 = {
+                  meta: {
+                    apiVersion: '2.0'
+                  },
+                  query: {
+                    requestParameters: arrayRequestParameters,
+                    filters: arrayFilter,
+                    includeResultsetResponses: `${props.resultSets}`,
+                    pagination: {
+                      skip: skip,
+                      limit: limit
+                    },
+                    testMode: false,
+                    requestedGranularity: 'record'
+                  }
                 }
               }
             } else {
-              jsonData2 = {
+              jsonData1 = {
                 meta: {
                   apiVersion: '2.0'
                 },
                 query: {
-                  requestParameters: arrayRequestParameters,
                   filters: arrayFilter,
                   includeResultsetResponses: `${props.resultSets}`,
                   pagination: {
-                    skip: skip,
-                    limit: limit
+                    skip: 0,
+                    limit: 0
                   },
                   testMode: false,
                   requestedGranularity: 'record'
                 }
               }
             }
-          } else {
-            jsonData2 = {
-              meta: {
-                apiVersion: '2.0'
-              },
-              query: {
-                filters: arrayFilter,
-                includeResultsetResponses: `${props.resultSets}`,
-                pagination: {
-                  skip: 0,
-                  limit: 0
-                },
-                testMode: false,
-                requestedGranularity: 'record'
-              }
+
+            jsonData1 = JSON.stringify(jsonData1)
+            console.log(jsonData1)
+            let token = null
+            if (auth.userData === null) {
+              token = getStoredToken()
+            } else {
+              token = auth.userData.access_token
             }
-          }
-          jsonData2 = JSON.stringify(jsonData2)
 
-          let token = null
-          if (auth.userData === null) {
-            token = getStoredToken()
-          } else {
-            token = auth.userData.access_token
-          }
-          console.log(jsonData2)
-          if (token === null) {
-            console.log('Querying without token')
-            res = await axios.post(
-              configData.API_URL + '/g_variants',
-              jsonData2
-            )
-            console.log(jsonData2)
-            console.log(res)
-          } else {
-            console.log('Querying WITH token')
-            const headers = { Authorization: `Bearer ${token}` }
-            res = await axios.post(
-              configData.API_URL + '/g_variants',
-              jsonData2,
-              { headers: headers }
-            )
-          }
+            if (token === null) {
+              res = await axios.post(
+                configData.API_URL + '/g_variants',
+                jsonData1
+              )
+              console.log(jsonData1)
+              console.log(res)
+            } else {
+              const headers = { Authorization: `Bearer ${token}` }
 
-          setTimeOut(true)
+              res = await axios.post(
+                configData.API_URL + '/g_variants',
+                jsonData1,
+                { headers: headers }
+              )
+            }
+            setTimeOut(true)
 
-          if (
-            (res.data.responseSummary.numTotalResults < 1 ||
-              res.data.responseSummary.numTotalResults === undefined) &&
-            props.resultSets !== 'MISS'
-          ) {
-            setError('No results. Please try another query')
-            setNumberResults(0)
-            setBoolean(false)
-          } else {
-            res.data.response.resultSets.forEach((element, index) => {
-              if (element.id && element.id !== '') {
-                if (resultsPerDataset.length > 0) {
-                  resultsPerDataset.forEach(element2 => {
-                    element2[0].push(element.id)
-                    element2[1].push(element.exists)
-                    element2[2].push(element.resultsCount)
-                  })
-                } else {
-                  let arrayResultsPerDataset = [
-                    //element.beaconId,
-                    [element.id],
-                    [element.exists],
-                    [element.resultsCount]
-                  ]
-                  let found = false
-                  resultsPerDataset.forEach(element => {
-                    if (element[0] === arrayResultsPerDataset[0]) {
-                      found = true
-                    }
-                  })
-                  if (found === false) {
+            if (
+              (res.data.responseSummary.numTotalResults < 1 ||
+                res.data.responseSummary.numTotalResults === undefined) &&
+              props.resultSets !== 'MISS'
+            ) {
+              setError('No results. Please try another query')
+              setNumberResults(0)
+              setBoolean(false)
+            } else {
+              res.data.response.resultSets.forEach((element, index) => {
+                if (element.id && element.id !== '') {
+                  if (resultsPerDataset.length > 0) {
+                    resultsPerDataset.forEach(element2 => {
+                      element2[0].push(element.id)
+                      element2[1].push(element.exists)
+                      element2[2].push(element.resultsCount)
+                    })
+                  } else {
+                    let arrayResultsPerDataset = [
+                      //element.beaconId,
+                      [element.id],
+                      [element.exists],
+                      [element.resultsCount]
+                    ]
                     resultsPerDataset.push(arrayResultsPerDataset)
                   }
                 }
-              }
 
-              if (element.id === undefined || element.id === '') {
-                let arrayResultsNoDatasets = [element.beaconId]
-                resultsNotPerDataset.push(arrayResultsNoDatasets)
-              }
+                if (element.id === undefined || element.id === '') {
+                  let arrayResultsNoDatasets = [element.beaconId]
+                  resultsNotPerDataset.push(arrayResultsNoDatasets)
+                }
 
-              if (res.data.response.resultSets[index].results) {
-                res.data.response.resultSets[index].results.forEach(
-                  (element2, index2) => {
-                    let arrayResult = [
-                      res.data.meta.beaconId,
-                      res.data.response.resultSets[index].results[index2]
-                    ]
-                    results.push(arrayResult)
+                if (res.data.response.resultSets[index].results) {
+                  res.data.response.resultSets[index].results.forEach(
+                    (element2, index2) => {
+                      let arrayResult = [
+                        res.data.meta.beaconId,
+                        res.data.response.resultSets[index].results[index2]
+                      ]
+                      results.push(arrayResult)
+                    }
+                  )
+                }
+              })
+            }
+          } else {
+            var jsonData2 = {}
+
+            if (arrayRequestParameters.length > 0) {
+              if (arrayRequestParameters.length === 1) {
+                jsonData2 = {
+                  meta: {
+                    apiVersion: '2.0'
+                  },
+                  query: {
+                    requestParameters: arrayRequestParameters[0],
+                    filters: arrayFilter,
+                    includeResultsetResponses: `${props.resultSets}`,
+                    pagination: {
+                      skip: skip,
+                      limit: limit
+                    },
+                    testMode: false,
+                    requestedGranularity: 'record'
                   }
-                )
+                }
+              } else {
+                jsonData2 = {
+                  meta: {
+                    apiVersion: '2.0'
+                  },
+                  query: {
+                    requestParameters: arrayRequestParameters,
+                    filters: arrayFilter,
+                    includeResultsetResponses: `${props.resultSets}`,
+                    pagination: {
+                      skip: skip,
+                      limit: limit
+                    },
+                    testMode: false,
+                    requestedGranularity: 'record'
+                  }
+                }
               }
-            })
+            } else {
+              jsonData2 = {
+                meta: {
+                  apiVersion: '2.0'
+                },
+                query: {
+                  filters: arrayFilter,
+                  includeResultsetResponses: `${props.resultSets}`,
+                  pagination: {
+                    skip: 0,
+                    limit: 0
+                  },
+                  testMode: false,
+                  requestedGranularity: 'record'
+                }
+              }
+            }
+            jsonData2 = JSON.stringify(jsonData2)
+
+            let token = null
+            if (auth.userData === null) {
+              token = getStoredToken()
+            } else {
+              token = auth.userData.access_token
+            }
+
+            if (token === null) {
+              console.log('Querying without token')
+              res = await axios.post(
+                configData.API_URL + '/g_variants',
+                jsonData2
+              )
+
+              console.log(res)
+            } else {
+              console.log('Querying WITH token')
+              const headers = { Authorization: `Bearer ${token}` }
+              res = await axios.post(
+                configData.API_URL + '/g_variants',
+                jsonData2,
+                { headers: headers }
+              )
+            }
+
+            setTimeOut(true)
+
+            if (
+              (res.data.responseSummary.numTotalResults < 1 ||
+                res.data.responseSummary.numTotalResults === undefined) &&
+              props.resultSets !== 'MISS'
+            ) {
+              setError('No results. Please try another query')
+              setNumberResults(0)
+              setBoolean(false)
+            } else {
+              res.data.response.resultSets.forEach((element, index) => {
+                if (element.id && element.id !== '') {
+                  if (resultsPerDataset.length > 0) {
+                    resultsPerDataset.forEach(element2 => {
+                      element2[0].push(element.id)
+                      element2[1].push(element.exists)
+                      element2[2].push(element.resultsCount)
+                    })
+                  } else {
+                    let arrayResultsPerDataset = [
+                      //element.beaconId,
+                      [element.id],
+                      [element.exists],
+                      [element.resultsCount]
+                    ]
+                    let found = false
+                    resultsPerDataset.forEach(element => {
+                      if (element[0] === arrayResultsPerDataset[0]) {
+                        found = true
+                      }
+                    })
+                    if (found === false) {
+                      resultsPerDataset.push(arrayResultsPerDataset)
+                    }
+                  }
+                }
+
+                if (element.id === undefined || element.id === '') {
+                  let arrayResultsNoDatasets = [element.beaconId]
+                  resultsNotPerDataset.push(arrayResultsNoDatasets)
+                }
+
+                if (res.data.response.resultSets[index].results) {
+                  res.data.response.resultSets[index].results.forEach(
+                    (element2, index2) => {
+                      let arrayResult = [
+                        res.data.meta.beaconId,
+                        res.data.response.resultSets[index].results[index2]
+                      ]
+                      results.push(arrayResult)
+                    }
+                  )
+                }
+              })
+            }
           }
+
+          settriggerSubmit(true)
         }
       } catch (error) {
         console.log(error)
@@ -647,7 +717,7 @@ function VariantsResults (props) {
       }
     }
     apiCall()
-  }, [])
+  }, [ontologyMultipleScopeFinal])
   return (
     <div>
       {timeOut === false && (
@@ -661,101 +731,118 @@ function VariantsResults (props) {
           </div>
         </div>
       )}
-      {optionsScope.length > 0 && (
-        <>
-          <h10>Please choose a scope for {ontologyMultipleScope} :</h10>
-          <select id='miSelect' onChange={handleChangeScope}>
-          <option value={''}>{''}</option>
-            {optionsScope.map((element, index) => {
-              return (
-              <option value={element}>{element}</option>)
-            })}
-          </select> 
-          <button>Submit</button>
-        </>
+      {optionsScope.length > 0 && !triggerSubmit && (
+        <div className='scopeDiv'>
+          {ontologyMultipleScope.map(element => {
+            return (
+              <>
+                <h10>Please choose a scope for {element.ontology} :</h10>
+
+                <select id='miSelect' onChange={handleChangeScope}>
+                  <option value={''}>{''}</option>
+                  {optionsScope.map((element, index) => {
+                    return <option value={element}>{element}</option>
+                  })}
+                </select>
+                <button onClick={submitScopeChosen} className='doneButton'>
+                  <ion-icon name='checkmark-circle-outline'></ion-icon>
+                </button>
+              </>
+            )
+          })}
+        </div>
       )}
-      <div>
+
+      {triggerSubmit && (
         <div>
-          {' '}
-          {timeOut && error !== 'Connection error. Please retry' && (
-            <div>
-              <div className='selectGranularity'>
-                <h4>Granularity:</h4>
-                <button className='typeResults' onClick={handleTypeResults1}>
-                  <h5
-                    className={
-                      isActive1 ? 'granularityActive' : 'granularityNoActive'
-                    }
-                  >
-                    Boolean
-                  </h5>
-                </button>
-                <button className='typeResults' onClick={handleTypeResults2}>
-                  <h5
-                    className={
-                      isActive2 ? 'granularityActive' : 'granularityNoActive'
-                    }
-                  >
-                    Count
-                  </h5>
-                </button>
-                {props.resultSets !== 'MISS' && results.length > 0 && (
-                  <button className='typeResults' onClick={handleTypeResults3}>
+          <div>
+            {' '}
+            {timeOut && error !== 'Connection error. Please retry' && (
+              <div>
+                <div className='selectGranularity'>
+                  <h4>Granularity:</h4>
+                  <button className='typeResults' onClick={handleTypeResults1}>
                     <h5
                       className={
-                        isActive3 ? 'granularityActive' : 'granularityNoActive'
+                        isActive1 ? 'granularityActive' : 'granularityNoActive'
                       }
                     >
-                      Full response
+                      Boolean
                     </h5>
                   </button>
-                )}
+                  <button className='typeResults' onClick={handleTypeResults2}>
+                    <h5
+                      className={
+                        isActive2 ? 'granularityActive' : 'granularityNoActive'
+                      }
+                    >
+                      Count
+                    </h5>
+                  </button>
+                  {props.resultSets !== 'MISS' && results.length > 0 && (
+                    <button
+                      className='typeResults'
+                      onClick={handleTypeResults3}
+                    >
+                      <h5
+                        se
+                        className={
+                          isActive3
+                            ? 'granularityActive'
+                            : 'granularityNoActive'
+                        }
+                      >
+                        Full response
+                      </h5>
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
-          {timeOut && error === 'Connection error. Please retry' && (
-            <h3>&nbsp; {error} </h3>
-          )}
-          {show3 && logInRequired === false && !error && (
-            <div className='containerTableResults'>
-              <TableResultsVariant
-                show={'full'}
-                results={results}
-                resultsPerDataset={resultsPerDataset}
-                beaconsList={beaconsList}
-                resultSets={props.resultSets}
-              ></TableResultsVariant>
-            </div>
-          )}
-          {show3 && error && <h3>&nbsp; {error} </h3>}
-          {show2 && !error && (
-            <div className='containerTableResults'>
-              <TableResultsVariant
-                show={'count'}
-                resultsPerDataset={resultsPerDataset}
-                resultsNotPerDataset={resultsNotPerDataset}
-                results={results}
-                beaconsList={beaconsList}
-                resultSets={props.resultSets}
-              ></TableResultsVariant>
-            </div>
-          )}
-          {show1 && !error && (
-            <div className='containerTableResults'>
-              <TableResultsVariant
-                show={'boolean'}
-                resultsPerDataset={resultsPerDataset}
-                resultsNotPerDataset={resultsNotPerDataset}
-                results={results}
-                beaconsList={beaconsList}
-                resultSets={props.resultSets}
-              ></TableResultsVariant>
-            </div>
-          )}
-          {show2 && error && <h3>&nbsp; {error} </h3>}
-          {show1 && error && <h3>&nbsp; {error} </h3>}
+            )}
+            {timeOut && error === 'Connection error. Please retry' && (
+              <h3>&nbsp; {error} </h3>
+            )}
+            {show3 && logInRequired === false && !error && (
+              <div className='containerTableResults'>
+                <TableResultsVariant
+                  show={'full'}
+                  results={results}
+                  resultsPerDataset={resultsPerDataset}
+                  beaconsList={beaconsList}
+                  resultSets={props.resultSets}
+                ></TableResultsVariant>
+              </div>
+            )}
+            {show3 && error && <h3>&nbsp; {error} </h3>}
+            {show2 && !error && (
+              <div className='containerTableResults'>
+                <TableResultsVariant
+                  show={'count'}
+                  resultsPerDataset={resultsPerDataset}
+                  resultsNotPerDataset={resultsNotPerDataset}
+                  results={results}
+                  beaconsList={beaconsList}
+                  resultSets={props.resultSets}
+                ></TableResultsVariant>
+              </div>
+            )}
+            {show1 && !error && (
+              <div className='containerTableResults'>
+                <TableResultsVariant
+                  show={'boolean'}
+                  resultsPerDataset={resultsPerDataset}
+                  resultsNotPerDataset={resultsNotPerDataset}
+                  results={results}
+                  beaconsList={beaconsList}
+                  resultSets={props.resultSets}
+                ></TableResultsVariant>
+              </div>
+            )}
+            {show2 && error && <h3>&nbsp; {error} </h3>}
+            {show1 && error && <h3>&nbsp; {error} </h3>}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

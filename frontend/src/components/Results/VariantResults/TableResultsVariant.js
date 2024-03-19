@@ -380,7 +380,8 @@ function TableResultsVariant (props) {
     //   }
     // })
     // console.log(beaconsArrayResults)
-
+   
+ 
     setShowDatasets(true)
   }, [])
 
