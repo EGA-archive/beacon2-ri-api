@@ -162,7 +162,7 @@ function IndividualsResults (props) {
             requestParametersRange['referenceBases'] = element.referenceBases
           }
           if (element.aminoacid !== '') {
-            requestParametersSequence['aminoacidChange'] = element.aminoacid
+            requestParametersRange['aminoacidChange'] = element.aminoacid
           }
           if (element.variantMinLength !== '') {
             requestParametersRange['variantMinLength'] =
