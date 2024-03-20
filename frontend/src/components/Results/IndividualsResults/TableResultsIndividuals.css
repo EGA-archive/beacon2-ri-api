@@ -87,6 +87,8 @@ h6:hover {
 
 .handoversDiv ion-icon {
   font-size: 19px;
+  margin-top: -5px;
+  margin-bottom: -5px;
 }
 .handoversDiv ion-icon:hover {
   color: rgb(247, 144, 35);

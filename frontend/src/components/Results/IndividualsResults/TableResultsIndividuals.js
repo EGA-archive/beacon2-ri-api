@@ -405,7 +405,7 @@ function TableResultsIndividuals (props) {
                                                 <a
                                                   href={handoverObject.url}
                                                   target='_blank'
-                                                  title={handoverObject.handoverType.label}
+                                                  title={handoverObject.handoverType.label }
                                                 >
                                                   <button>
                                                     <ion-icon name='logo-github'></ion-icon>
