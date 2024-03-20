@@ -551,13 +551,15 @@ function VariantsResults (props) {
                       element2[0].push(element.id)
                       element2[1].push(element.exists)
                       element2[2].push(element.resultsCount)
+                      element2[3].push(element.resultsHandover)
                     })
                   } else {
                     let arrayResultsPerDataset = [
                       //element.beaconId,
                       [element.id],
                       [element.exists],
-                      [element.resultsCount]
+                      [element.resultsCount],
+                      [element.resultsHandover]
                     ]
                     resultsPerDataset.push(arrayResultsPerDataset)
                   }
@@ -683,13 +685,15 @@ function VariantsResults (props) {
                       element2[0].push(element.id)
                       element2[1].push(element.exists)
                       element2[2].push(element.resultsCount)
+                      element2[3].push(element.resultsHandover)
                     })
                   } else {
                     let arrayResultsPerDataset = [
                       //element.beaconId,
                       [element.id],
                       [element.exists],
-                      [element.resultsCount]
+                      [element.resultsCount],
+                      [element.resultsHandover]
                     ]
                     let found = false
                     resultsPerDataset.forEach(element => {
@@ -798,6 +802,7 @@ function VariantsResults (props) {
                     <button
                       className='typeResults'
                       onClick={handleTypeResults3}
+                    
                     >
                       <h5
                         se

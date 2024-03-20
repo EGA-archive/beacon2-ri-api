@@ -135,7 +135,7 @@ function IndividualsResults (props) {
           requestParametersSequence = {}
         })
       }
-   
+
       if (props.rangeModuleArray.length > 0) {
         console.log(props.rangeModuleArray)
         props.rangeModuleArray.forEach(element => {
@@ -236,7 +236,7 @@ function IndividualsResults (props) {
                 queryArray[index].push('%')
               }
               let alphanumHardCodedScope = 'individuals'
-              if (props.query.includes('libraryStrategy=%WES%')){
+              if (props.query.includes('libraryStrategy=%WES%')) {
                 alphanumHardCodedScope = 'runs'
               }
               let alphaNumFilter = {
@@ -248,14 +248,13 @@ function IndividualsResults (props) {
 
               props.filteringTerms.data.response.filteringTerms.forEach(
                 element2 => {
-                  if (element2.label){
+                  if (element2.label) {
                     if (
                       queryArray[index][0].toLowerCase() ===
                         element2.id.toLowerCase() ||
                       queryArray[index][0].toLowerCase() ===
                         element2.label.toLowerCase()
                     ) {
-                      
                       if (element2.scope.length > 1) {
                         ontologyMultipleScope.push({
                           ontology: element2.id,
@@ -263,7 +262,7 @@ function IndividualsResults (props) {
                         })
                         console.log(ontologyMultipleScope)
                         setOptionsScope(element2.scope)
-  
+
                         if (chosenScope === '') {
                           alphaNumFilter = {
                             id: queryArray[index][0],
@@ -282,8 +281,6 @@ function IndividualsResults (props) {
                           }
                         }
                       }
-                      
-                    
                     }
                   }
                 }
@@ -373,20 +370,17 @@ function IndividualsResults (props) {
               queryArray[0].push('%')
             }
 
-            let alphaNumFilter = {
-              
-            }
-            
+            let alphaNumFilter = {}
+
             props.filteringTerms.data.response.filteringTerms.forEach(
               element2 => {
-                if (element2.label){
+                if (element2.label) {
                   if (
                     queryArray[0][0].toLowerCase() ===
                       element2.id.toLowerCase() ||
                     queryArray[0][0].toLowerCase() ===
                       element2.label.toLowerCase()
                   ) {
-                    
                     if (element2.scope.length > 1) {
                       ontologyMultipleScope.push({
                         ontology: element2.id,
@@ -413,8 +407,6 @@ function IndividualsResults (props) {
                         }
                       }
                     }
-                    
-                  
                   }
                 }
               }
@@ -481,7 +473,7 @@ function IndividualsResults (props) {
           })
           console.log(arrayFilter)
         }
-     
+
         let postPoneQuery = false
         console.log(arrayFilter)
         arrayFilter.forEach(element => {
@@ -495,7 +487,7 @@ function IndividualsResults (props) {
           beaconsList.push(res.data.response)
           if (props.query === null) {
             // show all individuals
-          
+
             var jsonData1 = {}
 
             if (arrayRequestParameters.length > 0) {
@@ -595,13 +587,15 @@ function IndividualsResults (props) {
                       element2[0].push(element.id)
                       element2[1].push(element.exists)
                       element2[2].push(element.resultsCount)
+                      element2[3].push(element.resultsHandover)
                     })
                   } else {
                     let arrayResultsPerDataset = [
                       //element.beaconId,
                       [element.id],
                       [element.exists],
-                      [element.resultsCount]
+                      [element.resultsCount],
+                      [element.resultsHandover]
                     ]
                     resultsPerDataset.push(arrayResultsPerDataset)
                   }
@@ -696,7 +690,7 @@ function IndividualsResults (props) {
                 configData.API_URL + '/individuals',
                 jsonData2
               )
-                console.log(jsonData2)
+              console.log(res)
             } else {
               console.log('Querying WITH token')
               const headers = { Authorization: `Bearer ${token}` }
@@ -725,13 +719,15 @@ function IndividualsResults (props) {
                       element2[0].push(element.id)
                       element2[1].push(element.exists)
                       element2[2].push(element.resultsCount)
+                      element2[3].push(element.resultsHandover)
                     })
                   } else {
                     let arrayResultsPerDataset = [
                       //element.beaconId,
                       [element.id],
                       [element.exists],
-                      [element.resultsCount]
+                      [element.resultsCount],
+                      [element.resultsHandover]
                     ]
                     let found = false
                     resultsPerDataset.forEach(element => {

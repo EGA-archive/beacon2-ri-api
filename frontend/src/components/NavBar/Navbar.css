@@ -764,7 +764,7 @@
 
   .Individuals2 {
     width: 157px;
-    height: 27px;
+    height: 21px;
     margin-left: 2px;
     background-color: #1abc9c;
     border-radius: 4px;
@@ -773,7 +773,7 @@
 
   .Variants2 {
     width: 157px;
-    height: 27px;
+    height: 22px;
     margin-left: 2px;
     border-radius: 4px;
   }
@@ -787,7 +787,7 @@
 
   .Members2 {
     width: 160px;
-    height: 27px;
+    height: 21px;
     border-radius: 4px;
     background-color: #4961b8;
   }
@@ -914,7 +914,7 @@
   }
   .menuNav2 {
     background-color: #235c94;
-    height: 165px;
+    height: 135px;
     width: 161px;
     margin-top: 22px;
     border-radius: 9px;

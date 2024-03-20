@@ -282,7 +282,6 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  width: 100%;
 }
 
 .resultSetsContainer h6 {
@@ -347,7 +346,7 @@
   font-size: 16px;
 }
 
-h5{
+h5 {
   margin-top: 0px !important;
   margin-bottom: 0px !important;
 }
@@ -435,7 +434,6 @@ h5{
     font-size: 9px !important;
   }
 
-  
   .tittle h2 {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
       'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
@@ -486,7 +484,7 @@ h5{
     /* width: 20vw; */
     height: 247px;
     margin: 24px !important;
-    width: 74vw;
+    width: 61vw;
     /* border: 2px solid #3b9ad5; */
     padding: 3px;
     display: flex;
@@ -506,6 +504,7 @@ h5{
     justify-content: center;
     align-content: center;
     width: 100vw;
+    height: 68vh;
   }
 
   .tittle4 {

@@ -440,9 +440,9 @@ function TableResultsRuns (props) {
                                       )}
                                     {props.show === 'count' &&
                                       element[2][indexDataset] === 1 && (
-                                        <h5>
+                                        <h6>
                                           {element[2][indexDataset]} RESULT
-                                        </h5>
+                                        </h6>
                                       )}
                                   </div>
                                 )

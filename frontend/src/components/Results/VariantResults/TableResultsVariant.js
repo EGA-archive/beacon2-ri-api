@@ -11,6 +11,7 @@ import {
   GridToolbarContainer,
   GridToolbarExport
 } from '@mui/x-data-grid'
+import ReactModal from 'react-modal'
 
 function CustomToolbar () {
   return (
@@ -48,6 +49,8 @@ function TableResultsVariant (props) {
   const [triggerArray2, setTriggerArray2] = useState([])
 
   const [errorMessage, setErrorMessage] = useState('')
+  const [note, setNote] = useState('')
+  const [isOpenModal2, setIsOpenModal2] = useState(false)
 
   const getSelectedRowsToExport = ({ apiRef }) => {
     const selectedRowIds = selectedGridRowsSelector(apiRef)
@@ -69,7 +72,7 @@ function TableResultsVariant (props) {
       field: 'variantInternalId',
       headerName: 'Variant ID',
       width: 350,
-      headerClassName: 'super-app-theme--header',
+      headerClassName: 'super-app-theme--header'
       // renderCell: params => (
       //   <Link to={`/g_variants/cross-queries/${params.row.variantInternalId}`}>
       //     {params.row.variantInternalId}
@@ -130,22 +133,13 @@ function TableResultsVariant (props) {
     //{ field: 'karyotypicSex', headerName: 'karyotypicSex', width: 150 }
   ]
 
-  const copyData = e => {
-    navigator.clipboard
-      .writeText(stringDataToCopy)
-      .then(() => {
-        alert('successfully copied')
-      })
-      .catch(() => {
-        alert('something went wrong')
-      })
+  const showNote = e => {
+    setNote(e)
+    setIsOpenModal2(true)
   }
 
-  const handleSeeResults = e => {
-    setResultsSelectedFinal(resultsSelected)
-    setShowResults(true)
-    setShowDatasets(false)
-    setTrigger(true)
+  const handleCloseModal2 = () => {
+    setIsOpenModal2(false)
   }
 
   useEffect(() => {
@@ -158,6 +152,13 @@ function TableResultsVariant (props) {
     // })
     // setTrigger2(true)
     // setStringDataToCopy(resultsJSON)
+    if (props.show === 'full'){
+      setResultsSelectedFinal(resultsSelected)
+      setShowResults(true)
+      setShowDatasets(false)
+      setTrigger(true)
+    }
+
     setRows([])
     setIds([])
     if (resultsSelected.length === 0) {
@@ -380,8 +381,7 @@ function TableResultsVariant (props) {
     //   }
     // })
     // console.log(beaconsArrayResults)
-   
- 
+
     setShowDatasets(true)
   }, [])
 
@@ -407,16 +407,56 @@ function TableResultsVariant (props) {
                                 />
                                 <h4>{result.organization.name}</h4>
                               </div>
-
-                              {element[0].map((datasetObject, indexDataset) => {
-                                return (
-                                  <div className='resultSetsContainer'>
-                                    <h7>
-                                      {datasetObject.replaceAll('_', ' ')}
-                                    </h7>
-                                  </div>
-                                )
-                              })}
+                              <div className='datasetContainer'>
+                                {element[0].map(
+                                  (datasetObject, indexDataset) => {
+                                    return (
+                                      <div className='resultSetsContainer'>
+                                        <h7>
+                                          {datasetObject.replaceAll('_', ' ')}
+                                        </h7>
+                                      </div>
+                                    )
+                                  }
+                                )}
+                                {element[3].map((handoverArray, index) => {
+                                  return (
+                                    <>
+                                      {handoverArray.map(
+                                        (handoverObject, index2) => {
+                                          return (
+                                            <div className='handoversDiv'>
+                                              {handoverObject.handoverType
+                                                .id === 'NCIT:C189151' && (
+                                                <a
+                                                  href={handoverObject.url}
+                                                  target='_blank'
+                                                  title={
+                                                    handoverObject.handoverType
+                                                      .label
+                                                  }
+                                                >
+                                                  <button>
+                                                    <ion-icon name='logo-github'></ion-icon>
+                                                  </button>
+                                                </a>
+                                              )}
+                                              <button
+                                                onClick={() => {
+                                                  showNote(handoverObject.note)
+                                                }}
+                                              >
+                                                {' '}
+                                                <ion-icon name='library-outline'></ion-icon>
+                                              </button>
+                                            </div>
+                                          )
+                                        }
+                                      )}
+                                    </>
+                                  )
+                                })}
+                              </div>
                             </div>
                           </div>
                         </>
@@ -439,50 +479,153 @@ function TableResultsVariant (props) {
                                 <h4>{result.organization.name}</h4>
                               </div>
 
-                              {element[0].map((datasetObject, indexDataset) => {
-                                return (
-                                  <div className='resultSetsContainer'>
-                                    {props.resultSets !== 'NONE' && (
-                                      <h7>
-                                        {datasetObject.replaceAll('_', ' ')}
-                                      </h7>
-                                    )}
+                              <div className='datasetContainer'>
+                                {element[0].map(
+                                  (datasetObject, indexDataset) => {
+                                    return (
+                                      <div className='resultSetsContainer'>
+                                        {props.resultSets !== 'NONE' && (
+                                          <h7>
+                                            {datasetObject.replaceAll('_', ' ')}
+                                          </h7>
+                                        )}
 
-                                    {element[1][indexDataset] === true &&
-                                      props.show === 'boolean' && (
-                                        <h6>FOUND</h6>
+                                        {element[1][indexDataset] === true &&
+                                          props.show === 'boolean' && (
+                                            <h6>FOUND</h6>
+                                          )}
+                                        {element[1][indexDataset] === false &&
+                                          props.show === 'boolean' && (
+                                            <h5>NOT FOUND</h5>
+                                          )}
+                                        {props.show === 'count' &&
+                                          element[2][indexDataset] !== 0 &&
+                                          element[2][indexDataset] !== 1 && (
+                                            <h6>
+                                              {element[2][indexDataset]} RESULTS
+                                            </h6>
+                                          )}
+                                        {props.show === 'count' &&
+                                          element[2][indexDataset] === 0 && (
+                                            <h5>
+                                              {element[2][indexDataset]} RESULTS
+                                            </h5>
+                                          )}
+                                        {props.show === 'count' &&
+                                          element[2][indexDataset] === 1 && (
+                                            <h6>
+                                              {element[2][indexDataset]} RESULT
+                                            </h6>
+                                          )}
+                                      </div>
+                                    )
+                                  }
+                                )}
+                                {element[3].map((handoverArray, index) => {
+                                  return (
+                                    <>
+                                      {handoverArray.map(
+                                        (handoverObject, index2) => {
+                                          return (
+                                            <div className='handoversDiv'>
+                                              {handoverObject.handoverType
+                                                .id === 'NCIT:C189151' && (
+                                                <a
+                                                  href={handoverObject.url}
+                                                  target='_blank'
+                                                  title={
+                                                    handoverObject.handoverType
+                                                      .label
+                                                  }
+                                                >
+                                                  <button>
+                                                    <ion-icon name='logo-github'></ion-icon>
+                                                  </button>
+                                                </a>
+                                              )}
+                                              <button
+                                                onClick={() => {
+                                                  showNote(handoverObject.note)
+                                                }}
+                                              >
+                                                {' '}
+                                                <ion-icon name='library-outline'></ion-icon>
+                                              </button>
+                                            </div>
+                                          )
+                                        }
                                       )}
-                                    {element[1][indexDataset] === false &&
-                                      props.show === 'boolean' && (
-                                        <h5>NOT FOUND</h5>
-                                      )}
-                                    {props.show === 'count' &&
-                                      element[2][indexDataset] !== 0 &&
-                                      element[2][indexDataset] !== 1 && (
-                                        <h6>
-                                          {element[2][indexDataset]} RESULTS
-                                        </h6>
-                                      )}
-                                    {props.show === 'count' &&
-                                      element[2][indexDataset] === 0 && (
-                                        <h5>
-                                          {element[2][indexDataset]} RESULTS
-                                        </h5>
-                                      )}
-                                    {props.show === 'count' &&
-                                      element[2][indexDataset] === 1 && (
-                                        <h6>
-                                          {element[2][indexDataset]} RESULT
-                                        </h6>
-                                      )}
-                                  </div>
-                                )
-                              })}
+                                    </>
+                                  )
+                                })}
+                              </div>
                             </div>
                           </div>
                         </>
                       )
                     })}
+
+                  {note !== '' && note.includes('<a href') && (
+                    <ReactModal
+                      isOpen={isOpenModal2}
+                      onRequestClose={handleCloseModal2}
+                      shouldCloseOnOverlayClick={true}
+                      style={{
+                        overlay: {
+                          position: 'fixed',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          zIndex: 3,
+                          backgroundColor: 'rgba(255, 255, 255, 0.75)'
+                        }
+                      }}
+                    >
+                      <button onClick={handleCloseModal2}>
+                        <img
+                          className='closeLogo'
+                          src='./cancel.png'
+                          alt='cancelIcon'
+                        ></img>
+                      </button>
+
+                      <p
+                        dangerouslySetInnerHTML={{
+                          __html: note
+                        }}
+                      />
+                    </ReactModal>
+                  )}
+
+                  {note !== '' && !note.includes('<a href') && (
+                    <ReactModal
+                      isOpen={isOpenModal2}
+                      onRequestClose={handleCloseModal2}
+                      shouldCloseOnOverlayClick={true}
+                      style={{
+                        overlay: {
+                          position: 'fixed',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          zIndex: 3,
+                          backgroundColor: 'rgba(255, 255, 255, 0.75)'
+                        }
+                      }}
+                    >
+                      <button onClick={handleCloseModal2}>
+                        <img
+                          className='closeLogo'
+                          src='./cancel.png'
+                          alt='cancelIcon'
+                        ></img>
+                      </button>
+
+                      <p>{note}</p>
+                    </ReactModal>
+                  )}
                   {props.resultSets === 'HIT' &&
                     props.resultsPerDataset.map((element, index) => {
                       return (
@@ -498,43 +641,84 @@ function TableResultsVariant (props) {
                                 <h4>{result.organization.name}</h4>
                               </div>
 
-                              {element[0].map((datasetObject, indexDataset) => {
-                                return (
-                                  <div className='resultSetsContainer'>
-                                    <h7>
-                                      {datasetObject.replaceAll('_', ' ')}
-                                    </h7>
+                              <div className='datasetContainer'>
+                                {element[0].map(
+                                  (datasetObject, indexDataset) => {
+                                    return (
+                                      <div className='resultSetsContainer'>
+                                        <h7>
+                                          {datasetObject.replaceAll('_', ' ')}
+                                        </h7>
 
-                                    {element[1][indexDataset] === true &&
-                                      props.show === 'boolean' && (
-                                        <h6>FOUND</h6>
+                                        {element[1][indexDataset] === true &&
+                                          props.show === 'boolean' && (
+                                            <h6>FOUND</h6>
+                                          )}
+                                        {element[1][indexDataset] === false &&
+                                          props.show === 'boolean' && (
+                                            <h5>NOT FOUND</h5>
+                                          )}
+                                        {props.show === 'count' &&
+                                          element[2][indexDataset] !== 0 &&
+                                          element[2][indexDataset] !== 1 && (
+                                            <h6>
+                                              {element[2][indexDataset]} RESULTS
+                                            </h6>
+                                          )}
+                                        {props.show === 'count' &&
+                                          element[2][indexDataset] === 0 && (
+                                            <h5>
+                                              {element[2][indexDataset]} RESULTS
+                                            </h5>
+                                          )}
+                                        {props.show === 'count' &&
+                                          element[2][indexDataset] === 1 && (
+                                            <h6>
+                                              {element[2][indexDataset]} RESULT
+                                            </h6>
+                                          )}
+                                      </div>
+                                    )
+                                  }
+                                )}
+                                {element[3].map((handoverArray, index) => {
+                                  return (
+                                    <>
+                                      {handoverArray.map(
+                                        (handoverObject, index2) => {
+                                          return (
+                                            <div className='handoversDiv'>
+                                              {handoverObject.handoverType
+                                                .id === 'NCIT:C189151' && (
+                                                <a
+                                                  href={handoverObject.url}
+                                                  target='_blank'
+                                                  title={
+                                                    handoverObject.handoverType
+                                                      .label
+                                                  }
+                                                >
+                                                  <button>
+                                                    <ion-icon name='logo-github'></ion-icon>
+                                                  </button>
+                                                </a>
+                                              )}
+                                              <button
+                                                onClick={() => {
+                                                  showNote(handoverObject.note)
+                                                }}
+                                              >
+                                                {' '}
+                                                <ion-icon name='library-outline'></ion-icon>
+                                              </button>
+                                            </div>
+                                          )
+                                        }
                                       )}
-                                    {element[1][indexDataset] === false &&
-                                      props.show === 'boolean' && (
-                                        <h5>NOT FOUND</h5>
-                                      )}
-                                    {props.show === 'count' &&
-                                      element[2][indexDataset] !== 0 &&
-                                      element[2][indexDataset] !== 1 && (
-                                        <h6>
-                                          {element[2][indexDataset]} RESULTS
-                                        </h6>
-                                      )}
-                                    {props.show === 'count' &&
-                                      element[2][indexDataset] === 0 && (
-                                        <h5>
-                                          {element[2][indexDataset]} RESULTS
-                                        </h5>
-                                      )}
-                                    {props.show === 'count' &&
-                                      element[2][indexDataset] === 1 && (
-                                        <h5>
-                                          {element[2][indexDataset]} RESULT
-                                        </h5>
-                                      )}
-                                  </div>
-                                )
-                              })}
+                                    </>
+                                  )
+                                })}
+                              </div>
                             </div>
                           </div>
                         </>
@@ -610,12 +794,7 @@ function TableResultsVariant (props) {
                                     )}
                                   </>
                                 </div>
-                                <button
-                                  className='buttonResults'
-                                  onClick={() => {
-                                    handleSeeResults(result.id)
-                                  }}
-                                ></button>
+                           
                               </div>
                             </div>
                           )}
@@ -691,12 +870,7 @@ function TableResultsVariant (props) {
                                     )}
                                   </>
                                 </div>
-                                <button
-                                  className='buttonResults'
-                                  onClick={() => {
-                                    handleSeeResults(result.id)
-                                  }}
-                                ></button>
+                              
                               </div>
                             </div>
                           )}
@@ -705,7 +879,7 @@ function TableResultsVariant (props) {
                     })}
                 </>
               )}
-              {props.show === 'full' && (
+              {/* {props.show === 'full' && (
                 <div className='datasetCardResults'>
                   <div className='tittleResults'>
                     <div className='tittle4'>
@@ -728,29 +902,11 @@ function TableResultsVariant (props) {
                     </div>
                   </div>
                 </div>
-              )}
+              )} */}
             </>
           )
         })}
-      {/* 
-      {showDatsets === false && showResults === true && trigger === true && (
-        <div className='containerBeaconResultsVariants'>
-          <div className='copyDivVariants'>
-            <button className='buttonCopy' onClick={copyData}>
-              <h7>COPY ALL RESULTS</h7>
-              <img className='copyLogo' src='../copy.png' alt='copyIcon'></img>
-            </button>
-          </div>
 
-          {resultsJSON.map(element => {
-            return (
-              <pre className='resultsVariants'>
-                <p>{element}</p>
-              </pre>
-            )
-          })}
-        </div>
-      )} */}
       {showDatsets === false && showResults === true && trigger2 === true && (
         <DataGrid
           getRowHeight={() => 'auto'}

@@ -99,8 +99,13 @@ html {
   margin-top: 0px;
 }
 
-.doneButton ion-icon:hover{
+.doneButton ion-icon:hover {
   color: rgb(36, 135, 128);
+}
+
+p a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .modeVariantsQuery {
@@ -1284,25 +1289,34 @@ h5 {
 }
 
 .ReactModal__Content--after-open {
-  width: 485px;
-  font-size: 11px;
-  height: 33%;
+  width: 500px;
+  font-size: 12px !important;
+  /* height: 33%; */
+  height: fit-content;
   position: absolute !important;
-  inset: 35% !important;
+  top: 18% !important;
+  right: 10vw !important;
+  left: 32.4vw !important;
   border: 1px solid rgb(204, 204, 204) !important;
-  background: #be5930 !important;
+  background: #82a0b7 !important;
   overflow: auto !important;
-  border-radius: 4px !important;
+  border-radius: 12px !important;
   outline: none !important;
-  padding: 16px !important;
+  padding: 7px !important;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+
 }
 
 .ReactModal__Content--after-open p {
-  font-size: 16px;
+  font-size: 12px;
   font-weight: normal;
+  inset: 0px !important;
   color: white;
   line-height: 30px;
   padding: 2px;
+  top: 28% !important;
+  right: 10vw !important;
+  left: 34.4vw !important;
 }
 @media (max-width: 1409px) {
   .containerExtraSections2 {
@@ -1514,19 +1528,6 @@ h5 {
     margin-top: -3px;
     vertical-align: middle;
   }
-  .ReactModal__Content--after-open {
-    width: 269px;
-    font-size: 12px;
-    height: fit-content;
-    position: absolute !important;
-    inset: 35% !important;
-    border: 1px solid rgb(204, 204, 204) !important;
-    background: #be5930 !important;
-    overflow: auto !important;
-    border-radius: 4px !important;
-    outline: none !important;
-    padding: 16px !important;
-  }
 
   .ReactModal__Content--after-open p {
     font-size: 14px;
@@ -1534,6 +1535,11 @@ h5 {
     color: white;
     line-height: 20px;
     padding: 2px;
+    width: 500px;
+    top: 28% !important;
+    right: 10vw !important;
+    left: 34.4vw !important;
+    inset: 0px !important;
   }
 
   .ReactModal__Overlay {
@@ -1841,25 +1847,34 @@ h5 {
     vertical-align: middle;
   }
   .ReactModal__Content--after-open {
-    width: 269px;
-    font-size: 12px;
-    height: fit-content;
+    width: 280px;
+    font-size: 11px;
+    /* height: 33%; */
+    height: 22%;
     position: absolute !important;
-    inset: 35% !important;
+    top: 28% !important;
+    right: 10vw !important;
+    left: 32.4vw !important;
     border: 1px solid rgb(204, 204, 204) !important;
-    background: #be5930 !important;
+    background: #82a0b7 !important;
     overflow: auto !important;
-    border-radius: 4px !important;
+    border-radius: 12px !important;
     outline: none !important;
-    padding: 16px !important;
+    padding: 7px !important;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    inset: 20vw !important;
   }
 
   .ReactModal__Content--after-open p {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: normal;
     color: white;
+    width: fit-content;
     line-height: 20px;
     padding: 2px;
+    top: 28% !important;
+    right: 10vw !important;
+    left: 34.4vw !important;
   }
 
   .ReactModal__Overlay {

@@ -90,13 +90,13 @@ function Navbar () {
         >
           Variant
         </NavLink>
-        <NavLink
+        {/* <NavLink
           exact
           to='/runs'
           className={({ isActive }) => (isActive ? 'Runs2' : 'Runs')}
         >
           Runs
-        </NavLink>
+        </NavLink> */}
         {/* <NavLink
           exact
           to='/analyses'
@@ -268,7 +268,7 @@ function Navbar () {
                     >
                       <h1>Variant</h1>
                     </NavLink>
-                    <NavLink
+                    {/* <NavLink
                       exact
                       to='/runs'
                       onClick={handleMenu}
@@ -277,7 +277,7 @@ function Navbar () {
                       }
                     >
                       <h1>Runs</h1>
-                    </NavLink>
+                    </NavLink> */}
                     {/* <NavLink
                       exact
                       to='/analyses'

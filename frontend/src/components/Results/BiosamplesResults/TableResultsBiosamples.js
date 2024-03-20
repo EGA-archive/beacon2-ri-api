@@ -200,6 +200,7 @@ function TableResultsBiosamples (props) {
   ]
 
   const handleSeeResults = e => {
+
     resultsSelected.forEach(element => {
       if (element[0] === e) {
         resultsSelectedFinal.push(element)
@@ -1058,9 +1059,9 @@ function TableResultsBiosamples (props) {
                                       )}
                                     {props.show === 'count' &&
                                       element[2][indexDataset] === 1 && (
-                                        <h5>
+                                        <h6>
                                           {element[2][indexDataset]} RESULT
-                                        </h5>
+                                        </h6>
                                       )}
                                   </div>
                                 )
