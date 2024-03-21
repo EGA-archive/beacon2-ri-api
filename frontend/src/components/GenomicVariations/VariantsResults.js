@@ -784,7 +784,7 @@ function VariantsResults (props) {
         <div>
           <div>
             {' '}
-            {timeOut && error !== 'Connection error. Please retry' && (
+            {timeOut && error === '' && (
               <div>
                 <div className='selectGranularity'>
                   <h4>Granularity:</h4>

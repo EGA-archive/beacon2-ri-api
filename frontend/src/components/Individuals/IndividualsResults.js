@@ -816,7 +816,7 @@ function IndividualsResults (props) {
         <div>
           <div>
             {' '}
-            {timeOut && error !== 'Connection error. Please retry' && (
+            {timeOut && error !== 'No results. Please retry' && (
               <div>
                 <div className='selectGranularity'>
                   <h4>Granularity:</h4>
