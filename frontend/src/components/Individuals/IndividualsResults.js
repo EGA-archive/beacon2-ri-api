@@ -810,6 +810,7 @@ function IndividualsResults (props) {
           })}
         </div>
       )}
+      {timeOut && error !== '' && <h3>&nbsp; {error} </h3>}
 
       {triggerSubmit && (
         <div>
@@ -856,9 +857,6 @@ function IndividualsResults (props) {
                   )}
                 </div>
               </div>
-            )}
-            {timeOut && error === 'Connection error. Please retry' && (
-              <h3>&nbsp; {error} </h3>
             )}
             {show3 && logInRequired === false && !error && (
               <div className='containerTableResults'>

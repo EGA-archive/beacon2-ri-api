@@ -212,7 +212,10 @@ function Layout (props) {
       ])
     } else if (props.collection === 'Variant') {
       setExampleQ([
-        ['libraryStrategy=%WES%, Colon Adenocarcinoma', 'NCIT:C101295, NCIT:C4349'],
+        [
+          'libraryStrategy=%WES%, Colon Adenocarcinoma',
+          'NCIT:C101295, NCIT:C4349'
+        ],
         ['GENO:GENO_0000458']
       ])
     } else if (props.collection === 'Biosamples') {
@@ -460,7 +463,7 @@ function Layout (props) {
       variantMaxLength: variantMaxLength2,
       clinicalRelevance: clinicalRelevance3
     }
-   
+
     geneModuleArray.push(objectGene)
 
     setGeneId('')
@@ -638,12 +641,9 @@ function Layout (props) {
     setResultsetAux(resultSet)
     setQueryAux(query)
 
-    if (resultSet !== resultSetAux) {
-      setTriggerQuery(!triggerQuery)
-    }
-    if (queryAux !== query) {
-      setTriggerQuery(!triggerQuery)
-    }
+    setTriggerQuery(!triggerQuery)
+
+    setTriggerQuery(!triggerQuery)
 
     let arrayRequestParameters2 =
       geneModuleArray + seqModuleArray + rangeModuleArray

@@ -136,7 +136,7 @@ function VariantsResults (props) {
           requestParametersSequence = {}
         })
       }
-   
+
       if (props.rangeModuleArray.length > 0) {
         console.log(props.rangeModuleArray)
         props.rangeModuleArray.forEach(element => {
@@ -240,7 +240,7 @@ function VariantsResults (props) {
                 queryArray[index].push('%')
               }
               let alphanumHardCodedScope = 'individuals'
-              if (props.query.includes('libraryStrategy=%WES%')){
+              if (props.query.includes('libraryStrategy=%WES%')) {
                 alphanumHardCodedScope = 'runs'
               }
               let alphaNumFilter = {
@@ -251,7 +251,7 @@ function VariantsResults (props) {
               }
               props.filteringTerms.data.response.filteringTerms.forEach(
                 element2 => {
-                  if (element2.label){
+                  if (element2.label) {
                     if (
                       queryArray[index][0].toLowerCase() ===
                         element2.id.toLowerCase() ||
@@ -293,16 +293,19 @@ function VariantsResults (props) {
                     }
                   } else {
                     let labelToOntology = ''
-                    console.log( element.toLowerCase().replaceAll(" ",""))
-                 
+                    console.log(element.toLowerCase().replaceAll(' ', ''))
+
                     if (element2.label) {
-                      console.log(element2.label.toLowerCase().replaceAll(" ",""))
+                      console.log(
+                        element2.label.toLowerCase().replaceAll(' ', '')
+                      )
                       if (
-                        element.toLowerCase().replaceAll(" ","") === element2.label.toLowerCase().replaceAll(" ","")
+                        element.toLowerCase().replaceAll(' ', '') ===
+                        element2.label.toLowerCase().replaceAll(' ', '')
                       ) {
-                        console.log("HOLI")
+                        console.log('HOLI')
                         labelToOntology = element2.id
-                      
+
                         if (element2.scope.length > 1) {
                           ontologyMultipleScope.push({
                             ontology: element2.id,
@@ -441,7 +444,7 @@ function VariantsResults (props) {
           })
           console.log(arrayFilter)
         }
-     
+
         let postPoneQuery = false
         console.log(arrayFilter)
         arrayFilter.forEach(element => {
@@ -774,7 +777,9 @@ function VariantsResults (props) {
           })}
         </div>
       )}
-
+      {timeOut && error !== '' && (
+        <h3>&nbsp; {error} </h3>
+      )}
       {triggerSubmit && (
         <div>
           <div>
@@ -805,7 +810,6 @@ function VariantsResults (props) {
                     <button
                       className='typeResults'
                       onClick={handleTypeResults3}
-                    
                     >
                       <h5
                         se
@@ -821,9 +825,6 @@ function VariantsResults (props) {
                   )}
                 </div>
               </div>
-            )}
-            {timeOut && error === 'Connection error. Please retry' && (
-              <h3>&nbsp; {error} </h3>
             )}
             {show3 && logInRequired === false && !error && (
               <div className='containerTableResults'>
