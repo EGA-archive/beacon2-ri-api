@@ -56,8 +56,10 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
             if total_query["$and"] == [{'$or': []}] or total_query['$and'] == []:
                 total_query = {}
     elif request_parameters != {}:
+        LOG.debug('holaaaaaa')
         try:
             if len(request_parameters["$or"]) > 1:
+                LOG.debug('holaaaa')
                 array_of_biosamples2=[]
                 array_of_biosamples=[]
                 for reqpam in request_parameters["$or"]:
@@ -98,48 +100,47 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
                 total_query["$and"]=[]
                 total_query["$and"].append(partial_query)
         except Exception:
-            if len(request_parameters["$and"]) <= 1:
-                partial_query = {}
-                LOG.debug(request_parameters)
-                biosample_ids = client.beacon.genomicVariations.find(request_parameters, {"caseLevelData.biosampleId": 1, "_id": 0})
-                LOG.debug(biosample_ids)
-                final_id='id'
-                original_id="biosampleId"
-                def_list=[]
-                partial_query['$or']=[]
-                for iditem in biosample_ids:
-                    for id_item in iditem['caseLevelData']:
-                        if isinstance(id_item, dict):
-                            new_id={}
-                            new_id[final_id] = id_item[original_id]
-                            try:
-                                partial_query['$or'].append(new_id)
-                            except Exception:
-                                def_list.append(new_id)
-                LOG.debug(partial_query)
-                
-                mongo_collection=client.beacon.biosamples
-                original_id="individualId"
-                join_ids2=list(join_query(mongo_collection, partial_query, original_id))
-                def_list=[]
-                final_id="id"
-                for id_item in join_ids2:
-                    new_id={}
-                    new_id[final_id] = id_item.pop(original_id)
-                    def_list.append(new_id)
-                partial_query={}
-                partial_query['$or']=def_list
-                if def_list != []:
-                    try:
-                        partial_query['$or'].def_list
-                    except Exception:
-                        partial_query={}
-                        partial_query['$or']=def_list
-                total_query["$and"]=[]
-                total_query["$and"].append(partial_query)
-                #LOG.debug(query)
-                if total_query["$and"] == [{'$or': []}] or total_query['$and'] == []:
-                    total_query = {}
+            partial_query = {}
+            LOG.debug(request_parameters)
+            biosample_ids = client.beacon.genomicVariations.find(request_parameters, {"caseLevelData.biosampleId": 1, "_id": 0})
+            LOG.debug(biosample_ids)
+            final_id='id'
+            original_id="biosampleId"
+            def_list=[]
+            partial_query['$or']=[]
+            for iditem in biosample_ids:
+                for id_item in iditem['caseLevelData']:
+                    if isinstance(id_item, dict):
+                        new_id={}
+                        new_id[final_id] = id_item[original_id]
+                        try:
+                            partial_query['$or'].append(new_id)
+                        except Exception:
+                            def_list.append(new_id)
+            LOG.debug(partial_query)
+            
+            mongo_collection=client.beacon.biosamples
+            original_id="individualId"
+            join_ids2=list(join_query(mongo_collection, partial_query, original_id))
+            def_list=[]
+            final_id="id"
+            for id_item in join_ids2:
+                new_id={}
+                new_id[final_id] = id_item.pop(original_id)
+                def_list.append(new_id)
+            partial_query={}
+            partial_query['$or']=def_list
+            if def_list != []:
+                try:
+                    partial_query['$or'].def_list
+                except Exception:
+                    partial_query={}
+                    partial_query['$or']=def_list
+            total_query["$and"]=[]
+            total_query["$and"].append(partial_query)
+            #LOG.debug(query)
+            if total_query["$and"] == [{'$or': []}] or total_query['$and'] == []:
+                total_query = {}
     else:
         total_query=query
 
