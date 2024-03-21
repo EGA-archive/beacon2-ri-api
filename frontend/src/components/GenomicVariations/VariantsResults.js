@@ -199,6 +199,9 @@ function VariantsResults (props) {
           if (element.variantMaxLength !== '') {
             requestParametersGene['variantMaxLength'] = element.variantMaxLength
           }
+          if (element.aminoacid !== '') {
+            requestParametersGene['aminoacidChange'] = element.aminoacid
+          }
           if (element.clinicalRelevance !== '') {
             requestParametersSequence['clinicalRelevance'] =
               element.clinicalRelevance

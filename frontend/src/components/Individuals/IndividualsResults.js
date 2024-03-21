@@ -161,6 +161,7 @@ function IndividualsResults (props) {
           if (element.referenceBases !== '') {
             requestParametersRange['referenceBases'] = element.referenceBases
           }
+
           if (element.aminoacid !== '') {
             requestParametersRange['aminoacidChange'] = element.aminoacid
           }
@@ -183,6 +184,7 @@ function IndividualsResults (props) {
 
       if (props.geneModuleArray.length > 0) {
         props.geneModuleArray.forEach(element => {
+          console.log(element)
           if (element.geneID !== '') {
             requestParametersGene['geneId'] = element.geneID
           }
@@ -197,6 +199,9 @@ function IndividualsResults (props) {
           }
           if (element.variantMaxLength !== '') {
             requestParametersGene['variantMaxLength'] = element.variantMaxLength
+          }
+          if (element.aminoacid !== '') {
+            requestParametersGene['aminoacidChange'] = element.aminoacid
           }
           if (element.clinicalRelevance !== '') {
             requestParametersSequence['clinicalRelevance'] =
