@@ -20,6 +20,14 @@ try:
     client.beacon.validate_collection("counts")
 except Exception:
     db=client.beacon.create_collection(name="counts")
+try:
+    client.beacon.drop_collection("similarities")
+except Exception:
+    client.beacon.create_collection(name="similarities")
+try:
+    client.beacon.validate_collection("similarities")
+except Exception:
+    db=client.beacon.create_collection(name="similarities")
 client.beacon.analyses.create_index([("$**", "text")])
 client.beacon.biosamples.create_index([("$**", "text")])
 client.beacon.cohorts.create_index([("$**", "text")])
