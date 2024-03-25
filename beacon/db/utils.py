@@ -188,11 +188,12 @@ def get_docs_by_response_type(include: str, query: dict, datasets_dict: dict, da
         )
     elif include == 'HIT':
         count=0
-        #LOG.debug(query)
+        LOG.debug(query)
         #LOG.debug(count)
         query_count=query
         i=1
         query_count["$or"]=[]
+        LOG.debug(query)
         for k, v in datasets_dict.items():
             if k == dataset:
                 for id in v:

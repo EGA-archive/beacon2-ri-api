@@ -56,13 +56,11 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
             if total_query["$and"] == [{'$or': []}] or total_query['$and'] == []:
                 total_query = {}
     elif request_parameters != {}:
-        LOG.debug('holaaaaaa')
         try:
-            if len(request_parameters["$or"]) > 1:
-                LOG.debug('holaaaa')
+            if len(request_parameters["$and"]) >= 1:
                 array_of_biosamples2=[]
                 array_of_biosamples=[]
-                for reqpam in request_parameters["$or"]:
+                for reqpam in request_parameters["$and"]:
                     biosample_ids = client.beacon.genomicVariations.find(reqpam, {"caseLevelData.biosampleId": 1, "_id": 0})
                     for biosample in biosample_ids:
                         for bioitem in biosample['caseLevelData']:
@@ -83,7 +81,7 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
                 partial_query={}
                 partial_query['$or']=[]
                 for item in array_of_biosamples2:
-                    if dict_counts[item] == len(request_parameters["$or"]):
+                    if dict_counts[item] == len(request_parameters["$and"]):
                         partial_query['$or'].append({"id": item})
 
                 mongo_collection=client.beacon.biosamples
@@ -358,6 +356,7 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
                 query={}
                 query['$or']=def_list
             elif scope == 'genomicVariations' and collection == 'individuals':
+                LOG.debug('holaaaaa')
                 biosample_ids = client.beacon.genomicVariations.find(query, {"caseLevelData.biosampleId": 1, "_id": 0})
                 final_id='id'
                 original_id="biosampleId"
@@ -531,7 +530,6 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
         elif filter.id == 'molecularAttributes.aminoacidChanges':
             query[filter.id] = filter.value
         elif filter.id == 'molecularAttributes.geneIds':
-            LOG.debug('holaaaa')
             query[filter.id] = filter.value
         elif filter.id == "caseLevelData.clinicalInterpretations.clinicalRelevance":
             query[filter.id] = filter.value
@@ -576,6 +574,7 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
             formatted_value = format_value(filter.value)
             formatted_operator = format_operator(filter.operator)
             query[filter.id] = { formatted_operator: formatted_value }
+
     elif isinstance(formatted_value,str):
         if formatted_operator == "$eq":
             if '%' in filter.value:
@@ -589,7 +588,7 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                 value_splitted=filter.value.split('%')
                 regex_dict={}
                 regex_dict['$regex']=value_splitted[1]
-                if filter.id == 'libraryStrategy':
+                if filter.id == 'libraryStrategy' or filter.id == 'molecularAttributes.geneIds':
                     query_term = filter.id
                 else:
                     query_term = filter.id + '.' + 'label'
@@ -597,7 +596,6 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                 query_id[query_term]=regex_dict
                 query['$or'].append(query_id)
                 
-
             else:
                 try: 
                     if query['$or']:
@@ -606,10 +604,55 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                         query['$or']=[]
                 except Exception:
                     query['$or']=[]
-                query_term = filter.id + '.' + 'label'
-                query_id={}
-                query_id[query_term]=filter.value
-                query['$or'].append(query_id) 
+
+                if scope == 'genomicVariations' and collection == 'individuals':
+                    query_term = filter.id
+                    query_id={}
+                    query_id[query_term]=filter.value
+                    query['$or'].append(query_id) 
+                    biosample_ids = client.beacon.genomicVariations.find(query, {"caseLevelData.biosampleId": 1, "_id": 0})
+                    final_id='id'
+                    original_id="biosampleId"
+                    def_list=[]
+                    for iditem in biosample_ids:
+                        for id_item in iditem['caseLevelData']:
+                            if isinstance(id_item, dict):
+                                new_id={}
+                                new_id[final_id] = id_item[original_id]
+                                try:
+                                    #LOG.debug(new_id)
+                                    query['$or'].append(new_id)
+                                except Exception:
+                                    def_list.append(new_id)
+                    if def_list != []:
+                        try:
+                            query['$or'].def_list
+                        except Exception:
+                            query={}
+                            query['$or']=def_list
+                    mongo_collection=client.beacon.biosamples
+                    original_id="individualId"
+                    join_ids2=list(join_query(mongo_collection, query, original_id))
+                    def_list=[]
+                    final_id="id"
+                    for id_item in join_ids2:
+                        new_id={}
+                        new_id[final_id] = id_item.pop(original_id)
+                        def_list.append(new_id)
+                    query={}
+                    query['$or']=def_list
+                    if def_list != []:
+                        try:
+                            query['$or'].def_list
+                        except Exception:
+                            query={}
+                            query['$or']=def_list
+                else:
+
+                    query_term = filter.id + '.' + 'label'
+                    query_id={}
+                    query_id[query_term]=filter.value
+                    query['$or'].append(query_id) 
             LOG.debug(collection)
             LOG.debug(scope)
             if scope == 'runs' and collection == 'individuals':
