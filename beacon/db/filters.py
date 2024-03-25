@@ -55,12 +55,13 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
             #LOG.debug(query)
             if total_query["$and"] == [{'$or': []}] or total_query['$and'] == []:
                 total_query = {}
-    elif request_parameters != {}:
+    if request_parameters != {}:
+        LOG.debug(total_query)
         try:
-            if len(request_parameters["$and"]) >= 1:
+            if len(request_parameters["$or"]) >= 1:
                 array_of_biosamples2=[]
                 array_of_biosamples=[]
-                for reqpam in request_parameters["$and"]:
+                for reqpam in request_parameters["$or"]:
                     biosample_ids = client.beacon.genomicVariations.find(reqpam, {"caseLevelData.biosampleId": 1, "_id": 0})
                     for biosample in biosample_ids:
                         for bioitem in biosample['caseLevelData']:
@@ -81,7 +82,7 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
                 partial_query={}
                 partial_query['$or']=[]
                 for item in array_of_biosamples2:
-                    if dict_counts[item] == len(request_parameters["$and"]):
+                    if dict_counts[item] == len(request_parameters["$or"]):
                         partial_query['$or'].append({"id": item})
 
                 mongo_collection=client.beacon.biosamples
@@ -95,8 +96,12 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
                     def_list.append(new_id)
                 partial_query={}
                 partial_query['$or']=def_list
-                total_query["$and"]=[]
-                total_query["$and"].append(partial_query)
+                
+                try:
+                    total_query["$and"].append(partial_query)
+                except Exception:
+                    total_query["$and"]=[]
+                    total_query["$and"].append(partial_query)
         except Exception:
             partial_query = {}
             LOG.debug(request_parameters)
@@ -134,7 +139,11 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
                 except Exception:
                     partial_query={}
                     partial_query['$or']=def_list
-            total_query["$and"]=[]
+            try:
+                total_query["$and"].append(partial_query)
+            except Exception:
+                total_query["$and"]=[]
+                total_query["$and"].append(partial_query)
             total_query["$and"].append(partial_query)
             #LOG.debug(query)
             if total_query["$and"] == [{'$or': []}] or total_query['$and'] == []:
@@ -606,6 +615,7 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                     query['$or']=[]
 
                 if scope == 'genomicVariations' and collection == 'individuals':
+                    LOG.debug(query)
                     query_term = filter.id
                     query_id={}
                     query_id[query_term]=filter.value

@@ -82,7 +82,7 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
     collection = 'g_variants'
     #LOG.debug("Request parameters len = {}".format(len(qparams.query.request_parameters)))
     if len(qparams.query.request_parameters) > 0 and "$and" not in query:
-        query["$or"] = []
+        query["$and"] = []
     if isinstance(qparams.query.request_parameters, list):
         query={}
         query["$or"]=[]

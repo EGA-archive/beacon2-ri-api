@@ -190,7 +190,7 @@ def get_docs_by_response_type(include: str, query: dict, datasets_dict: dict, da
         count=0
         LOG.debug(query)
         #LOG.debug(count)
-        query_count=query
+        query_count={}
         i=1
         query_count["$or"]=[]
         LOG.debug(query)
