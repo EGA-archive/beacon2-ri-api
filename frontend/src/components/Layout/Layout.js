@@ -457,7 +457,7 @@ function Layout (props) {
 
     let objectGene = {
       geneID: geneID,
-      aminoacid: aminoacid,
+      aminoacid: aminoacid2,
       assemblyId: assemblyId3,
       variantType: variantType2,
       variantMinLength: variantMinLength2,
@@ -468,7 +468,7 @@ function Layout (props) {
     geneModuleArray.push(objectGene)
 
     setGeneId('')
-    setAminoacid('')
+    setAminoacid2('')
     setAssemblyId3('')
     setVariantType2('')
     setVariantMinLength2('')
@@ -901,6 +901,7 @@ function Layout (props) {
                           </div>
                           <h13>Gene module</h13>
                           <h14>{element.geneID}</h14>
+                          <h14>{element.aminoacid}</h14>
                           <h14>{element.variantType}</h14>
                           <h14>{element.assemblyId}</h14>
                           <h14>{element.variantMinLength}</h14>
@@ -1202,8 +1203,8 @@ function Layout (props) {
                       <input
                         className='inputVariants'
                         type='text'
-                        value={aminoacid}
-                        onChange={handleChangeAminoacid}
+                        value={aminoacid2}
+                        onChange={handleChangeAminoacid2}
                       ></input>
                     </div>
                     <div>
