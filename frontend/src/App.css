@@ -131,6 +131,7 @@ p a {
   font-variant-caps: all-petite-caps;
 }
 
+
 .variantsForm {
   margin-top: 10px;
   display: flex;
@@ -140,6 +141,9 @@ p a {
   align-items: center;
   margin-left: -70px;
 }
+
+
+
 
 .variantsFormVariant {
   margin-top: -14px;
@@ -410,10 +414,10 @@ h14 {
   height: 24px;
   border: 0.5px solid #dfdfdf;
   border-radius: 2px;
-  margin-bottom: 17px;
+  margin-bottom: 10px;
   font-size: 11.5px;
   padding: 5px;
-  box-shadow: rgba(187, 184, 184, 0.16) 0px 1px 4px;
+  box-shadow: rgb(234 221 221 / 16%) 0px 1px 4px;
 }
 
 .labelVariants {
@@ -443,7 +447,6 @@ h14 {
   width: 100%;
   display: flex;
   justify-content: flex-end;
-  margin-top: -23px;
 }
 
 .buttonAlphanum {
@@ -587,9 +590,8 @@ h14 {
 }
 
 .basesSection {
-  margin-bottom: 15px;
   border: solid 1px #dadada;
-  margin-top: 15px;
+
   box-shadow: rgba(207, 192, 192, 0.15) 1.4px 1.4px 2.2px;
 }
 
@@ -1304,7 +1306,6 @@ h5 {
   outline: none !important;
   padding: 7px !important;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-
 }
 
 .ReactModal__Content--after-open p {
@@ -1465,7 +1466,7 @@ h5 {
     height: 24px;
     border: 1.5px solid #dfdfdf;
     border-radius: 2px;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     font-size: 12px;
   }
 
