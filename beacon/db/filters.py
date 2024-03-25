@@ -625,7 +625,11 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                     original_id="biosampleId"
                     def_list=[]
                     for iditem in biosample_ids:
-                        for id_item in iditem['caseLevelData']:
+                        try:
+                            caseLevelDatalist=iditem['caseLevelData']
+                        except Exception:
+                            caseLevelDatalist=[]
+                        for id_item in caseLevelDatalist:
                             if isinstance(id_item, dict):
                                 new_id={}
                                 new_id[final_id] = id_item[original_id]
