@@ -631,13 +631,14 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                             caseLevelDatalist=[]
                         for id_item in caseLevelDatalist:
                             if isinstance(id_item, dict):
-                                new_id={}
-                                new_id[final_id] = id_item[original_id]
-                                try:
-                                    #LOG.debug(new_id)
-                                    query['$or'].append(new_id)
-                                except Exception:
-                                    def_list.append(new_id)
+                                if id_item != {}:
+                                    new_id={}
+                                    new_id[final_id] = id_item[original_id]
+                                    try:
+                                        #LOG.debug(new_id)
+                                        query['$or'].append(new_id)
+                                    except Exception:
+                                        def_list.append(new_id)
                     if def_list != []:
                         try:
                             query['$or'].def_list
