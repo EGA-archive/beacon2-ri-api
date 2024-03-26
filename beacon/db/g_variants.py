@@ -203,9 +203,16 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
 def get_variants(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'g_variants'
     mongo_collection = client.beacon.genomicVariations
-    query, hola = apply_request_parameters({}, qparams)
-    LOG.debug(query)
-    query = apply_filters(query, qparams.query.filters, collection,{})
+    parameters_as_filters=False
+    query_parameters, parameters_as_filters = apply_request_parameters({}, qparams)
+    LOG.debug(query_parameters)
+    LOG.debug(parameters_as_filters)
+    if parameters_as_filters == True:
+        query, parameters_as_filters = apply_request_parameters({}, qparams)
+        query_parameters={}
+    else:
+        query=query_parameters
+    query = apply_filters(query, qparams.query.filters, collection,query_parameters)
     LOG.debug(query)
     include = qparams.query.include_resultset_responses
     limit = qparams.query.pagination.limit

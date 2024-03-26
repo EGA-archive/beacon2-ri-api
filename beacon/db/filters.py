@@ -202,7 +202,7 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
                 #LOG.debug(filter)
                 filter = AlphanumericFilter(**filter)
                 LOG.debug("Alphanumeric filter: %s %s %s", filter.id, filter.operator, filter.value)
-                partial_query = apply_alphanumeric_filter(partial_query, filter, collection, request_parameters)
+                partial_query = apply_alphanumeric_filter(partial_query, filter, collection)
             elif "includeDescendantTerms" not in filter and '.' not in filter["id"] and filter["id"].isupper():
                 filter=OntologyFilter(**filter)
                 filter.include_descendant_terms=True
@@ -220,7 +220,7 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
             else:
                 filter = CustomFilter(**filter)
                 LOG.debug("Custom filter: %s", filter.id)
-                partial_query = apply_custom_filter(partial_query, filter, collection, request_parameters)
+                partial_query = apply_custom_filter(partial_query, filter, collection)
             #LOG.debug(partial_query)
             total_query["$and"].append(partial_query)
             #LOG.debug(query)
@@ -274,49 +274,55 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
                     total_query["$and"]=[]
                     total_query["$and"].append(partial_query)
         except Exception:
-            partial_query = {}
-            LOG.debug(request_parameters)
-            biosample_ids = client.beacon.genomicVariations.find(request_parameters, {"caseLevelData.biosampleId": 1, "_id": 0})
-            LOG.debug(biosample_ids)
-            final_id='id'
-            original_id="biosampleId"
-            def_list=[]
-            partial_query['$or']=[]
-            for iditem in biosample_ids:
-                for id_item in iditem['caseLevelData']:
-                    if isinstance(id_item, dict):
-                        new_id={}
-                        new_id[final_id] = id_item[original_id]
-                        try:
-                            partial_query['$or'].append(new_id)
-                        except Exception:
-                            def_list.append(new_id)
-            LOG.debug(partial_query)
-            
-            mongo_collection=client.beacon.biosamples
-            original_id="individualId"
-            join_ids2=list(join_query(mongo_collection, partial_query, original_id))
-            def_list=[]
-            final_id="id"
-            for id_item in join_ids2:
-                new_id={}
-                new_id[final_id] = id_item.pop(original_id)
-                def_list.append(new_id)
-            partial_query={}
-            partial_query['$or']=def_list
-            if def_list != []:
+            if collection != 'g_variants':
+                partial_query = {}
+                LOG.debug(request_parameters)
+                biosample_ids = client.beacon.genomicVariations.find(request_parameters, {"caseLevelData.biosampleId": 1, "_id": 0})
+                LOG.debug(biosample_ids)
+                final_id='id'
+                original_id="biosampleId"
+                def_list=[]
+                partial_query['$or']=[]
+                for iditem in biosample_ids:
+                    for id_item in iditem['caseLevelData']:
+                        if isinstance(id_item, dict):
+                            new_id={}
+                            new_id[final_id] = id_item[original_id]
+                            try:
+                                partial_query['$or'].append(new_id)
+                            except Exception:
+                                def_list.append(new_id)
+                LOG.debug(partial_query)
+                
+                mongo_collection=client.beacon.biosamples
+                original_id="individualId"
+                join_ids2=list(join_query(mongo_collection, partial_query, original_id))
+                def_list=[]
+                final_id="id"
+                for id_item in join_ids2:
+                    new_id={}
+                    new_id[final_id] = id_item.pop(original_id)
+                    def_list.append(new_id)
+                partial_query={}
+                partial_query['$or']=def_list
+                if def_list != []:
+                    try:
+                        partial_query['$or'].def_list
+                    except Exception:
+                        partial_query={}
+                        partial_query['$or']=def_list
                 try:
-                    partial_query['$or'].def_list
+                    total_query["$and"].append(partial_query)
                 except Exception:
-                    partial_query={}
-                    partial_query['$or']=def_list
-            try:
-                total_query["$and"].append(partial_query)
-            except Exception:
-                total_query["$and"]=[]
-                total_query["$and"].append(partial_query)
-            total_query["$and"].append(partial_query)
-            #LOG.debug(query)
+                    total_query["$and"]=[]
+                    total_query["$and"].append(partial_query)
+                #LOG.debug(query)
+            else:
+                try:
+                    total_query["$and"].append(request_parameters)
+                except Exception:
+                    total_query["$and"]=[]
+                    total_query["$and"].append(request_parameters)
             if total_query["$and"] == [{'$or': []}] or total_query['$and'] == []:
                 total_query = {}
 
@@ -544,7 +550,7 @@ def format_operator(operator: Operator) -> str:
         # operator == Operator.LESS_EQUAL
         return "$lte"
 
-def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collection: str, request_parameters: dict) -> dict:
+def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collection: str) -> dict:
     #LOG.debug(filter.value)
     scope = filter.scope
     formatted_value = format_value(filter.value)
@@ -652,7 +658,7 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                 query_id[query_term]=filter.value
                 query['$or'].append(query_id) 
                 
-                query=cross_query(query, scope, collection, request_parameters)
+                query=cross_query(query, scope, collection, {})
 
                 '''
                     query_term = filter.id + '.' + 'label'
