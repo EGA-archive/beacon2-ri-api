@@ -191,8 +191,8 @@ def get_variants_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
     query, parameters_as_filters = apply_request_parameters(query, qparams)
     query = query = apply_filters(query, qparams.query.filters, collection, {})
     run_ids = client.beacon.runs \
-        .find_one(query, {"individualId": 1, "_id": 0})
-    query = {"caseLevelData.biosampleId": run_ids["individualId"]}
+        .find_one(query, {"biosampleId": 1, "_id": 0})
+    query = {"caseLevelData.biosampleId": run_ids["biosampleId"]}
     query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.GENOMICVARIATIONS

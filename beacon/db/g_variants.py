@@ -254,8 +254,15 @@ def get_biosamples_of_variant(entry_id: Optional[str], qparams: RequestParams, d
     collection = 'g_variants'
     mongo_collection = client.beacon.biosamples
     query = {"$and": [{"variantInternalId": entry_id}]}
-    query = apply_request_parameters(query, qparams)
-    query = query = apply_filters(query, qparams.query.filters, collection, {})
+    query_parameters, parameters_as_filters = apply_request_parameters({}, qparams)
+    LOG.debug(query_parameters)
+    LOG.debug(parameters_as_filters)
+    if parameters_as_filters == True:
+        query, parameters_as_filters = apply_request_parameters({}, qparams)
+        query_parameters={}
+    else:
+        query=query_parameters
+    query = apply_filters(query, qparams.query.filters, collection,query_parameters)
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
@@ -282,8 +289,15 @@ def get_runs_of_variant(entry_id: Optional[str], qparams: RequestParams, dataset
     collection = 'g_variants'
     mongo_collection = client.beacon.runs
     query = {"$and": [{"variantInternalId": entry_id}]}
-    query = apply_request_parameters(query, qparams)
-    query = query = apply_filters(query, qparams.query.filters, collection, {})
+    query_parameters, parameters_as_filters = apply_request_parameters({}, qparams)
+    LOG.debug(query_parameters)
+    LOG.debug(parameters_as_filters)
+    if parameters_as_filters == True:
+        query, parameters_as_filters = apply_request_parameters({}, qparams)
+        query_parameters={}
+    else:
+        query=query_parameters
+    query = apply_filters(query, qparams.query.filters, collection,query_parameters)
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
@@ -311,8 +325,15 @@ def get_analyses_of_variant(entry_id: Optional[str], qparams: RequestParams, dat
     collection = 'g_variants'
     mongo_collection = client.beacon.analyses
     query = {"$and": [{"variantInternalId": entry_id}]}
-    query = apply_request_parameters(query, qparams)
-    query = query = apply_filters(query, qparams.query.filters, collection, {})
+    query_parameters, parameters_as_filters = apply_request_parameters({}, qparams)
+    LOG.debug(query_parameters)
+    LOG.debug(parameters_as_filters)
+    if parameters_as_filters == True:
+        query, parameters_as_filters = apply_request_parameters({}, qparams)
+        query_parameters={}
+    else:
+        query=query_parameters
+    query = apply_filters(query, qparams.query.filters, collection,query_parameters)
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
@@ -353,8 +374,15 @@ def get_individuals_of_variant(entry_id: Optional[str], qparams: RequestParams, 
     collection = 'g_variants'
     mongo_collection = client.beacon.individuals
     query = {"$and": [{"variantInternalId": entry_id}]}
-    query = apply_request_parameters(query, qparams)
-    query = query = apply_filters(query, qparams.query.filters, collection, {})
+    query_parameters, parameters_as_filters = apply_request_parameters({}, qparams)
+    LOG.debug(query_parameters)
+    LOG.debug(parameters_as_filters)
+    if parameters_as_filters == True:
+        query, parameters_as_filters = apply_request_parameters({}, qparams)
+        query_parameters={}
+    else:
+        query=query_parameters
+    query = apply_filters(query, qparams.query.filters, collection,query_parameters)
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
@@ -362,6 +390,10 @@ def get_individuals_of_variant(entry_id: Optional[str], qparams: RequestParams, 
         finalid=biosample_id[0]["biosampleId"]
     except Exception:
         finalid=biosample_id["biosampleId"]
+    query = {"id": finalid}
+    individual_id = client.beacon.biosamples \
+        .find_one(query, {"individualId": 1, "_id": 0})
+    finalid=individual_id["individualId"]
     query = {"id": finalid}
     query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)

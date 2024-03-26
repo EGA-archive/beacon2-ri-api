@@ -1,7 +1,7 @@
 import collections
 from typing import List, Union
 import re
-import json
+import yaml
 from copy import deepcopy
 
 from beacon.request import ontologies
@@ -58,7 +58,7 @@ def cross_query(query: dict, scope: str, collection: str, request_parameters: di
                 LOG.debug(query)
         LOG.debug(query)
     else:
-        def_list=[]
+        def_list=[]                
         if scope == 'individuals' and collection == 'g_variants':
             mongo_collection=client.beacon.individuals
             original_id="id"
@@ -76,6 +76,17 @@ def cross_query(query: dict, scope: str, collection: str, request_parameters: di
             def_list=[]
             final_id="caseLevelData.biosampleId"
             for id_item in join_ids2:
+                new_id={}
+                new_id[final_id] = id_item.pop(original_id)
+                def_list.append(new_id)
+            query={}
+            query['$or']=def_list
+        elif scope == 'individuals' and collection in ['runs','biosamples', 'analyses']:
+            mongo_collection=client.beacon.individuals
+            original_id="id"
+            join_ids=list(join_query(mongo_collection, query, original_id))
+            final_id="individualId"
+            for id_item in join_ids:
                 new_id={}
                 new_id[final_id] = id_item.pop(original_id)
                 def_list.append(new_id)
@@ -122,7 +133,10 @@ def cross_query(query: dict, scope: str, collection: str, request_parameters: di
                     query['$or']=def_list
         elif scope == 'genomicVariations' and collection in ['analyses', 'biosamples', 'runs']:
             biosample_ids = client.beacon.genomicVariations.find(query, {"caseLevelData.biosampleId": 1, "_id": 0})
-            final_id='biosampleId'
+            if collection == 'biosamples':
+                final_id='id'
+            else:
+                final_id='biosampleId'
             original_id="biosampleId"
             def_list=[]
             for iditem in biosample_ids:
@@ -141,45 +155,74 @@ def cross_query(query: dict, scope: str, collection: str, request_parameters: di
                 except Exception:
                     query={}
                     query['$or']=def_list
-        elif scope == 'runs' and collection == 'g_variants':
+        elif scope == 'runs' and collection != 'runs':
             mongo_collection=client.beacon.runs
-            original_id="biosampleId"
-            join_ids=list(join_query(mongo_collection, query, original_id))
-            final_id="caseLevelData.biosampleId"
+            if collection == 'g_variants':
+                original_id="biosampleId"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="caseLevelData.biosampleId"
+            elif collection == 'individuals':
+                original_id="individualId"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="id"
+            elif collection == 'analyses':
+                original_id="biosampleId"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="biosampleId"
+            elif collection == 'biosamples':
+                original_id="biosampleId"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="id"
             for id_item in join_ids:
                 new_id={}
                 new_id[final_id] = id_item.pop(original_id)
                 def_list.append(new_id)
             query={}
             query['$or']=def_list
-        elif scope == 'runs' and collection == 'individuals':
-            LOG.debug(query)
-            mongo_collection=client.beacon.runs
-            original_id="individualId"
-            join_ids=list(join_query(mongo_collection, query, original_id))
-            final_id="id"
+        elif scope == 'analyses' and collection != 'analyses':
+            mongo_collection=client.beacon.analyses
+            if collection == 'g_variants':
+                original_id="biosampleId"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="caseLevelData.biosampleId"
+            elif collection == 'individuals':
+                original_id="individualId"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="id"
+            elif collection == 'runs':
+                original_id="biosampleId"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="biosampleId"
+            elif collection == 'biosamples':
+                original_id="biosampleId"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="id"
             for id_item in join_ids:
                 new_id={}
                 new_id[final_id] = id_item.pop(original_id)
                 def_list.append(new_id)
             query={}
             query['$or']=def_list
-        elif scope == 'runs' and collection in ['biosamples', 'analyses']:
-            mongo_collection=client.beacon.runs
-            original_id="biosampleId"
-            join_ids=list(join_query(mongo_collection, query, original_id))
-            final_id="biosampleId"
-            for id_item in join_ids:
-                new_id={}
-                new_id[final_id] = id_item.pop(original_id)
-                def_list.append(new_id)
+        elif scope == 'biosamples' and collection != 'biosamples':
+            mongo_collection=client.beacon.biosamples
+            if collection == 'g_variants':
+                original_id="id"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="caseLevelData.biosampleId"
+            elif collection == 'individuals':
+                original_id="individualId"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="id"
+            elif collection == 'analyses':
+                original_id="id"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="biosampleId"
+            elif collection == 'runs':
+                original_id="id"
+                join_ids=list(join_query(mongo_collection, query, original_id))
+                final_id="biosampleId"
             query={}
             query['$or']=def_list
-        elif scope == 'individuals' and collection in ['runs','biosamples', 'analyses']:
-            mongo_collection=client.beacon.individuals
-            original_id="id"
-            join_ids=list(join_query(mongo_collection, query, original_id))
-            final_id="individualId"
             for id_item in join_ids:
                 new_id={}
                 new_id[final_id] = id_item.pop(original_id)
@@ -228,6 +271,7 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
             #LOG.debug(query)
             if total_query["$and"] == [{'$or': []}] or total_query['$and'] == []:
                 total_query = {}
+
     if request_parameters != {}:
         LOG.debug(total_query)
         try:
@@ -327,6 +371,8 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
                     total_query["$and"].append(request_parameters)
             if total_query["$and"] == [{'$or': []}] or total_query['$and'] == []:
                 total_query = {}
+    if total_query == {} and query != {}:
+        total_query=query
 
     LOG.debug(total_query)
     return total_query
@@ -712,9 +758,13 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
 
 def apply_custom_filter(query: dict, filter: CustomFilter, collection:str) -> dict:
     #LOG.debug(query)
+
     scope=filter.scope
     value_splitted = filter.id.split(':')
-    query_term = value_splitted[0] + '.label'
+    if value_splitted[0] in conf.alphanumeric_terms:
+        query_term = value_splitted[0]
+    else:
+        query_term = value_splitted[0] + '.label'
     query[query_term]=value_splitted[1]
     query=cross_query(query, scope, collection, {})
 
