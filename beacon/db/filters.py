@@ -644,6 +644,7 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                 query_id={}
                 query_id[query_term]=regex_dict
                 query['$or'].append(query_id)
+                query=cross_query(query, scope, collection, {})
                 
             else:
                 try: 
@@ -657,8 +658,8 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                 query_id={}
                 query_id[query_term]=filter.value
                 query['$or'].append(query_id) 
-                
                 query=cross_query(query, scope, collection, {})
+                
 
                 '''
                     query_term = filter.id + '.' + 'label'
