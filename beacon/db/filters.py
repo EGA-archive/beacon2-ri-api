@@ -9,6 +9,8 @@ from beacon.request.model import AlphanumericFilter, CustomFilter, OntologyFilte
 from beacon.db.utils import get_documents, join_query
 from beacon.db import client
 
+from beacon import conf
+
 import logging
 
 LOG = logging.getLogger(__name__)
@@ -625,6 +627,10 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
             query[filter.id] = { formatted_operator: formatted_value }
 
     elif isinstance(formatted_value,str):
+        if filter.id in conf.alphanumeric_terms:
+            query_term = filter.id
+        else:
+            query_term = filter.id + '.' + 'label'
         if formatted_operator == "$eq":
             if '%' in filter.value:
                 try: 
@@ -637,10 +643,6 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                 value_splitted=filter.value.split('%')
                 regex_dict={}
                 regex_dict['$regex']=value_splitted[1]
-                if filter.id == 'libraryStrategy' or filter.id == 'molecularAttributes.geneIds':
-                    query_term = filter.id
-                else:
-                    query_term = filter.id + '.' + 'label'
                 query_id={}
                 query_id[query_term]=regex_dict
                 query['$or'].append(query_id)
@@ -654,48 +656,12 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                         query['$or']=[]
                 except Exception:
                     query['$or']=[]
-                query_term = filter.id
                 query_id={}
                 query_id[query_term]=filter.value
                 query['$or'].append(query_id) 
                 query=cross_query(query, scope, collection, {})
                 
 
-                '''
-                    query_term = filter.id + '.' + 'label'
-                    query_id={}
-                    query_id[query_term]=filter.value
-                    query['$or'].append(query_id) 
-                
-            LOG.debug(collection)
-            LOG.debug(scope)
-            if scope == 'runs' and collection == 'individuals':
-                #LOG.debug(query)
-                mongo_collection=client.beacon.runs
-                original_id="individualId"
-                join_ids=list(join_query(mongo_collection, query, original_id))
-                final_id="id"
-                def_list=[]
-                for id_item in join_ids:
-                    new_id={}
-                    new_id[final_id] = id_item.pop(original_id)
-                    def_list.append(new_id)
-                query={}
-                query['$or']=def_list
-            elif scope == 'runs' and collection == 'g_variants':
-                LOG.debug(query)
-                mongo_collection=client.beacon.runs
-                original_id="biosampleId"
-                join_ids=list(join_query(mongo_collection, query, original_id))
-                final_id="caseLevelData.biosampleId"
-                def_list=[]
-                for id_item in join_ids:
-                    new_id={}
-                    new_id[final_id] = id_item.pop(original_id)
-                    def_list.append(new_id)
-                query={}
-                query['$or']=def_list
-                '''
         elif formatted_operator == "$ne":
             if '%' in filter.value:
                 try: 
@@ -708,7 +674,6 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                 value_splitted=filter.value.split('%')
                 regex_dict={}
                 regex_dict['$regex']=value_splitted[1]
-                query_term = filter.id + '.' + 'label'
                 query_id={}
                 query_id[query_term]=regex_dict
                 query['$nor'].append(query_id)
@@ -721,7 +686,6 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                 except Exception:
                     query['$nor']=[]
 
-                query_term = filter.id + '.' + 'label'
                 query_id={}
                 query_id[query_term]=filter.value
                 query['$nor'].append(query_id) 
@@ -737,31 +701,9 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
         dict_measures={}
         dict_measures['measures']=dict_elemmatch
         query = dict_measures
-        def_list=[]
         LOG.debug(collection)
-        if collection == 'g_variants':
-            mongo_collection=client.beacon.individuals
-            original_id="id"
-            join_ids=list(join_query(mongo_collection, query, original_id))
-            final_id="individualId"
-            for id_item in join_ids:
-                new_id={}
-                new_id[final_id] = id_item.pop(original_id)
-                def_list.append(new_id)
-            query={}
-            query['$or']=def_list
-            mongo_collection=client.beacon.biosamples
-            original_id="id"
-            join_ids2=list(join_query(mongo_collection, query, original_id))
-            def_list=[]
-            final_id="caseLevelData.biosampleId"
-            for id_item in join_ids2:
-                new_id={}
-                new_id[final_id] = id_item.pop(original_id)
-                def_list.append(new_id)
-            query={}
-            query['$or']=def_list
-            LOG.debug(query)
+        query=cross_query(query, scope, collection, {})
+        LOG.debug(query)
 
     #LOG.debug("QUERY: %s", query)
     return query
@@ -770,10 +712,11 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
 
 def apply_custom_filter(query: dict, filter: CustomFilter, collection:str) -> dict:
     #LOG.debug(query)
-
+    scope=filter.scope
     value_splitted = filter.id.split(':')
     query_term = value_splitted[0] + '.label'
     query[query_term]=value_splitted[1]
+    query=cross_query(query, scope, collection, {})
 
 
     #LOG.debug("QUERY: %s", query)
