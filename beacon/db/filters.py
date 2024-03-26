@@ -32,7 +32,7 @@ def cross_query(query: dict, scope: str, collection: str, request_parameters: di
                 if isinstance(iditem, dict):
                     if iditem != {}:
                         new_id={}
-                        new_id[final_id] = id_item['caseLevelData'][original_id]
+                        new_id[final_id] = iditem['caseLevelData'][original_id]
                         try:
                             #LOG.debug(new_id)
                             subquery['$or'].append(new_id)
@@ -102,7 +102,7 @@ def cross_query(query: dict, scope: str, collection: str, request_parameters: di
                 if isinstance(iditem, dict):
                     if iditem != {}:
                         new_id={}
-                        new_id[final_id] = id_item['caseLevelData'][original_id]
+                        new_id[final_id] = iditem['caseLevelData'][original_id]
                         try:
                             #LOG.debug(new_id)
                             query['$or'].append(new_id)
@@ -143,7 +143,7 @@ def cross_query(query: dict, scope: str, collection: str, request_parameters: di
                 if isinstance(iditem, dict):
                     if iditem != {}:
                         new_id={}
-                        new_id[final_id] = id_item['caseLevelData'][original_id]
+                        new_id[final_id] = iditem['caseLevelData'][original_id]
                         try:
                             #LOG.debug(new_id)
                             query['$or'].append(new_id)
@@ -333,7 +333,7 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
                     if isinstance(iditem, dict):
                         if iditem != {}:
                             new_id={}
-                            new_id[final_id] = id_item['caseLevelData'][original_id]
+                            new_id[final_id] = iditem['caseLevelData'][original_id]
                             try:
                                 #LOG.debug(new_id)
                                 partial_query['$or'].append(new_id)
