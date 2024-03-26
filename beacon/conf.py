@@ -127,3 +127,5 @@ autocomplete_ellipsis = '...'
 ontologies_folder = "deploy/ontologies/"
 
 #json_buffer_size = 10000
+
+alphanumeric_terms = ['libraryStrategy', 'molecularAttributes.geneIds']

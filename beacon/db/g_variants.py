@@ -83,54 +83,136 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
     #LOG.debug("Request parameters len = {}".format(len(qparams.query.request_parameters)))
     if len(qparams.query.request_parameters) > 0 and "$and" not in query:
         query["$and"] = []
-    for k, v in qparams.query.request_parameters.items():
-        if k == "start":
-            if isinstance(v, str):
-                v = v.split(',')
-            filters = generate_position_filter_start(k, v)
-            for filter in filters:
-                query["$and"].append(apply_alphanumeric_filter({}, filter, collection))
-        elif k == "end":
-            if isinstance(v, str):
-                v = v.split(',')
-            filters = generate_position_filter_end(k, v)
-            for filter in filters:
-                query["$and"].append(apply_alphanumeric_filter({}, filter, collection))
-        elif k == "datasets":
-            pass
-        elif k == "variantMinLength":
-            try:
-                query["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
-                    id=VARIANTS_PROPERTY_MAP[k],
-                    value='min'+v
-                ), collection))
-            except KeyError:
-                raise web.HTTPNotFound
-        elif k == "variantMaxLength":
-            try:
-                query["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
-                    id=VARIANTS_PROPERTY_MAP[k],
-                    value='max'+v
-                ), collection))
-            except KeyError:
-                raise web.HTTPNotFound    
-        else:
-            try:
-                query["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
-                    id=VARIANTS_PROPERTY_MAP[k],
-                    value=v
-                ), collection))
-            except KeyError:
-                raise web.HTTPNotFound
-    return query
+    if isinstance(qparams.query.request_parameters, list):
+        query={}
+        query["$or"]=[]
+        for reqparam in qparams.query.request_parameters:
+            subquery={}
+            subquery["$and"] = []
+            for k, v in reqparam.items():
+                if k == "start":
+                    if isinstance(v, str):
+                        v = v.split(',')
+                    filters = generate_position_filter_start(k, v)
+                    for filter in filters:
+                        subquery["$and"].append(apply_alphanumeric_filter({}, filter, collection))
+                elif k == "end":
+                    if isinstance(v, str):
+                        v = v.split(',')
+                    filters = generate_position_filter_end(k, v)
+                    for filter in filters:
+                        subquery["$and"].append(apply_alphanumeric_filter({}, filter, collection))
+                elif k == "datasets":
+                    pass
+                elif k == "variantMinLength":
+                    try:
+                        subquery["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
+                            id=VARIANTS_PROPERTY_MAP[k],
+                            value='min'+v
+                        ), collection))
+                    except KeyError:
+                        raise web.HTTPNotFound
+                elif k == "variantMaxLength":
+                    try:
+                        subquery["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
+                            id=VARIANTS_PROPERTY_MAP[k],
+                            value='max'+v
+                        ), collection))
+                    except KeyError:
+                        raise web.HTTPNotFound    
+                elif k != 'filters':
+                    try:
+                        subquery["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
+                            id=VARIANTS_PROPERTY_MAP[k],
+                            value=v
+                        ), collection))
+                    except KeyError:
+                        raise web.HTTPNotFound
+
+                elif k == 'filters':
+                    v_list=[]
+                    if ',' in v:
+                        v_list =v.split(',')
+                        LOG.debug(v_list)
+                    else:
+                        v_list.append(v)
+                    for id in v_list:
+                        v_dict={}
+                        v_dict['id']=id
+                        qparams.query.filters.append(v_dict)        
+                    return query, True
+            query["$or"].append(subquery)
+    else:
+        for k, v in qparams.query.request_parameters.items():
+            if k == "start":
+                if isinstance(v, str):
+                    v = v.split(',')
+                filters = generate_position_filter_start(k, v)
+                for filter in filters:
+                    query["$and"].append(apply_alphanumeric_filter({}, filter, collection))
+            elif k == "end":
+                if isinstance(v, str):
+                    v = v.split(',')
+                filters = generate_position_filter_end(k, v)
+                for filter in filters:
+                    query["$and"].append(apply_alphanumeric_filter({}, filter, collection))
+            elif k == "datasets":
+                pass
+            elif k == "variantMinLength":
+                try:
+                    query["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
+                        id=VARIANTS_PROPERTY_MAP[k],
+                        value='min'+v
+                    ), collection))
+                except KeyError:
+                    raise web.HTTPNotFound
+            elif k == "variantMaxLength":
+                try:
+                    query["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
+                        id=VARIANTS_PROPERTY_MAP[k],
+                        value='max'+v
+                    ), collection))
+                except KeyError:
+                    raise web.HTTPNotFound    
+            elif k != 'filters':
+                try:
+                    query["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
+                        id=VARIANTS_PROPERTY_MAP[k],
+                        value=v
+                    ), collection))
+                except KeyError:
+                    raise web.HTTPNotFound
+
+            elif k == 'filters':
+                v_list=[]
+                if ',' in v:
+                    v_list =v.split(',')
+                    LOG.debug(v_list)
+                else:
+                    v_list.append(v)
+                for id in v_list:
+                    v_dict={}
+                    v_dict['id']=id
+                    qparams.query.filters.append(v_dict)        
+                return query, True
+
+
+    return query, False
 
 
 def get_variants(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'g_variants'
     mongo_collection = client.beacon.genomicVariations
-    query = apply_request_parameters({}, qparams)
-    LOG.debug(query)
-    query = apply_filters(query, qparams.query.filters, collection,{})
+    parameters_as_filters=False
+    query_parameters, parameters_as_filters = apply_request_parameters({}, qparams)
+    LOG.debug(query_parameters)
+    LOG.debug(parameters_as_filters)
+    if parameters_as_filters == True:
+        query, parameters_as_filters = apply_request_parameters({}, qparams)
+        query_parameters={}
+    else:
+        query=query_parameters
+    query = apply_filters(query, qparams.query.filters, collection,query_parameters)
     LOG.debug(query)
     include = qparams.query.include_resultset_responses
     limit = qparams.query.pagination.limit
@@ -172,8 +254,15 @@ def get_biosamples_of_variant(entry_id: Optional[str], qparams: RequestParams, d
     collection = 'g_variants'
     mongo_collection = client.beacon.biosamples
     query = {"$and": [{"variantInternalId": entry_id}]}
-    query = apply_request_parameters(query, qparams)
-    query = query = apply_filters(query, qparams.query.filters, collection, {})
+    query_parameters, parameters_as_filters = apply_request_parameters({}, qparams)
+    LOG.debug(query_parameters)
+    LOG.debug(parameters_as_filters)
+    if parameters_as_filters == True:
+        query, parameters_as_filters = apply_request_parameters({}, qparams)
+        query_parameters={}
+    else:
+        query=query_parameters
+    query = apply_filters(query, qparams.query.filters, collection,query_parameters)
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
@@ -200,8 +289,15 @@ def get_runs_of_variant(entry_id: Optional[str], qparams: RequestParams, dataset
     collection = 'g_variants'
     mongo_collection = client.beacon.runs
     query = {"$and": [{"variantInternalId": entry_id}]}
-    query = apply_request_parameters(query, qparams)
-    query = query = apply_filters(query, qparams.query.filters, collection, {})
+    query_parameters, parameters_as_filters = apply_request_parameters({}, qparams)
+    LOG.debug(query_parameters)
+    LOG.debug(parameters_as_filters)
+    if parameters_as_filters == True:
+        query, parameters_as_filters = apply_request_parameters({}, qparams)
+        query_parameters={}
+    else:
+        query=query_parameters
+    query = apply_filters(query, qparams.query.filters, collection,query_parameters)
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
@@ -229,8 +325,15 @@ def get_analyses_of_variant(entry_id: Optional[str], qparams: RequestParams, dat
     collection = 'g_variants'
     mongo_collection = client.beacon.analyses
     query = {"$and": [{"variantInternalId": entry_id}]}
-    query = apply_request_parameters(query, qparams)
-    query = query = apply_filters(query, qparams.query.filters, collection, {})
+    query_parameters, parameters_as_filters = apply_request_parameters({}, qparams)
+    LOG.debug(query_parameters)
+    LOG.debug(parameters_as_filters)
+    if parameters_as_filters == True:
+        query, parameters_as_filters = apply_request_parameters({}, qparams)
+        query_parameters={}
+    else:
+        query=query_parameters
+    query = apply_filters(query, qparams.query.filters, collection,query_parameters)
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
@@ -271,8 +374,15 @@ def get_individuals_of_variant(entry_id: Optional[str], qparams: RequestParams, 
     collection = 'g_variants'
     mongo_collection = client.beacon.individuals
     query = {"$and": [{"variantInternalId": entry_id}]}
-    query = apply_request_parameters(query, qparams)
-    query = query = apply_filters(query, qparams.query.filters, collection, {})
+    query_parameters, parameters_as_filters = apply_request_parameters({}, qparams)
+    LOG.debug(query_parameters)
+    LOG.debug(parameters_as_filters)
+    if parameters_as_filters == True:
+        query, parameters_as_filters = apply_request_parameters({}, qparams)
+        query_parameters={}
+    else:
+        query=query_parameters
+    query = apply_filters(query, qparams.query.filters, collection,query_parameters)
     biosample_ids = client.beacon.genomicVariations \
         .find_one(query, {"caseLevelData.biosampleId": 1, "_id": 0})
     biosample_id=biosample_ids["caseLevelData"]
@@ -280,6 +390,10 @@ def get_individuals_of_variant(entry_id: Optional[str], qparams: RequestParams, 
         finalid=biosample_id[0]["biosampleId"]
     except Exception:
         finalid=biosample_id["biosampleId"]
+    query = {"id": finalid}
+    individual_id = client.beacon.biosamples \
+        .find_one(query, {"individualId": 1, "_id": 0})
+    finalid=individual_id["individualId"]
     query = {"id": finalid}
     query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)

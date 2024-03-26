@@ -121,3 +121,5 @@ autocomplete_ellipsis = '...'
 # Ontologies
 #
 ontologies_folder = "ontologies"
+
+alphanumeric_terms = ['libraryStrategy', 'molecularAttributes.geneIds']
