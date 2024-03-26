@@ -18,7 +18,7 @@ LOG = logging.getLogger(__name__)
 CURIE_REGEX = r'^([a-zA-Z0-9]*):\/?[a-zA-Z0-9]*$'
 
 def cross_query(query: dict, scope: str, collection: str, request_parameters: dict):
-    if scope == 'genomicVariations' and collection == 'g_variants' or scope == collection:
+    if scope == 'genomicVariation' and collection == 'g_variants' or scope == collection[0:-1]:
         LOG.debug(query)
         LOG.debug(request_parameters)
         subquery={}
@@ -59,7 +59,7 @@ def cross_query(query: dict, scope: str, collection: str, request_parameters: di
         LOG.debug(query)
     else:
         def_list=[]                
-        if scope == 'individuals' and collection == 'g_variants':
+        if scope == 'individual' and collection == 'g_variants':
             mongo_collection=client.beacon.individuals
             original_id="id"
             join_ids=list(join_query(mongo_collection, query, original_id))
@@ -81,7 +81,7 @@ def cross_query(query: dict, scope: str, collection: str, request_parameters: di
                 def_list.append(new_id)
             query={}
             query['$or']=def_list
-        elif scope == 'individuals' and collection in ['runs','biosamples', 'analyses']:
+        elif scope == 'individual' and collection in ['runs','biosamples', 'analyses']:
             mongo_collection=client.beacon.individuals
             original_id="id"
             join_ids=list(join_query(mongo_collection, query, original_id))
@@ -92,7 +92,7 @@ def cross_query(query: dict, scope: str, collection: str, request_parameters: di
                 def_list.append(new_id)
             query={}
             query['$or']=def_list
-        elif scope == 'genomicVariations' and collection == 'individuals':
+        elif scope == 'genomicVariation' and collection == 'individuals':
             biosample_ids = client.beacon.genomicVariations.find(query, {"caseLevelData.biosampleId": 1, "_id": 0})
             final_id='id'
             original_id="biosampleId"
@@ -131,7 +131,7 @@ def cross_query(query: dict, scope: str, collection: str, request_parameters: di
                 except Exception:
                     query={}
                     query['$or']=def_list
-        elif scope == 'genomicVariations' and collection in ['analyses', 'biosamples', 'runs']:
+        elif scope == 'genomicVariation' and collection in ['analyses', 'biosamples', 'runs']:
             biosample_ids = client.beacon.genomicVariations.find(query, {"caseLevelData.biosampleId": 1, "_id": 0})
             if collection == 'biosamples':
                 final_id='id'
@@ -155,7 +155,7 @@ def cross_query(query: dict, scope: str, collection: str, request_parameters: di
                 except Exception:
                     query={}
                     query['$or']=def_list
-        elif scope == 'runs' and collection != 'runs':
+        elif scope == 'run' and collection != 'runs':
             mongo_collection=client.beacon.runs
             if collection == 'g_variants':
                 original_id="biosampleId"
@@ -179,7 +179,7 @@ def cross_query(query: dict, scope: str, collection: str, request_parameters: di
                 def_list.append(new_id)
             query={}
             query['$or']=def_list
-        elif scope == 'analyses' and collection != 'analyses':
+        elif scope == 'analyse' and collection != 'analyses':
             mongo_collection=client.beacon.analyses
             if collection == 'g_variants':
                 original_id="biosampleId"
@@ -203,7 +203,7 @@ def cross_query(query: dict, scope: str, collection: str, request_parameters: di
                 def_list.append(new_id)
             query={}
             query['$or']=def_list
-        elif scope == 'biosamples' and collection != 'biosamples':
+        elif scope == 'biosample' and collection != 'biosamples':
             mongo_collection=client.beacon.biosamples
             if collection == 'g_variants':
                 original_id="id"
@@ -416,7 +416,7 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
         for doc_term in docs:
             LOG.debug(doc_term)
             label = doc_term['label']
-        if scope == 'genomicVariations' and collection == 'g_variants' or scope == collection:
+        if scope == 'genomicVariation' and collection == 'g_variants' or scope == collection:
             query_filtering={}
             query_filtering['$and']=[]
             query_filtering['$and'].append(dict_scope)
@@ -605,7 +605,7 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
     formatted_operator = format_operator(filter.operator)
     #LOG.debug(collection)
     #LOG.debug(filter.id)
-    if collection == 'g_variants' and scope != 'individuals' and scope != 'runs':
+    if collection == 'g_variants' and scope != 'individual' and scope != 'run':
         if filter.id == "identifiers.genomicHGVSId":
             list_chromosomes = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22']
             dict_regex={}

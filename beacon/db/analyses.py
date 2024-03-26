@@ -55,7 +55,6 @@ def get_analyses(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
     return schema, count, dataset_count, docs
 
-
 def get_analysis_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'analyses'
     idq="biosampleId"
@@ -74,7 +73,6 @@ def get_analysis_with_id(entry_id: Optional[str], qparams: RequestParams, datase
         limit = 100
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
     return schema, count, dataset_count, docs
-
 
 def get_variants_of_analysis(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'analyses'

@@ -196,7 +196,7 @@ But you can also use complex filters:
         "filters": [
             {
                 "id": "UBERON:0000178",
-                "scope": "biosamples",
+                "scope": "biosample",
                 "includeDescendantTerms": false
             }
         ],
