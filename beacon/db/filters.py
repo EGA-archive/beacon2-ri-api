@@ -32,13 +32,14 @@ def cross_query(query: dict, scope: str, collection: str, request_parameters: di
                 if isinstance(iditem, dict):
                     if iditem != {}:
                         for id_item in iditem['caseLevelData']:
-                            new_id={}
-                            new_id[final_id] = id_item[original_id]
-                            try:
-                                #LOG.debug(new_id)
-                                subquery['$or'].append(new_id)
-                            except Exception:
-                                def_list.append(new_id)
+                            if id_item != {}:
+                                new_id={}
+                                new_id[final_id] = id_item[original_id]
+                                try:
+                                    #LOG.debug(new_id)
+                                    subquery['$or'].append(new_id)
+                                except Exception:
+                                    def_list.append(new_id)
             
             LOG.debug(subquery)
             mongo_collection=client.beacon.biosamples
@@ -103,13 +104,14 @@ def cross_query(query: dict, scope: str, collection: str, request_parameters: di
                 if isinstance(iditem, dict):
                     if iditem != {}:
                         for id_item in iditem['caseLevelData']:
-                            new_id={}
-                            new_id[final_id] = id_item[original_id]
-                            try:
-                                #LOG.debug(new_id)
-                                query['$or'].append(new_id)
-                            except Exception:
-                                def_list.append(new_id)
+                            if id_item != {}:
+                                new_id={}
+                                new_id[final_id] = id_item[original_id]
+                                try:
+                                    #LOG.debug(new_id)
+                                    query['$or'].append(new_id)
+                                except Exception:
+                                    def_list.append(new_id)
             if def_list != []:
                 try:
                     query['$or'].def_list
@@ -145,13 +147,14 @@ def cross_query(query: dict, scope: str, collection: str, request_parameters: di
                 if isinstance(iditem, dict):
                     if iditem != {}:
                         for id_item in iditem['caseLevelData']:
-                            new_id={}
-                            new_id[final_id] = id_item[original_id]
-                            try:
-                                #LOG.debug(new_id)
-                                query['$or'].append(new_id)
-                            except Exception:
-                                def_list.append(new_id)
+                            if id_item != {}:
+                                new_id={}
+                                new_id[final_id] = id_item[original_id]
+                                try:
+                                    #LOG.debug(new_id)
+                                    query['$or'].append(new_id)
+                                except Exception:
+                                    def_list.append(new_id)
             if def_list != []:
                 try:
                     query['$or'].def_list
@@ -336,13 +339,14 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
                     if isinstance(iditem, dict):
                         if iditem != {}:
                             for id_item in iditem['caseLevelData']:
-                                new_id={}
-                                new_id[final_id] = id_item[original_id]
-                                try:
-                                    #LOG.debug(new_id)
-                                    partial_query['$or'].append(new_id)
-                                except Exception:
-                                    def_list.append(new_id)
+                                if id_item != {}:
+                                    new_id={}
+                                    new_id[final_id] = id_item[original_id]
+                                    try:
+                                        #LOG.debug(new_id)
+                                        partial_query['$or'].append(new_id)
+                                    except Exception:
+                                        def_list.append(new_id)
                 LOG.debug(partial_query)
                 
                 mongo_collection=client.beacon.biosamples
