@@ -51,7 +51,7 @@ function IndividualsResults (props) {
     console.log(event.target.value)
     setChosenScope(event.target.value)
   }
-  let queryStringTerm = ''
+  let queryStringTerm = []
 
   const handleTypeResults1 = () => {
     setShow1(true)
@@ -215,142 +215,11 @@ function IndividualsResults (props) {
       if (props.query !== null) {
         if (props.query.includes(',')) {
           queryStringTerm = props.query.split(',')
-          queryStringTerm.forEach((element, index) => {
-            element = element.trim()
-            if (
-              element.includes('=') ||
-              element.includes('>') ||
-              element.includes('<') ||
-              element.includes('!') ||
-              element.includes('%')
-            ) {
-              if (element.includes('=')) {
-                queryArray[index] = element.split('=')
-                queryArray[index].push('=')
-              } else if (element.includes('>')) {
-                queryArray[index] = element.split('>')
-                queryArray[index].push('>')
-              } else if (element.includes('<')) {
-                queryArray[index] = element.split('<')
-                queryArray[index].push('<')
-              } else if (element.includes('!')) {
-                queryArray[index] = element.split('!')
-                queryArray[index].push('!')
-              } else {
-                queryArray[index] = element.split('%')
-                queryArray[index].push('%')
-              }
-              let alphanumHardCodedScope = 'individuals'
-              if (props.query.includes('libraryStrategy=%WES%')) {
-                alphanumHardCodedScope = 'runs'
-              }
-              let alphaNumFilter = {
-                id: queryArray[index][0],
-                operator: queryArray[index][2],
-                value: queryArray[index][1],
-                scope: alphanumHardCodedScope
-              }
-
-              props.filteringTerms.data.response.filteringTerms.forEach(
-                element2 => {
-                  if (element2.label) {
-                    if (
-                      queryArray[index][0].toLowerCase() ===
-                        element2.id.toLowerCase() ||
-                      queryArray[index][0].toLowerCase() ===
-                        element2.label.toLowerCase()
-                    ) {
-                      if (element2.scope.length > 1) {
-                        ontologyMultipleScope.push({
-                          ontology: element2.id,
-                          scopes: element2.scope
-                        })
-                        console.log(ontologyMultipleScope)
-                        setOptionsScope(element2.scope)
-
-                        if (chosenScope === '') {
-                          alphaNumFilter = {
-                            id: queryArray[index][0],
-                            operator: queryArray[index][2],
-                            value: queryArray[index][1],
-                            scope: ''
-                          }
-                        }
-                      } else {
-                        if (chosenScope === '') {
-                          alphaNumFilter = {
-                            id: queryArray[index][0],
-                            operator: queryArray[index][2],
-                            value: queryArray[index][1],
-                            scope: element2.scope[0]
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              )
-              if (Object.keys(alphaNumFilter).length !== 0) {
-                arrayFilter.push(alphaNumFilter)
-              }
-            } else {
-              let filter = {}
-              props.filteringTerms.data.response.filteringTerms.forEach(
-                element2 => {
-                  console.log(element)
-                  if (element.toLowerCase() === element2.id.toLowerCase()) {
-                    if (element2.scope.length > 1) {
-                      ontologyMultipleScope.push({
-                        ontology: element2.id,
-                        scopes: element2.scope
-                      })
-                      console.log(ontologyMultipleScope)
-                      setOptionsScope(element2.scope)
-
-                      if (chosenScope === '') {
-                        filter = { id: element2.id, scope: '' }
-                      }
-                    } else {
-                      if (chosenScope === '') {
-                        filter = { id: element2.id, scope: element2.scope[0] }
-                      }
-                    }
-                  } else {
-                    let labelToOntology = ''
-                    if (element2.label) {
-                      if (
-                        element.toLowerCase() === element2.label.toLowerCase()
-                      ) {
-                        labelToOntology = element2.id
-                        if (element2.scope.length > 1) {
-                          ontologyMultipleScope.push({
-                            ontology: element2.id,
-                            scopes: element2.scope
-                          })
-                          console.log(ontologyMultipleScope)
-                          setOptionsScope(element2.scope)
-
-                          if (chosenScope === '') {
-                            filter = { id: element2.id, scope: '' }
-                          }
-                        } else {
-                          filter = {
-                            id: labelToOntology,
-                            scope: element2.scope[0]
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              )
-
-              if (Object.keys(filter).length !== 0) {
-                arrayFilter.push(filter)
-              }
-            }
-          })
         } else {
+          queryStringTerm = props.query
+        }
+
+        queryStringTerm.forEach(term => {
           if (
             props.query.includes('=') ||
             props.query.includes('>') ||
@@ -376,14 +245,14 @@ function IndividualsResults (props) {
             }
 
             let alphaNumFilter = {}
-
+            console.log(queryArray[0][0])
             props.filteringTerms.data.response.filteringTerms.forEach(
               element2 => {
                 if (element2.label) {
                   if (
-                    queryArray[0][0].toLowerCase() ===
+                    queryArray[0][1].toLowerCase() ===
                       element2.id.toLowerCase() ||
-                    queryArray[0][0].toLowerCase() ===
+                    queryArray[0][1].toLowerCase() ===
                       element2.label.toLowerCase()
                   ) {
                     if (element2.scope.length > 1) {
@@ -459,7 +328,7 @@ function IndividualsResults (props) {
               arrayFilter.push(filter)
             }
           }
-        }
+        })
       }
 
       try {
@@ -696,6 +565,7 @@ function IndividualsResults (props) {
                 jsonData2
               )
               console.log(res)
+              console.log(jsonData2)
             } else {
               console.log('Querying WITH token')
               const headers = { Authorization: `Bearer ${token}` }
