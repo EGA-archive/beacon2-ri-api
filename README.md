@@ -22,13 +22,19 @@ docker exec beacon-permissions bash permissions/permissions-ui/start.sh
 Please, bear in mind that the name of the user has to be the same that you used when creating the user in LS or in IDP, whatever the AAI method you are working with.
 To give a user a certain type of response for their queries, please modify this file [response_type.yml](https://github.com/EGA-archive/beacon2-ri-api/blob/master/beacon/request/response_type.yml) adding the maximum type of response you want to allow every user.
 
-Also, you will need to edit the file [conf.py](beacon/conf.py) and introduce the domain where your keycloak is being hosted inside **ldp_user_info** and the issuers you trust for your token inside **trusted_issuers**. In case you want to run your local container, use this configuration:
+Also, you will need to edit the file [conf.py](beacon/conf.py) and introduce the domain where your keycloak is being hosted inside **idp_user_info** and the issuer you trust for your token inside **idp_issuer**. In case you want to run your local container, use this configuration:
 ```bash
-idp_user_info = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
+idp_issuer='https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon'
+idp_user_info = 'https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon/protocol/openid-connect/userinfo'
+lsaai_issuer='https://login.elixir-czech.org/oidc/'
 lsaai_user_info = 'https://login.elixir-czech.org/oidc/userinfo'
-trusted_issuers = ['http://idp:8080/auth/realms/Beacon', 'https://login.elixir-czech.org/oidc/']
 ```
 
+Also, inside the folder permissions, before building your permissions container, you will need to create an .env file and add the CLIENT_ID for your LSAAI or Keycloak or both, with these same variable names:
+```bash
+LSAAI_CLIENT_ID='your_lsaai_client_id'
+KEYCLOAK_CLIENT_ID='your_keycloak_client_id'
+```
 When you have your access token, pass it in a header with **Authorization: Bearer** in your POST request to get your answers. This token works coming from either from LS AAI or from keycloak (idp container).
 
 ### Beacon security system

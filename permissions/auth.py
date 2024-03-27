@@ -16,6 +16,13 @@ import jwt
 from aiohttp import ClientSession, BasicAuth, FormData
 from aiohttp import web
 from beacon import conf
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+LSAAI_CLIENT_ID = os.getenv('LSAAI_CLIENT_ID')
+KEYCLOAK_CLIENT_ID = os.getenv('KEYCLOAK_CLIENT_ID')
 
 
 LOG = logging.getLogger(__name__)
@@ -39,69 +46,37 @@ async def get_user_info(access_token):
     '''
     LOG.debug('Token: %s', access_token)
 
-    # Invalid access token
-    '''
-    async with ClientSession() as session:
-        headers = { 'Accept': 'application/json', 'Authorization': 'Bearer ' + access_token }
-        payload = {'client_id': idp_client_id, 'client_secret': idp_client_secret, 'token': access_token }
-        async with session.post(idp_introspection, headers=headers,
-                                data=payload
-        ) as resp:
-            LOG.debug('Response %s', resp.status)
-            #LOG.debug('Response %s', resp)
-            if resp.status == 200:
-                content = await resp.text()
-                dict_content = json.loads(content)
-                user = dict_content
-            else:
-                #LOG.error('Content: %s', content)
-                LOG.error('Invalid token')
-                user = 'public'
-                return user
-        '''
     try:
         decoded = jwt.decode(access_token, options={"verify_signature": False})
         LOG.error(decoded)
         issuer = decoded['iss']
+        audience = decoded['aud']
         list_visa_datasets=[]
         visa_datasets=None
     except Exception:
         user = 'public'
         return user
-
-    if issuer in conf.trusted_issuers:
-        pass
+    LOG.error(issuer)
+    user_info=''
+    if issuer == conf.lsaai_issuer and audience == LSAAI_CLIENT_ID:
+        user_info = lsaai_user_info
+    elif issuer == conf.idp_issuer and audience == KEYCLOAK_CLIENT_ID:
+        user_info = idp_user_info
     else:
         raise web.HTTPUnauthorized('invalid token')
-            
+    
+    LOG.error(user_info)
     user = None
+                
     async with ClientSession(trust_env=True) as session:
         headers = { 'Accept': 'application/json', 'Authorization': 'Bearer ' + access_token }
-        LOG.debug('Contacting %s', idp_user_info)
-        async with session.get(idp_user_info, headers=headers) as resp:
-            LOG.debug('Response %s', resp)
+        LOG.error('Contacting %s', user_info)
+        async with session.get(user_info, headers=headers) as resp:
+            LOG.error('Response %s', resp)
             if resp.status == 200:
                 user = await resp.json()
-                LOG.error(user)
-                return user, list_visa_datasets
-            else:
-                content = await resp.text()
-                LOG.error('Not a Keycloak token')
-                #LOG.error('Content: %s', content)
-                user = 'public'
-                
-    if user == 'public':
-        async with ClientSession(trust_env=True) as session:
-            headers = { 'Accept': 'application/json', 'Authorization': 'Bearer ' + access_token }
-            LOG.debug('Contacting %s', lsaai_user_info)
-            async with session.get(lsaai_user_info, headers=headers) as resp:
-                LOG.debug('Response %s', resp)
-                if resp.status == 200:
-                    user = await resp.json()
-                    try:
-                        visa_datasets = user['ga4gh_passport_v1']
-                    except Exception:
-                        pass
+                try:
+                    visa_datasets = user['ga4gh_passport_v1']
                     if visa_datasets is not None:
                         for visa_dataset in visa_datasets:
                             try:
@@ -112,14 +87,16 @@ async def get_user_info(access_token):
                                 list_visa_datasets.append(visa_dataset)
                             except Exception:
                                 visa_dataset = None
-                    LOG.error('list_visa: {}'.format(list_visa_datasets))
-                    return user, list_visa_datasets
-                else:
-                    content = await resp.text()
-                    LOG.error('Not a LS AAI token')
-                    LOG.error('Content: %s', content)
-                    user = 'public'
-                    return user, list_visa_datasets
+                except Exception:
+                    pass
+                LOG.error('list_visa: {}'.format(list_visa_datasets))
+                return user, list_visa_datasets
+            else:
+                content = await resp.text()
+                LOG.error('Invalid token')
+                LOG.error('Content: %s', content)
+                user = 'public'
+                return user, list_visa_datasets
 
 
 def bearer_required(func):
