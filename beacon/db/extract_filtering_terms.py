@@ -200,10 +200,11 @@ def insert_all_ontology_terms_used():
         collections.remove('filtering_terms')
     print("Collections:", collections)
     for c_name in collections:
-        terms_ids = find_ontology_terms_used(c_name)
-        terms = get_filtering_object(terms_ids, c_name)
-        if len(terms) > 0:
-            client.beacon.filtering_terms.insert_many(terms)
+        if c_name not in ['counts', 'similarities', 'synonyms']:
+            terms_ids = find_ontology_terms_used(c_name)
+            terms = get_filtering_object(terms_ids, c_name)
+            if len(terms) > 0:
+                client.beacon.filtering_terms.insert_many(terms)
 
 def find_ontology_terms_used(collection_name: str) -> List[Dict]:
     print(collection_name)

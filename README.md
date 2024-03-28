@@ -19,18 +19,42 @@ To give the right permissions for AAI you will need to set the permissions of th
 ```bash
 docker exec beacon-permissions bash permissions/permissions-ui/start.sh
 ```
+Note: To make the permissions ui run, create an .env file inside permissions/permissions-uiweb folder and add the next variables with the exact same names:
+```bash
+SECRET_KEY="your_permissions_ui_secret_key"
+OIDC_RP_CLIENT_ID='your_client_id'
+OIDC_RP_CLIENT_SECRET='your_client_secret'
+```
+
 Please, bear in mind that the name of the user has to be the same that you used when creating the user in LS or in IDP, whatever the AAI method you are working with.
 To give a user a certain type of response for their queries, please modify this file [response_type.yml](https://github.com/EGA-archive/beacon2-ri-api/blob/master/beacon/request/response_type.yml) adding the maximum type of response you want to allow every user.
 
-Also, you will need to edit the file [conf.py](beacon/conf.py) and introduce the domain where your keycloak is being hosted inside **ldp_user_info** and the issuers you trust for your token inside **trusted_issuers**. In case you want to run your local container, use this configuration:
-```bash
-idp_user_info = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
-lsaai_user_info = 'https://login.elixir-czech.org/oidc/userinfo'
-trusted_issuers = ['http://idp:8080/auth/realms/Beacon', 'https://login.elixir-czech.org/oidc/']
-```
+Also, you will need to edit the file [conf.py](beacon/conf.py) and introduce the domain where your keycloak is being hosted inside **idp_url**. 
 
+Also, inside the folder permissions, before building your permissions container, you will need to create an .env file and add the CLIENT_ID for your LSAAI or Keycloak or both, with these same variable names:
+```bash
+LSAAI_CLIENT_ID='your_lsaai_client_id'
+LSAAI_CLIENT_SECRET='your_lsaai_client_secret'
+KEYCLOAK_CLIENT_ID='your_keycloak_client_id'
+KEYCLOAK_CLIENT_SECRET='your_keycloak_client_secret'
+```
 When you have your access token, pass it in a header with **Authorization: Bearer** in your POST request to get your answers. This token works coming from either from LS AAI or from keycloak (idp container).
 
+### Handling CORS
+
+To avoid CORS using beacon and the frontend or a third-party authorization site like Keycloak, you will have to include all these URLs inside [__main.py__](beacon/__main__.py), including them in the CORS middleware and CORS routes lists:
+```bash
+middlewares=[web.normalize_path_middleware(), middlewares.error_middleware, cors_middleware(origins=["your_URL"...
+```
+```bash
+    for route in list(beacon.router.routes()):
+        cors.add(route, {
+        "your_URL":
+            aiohttp_cors.ResourceOptions(allow_credentials=True,
+            expose_headers="*",
+            allow_methods=("POST", "PATCH", "GET", "OPTIONS"),
+            allow_headers=DEFAULT_ALLOW_HEADERS),
+```
 ### Beacon security system
 
 ![Beacon security](https://github.com/EGA-archive/beacon2-ri-api/blob/develop/deploy/beacon_security.png?raw=true)

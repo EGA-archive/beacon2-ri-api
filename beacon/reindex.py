@@ -13,6 +13,14 @@ client = MongoClient(
         )
     )
 try:
+    client.beacon.drop_collection("synonyms")
+except Exception:
+    client.beacon.create_collection(name="synonyms")
+try:
+    client.beacon.validate_collection("synonyms")
+except Exception:
+    db=client.beacon.create_collection(name="synonyms")
+try:
     client.beacon.drop_collection("counts")
 except Exception:
     client.beacon.create_collection(name="counts")
