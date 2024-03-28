@@ -405,10 +405,11 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
     if synonym_id is not None:
         filter.id=synonym_id
     
-    try:
-        scope = filter.scope
-    except Exception:
+    
+    scope = filter.scope
+    if scope is None:
         scope = collection[0:-1]
+
     is_filter_id_required = True
     # Search similar
     if filter.similarity != Similarity.EXACT:
@@ -631,9 +632,8 @@ def format_operator(operator: Operator) -> str:
 
 def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collection: str) -> dict:
     #LOG.debug(filter.value)
-    try:
-        scope = filter.scope
-    except Exception:
+    scope = filter.scope
+    if scope is None:
         scope = collection[0:-1]
     formatted_value = format_value(filter.value)
     formatted_operator = format_operator(filter.operator)
@@ -793,9 +793,8 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
 def apply_custom_filter(query: dict, filter: CustomFilter, collection:str) -> dict:
     #LOG.debug(query)
 
-    try:
-        scope = filter.scope
-    except Exception:
+    scope = filter.scope
+    if scope is None:
         scope = collection[0:-1]
     value_splitted = filter.id.split(':')
     if value_splitted[0] in conf.alphanumeric_terms:
