@@ -141,6 +141,10 @@ async def get_user_info(access_token):
                         for visa_dataset in visa_datasets:
                             try:
                                 visa = jwt.decode(visa_dataset, options={"verify_signature": False}, algorithms=["RS256"])
+                                if visa['iss']==idp_issuer:
+                                    pass
+                                else:
+                                    raise web.HTTPUnauthorized('invalid visa token')
                                 dataset_url = visa["ga4gh_visa_v1"]["value"]
                                 dataset_url_splitted = dataset_url.split('/')
                                 visa_dataset = dataset_url_splitted[-1]
