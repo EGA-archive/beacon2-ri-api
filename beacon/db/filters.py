@@ -388,7 +388,27 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
 
 
 def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, request_parameters: dict) -> dict:
-    scope = filter.scope
+    query_synonyms={}
+    query_synonyms['id']=filter.id
+    synonyms=get_documents(
+        client.beacon.synonyms,
+        query_synonyms,
+        0,
+        1
+    )
+
+    try:
+        synonym_id=synonyms[0]['synonym']
+    except Exception:
+        synonym_id=None
+    LOG.debug(synonym_id)
+    if synonym_id is not None:
+        filter.id=synonym_id
+    
+    try:
+        scope = filter.scope
+    except Exception:
+        scope = collection[0:-1]
     is_filter_id_required = True
     # Search similar
     if filter.similarity != Similarity.EXACT:
@@ -407,6 +427,8 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
             ontology_dict=client.beacon.similarities.find({"id": filter.id})
             final_term_list = ontology_dict[0]["similarity_low"]
         
+
+
         final_term_list.append(filter.id)
         query_filtering={}
         query_filtering['$and']=[]
@@ -609,7 +631,10 @@ def format_operator(operator: Operator) -> str:
 
 def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collection: str) -> dict:
     #LOG.debug(filter.value)
-    scope = filter.scope
+    try:
+        scope = filter.scope
+    except Exception:
+        scope = collection[0:-1]
     formatted_value = format_value(filter.value)
     formatted_operator = format_operator(filter.operator)
     #LOG.debug(collection)
@@ -768,7 +793,10 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
 def apply_custom_filter(query: dict, filter: CustomFilter, collection:str) -> dict:
     #LOG.debug(query)
 
-    scope=filter.scope
+    try:
+        scope = filter.scope
+    except Exception:
+        scope = collection[0:-1]
     value_splitted = filter.id.split(':')
     if value_splitted[0] in conf.alphanumeric_terms:
         query_term = value_splitted[0]
