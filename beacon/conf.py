@@ -110,11 +110,9 @@ permissions_url = 'http://beacon-permissions:5051/'
 #
 # or use Elixir AAI (see https://elixir-europe.org/services/compute/aai)
 #
-idp_issuer='https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon'
-idp_user_info = 'https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon/protocol/openid-connect/userinfo'
-lsaai_issuer='https://login.elixir-czech.org/oidc/'
-lsaai_user_info = 'https://login.elixir-czech.org/oidc/userinfo'
 
+idp_url = 'http://idp:8080/'
+#idp_url = 'http://localhost:8080/'
 
 #
 # UI

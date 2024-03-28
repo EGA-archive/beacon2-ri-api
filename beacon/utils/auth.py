@@ -5,7 +5,7 @@ from aiohttp import ClientSession, web
 import asyncio
 
 from beacon.db.datasets import filter_public_datasets
-from ..conf import permissions_url, idp_user_info as idpu, lsaai_user_info as lsu
+from ..conf import permissions_url
 
 LOG = logging.getLogger(__name__)
 
@@ -32,13 +32,6 @@ async def resolve_token(token, requested_datasets_ids):
                          'Accept': 'application/json'},
                 json={'datasets': requested_datasets_ids},  # will set the Content-Type to application/json
         ) as resp:
-            '''
-            if resp.status > 200:
-                LOG.error('Permissions server error %d', resp.status)
-                error = await resp.text()
-                LOG.error('Error: %s', error)
-                raise web.HTTPUnauthorized(body=error)
-            '''
             content = await resp.content.read()
             content =  content.decode('utf-8')
             content_splitted= content.split(':')
