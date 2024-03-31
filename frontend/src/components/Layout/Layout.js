@@ -623,6 +623,8 @@ function Layout (props) {
         }
       } catch (error) {
         console.log(error)
+        setTimeOut(false)
+        setError('No results')
       }
       setShowFilteringTermsButton(true)
     }

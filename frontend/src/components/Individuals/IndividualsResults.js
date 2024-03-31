@@ -214,45 +214,49 @@ function IndividualsResults (props) {
 
       if (props.query !== null) {
         if (props.query.includes(',')) {
-          queryStringTerm = props.query.split(',')
+          let queryStringTerm2 = props.query.split(',')
+          queryStringTerm2.forEach(element => {
+            queryStringTerm.push(element.trim())
+          })
         } else {
-          queryStringTerm = props.query
+          queryStringTerm.push(props.query.trim())
         }
-
-        queryStringTerm.forEach(term => {
+        console.log(queryStringTerm)
+  
+        queryStringTerm.forEach((term, index) => {
           if (
-            props.query.includes('=') ||
-            props.query.includes('>') ||
-            props.query.includes('<') ||
-            props.query.includes('!') ||
-            props.query.includes('%')
+            term.includes('=') ||
+            term.includes('>') ||
+            term.includes('<') ||
+            term.includes('!') ||
+            term.includes('%')
           ) {
-            if (props.query.includes('=')) {
-              queryArray[0] = props.query.split('=')
-              queryArray[0].push('=')
-            } else if (props.query.includes('>')) {
-              queryArray[0] = props.query.split('>')
-              queryArray[0].push('>')
-            } else if (props.query.includes('<')) {
-              queryArray[0] = props.query.split('<')
-              queryArray[0].push('<')
-            } else if (props.query.includes('!')) {
-              queryArray[0] = props.query.split('!')
-              queryArray[0].push('!')
+            if (term.includes('=')) {
+              queryArray[index] = term.split('=')
+              queryArray[index].push('=')
+            } else if (term.includes('>')) {
+              queryArray[index] = term.split('>')
+              queryArray[index].push('>')
+            } else if (term.includes('<')) {
+              queryArray[index] = term.split('<')
+              queryArray[index].push('<')
+            } else if (term.includes('!')) {
+              queryArray[index] = term.split('!')
+              queryArray[index].push('!')
             } else {
-              queryArray[0] = props.query.split('%')
-              queryArray[0].push('%')
+              queryArray[index] = term.split('%')
+              queryArray[index].push('%')
             }
 
             let alphaNumFilter = {}
-            console.log(queryArray[0][0])
+
             props.filteringTerms.data.response.filteringTerms.forEach(
               element2 => {
                 if (element2.label) {
                   if (
-                    queryArray[0][1].toLowerCase() ===
+                    queryArray[index][1].toLowerCase() ===
                       element2.id.toLowerCase() ||
-                    queryArray[0][1].toLowerCase() ===
+                    queryArray[index][1].toLowerCase() ===
                       element2.label.toLowerCase()
                   ) {
                     if (element2.scope.length > 1) {
@@ -265,18 +269,18 @@ function IndividualsResults (props) {
 
                       if (chosenScope === '') {
                         alphaNumFilter = {
-                          id: queryArray[0][0],
-                          operator: queryArray[0][2],
-                          value: queryArray[0][1],
+                          id: queryArray[index][0],
+                          operator: queryArray[index][2],
+                          value: queryArray[index][1],
                           scope: ''
                         }
                       }
                     } else {
                       if (chosenScope === '') {
                         alphaNumFilter = {
-                          id: queryArray[0][0],
-                          operator: queryArray[0][2],
-                          value: queryArray[0][1],
+                          id: queryArray[index][0],
+                          operator: queryArray[index][2],
+                          value: queryArray[index][1],
                           scope: element2.scope[0]
                         }
                       }
@@ -292,7 +296,7 @@ function IndividualsResults (props) {
             let filter = {}
             props.filteringTerms.data.response.filteringTerms.forEach(
               element => {
-                if (props.query === element.id) {
+                if (term === element.id) {
                   if (element.scope.length > 1) {
                     ontologyMultipleScope.push({
                       ontology: element.id,
@@ -302,17 +306,16 @@ function IndividualsResults (props) {
                     setOptionsScope(element.scope)
 
                     if (chosenScope === '') {
-                      filter = { id: props.query, scope: '' }
+                      filter = { id: term, scope: '' }
                     }
                   } else {
-                    filter = { id: props.query, scope: element.scope[0] }
+                    filter = { id: term, scope: element.scope[0] }
                   }
                 } else {
+                  console.log(term)
                   let labelToOntology = ''
                   if (element.label) {
-                    if (
-                      props.query.toLowerCase() === element.label.toLowerCase()
-                    ) {
+                    if (term.toLowerCase() === element.label.toLowerCase()) {
                       labelToOntology = element.id
                       filter = {
                         id: labelToOntology,
@@ -686,7 +689,7 @@ function IndividualsResults (props) {
         <div>
           <div>
             {' '}
-            {timeOut && error !== 'No results. Please retry' && (
+            {timeOut && error === '' && (
               <div>
                 <div className='selectGranularity'>
                   <h4>Granularity:</h4>
