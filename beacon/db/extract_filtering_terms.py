@@ -24,7 +24,9 @@ sys.path.append(parent)
 import conf
 
 
-ONTOLOGY_REGEX = re.compile(r"([_A-Za-z0-9]+):([*]+)")
+ONTOLOGY_REGEX = re.compile(r"([_A-Za-z0-9]+):([_A-Za-z0-9^\-]+)")
+ICD_REGEX = re.compile(r"(ICD[_A-Za-z0-9]+):([_A-Za-z0-9^\./-]+)")
+
 
 client = MongoClient(
         #"mongodb://127.0.0.1:27017/"
@@ -220,7 +222,12 @@ def find_ontology_terms_used(collection_name: str) -> List[Dict]:
             xs = client.beacon.get_collection(collection_name).find().skip(i).limit(10000)
             for r in tqdm(xs, total=num_total):
                 matches = ONTOLOGY_REGEX.findall(str(r))
+                icd_matches = ICD_REGEX.findall(str(r))
                 for ontology_id, term_id in matches:
+                    term = ':'.join([ontology_id, term_id])
+                    if term not in terms_ids:
+                        terms_ids.append(term)
+                for ontology_id, term_id in icd_matches:
                     term = ':'.join([ontology_id, term_id])
                     if term not in terms_ids:
                         terms_ids.append(term)
@@ -230,10 +237,16 @@ def find_ontology_terms_used(collection_name: str) -> List[Dict]:
         xs = client.beacon.get_collection(collection_name).find().skip(0).limit(10000)
         for r in tqdm(xs, total=num_total):
             matches = ONTOLOGY_REGEX.findall(str(r))
+            icd_matches = ICD_REGEX.findall(str(r))
+            print(icd_matches)
             for ontology_id, term_id in matches:
                 term = ':'.join([ontology_id, term_id])
                 if term not in terms_ids:
                     terms_ids.append(term) 
+            for ontology_id, term_id in icd_matches:
+                term = ':'.join([ontology_id, term_id])
+                if term not in terms_ids:
+                    terms_ids.append(term)
 
     return terms_ids
 
@@ -379,17 +392,18 @@ def merge_terms():
             print(repeated_term)
             id=repeated_term["id"]
             label=repeated_term["label"]
-            if repeated_term['scope'][0] not in array_of_scopes:
-                array_of_scopes.append(repeated_term['scope'][0])
-        print("array_of_scopes are {}".format(array_of_scopes))
-        new_terms.append({
-            'type': 'ontology',
-            'id': id,
-            'label': label,
-            # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
-            #'count': get_ontology_term_count(collection_name, onto),
-            'scope': array_of_scopes        
-                    })
+            if repeated_term['scope'] != []:
+                if repeated_term['scope'][0] not in array_of_scopes:
+                    array_of_scopes.append(repeated_term['scope'][0])
+        if array_of_scopes != []:
+            new_terms.append({
+                'type': 'ontology',
+                'id': id,
+                'label': label,
+                # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
+                #'count': get_ontology_term_count(collection_name, onto),
+                'scope': array_of_scopes        
+                        })
         client.beacon.filtering_terms.delete_many({"id": repeated_id})
     client.beacon.filtering_terms.insert_many(new_terms)
         
