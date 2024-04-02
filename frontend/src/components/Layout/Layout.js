@@ -413,22 +413,31 @@ function Layout (props) {
   }
 
   const handleOptionDisease = e => {
-    filteringTerms.forEach(element => {
-      if (element.label) {
-        console.log(element.label.toLowerCase())
-        console.log(e.target.innerText.toLowerCase())
-        if (element.label.toLowerCase() === e.target.innerText.toLowerCase()) {
-          let ontology = element.id
-          terms.push([element.label, ontology])
-          if (query !== null) {
-            setQuery(query + ',' + 'disease=' + element.label)
+    if (e.target.checked === true){
+      filteringTerms.forEach(element => {
+        if (element.label) {
+          if (element.label.toLowerCase() === e.target.value.toLowerCase()) {
+            let ontology = element.id
+            terms.push([element.label, ontology])
+            if (query !== null && query !== '') {
+              setQuery(query + ',' + 'disease=' + element.label)
+            } else {
+              setQuery('disease=' + element.label)
+            }
           } else {
-            setQuery('disease=' + element.label)
+            if (query !== null && query !== '') {
+              setQuery(query + ',' + 'disease=' + e.target.value)
+            } else {
+              setQuery('disease=' + e.target.value)
+            }
           }
         }
-      }
-    })
-    console.log(e.target.innerText)
+      })
+    } else {
+      setQuery(query.replace(`disease=${e.target.value}`, ''))
+
+    }
+  
   }
 
   const handleOptionSex = e => {
@@ -436,47 +445,48 @@ function Layout (props) {
       if (element.label) {
         console.log(element.label.toLowerCase())
         console.log(e.target.innerText.toLowerCase())
-        if (element.label.toLowerCase() === e.target.innerText.toLowerCase()) {
+        if (element.label.toLowerCase() === e.target.value.toLowerCase()) {
           let ontology = element.id
           terms.push([element.label, ontology])
-          if (query !== null) {
+          if (query !== null && query !== '') {
             setQuery(query + ',' + 'sex=' + element.label)
           } else {
             setQuery('sex=' + element.label)
           }
+        } else {
+          if (query !== null && query !== '') {
+            setQuery(query + ',' + 'sex=' + e.target.value)
+          } else {
+            setQuery('sex=' + e.target.value)
+          }
         }
       }
     })
-    console.log(e.target.innerText)
   }
   const handleOptionAge = e => {
     setShowAlphanum(true)
-    console.log(e.target.innerText)
   }
 
   const handleOptionHisto = e => {
     filteringTerms.forEach(element => {
       if (element.label) {
-        console.log(element.label.toLowerCase())
-        console.log(e.target.innerText.toLowerCase())
-        if (element.label.toLowerCase() === e.target.innerText.toLowerCase()) {
+        if (element.label.toLowerCase() === e.target.value.toLowerCase()) {
           let ontology = element.id
           terms.push([element.label, ontology])
-          if (query !== null || query !== '') {
-            setQuery(query + ',' + 'histophatology=' + element.label)
+          if (query !== null && query !== '') {
+            setQuery(query + ',' + 'histopathology=' + element.label)
           } else {
-            setQuery('histophatology=' + element.label)
+            setQuery('histopathology=' + element.label)
           }
         } else {
-          if (query !== null) {
-            setQuery(query + ',' + 'histophatology=' + e.target.innerText)
+          if (query !== null && query !== '') {
+            setQuery(query + ',' + 'histophatology=' + e.target.value)
           } else {
-            setQuery('histophatology=' + e.target.innerText)
+            setQuery('histophatology=' + e.target.value)
           }
         }
       }
     })
-    console.log(e.target.innerText)
   }
 
   const handleOptionTreatment = e => {
@@ -484,19 +494,19 @@ function Layout (props) {
       if (element.label) {
         console.log(element.label.toLowerCase())
         console.log(e.target.innerText.toLowerCase())
-        if (element.label.toLowerCase() === e.target.innerText.toLowerCase()) {
+        if (element.label.toLowerCase() === e.target.value.toLowerCase()) {
           let ontology = element.id
           terms.push([element.label, ontology])
-          if (query !== null) {
+          if (query !== null && query !== '') {
             setQuery(query + ',' + 'treatment=' + element.label)
           } else {
             setQuery('treatment=' + element.label)
           }
         } else {
-          if (query !== null) {
-            setQuery(query + ',' + 'treatment=' + e.target.innerText)
+          if (query !== null && query !== '') {
+            setQuery(query + ',' + 'treatment=' + e.target.value)
           } else {
-            setQuery('treatment=' + e.target.innerText)
+            setQuery('treatment=' + e.target.value)
           }
         }
       }
@@ -738,22 +748,60 @@ function Layout (props) {
           <p>Diseases</p>
 
           <ul>
-            <li onClick={handleOptionDisease}>Colon adenocarcinoma</li>
-            <li onClick={handleOptionDisease}>
-              Mucinous Adenocarcinoma of the Colon and Rectum
-            </li>
-            <li onClick={handleOptionDisease}>Rectal Adenocarcinoma</li>
-            <li onClick={handleOptionDisease}>
-              Primary adenocarcinoma of colon
-            </li>
-            <li>
-              <button
-                className='othersButton'
-                onClick={handleSeeFilteringTerms}
-              >
-                Others
-              </button>
-            </li>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionDisease}
+                id='subscribeNews'
+                name='subscribe'
+                value='Colon adenocarcinoma'
+              />
+              <label>Colon adenocarcinoma</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionDisease}
+                id='subscribeNews'
+                name='subscribe'
+                value='Mucinous Adenocarcinoma of the Colon and Rectum'
+              />
+              <label>Mucinous Adenocarcinoma of the Colon and Rectum</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionDisease}
+                id='subscribeNews'
+                name='subscribe'
+                value='Rectal Adenocarcinoma'
+              />
+              <label>Rectal Adenocarcinoma</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionDisease}
+                id='subscribeNews'
+                name='subscribe'
+                value='Rectal Adenocarcinoma'
+              />
+              <label>Rectal Adenocarcinoma</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionDisease}
+                id='subscribeNews'
+                name='subscribe'
+                value='Primary adenocarcinoma of colon'
+              />
+              <label>Primary adenocarcinoma of colon</label>
+            </div>
+
+            <button className='othersButton' onClick={handleSeeFilteringTerms}>
+              Others
+            </button>
           </ul>
         </div>
         <div className='divFilter'>

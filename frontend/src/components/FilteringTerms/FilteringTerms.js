@@ -20,8 +20,8 @@ function FilteringTerms (props) {
   const [state, setstate] = useState({
     query: '',
     list:
-      props.filteringTerms.data !== undefined
-        ? props.filteringTerms.data.response.filteringTerms
+      props.filteringTerms !== undefined
+        ? props.filteringTerms
         : 'error'
   })
 
@@ -39,7 +39,7 @@ function FilteringTerms (props) {
       }
     })
 
-    props.filteringTerms.data.response.filteringTerms.forEach(element => {
+    props.filteringTerms.forEach(element => {
       if (element.id === tag.value) {
         state.list.unshift(element)
       }
@@ -117,10 +117,10 @@ function FilteringTerms (props) {
   }, [props.filteringTerms, trigger])
 
   const handleChange = e => {
-    const results = props.filteringTerms.data.response.filteringTerms.filter(
+    const results = props.filteringTerms.filter(
       post => {
         if (e.target.value === '') {
-          return props.filteringTerms.data.response.filteringTerms
+          return props.filteringTerms
         } else {
           if (post.id != undefined) {
             if (post.id.toLowerCase().includes(e.target.value.toLowerCase())) {
@@ -143,11 +143,11 @@ function FilteringTerms (props) {
   }
 
   const handleChange2 = e => {
-    const results = props.filteringTerms.data.response.filteringTerms.filter(
+    const results = props.filteringTerms.filter(
       post => {
         if (post.label !== '' && post.label !== undefined) {
           if (e.target.value === '') {
-            return props.filteringTerms.data.response.filteringTerms
+            return props.filteringTerms
           } else {
             if (post.label !== undefined) {
               if (
@@ -166,10 +166,10 @@ function FilteringTerms (props) {
   }
 
   const handleChange3 = e => {
-    const results = props.filteringTerms.data.response.filteringTerms.filter(
+    const results = props.filteringTerms.filter(
       post => {
         if (e.target.value === '') {
-          return props.filteringTerms.data.response.filteringTerms
+          return props.filteringTerms
         } else {
           if (post.type !== undefined) {
             if (
@@ -193,10 +193,10 @@ function FilteringTerms (props) {
   }
 
   const handleChange4 = e => {
-    const results = props.filteringTerms.data.response.filteringTerms.filter(
+    const results = props.filteringTerms.filter(
       post => {
         if (e.target.value === '') {
-          return props.filteringTerms.data.response.filteringTerms
+          return props.filteringTerms
         } else {
           if (post.scope !== undefined) {
             var returnedPosts = []
@@ -403,7 +403,7 @@ function FilteringTerms (props) {
                 <th className='th7'>scopes</th>
               </tr>
             </thead>
-            {props.filteringTerms.data !== undefined &&
+            {props.filteringTerms !== undefined &&
               state.list !== 'error' &&
               state.list.map((term, index) => {
                 return (
