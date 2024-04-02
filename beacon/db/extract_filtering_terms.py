@@ -24,7 +24,7 @@ sys.path.append(parent)
 import conf
 
 
-ONTOLOGY_REGEX = re.compile(r"([_A-Za-z0-9]+):([_A-Za-z0-9^\-]+)")
+ONTOLOGY_REGEX = re.compile(r"([_A-Za-z0-9]+):([*]+)")
 
 client = MongoClient(
         #"mongodb://127.0.0.1:27017/"
