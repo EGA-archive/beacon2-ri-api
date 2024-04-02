@@ -245,7 +245,7 @@ function VariantsResults (props) {
 
             let alphaNumFilter = {}
             console.log(queryArray[0][0])
-            props.filteringTerms.data.response.filteringTerms.forEach(
+            props.filteringTerms.forEach(
               element2 => {
                 if (element2.label) {
                   if (
@@ -289,7 +289,7 @@ function VariantsResults (props) {
             }
           } else {
             let filter = {}
-            props.filteringTerms.data.response.filteringTerms.forEach(
+            props.filteringTerms.forEach(
               element => {
                 if (props.query === element.id) {
                   if (element.scope.length > 1) {

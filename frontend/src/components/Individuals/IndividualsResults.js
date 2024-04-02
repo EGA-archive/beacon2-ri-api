@@ -249,8 +249,8 @@ function IndividualsResults (props) {
             }
 
             let alphaNumFilter = {}
-
-            props.filteringTerms.data.response.filteringTerms.forEach(
+            
+            props.filteringTerms.forEach(
               element2 => {
                 if (element2.label) {
                   if (
@@ -278,10 +278,7 @@ function IndividualsResults (props) {
                     } else {
                       if (chosenScope === '') {
                         alphaNumFilter = {
-                          id: queryArray[index][0],
-                          operator: queryArray[index][2],
-                          value: queryArray[index][1],
-                          scope: element2.scope[0]
+                          id: element2.id
                         }
                       }
                     }
@@ -294,7 +291,7 @@ function IndividualsResults (props) {
             }
           } else {
             let filter = {}
-            props.filteringTerms.data.response.filteringTerms.forEach(
+            props.filteringTerms.forEach(
               element => {
                 if (term === element.id) {
                   if (element.scope.length > 1) {
@@ -731,6 +728,7 @@ function IndividualsResults (props) {
                 </div>
               </div>
             )}
+
             {show3 && logInRequired === false && !error && (
               <div className='containerTableResults'>
                 <TableResultsIndividuals

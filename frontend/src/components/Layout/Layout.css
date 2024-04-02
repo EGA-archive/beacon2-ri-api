@@ -1,0 +1,107 @@
+.containerSelection {
+  display: flex;
+  width: 100vw;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 70px;
+}
+
+.formInput {
+  display: flex;
+  align-items: center;
+}
+h14 {
+  color: #64646a;
+  font-size: 16px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.termsAlphanum{
+    width: 100%;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.inputSearch {
+  width: 36vw;
+  height: fit-content;
+  padding: 10px;
+  font-size: 14 px;
+  border: 1px solid #c4c4c4;
+  box-shadow: chocolate;
+  box-shadow: 1px 1px 4px 0px #e9e9e9;
+  text-overflow:clip;
+}
+
+.filterTermsContainer {
+  display: flex;
+  width: 90vw;
+  justify-content: center;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  margin-left: 53px;
+}
+p {
+  font-weight: 500;
+}
+
+.othersButton {
+  margin: 0px;
+  padding: 0px;
+  font-size: 15px;
+}
+
+li {
+  font-size: 15px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+ul {
+  padding-left: 40px;
+}
+
+.divFilter {
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-bottom: 30px;
+  width: 250px;
+}
+
+.IdForm2{
+    background: white;
+    border: 2px solid rgba(12, 16, 64, 0.606);
+    margin: 4px;
+    padding: 6px;
+    box-shadow: 1px 1px 2px #a3a0a0;
+    width: 168px;
+    height: 20px;
+    border-radius: 4px;
+    overflow: auto;
+}
+
+.ValueForm2 {
+    background: white;
+    border: 2px solid rgba(12, 16, 64, 0.606);
+    margin-left: 5px;
+    padding: 6px;
+    box-shadow: 1px 1px 2px #a3a0a0;
+    width: 30%;
+    height: 20px;
+    border-radius: 4px;
+}
+
+
+.selectedOperator2 {
+    background: white;
+    border: 2px solid rgba(12, 16, 64, 0.606);
+    font-size: medium;
+    border-radius: 4px;
+    width: 43px;
+    height: 34px;
+    margin-right: 20px;
+    box-shadow: 1px 2px 2px #cecece;
+}

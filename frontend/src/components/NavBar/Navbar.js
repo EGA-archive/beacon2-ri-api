@@ -65,7 +65,7 @@ function Navbar () {
     <div className='navB'>
       <LoggedIn />
       <nav className='nav2'>
-        <NavLink
+        {/* <NavLink
           exact
           to='/'
           className={({ isActive }) =>
@@ -73,7 +73,7 @@ function Navbar () {
           }
         >
           Individuals
-        </NavLink>
+        </NavLink> */}
         {/* <NavLink
           exact
           to='/biosamples'
@@ -83,13 +83,13 @@ function Navbar () {
         >
           Biosamples
         </NavLink> */}
-        <NavLink
+        {/* <NavLink
           exact
           to='/genomicVariations'
           className={({ isActive }) => (isActive ? 'Variants2' : 'Variants')}
         >
           Variant
-        </NavLink>
+        </NavLink> */}
         {/* <NavLink
           exact
           to='/runs'
@@ -238,7 +238,7 @@ function Navbar () {
                   </div>
 
                   <div className='menuNav2'>
-                    <NavLink
+                    {/* <NavLink
                       exact
                       to='/'
                       onClick={handleMenu}
@@ -247,7 +247,7 @@ function Navbar () {
                       }
                     >
                       <h1>Individuals</h1>
-                    </NavLink>
+                    </NavLink> */}
                     {/* <NavLink
                       exact
                       to='/biosamples'
@@ -258,7 +258,7 @@ function Navbar () {
                     >
                       <h1>Biosamples</h1>
                     </NavLink> */}
-                    <NavLink
+                    {/* <NavLink
                       exact
                       to='/genomicVariations'
                       onClick={handleMenu}
@@ -267,7 +267,7 @@ function Navbar () {
                       }
                     >
                       <h1>Variant</h1>
-                    </NavLink>
+                    </NavLink> */}
                     {/* <NavLink
                       exact
                       to='/runs'

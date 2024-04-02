@@ -43,7 +43,7 @@ function App () {
         <Route path='/about' element={<AboutSection />} />
         <Route path='*' element={<ErrorPage />} />
       </Routes>
-      <Footer/>
+
     </div>
   )
 }
