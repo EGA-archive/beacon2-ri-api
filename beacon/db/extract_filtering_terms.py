@@ -238,7 +238,6 @@ def find_ontology_terms_used(collection_name: str) -> List[Dict]:
         for r in tqdm(xs, total=num_total):
             matches = ONTOLOGY_REGEX.findall(str(r))
             icd_matches = ICD_REGEX.findall(str(r))
-            print(icd_matches)
             for ontology_id, term_id in matches:
                 term = ':'.join([ontology_id, term_id])
                 if term not in terms_ids:
@@ -269,12 +268,9 @@ def get_filtering_object(terms_ids: list, collection_name: str):
         try:
             field = field_dict['field']
             label = field_dict['label']
-            if label == 'Weight':
-                ontology_label = 'Weight in Kilograms'
-            elif label == 'Height-standing':
-                ontology_label = 'Height-standing in Centimeters'
-            elif label == 'BMI':
-                ontology_label = 'BMI in Kilograms per Square Meter'
+            value_id=None
+            if 'measurements.assayCode' in field:
+                value_id = label
             else:
                 ontology_label = label
             if field is not None:
@@ -304,29 +300,10 @@ def get_filtering_object(terms_ids: list, collection_name: str):
                                         #'count': get_ontology_term_count(collection_name, onto),
                                         'scope': [collection_name[0:-1]]                        
                                     })
-                    if label == 'Weight':
+                    if value_id is not None:
                         terms.append({
                                                 'type': 'alphanumeric',
-                                                'id': label,
-                                                'label': ontology_label,
-                                                # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
-                                                #'count': get_ontology_term_count(collection_name, onto),
-                                                'scope': [collection_name[0:-1]]     
-                                            })
-                    if label == 'BMI':
-                        terms.append({
-                                                'type': 'alphanumeric',
-                                                'id': label,
-                                                'label': ontology_label,
-                                                # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
-                                                #'count': get_ontology_term_count(collection_name, onto),
-                                                'scope': [collection_name[0:-1]]     
-                                            })
-                    if label == 'Height-standing':
-                        terms.append({
-                                                'type': 'alphanumeric',
-                                                'id': label,
-                                                'label': ontology_label,
+                                                'id': value_id,
                                                 # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
                                                 #'count': get_ontology_term_count(collection_name, onto),
                                                 'scope': [collection_name[0:-1]]     
@@ -384,12 +361,12 @@ def merge_terms():
             array_of_ids.append(new_id)
         else:
             repeated_ids.append(new_id)
-    print("repeated_ids are {}".format(repeated_ids))
+    #print("repeated_ids are {}".format(repeated_ids))
     for repeated_id in repeated_ids:
         repeated_terms = client.beacon.filtering_terms.find({"id": repeated_id, "type": "ontology"})
         array_of_scopes=[]
         for repeated_term in repeated_terms:
-            print(repeated_term)
+            #print(repeated_term)
             id=repeated_term["id"]
             label=repeated_term["label"]
             if repeated_term['scope'] != []:
