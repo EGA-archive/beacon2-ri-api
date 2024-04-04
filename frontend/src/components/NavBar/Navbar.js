@@ -116,6 +116,15 @@ function Navbar () {
       <nav className='nav3'>
         {!isLoggedIn && (
           <NavLink
+            to='/'
+            className={({ isActive }) => (isActive ? 'Home2' : 'Home')}
+          >
+            <ion-icon name='home-outline'></ion-icon>
+          </NavLink>
+        )}
+
+        {!isLoggedIn && (
+          <NavLink
             to='/beaconInfo'
             className={({ isActive }) => (isActive ? 'Members2' : 'Members')}
           >
@@ -215,6 +224,17 @@ function Navbar () {
                       </NavLink>
                     )}
 
+                    {
+                      <NavLink
+                        exact
+                        to='/'
+                        onClick={handleMenu}
+                        className='Home3'
+                      >
+                        <ion-icon name='home-outline'></ion-icon>
+                      </NavLink>
+                    }
+
                     {isLoggedIn && (
                       <>
                         <NavLink
@@ -308,7 +328,6 @@ function Navbar () {
                       {' '}
                       <h1>Beacon Info</h1>
                     </NavLink>
-
                     {!isLoggedIn && (
                       <NavLink
                         exact
@@ -321,7 +340,16 @@ function Navbar () {
                         <h1>Log in</h1>
                       </NavLink>
                     )}
-
+                    (
+                    <NavLink
+                      exact
+                      to='/'
+                      onClick={handleMenu}
+                      className='Home3'
+                    >
+                      <ion-icon name='home-outline'></ion-icon>
+                    </NavLink>
+                    )
                     {isLoggedIn && (
                       <>
                         <NavLink

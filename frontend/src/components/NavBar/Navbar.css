@@ -61,8 +61,8 @@
     display: flex;
     width: 100vw;
     position: relative;
-    height: 57px;
-    background-color: #34495e;
+    height: 62px;
+    background-color: #4480bd;
     font-size: 0;
     z-index: 2;
   }
@@ -179,7 +179,7 @@
   }
 
   .Members2 {
-    width: 160px;
+    width: 140px;
     background-color: #4961b8;
   }
 
@@ -188,7 +188,7 @@
   }
 
   .Members4 {
-    width: 156px;
+    width: 146px;
     background-color: #4961b8;
   }
 
@@ -266,16 +266,51 @@
   }
 
   .Members:hover ~ .animation {
-    width: 160px;
-    right: 134px;
+    width: 125px;
+    right: 155px;
     background-color: #4961b8;
   }
 
   .Members3:hover ~ .animation {
-    width: 150px;
+    width: 120px;
     right: 20.5%;
     background-color: #4961b8;
   }
+
+  .Home2 {
+    width: 120px;
+
+    background-color: #acc2c1;
+  }
+
+  .Home:hover ~ .animation {
+    background-color: #acc2c1;
+    right: 290px;
+    width: 100px;
+  }
+
+  .Home {
+    width: 120px;
+    
+  }
+
+ 
+
+  .Home ion-icon {
+    margin-top: 16px;
+    font-size: 26px;
+  }
+
+
+  .Home2 ion-icon {
+    margin-top: 16px;
+    font-size: 26px;
+  }
+
+  .Home3 .active{
+    margin-top: 30px;
+  }
+
 
   .About:hover ~ .animation {
     width: 116px;
@@ -495,7 +530,7 @@
 
   .menuNav {
     background-color: #235c94;
-    height: 130px;
+    height: 160px;
     width: 145px;
     margin-top: 22px;
     border-radius: 9px;
@@ -923,8 +958,8 @@
     display: flex;
     /* align-content: center; */
     justify-content: center;
-    /* align-items: center; */
     flex-direction: column;
     margin-left: 0px;
+    align-items: center;
   }
 }

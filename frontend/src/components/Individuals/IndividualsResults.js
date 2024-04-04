@@ -278,7 +278,8 @@ function IndividualsResults (props) {
                     } else {
                       if (chosenScope === '') {
                         alphaNumFilter = {
-                          id: element2.id
+                          id: element2.id,
+                          scope: element2.scope[0]
                         }
                       }
                     }
@@ -559,13 +560,14 @@ function IndividualsResults (props) {
             }
 
             if (token === null) {
+              console.log(jsonData2)
               console.log('Querying without token')
               res = await axios.post(
                 configData.API_URL + '/individuals',
                 jsonData2
               )
               console.log(res)
-              console.log(jsonData2)
+        
             } else {
               console.log('Querying WITH token')
               const headers = { Authorization: `Bearer ${token}` }

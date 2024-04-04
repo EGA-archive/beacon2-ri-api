@@ -413,7 +413,7 @@ function Layout (props) {
   }
 
   const handleOptionDisease = e => {
-    if (e.target.checked === true){
+    if (e.target.checked === true) {
       filteringTerms.forEach(element => {
         if (element.label) {
           if (element.label.toLowerCase() === e.target.value.toLowerCase()) {
@@ -434,84 +434,118 @@ function Layout (props) {
         }
       })
     } else {
-      setQuery(query.replace(`disease=${e.target.value}`, ''))
-
+      if (query.includes(`,disease=${e.target.value}`)) {
+        setQuery(query.replace(`,disease=${e.target.value}`, ''))
+      } else if (query.includes(`disease=${e.target.value},`)) {
+        setQuery(query.replace(`disease=${e.target.value},`, ''))
+      } else {
+        setQuery(query.replace(`disease=${e.target.value}`, ''))
+      }
     }
-  
   }
 
   const handleOptionSex = e => {
-    filteringTerms.forEach(element => {
-      if (element.label) {
-        console.log(element.label.toLowerCase())
-        console.log(e.target.innerText.toLowerCase())
-        if (element.label.toLowerCase() === e.target.value.toLowerCase()) {
-          let ontology = element.id
-          terms.push([element.label, ontology])
-          if (query !== null && query !== '') {
-            setQuery(query + ',' + 'sex=' + element.label)
+    if (e.target.checked === true) {
+      filteringTerms.forEach(element => {
+        if (element.label) {
+          if (element.label.toLowerCase() === e.target.value.toLowerCase()) {
+            let ontology = element.id
+            terms.push([element.label, ontology])
+            if (query !== null && query !== '') {
+              setQuery(query + ',' + 'sex=' + element.label)
+            } else {
+              setQuery('sex=' + element.label)
+            }
           } else {
-            setQuery('sex=' + element.label)
-          }
-        } else {
-          if (query !== null && query !== '') {
-            setQuery(query + ',' + 'sex=' + e.target.value)
-          } else {
-            setQuery('sex=' + e.target.value)
+            if (query !== null && query !== '') {
+              setQuery(query + ',' + 'sex=' + e.target.value)
+            } else {
+              setQuery('sex=' + e.target.value)
+            }
           }
         }
+      })
+    } else {
+      if (query.includes(`,sex=${e.target.value}`)) {
+        setQuery(query.replace(`,sex=${e.target.value}`, ''))
+      } else if (query.includes(`sex=${e.target.value},`)) {
+        setQuery(query.replace(`sex=${e.target.value},`, ''))
+      } else {
+        setQuery(query.replace(`sex=${e.target.value}`, ''))
       }
-    })
+    }
   }
+
   const handleOptionAge = e => {
     setShowAlphanum(true)
   }
 
   const handleOptionHisto = e => {
-    filteringTerms.forEach(element => {
-      if (element.label) {
-        if (element.label.toLowerCase() === e.target.value.toLowerCase()) {
-          let ontology = element.id
-          terms.push([element.label, ontology])
-          if (query !== null && query !== '') {
-            setQuery(query + ',' + 'histopathology=' + element.label)
+    if (e.target.checked === true) {
+      filteringTerms.forEach(element => {
+        if (element.label) {
+          if (element.label.toLowerCase() === e.target.value.toLowerCase()) {
+            let ontology = element.id
+            terms.push([element.label, ontology])
+            if (query !== null && query !== '') {
+              setQuery(query + ',' + 'histopathology=' + element.label)
+            } else {
+              setQuery('histopathology=' + element.label)
+            }
           } else {
-            setQuery('histopathology=' + element.label)
-          }
-        } else {
-          if (query !== null && query !== '') {
-            setQuery(query + ',' + 'histophatology=' + e.target.value)
-          } else {
-            setQuery('histophatology=' + e.target.value)
+            if (query !== null && query !== '') {
+              setQuery(query + ',' + 'histopathology=' + e.target.value)
+            } else {
+              setQuery('histopathology=' + e.target.value)
+            }
           }
         }
+      })
+    } else {
+      if (query.includes(`,histopathology=${e.target.value}`)) {
+        setQuery(query.replace(`,histopathology=${e.target.value}`, ''))
+      } else if (query.includes(`histopathology=${e.target.value},`)) {
+        setQuery(query.replace(`histopathology=${e.target.value},`, ''))
+      } else {
+        setQuery(query.replace(`histopathology=${e.target.value}`, ''))
       }
-    })
+    }
   }
 
   const handleOptionTreatment = e => {
-    filteringTerms.forEach(element => {
-      if (element.label) {
-        console.log(element.label.toLowerCase())
-        console.log(e.target.innerText.toLowerCase())
-        if (element.label.toLowerCase() === e.target.value.toLowerCase()) {
-          let ontology = element.id
-          terms.push([element.label, ontology])
-          if (query !== null && query !== '') {
-            setQuery(query + ',' + 'treatment=' + element.label)
+    if (e.target.checked === true) {
+      filteringTerms.forEach(element => {
+        if (element.label) {
+          if (element.label.toLowerCase() === e.target.value.toLowerCase()) {
+            let ontology = element.id
+            terms.push([element.label, ontology])
+            if (query !== null && query !== '') {
+              setQuery(query + ',' + 'treatment=' + element.label)
+            } else {
+              setQuery('treatment=' + element.label)
+            }
           } else {
-            setQuery('treatment=' + element.label)
-          }
-        } else {
-          if (query !== null && query !== '') {
-            setQuery(query + ',' + 'treatment=' + e.target.value)
-          } else {
-            setQuery('treatment=' + e.target.value)
+            if (query !== null && query !== '') {
+              setQuery(query + ',' + 'treatment=' + e.target.value)
+            } else {
+              setQuery('treatment=' + e.target.value)
+            }
           }
         }
+      })
+    } else {
+      if (query.includes(`,treatment=${e.target.value}`)) {
+        setQuery(query.replace(`,treatment=${e.target.value}`, ''))
+      } else if (query.includes(`treatment=${e.target.value},`)) {
+        setQuery(query.replace(`treatment=${e.target.value},`, ''))
+      } else {
+        setQuery(query.replace(`treatment=${e.target.value}`, ''))
       }
-    })
-    console.log(e.target.innerText)
+    }
+  }
+
+  const handleReset = e => {
+    setQuery('')
   }
 
   useEffect(() => {
@@ -671,14 +705,21 @@ function Layout (props) {
           </select>
           <h14>having ... </h14>
           <form onSubmit={onSubmit} className='formInput'>
-            <textarea
-              className='inputSearch'
-              type='search'
-              placeholder={placeholder}
-              value={query}
-              onChange={e => search(e)}
-              aria-label='Search'
-            />
+            <div className='textAreaDiv'>
+              <textarea
+                className='inputSearch'
+                type='text'
+                placeholder={placeholder}
+                value={query}
+                onChange={e => search(e)}
+              />
+              <input
+                className='resetButton'
+                type='reset'
+                value='Clear'
+                onClick={handleReset}
+              ></input>
+            </div>
             <button className='searchButton' type='submit'>
               <img
                 className='searchIcon'
@@ -799,72 +840,258 @@ function Layout (props) {
               <label>Primary adenocarcinoma of colon</label>
             </div>
 
-            <button className='othersButton' onClick={handleSeeFilteringTerms}>
-              Others
-            </button>
+            <div>
+              <img
+                className='dictionary'
+                src='/../dictionary.png'
+                alt='dictionary'
+              ></img>
+              <button
+                className='othersButton'
+                onClick={handleSeeFilteringTerms}
+              >
+                Others
+              </button>
+            </div>
           </ul>
         </div>
-        <div className='divFilter'>
+        <div className='divFilter2'>
           <p>Demographics</p>
 
           <ul>
-            <li onClick={handleOptionAge}>Age at diagnosis</li>
-            <li onClick={handleOptionSex}>Female</li>
-            <li onClick={handleOptionSex}>Male</li>
-
-            <li>
+            <div>
+              <img
+                className='formula'
+                src='/../formula.png'
+                alt='formula'
+              ></img>
+              <button className='ageButton' onClick={handleOptionAge}>
+                Age at diagnosis
+              </button>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionSex}
+                id='subscribeNews'
+                name='subscribe'
+                value='Female'
+              />
+              <label>Female</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionSex}
+                id='subscribeNews'
+                name='subscribe'
+                value='Male'
+              />
+              <label>Male</label>
+            </div>
+            <div>
+              <img
+                className='dictionary'
+                src='/../dictionary.png'
+                alt='dictionary'
+              ></img>
               <button
                 className='othersButton'
                 onClick={handleSeeFilteringTerms}
               >
                 Others
               </button>
-            </li>
+            </div>
           </ul>
         </div>
-        <div className='divFilter'>
+        <div className='divFilter3'>
           <p>Histopathology</p>
 
           <ul>
-            <li onClick={handleOptionHisto}>Ascending colon</li>
-            <li onClick={handleOptionHisto}>Descending colon</li>
-            <li onClick={handleOptionHisto}>Transverse colon</li>
-            <li onClick={handleOptionHisto}>Hepatic flexure</li>
-            <li onClick={handleOptionHisto}>Splenic flexure</li>
-            <li onClick={handleOptionHisto}>Sigmoid colon</li>
-            <li onClick={handleOptionHisto}>Caecum</li>
-            <li onClick={handleOptionHisto}>Tumor stage I</li>
-            <li onClick={handleOptionHisto}>Tumor stage II</li>
-            <li onClick={handleOptionHisto}>Tumor stage III</li>
-            <li onClick={handleOptionHisto}>Tumor stage IV</li>
-
-            <li>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionHisto}
+                id='subscribeNews'
+                name='subscribe'
+                value='Ascending colon'
+              />
+              <label>Ascending colon</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionHisto}
+                id='subscribeNews'
+                name='subscribe'
+                value='Descending colon'
+              />
+              <label>Descending colon</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionHisto}
+                id='subscribeNews'
+                name='subscribe'
+                value='Transverse colon'
+              />
+              <label>Transverse colon</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionHisto}
+                id='subscribeNews'
+                name='subscribe'
+                value='Hepatic flexure'
+              />
+              <label>Hepatic flexure</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionHisto}
+                id='subscribeNews'
+                name='subscribe'
+                value='Splenic flexure'
+              />
+              <label>Splenic flexure</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionHisto}
+                id='subscribeNews'
+                name='subscribe'
+                value='Sigmoid colon'
+              />
+              <label>Sigmoid colon</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionHisto}
+                id='subscribeNews'
+                name='subscribe'
+                value='Caecum'
+              />
+              <label>Caecum</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionHisto}
+                id='subscribeNews'
+                name='subscribe'
+                value='Stage I'
+              />
+              <label>Tumor stage I</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionHisto}
+                id='subscribeNews'
+                name='subscribe'
+                value='Stage II'
+              />
+              <label>Tumor stage II</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionHisto}
+                id='subscribeNews'
+                name='subscribe'
+                value='Stage III'
+              />
+              <label>Tumor stage III</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionHisto}
+                id='subscribeNews'
+                name='subscribe'
+                value='Stage IV'
+              />
+              <label>Tumor stage IV</label>
+            </div>
+            <div>
+              <img
+                className='dictionary'
+                src='/../dictionary.png'
+                alt='dictionary'
+              ></img>
               <button
                 className='othersButton'
                 onClick={handleSeeFilteringTerms}
               >
                 Others
               </button>
-            </li>
+            </div>
           </ul>
         </div>
 
-        <div className='divFilter'>
+        <div className='divFilter4'>
           <p>Treatment</p>
 
           <ul>
-            <li onClick={handleOptionTreatment}>Radiotherapy</li>
-            <li onClick={handleOptionTreatment}>Surgery</li>
-            <li onClick={handleOptionTreatment}>Systemic therapy</li>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionTreatment}
+                id='subscribeNews'
+                name='subscribe'
+                value='Radiation Therapy'
+              />
+              <label>Radiation Therapy</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionTreatment}
+                id='subscribeNews'
+                name='subscribe'
+                value='Chemotherapy'
+              />
+              <label>Chemotherapy</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionTreatment}
+                id='subscribeNews'
+                name='subscribe'
+                value='Fluorouracil'
+              />
+              <label>Fluorouracil</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionTreatment}
+                id='subscribeNews'
+                name='subscribe'
+                value='Oxaliplatin'
+              />
+              <label>Oxaliplatin</label>
+            </div>
 
-            <li>
+            <div>
+              <img
+                className='dictionary'
+                src='/../dictionary.png'
+                alt='dictionary'
+              ></img>
               <button
                 className='othersButton'
                 onClick={handleSeeFilteringTerms}
               >
                 Others
               </button>
-            </li>
+            </div>
           </ul>
         </div>
       </div>

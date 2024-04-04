@@ -51,8 +51,18 @@ p {
 
 .othersButton {
   margin: 0px;
+  margin-left: 6px;
   padding: 0px;
-  font-size: 15px;
+  font-size: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+.textAreaDiv{
+    display: flex;
+    flex-direction: column-reverse;
+    align-content: space-between;
+    /* justify-content: space-around; */
+    align-items: flex-end;
 }
 
 li {
@@ -61,16 +71,67 @@ li {
   cursor: pointer;
 }
 ul {
-  padding-left: 20px;
+    padding-left: 0px;
 }
 ul div {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
+    display: flex;
+}
+
+label{
+    margin-left: 6px;
+}
+
+.ageButton{
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 .divFilter {
   margin-right: 10px;
   margin-left: 10px;
   margin-bottom: 30px;
   width: 350px;
+}
+
+.resetButton{
+  background-color: rgb(235, 235, 244);
+  border: 1px solid rgb(169, 169, 216);
+  border-radius: 2px;
+  margin-bottom: 3px;
+  cursor: pointer;
+}
+
+.resetButton:hover{
+  background-color: rgb(232, 248, 255);
+}
+
+#subscribeNews{
+    accent-color: #4480bd;
+}
+
+.divFilter2 {
+  margin-right: 32px;
+
+  margin-bottom: 30px;
+  width: 150px;
+}
+.divFilter3 {
+  margin-right: 32px;
+  margin-bottom: 30px;
+  width: 200px;
+}
+.divFilter4 {
+  margin-right: 32px;
+  margin-bottom: 30px;
+  width: 150px;
+}
+
+.formula{
+    width: 20px;
+}
+
+.dictionary{
+    width: 20px;
 }
 
 .IdForm2 {
@@ -105,4 +166,8 @@ ul div {
   height: 34px;
   margin-right: 20px;
   box-shadow: 1px 2px 2px #cecece;
+}
+
+.selectModule1 {
+  width: 250px !important;
 }
