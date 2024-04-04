@@ -85,6 +85,7 @@ function IndividualsResults (props) {
     let ontologyMultipleScope2 = ontologyMultipleScope.shift()
     console.log(ontologyMultipleScope2)
     ontologyMultipleScope2['scopes'] = chosenScope
+    console.log(chosenScope)
 
     setOntologyMultipleScopeFinal([ontologyMultipleScope2])
   }
@@ -269,9 +270,7 @@ function IndividualsResults (props) {
 
                       if (chosenScope === '') {
                         alphaNumFilter = {
-                          id: queryArray[index][0],
-                          operator: queryArray[index][2],
-                          value: queryArray[index][1],
+                          id: element2.id,
                           scope: ''
                         }
                       }
@@ -340,7 +339,7 @@ function IndividualsResults (props) {
 
           ontologyMultipleScopeFinal.forEach(element => {
             arrayFilter.forEach(element2 => {
-              console.log('')
+              console.log(element2.id)
               if (element2.id === element.ontology) {
                 element2.scope = element.scopes
               }
@@ -648,6 +647,16 @@ function IndividualsResults (props) {
     }
     apiCall()
   }, [ontologyMultipleScopeFinal])
+
+  useEffect (() => {
+    if(props.granularity === 'boolean'){
+      handleTypeResults1()
+    } else if (props.granularity === 'count'){
+      handleTypeResults2()
+    } else if (props.granularity === 'record'){
+      handleTypeResults3()
+    }
+  },[])
   return (
     <div>
       {timeOut === false && (
@@ -665,7 +674,7 @@ function IndividualsResults (props) {
         <div className='scopeDiv'>
           {ontologyMultipleScope.map(element => {
             return (
-              <>
+              <div className='scopeSelection'>
                 <h10>Please choose a scope for {element.ontology} :</h10>
 
                 <select id='miSelect' onChange={handleChangeScope}>
@@ -677,7 +686,7 @@ function IndividualsResults (props) {
                 <button onClick={submitScopeChosen} className='doneButton'>
                   <ion-icon name='checkmark-circle-outline'></ion-icon>
                 </button>
-              </>
+              </div>
             )
           })}
         </div>
@@ -687,8 +696,8 @@ function IndividualsResults (props) {
       {triggerSubmit && (
         <div>
           <div>
-            {' '}
-            {timeOut && error === '' && (
+          
+            {/* {timeOut && error === '' && (
               <div>
                 <div className='selectGranularity'>
                   <h4>Granularity:</h4>
@@ -729,7 +738,7 @@ function IndividualsResults (props) {
                   )}
                 </div>
               </div>
-            )}
+            )} */}
 
             {show3 && logInRequired === false && !error && (
               <div className='containerTableResults'>

@@ -37,6 +37,17 @@ html {
   margin-left: 10px;
 }
 
+.scopeSelection{
+  position: absolute;
+  top: 95px;
+  z-index: 5;
+  background-color: #dbdbdb;
+  /* height: 80px; */
+  display: flex;
+  align-items: center;
+  padding: 7px;
+  border-radius: 3px;
+}
 .resultSetsDiv2 .multi-switch-container {
   margin-left: -5px;
   margin-top: 8px;
@@ -205,6 +216,12 @@ p a {
   margin-left: 14px;
   animation: slide-in-blurred-right 0.4s ease-in both;
 }
+
+.doneButton ion-icon{
+  color: black;
+}
+
+
 
 .removeButton {
   width: 130%;

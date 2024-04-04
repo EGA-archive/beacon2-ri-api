@@ -99,7 +99,10 @@ function Layout (props) {
 
   const [sequenceSubmitted, setSequenceSub] = useState(false)
   const [rangeSubmitted, setRangeSub] = useState(false)
+  const [rangeSubmitted1, setRangeSub1] = useState(false)
+  const [rangeSubmitted2, setRangeSub2] = useState(false)
   const [geneSubmitted, setGeneSub] = useState(false)
+  const [geneSubmitted2, setGeneSub2] = useState(false)
 
   const [hideForm, setHideForm] = useState(false)
 
@@ -256,65 +259,6 @@ function Layout (props) {
 
   const handleQEclick = e => {
     setExpansionSection(true)
-  }
-
-  const handleSequenceExample = e => {
-    setAlternateBases('A')
-    setRefBases('G')
-    setStart('16050114')
-  }
-
-  const handleRangeExample = e => {
-    if (props.collection === 'Variant') {
-      setAlternateBases2('T')
-      setRefBases2('C')
-      setStart2('110173330')
-      setEnd('110173331')
-      setVariantType('SNP')
-    }
-    console.log(props.collection)
-    if (props.collection === 'Individuals') {
-      setAlternateBases2('A')
-      setRefBases2('T')
-      setStart2('1334544')
-      setEnd('1334545')
-      setVariantType('SNP')
-    }
-  }
-
-  const handleRangeExample2 = e => {
-    if (props.collection === 'Individuals') {
-      setAlternateBases2('T')
-      setRefBases2('C')
-      setStart2('3670751')
-      setEnd('3670752')
-      setVariantType('SNP')
-    }
-  }
-
-  const handleGeneExample = e => {
-    setGeneId('CTNNB1')
-    setQuery('NCIT:C15632,NCIT:C27967,NCIT:C4349')
-  }
-
-  const handleGeneExample2 = e => {
-    setGeneId('CSDE1')
-    setQuery('NCIT:C505,NCIT:C27979,NCIT:C9383')
-  }
-
-  const removeModuleQueryGene = e => {
-    geneModuleArray.splice(e, 1)
-    setGeneSub(!geneSubmitted)
-  }
-
-  const removeModuleQuerySeq = e => {
-    seqModuleArray.splice(e, 1)
-    setSequenceSub(!sequenceSubmitted)
-  }
-
-  const removeModuleQueryRange = e => {
-    rangeModuleArray.splice(e, 1)
-    setRangeSub(!rangeSubmitted)
   }
 
   const handleRangeModule = e => {
@@ -544,6 +488,108 @@ function Layout (props) {
     }
   }
 
+  const handleOptionVariant = e => {
+    if (e.target.checked) {
+      let objectRange = {
+        assemblyId: assemblyId2,
+        referenceName: referenceName2,
+        start: '110173330',
+        end: '110173331',
+        variantType: 'SNP',
+        alternateBases: 'T',
+        referenceBases: 'C',
+        aminoacid: aminoacid,
+        variantMinLength: variantMinLength,
+        variantMaxLength: variantMaxLength,
+        clinicalRelevance: clinicalRelevance2
+      }
+      rangeModuleArray.push(objectRange)
+      console.log(rangeModuleArray)
+      setRangeSub1(true)
+    } else {
+      setRangeSub1(false)
+      setRangeModuleArray([])
+    }
+  }
+
+  const handleOptionVariant2 = e => {
+    if (e.target.checked) {
+      let objectRange = {
+        assemblyId: assemblyId2,
+        referenceName: referenceName2,
+        start: '1334544',
+        end: '1334545',
+        variantType: 'SNP',
+        alternateBases: 'A',
+        referenceBases: 'T',
+        aminoacid: aminoacid,
+        variantMinLength: variantMinLength,
+        variantMaxLength: variantMaxLength,
+        clinicalRelevance: clinicalRelevance2
+      }
+      let objectRange2 = {
+        assemblyId: assemblyId2,
+        referenceName: referenceName2,
+        start: '3670751',
+        end: '3670752',
+        variantType: 'SNP',
+        alternateBases: 'T',
+        referenceBases: 'C',
+        aminoacid: aminoacid,
+        variantMinLength: variantMinLength,
+        variantMaxLength: variantMaxLength,
+        clinicalRelevance: clinicalRelevance2
+      }
+      rangeModuleArray.push(objectRange)
+      rangeModuleArray.push(objectRange2)
+      console.log(rangeModuleArray)
+      setRangeSub2(true)
+    } else {
+      setRangeSub2(false)
+      setRangeModuleArray([])
+    }
+  }
+  const handleOptionVariant3 = e => {
+    if (e.target.checked) {
+      let objectGene = {
+        geneID: 'CTNNB1',
+        aminoacid: aminoacid2,
+        assemblyId: assemblyId3,
+        variantType: variantType2,
+        variantMinLength: variantMinLength2,
+        variantMaxLength: variantMaxLength2,
+        clinicalRelevance: clinicalRelevance3
+      }
+
+      geneModuleArray.push(objectGene)
+      setGeneSub(true)
+
+      setQuery('treatment=Chemotherapy, ')
+    } else {
+      setGeneSub(false)
+      setGeneModuleArray([])
+    }
+  }
+  const handleOptionVariant4 = e => {
+    if (e.target.checked) {
+      let objectGene = {
+        geneID: 'CSDE1',
+        aminoacid: aminoacid2,
+        assemblyId: assemblyId3,
+        variantType: variantType2,
+        variantMinLength: variantMinLength2,
+        variantMaxLength: variantMaxLength2,
+        clinicalRelevance: clinicalRelevance3
+      }
+
+      geneModuleArray.push(objectGene)
+      setGeneSub2(true)
+    } else {
+      setGeneSub2(false)
+      setGeneModuleArray([])
+    }
+  }
+
   const handleReset = e => {
     setQuery('')
   }
@@ -729,6 +775,48 @@ function Layout (props) {
             </button>
           </form>
         </div>
+        {rangeSubmitted1 && (
+          <div className='moduleAddedVariant'>
+            <h4>Range query</h4>
+            <h2>alternateBases: T</h2>
+            <h2>referenceBases: C</h2>
+            <h2>start: 110173330</h2>
+            <h2>end: 110173331</h2>
+            <h2>type: SNP</h2>
+          </div>
+        )}
+        {rangeSubmitted2 && (
+          <div className='containerModulesVariants'>
+            <div className='moduleAddedVariant2'>
+              <h4>Range query</h4>
+              <h2>alternateBases: A</h2>
+              <h2>referenceBases: T</h2>
+              <h2>start: 1334544</h2>
+              <h2>end: 1334545</h2>
+              <h2>type: SNP</h2>
+            </div>
+            <div className='moduleAddedVariant2'>
+              <h4>Range query</h4>
+              <h2>alternateBases: T</h2>
+              <h2>referenceBases: C</h2>
+              <h2>start: 3670751</h2>
+              <h2>end: 3670752</h2>
+              <h2>type: SNP</h2>
+            </div>
+          </div>
+        )}
+        {geneSubmitted && (
+          <div className='moduleAddedVariant'>
+            <h4>Gene query</h4>
+            <h2>Gene ID: CTNNB1</h2>
+          </div>
+        )}
+        {geneSubmitted2 && (
+          <div className='moduleAddedVariant'>
+            <h4>Gene query</h4>
+            <h2>Gene ID: CSDE1</h2>
+          </div>
+        )}
       </div>
       {showAlphanum && (
         <tr className='termsAlphanum'>
@@ -906,132 +994,135 @@ function Layout (props) {
         </div>
         <div className='divFilter3'>
           <p>Histopathology</p>
-
-          <ul>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionHisto}
-                id='subscribeNews'
-                name='subscribe'
-                value='Ascending colon'
-              />
-              <label>Ascending colon</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionHisto}
-                id='subscribeNews'
-                name='subscribe'
-                value='Descending colon'
-              />
-              <label>Descending colon</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionHisto}
-                id='subscribeNews'
-                name='subscribe'
-                value='Transverse colon'
-              />
-              <label>Transverse colon</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionHisto}
-                id='subscribeNews'
-                name='subscribe'
-                value='Hepatic flexure'
-              />
-              <label>Hepatic flexure</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionHisto}
-                id='subscribeNews'
-                name='subscribe'
-                value='Splenic flexure'
-              />
-              <label>Splenic flexure</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionHisto}
-                id='subscribeNews'
-                name='subscribe'
-                value='Sigmoid colon'
-              />
-              <label>Sigmoid colon</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionHisto}
-                id='subscribeNews'
-                name='subscribe'
-                value='Caecum'
-              />
-              <label>Caecum</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionHisto}
-                id='subscribeNews'
-                name='subscribe'
-                value='Stage I'
-              />
-              <label>Tumor stage I</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionHisto}
-                id='subscribeNews'
-                name='subscribe'
-                value='Stage II'
-              />
-              <label>Tumor stage II</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionHisto}
-                id='subscribeNews'
-                name='subscribe'
-                value='Stage III'
-              />
-              <label>Tumor stage III</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionHisto}
-                id='subscribeNews'
-                name='subscribe'
-                value='Stage IV'
-              />
-              <label>Tumor stage IV</label>
-            </div>
-            <div>
-              <img
-                className='dictionary'
-                src='/../dictionary.png'
-                alt='dictionary'
-              ></img>
-              <button
-                className='othersButton'
-                onClick={handleSeeFilteringTerms}
-              >
-                Others
-              </button>
-            </div>
-          </ul>
+          <div className='divHisto'>
+            <ul>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionHisto}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Ascending colon'
+                />
+                <label>Ascending colon</label>
+              </div>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionHisto}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Descending colon'
+                />
+                <label>Descending colon</label>
+              </div>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionHisto}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Transverse colon'
+                />
+                <label>Transverse colon</label>
+              </div>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionHisto}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Hepatic flexure'
+                />
+                <label>Hepatic flexure</label>
+              </div>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionHisto}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Splenic flexure'
+                />
+                <label>Splenic flexure</label>
+              </div>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionHisto}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Sigmoid colon'
+                />
+                <label>Sigmoid colon</label>
+              </div>
+            </ul>
+            <ul>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionHisto}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Caecum'
+                />
+                <label>Caecum</label>
+              </div>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionHisto}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Stage I'
+                />
+                <label>Tumor stage I</label>
+              </div>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionHisto}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Stage II'
+                />
+                <label>Tumor stage II</label>
+              </div>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionHisto}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Stage III'
+                />
+                <label>Tumor stage III</label>
+              </div>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionHisto}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Stage IV'
+                />
+                <label>Tumor stage IV</label>
+              </div>
+              <div>
+                <img
+                  className='dictionary'
+                  src='/../dictionary.png'
+                  alt='dictionary'
+                ></img>
+                <button
+                  className='othersButton'
+                  onClick={handleSeeFilteringTerms}
+                >
+                  Others
+                </button>
+              </div>
+            </ul>
+          </div>
         </div>
 
         <div className='divFilter4'>
@@ -1077,6 +1168,99 @@ function Layout (props) {
                 value='Oxaliplatin'
               />
               <label>Oxaliplatin</label>
+            </div>
+
+            <div>
+              <img
+                className='dictionary'
+                src='/../dictionary.png'
+                alt='dictionary'
+              ></img>
+              <button
+                className='othersButton'
+                onClick={handleSeeFilteringTerms}
+              >
+                Others
+              </button>
+            </div>
+          </ul>
+        </div>
+
+        <div className='divFilter5'>
+          <p>Variant</p>
+
+          <ul>
+            <div className='containerMutation'>
+              <input
+                type='checkbox'
+                onClick={handleOptionVariant}
+                id='subscribeNews'
+                name='subscribe'
+                value='Radiation Therapy'
+              />
+              <label className='tittleVariant'>With mutation:</label>
+
+              <div>
+                <div className='mutationDiv'>
+                  <label>alternateBases: T</label>
+                  <label>referenceBases: C</label>
+                  <label>start: 110173330</label>
+                  <label>end: 110173331</label>
+                  <label>type: SNP</label>
+                </div>
+              </div>
+            </div>
+            <div className='containerMutation'>
+              <input
+                type='checkbox'
+                onClick={handleOptionVariant2}
+                id='subscribeNews'
+                name='subscribe'
+                value='Fluorouracil'
+              />
+              <label className='tittleVariant'>With mutations:</label>
+              <div className='mutationDiv'>
+                <label>alternateBases: A</label>
+                <label>referenceBases: T</label>
+                <label>start: 1334544</label>
+                <label>end: 1334545</label>
+                <label>type: SNP</label>
+              </div>
+              <div className='mutationDiv'>
+                <label>alternateBases: T</label>
+                <label>referenceBases: C</label>
+                <label>start: 3670751</label>
+                <label>end: 3670752</label>
+                <label>type: SNP</label>
+              </div>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionVariant3}
+                id='subscribeNews'
+                name='subscribe'
+                value='Oxaliplatin'
+              />
+              <label className='tittleVariant'>In gene:</label>
+              <label>CTNNB1</label>
+              <label>
+                with Chemotherapy, tumor Stage IIA, Colon adenocarcinoma
+              </label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionVariant4}
+                id='subscribeNews'
+                name='subscribe'
+                value='Oxaliplatin'
+              />
+              <label className='tittleVariant'>In gene:</label>
+              <label>CSDE1</label>
+              <label>
+                with Fluorouracil, tumor Stage IVA, Rectal adenocarcinoma
+              </label>
             </div>
 
             <div>
