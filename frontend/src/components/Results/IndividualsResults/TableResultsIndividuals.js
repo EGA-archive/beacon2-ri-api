@@ -108,14 +108,14 @@ function TableResultsIndividuals (props) {
       headerName: 'diseases',
       width: 350,
       headerClassName: 'super-app-theme--header'
-    }
+    },
     // { field: 'pedigrees', headerName: 'pedigrees', width: 150 },
-    // { field: 'treatments', headerName: 'treatments', width: 150 },
-    //  {
-    // field: 'interventionsOrProcedures',
-    // headerName: 'interventionsOrProcedures',
-    // width: 150
-    // }
+    { field: 'treatments', headerName: 'treatments', width: 150 },
+    {
+      field: 'interventionsOrProcedures',
+      headerName: 'interventionsOrProcedures',
+      width: 150
+    }
     //{ field: 'exposures', headerName: 'exposures', width: 150 },
     //{ field: 'karyotypicSex', headerName: 'karyotypicSex', width: 150 }
   ]
@@ -375,9 +375,15 @@ function TableResultsIndividuals (props) {
                       )}
                       {props.show === 'count' &&
                         element[2][0] !== 0 &&
-                        element[2][0] !== 1 && <h6 className='foundResult'>{element[2][0]} RESULTS</h6>}
+                        element[2][0] !== 1 && (
+                          <h6 className='foundResult'>
+                            {element[2][0]} RESULTS
+                          </h6>
+                        )}
                       {props.show === 'count' && element[2][0] === 0 && (
-                        <h5 className='NotFoundResult'>{element[2][0]} RESULTS</h5>
+                        <h5 className='NotFoundResult'>
+                          {element[2][0]} RESULTS
+                        </h5>
                       )}
                       {props.show === 'count' && element[2][0] === 1 && (
                         <h6 className='foundResult'>{element[2][0]} RESULT</h6>

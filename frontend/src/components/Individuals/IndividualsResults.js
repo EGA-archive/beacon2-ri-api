@@ -457,7 +457,6 @@ function IndividualsResults (props) {
                 res.data.responseSummary.numTotalResults === undefined) &&
               props.resultSets !== 'MISS'
             ) {
-              setError('No results. Please try another query')
               setNumberResults(0)
               setBoolean(false)
             } else {
@@ -577,11 +576,13 @@ function IndividualsResults (props) {
             } else {
               console.log('Querying WITH token')
               const headers = { Authorization: `Bearer ${token}` }
+              console.log(jsonData2)
               res = await axios.post(
                 configData.API_URL + '/individuals',
                 jsonData2,
                 { headers: headers }
               )
+              console.log(res)
             }
 
             setTimeOut(true)
@@ -591,7 +592,7 @@ function IndividualsResults (props) {
                 res.data.responseSummary.numTotalResults === undefined) &&
               props.resultSets !== 'MISS'
             ) {
-              setError('No results. Please try another query')
+              setError('No results')
               setNumberResults(0)
               setBoolean(false)
             } else {
@@ -698,7 +699,7 @@ function IndividualsResults (props) {
           })}
         </div>
       )}
-      {timeOut && error !== '' && props.granularity ==='boolean' &&<h6 className='NotfoundResult' >&nbsp; {error} </h6>}
+      {timeOut && error !== '' && props.granularity ==='boolean' &&<h6 className='NotfoundResult' >&nbsp; No, sorry </h6>}
       {timeOut && error !== '' && props.granularity ==='count' &&<h6 className='NotfoundResult' >&nbsp; None, sorry </h6>}
       {timeOut && error !== '' && props.granularity ==='record' &&<h6 className='NotfoundResult' >&nbsp; No results, sorry </h6>}
       {triggerSubmit && (
@@ -759,7 +760,7 @@ function IndividualsResults (props) {
                 ></TableResultsIndividuals>
               </div>
             )}
-            {show3 && error && <h3>&nbsp; {error} </h3>}
+    
             {show2 && !error && (
               <div className='containerTableResults'>
                 <TableResultsIndividuals
@@ -784,8 +785,7 @@ function IndividualsResults (props) {
                 ></TableResultsIndividuals>
               </div>
             )}
-            {show2 && error && <h3>&nbsp; {error} </h3>}
-            {show1 && error && <h3>&nbsp; {error} </h3>}
+       
           </div>
         </div>
       )}

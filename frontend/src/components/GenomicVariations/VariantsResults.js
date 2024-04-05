@@ -698,7 +698,7 @@ function VariansResults (props) {
           })}
         </div>
       )}
-      {timeOut && error !== '' && props.granularity ==='boolean' &&<h6 className='NotfoundResult' >&nbsp; {error} </h6>}
+      {timeOut && error !== '' && props.granularity ==='boolean' &&<h6 className='NotfoundResult' >&nbsp; No, sorry </h6>}
       {timeOut && error !== '' && props.granularity ==='count' &&<h6 className='NotfoundResult' >&nbsp; None, sorry </h6>}
       {timeOut && error !== '' && props.granularity ==='record' &&<h6 className='NotfoundResult' >&nbsp; No results, sorry </h6>}
       {triggerSubmit && (
@@ -759,7 +759,6 @@ function VariansResults (props) {
                 ></TableResultsVariant>
               </div>
             )}
-            {show3 && error && <h3>&nbsp; {error} </h3>}
             {show2 && !error && (
               <div className='containerTableResults'>
                 <TableResultsVariant
@@ -784,8 +783,6 @@ function VariansResults (props) {
                 ></TableResultsVariant>
               </div>
             )}
-            {show2 && error && <h3>&nbsp; {error} </h3>}
-            {show1 && error && <h3>&nbsp; {error} </h3>}
           </div>
         </div>
       )}

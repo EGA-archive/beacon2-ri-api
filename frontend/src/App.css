@@ -41,12 +41,14 @@ html {
   position: absolute;
   top: 95px;
   z-index: 5;
-  background-color: #dbdbdb;
+  background-color: #f4f5f5;
   /* height: 80px; */
   display: flex;
   align-items: center;
   padding: 7px;
-  border-radius: 3px;
+  padding-left: 19px;
+  padding-right: 19px;
+  border-radius: 6px;
 }
 .resultSetsDiv2 .multi-switch-container {
   margin-left: -5px;

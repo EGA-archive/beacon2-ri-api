@@ -223,7 +223,7 @@ function BiosamplesResults (props) {
           queryStringTerm.push(props.query.trim())
         }
         console.log(queryStringTerm)
-  
+
         queryStringTerm.forEach((term, index) => {
           if (
             term.includes('=') ||
@@ -250,86 +250,80 @@ function BiosamplesResults (props) {
             }
 
             let alphaNumFilter = {}
-            
-            props.filteringTerms.forEach(
-              element2 => {
-                if (element2.label) {
-                  if (
-                    queryArray[index][1].toLowerCase() ===
-                      element2.id.toLowerCase() ||
-                    queryArray[index][1].toLowerCase() ===
-                      element2.label.toLowerCase()
-                  ) {
-                    if (element2.scope.length > 1) {
-                      ontologyMultipleScope.push({
-                        ontology: element2.id,
-                        scopes: element2.scope
-                      })
-                      console.log(ontologyMultipleScope)
-                      setOptionsScope(element2.scope)
 
-                      if (chosenScope === '') {
-                        alphaNumFilter = {
-                          id: element2.id,
-                          scope: ''
-                        }
+            props.filteringTerms.forEach(element2 => {
+              if (element2.label) {
+                if (
+                  queryArray[index][1].toLowerCase() ===
+                    element2.id.toLowerCase() ||
+                  queryArray[index][1].toLowerCase() ===
+                    element2.label.toLowerCase()
+                ) {
+                  if (element2.scope.length > 1) {
+                    ontologyMultipleScope.push({
+                      ontology: element2.id,
+                      scopes: element2.scope
+                    })
+                    console.log(ontologyMultipleScope)
+                    setOptionsScope(element2.scope)
+
+                    if (chosenScope === '') {
+                      alphaNumFilter = {
+                        id: element2.id,
+                        scope: ''
                       }
-                    } else {
-                      if (chosenScope === '') {
-                        alphaNumFilter = {
-                          id: element2.id,
-                          scope: element2.scope[0]
-                        }
+                    }
+                  } else {
+                    if (chosenScope === '') {
+                      alphaNumFilter = {
+                        id: element2.id,
+                        scope: element2.scope[0]
                       }
                     }
                   }
                 }
               }
-            )
+            })
             if (Object.keys(alphaNumFilter).length !== 0) {
               arrayFilter.push(alphaNumFilter)
             }
           } else {
             let filter = {}
-            props.filteringTerms.forEach(
-              element => {
-                if (term === element.id) {
-                  if (element.scope.length > 1) {
-                    ontologyMultipleScope.push({
-                      ontology: element.id,
-                      scopes: element.scope
-                    })
-                    console.log(ontologyMultipleScope)
-                    setOptionsScope(element.scope)
+            props.filteringTerms.forEach(element => {
+              if (term === element.id) {
+                if (element.scope.length > 1) {
+                  ontologyMultipleScope.push({
+                    ontology: element.id,
+                    scopes: element.scope
+                  })
+                  console.log(ontologyMultipleScope)
+                  setOptionsScope(element.scope)
 
-                    if (chosenScope === '') {
-                      filter = { id: term, scope: '' }
-                    }
-                  } else {
-                    filter = { id: term, scope: element.scope[0] }
+                  if (chosenScope === '') {
+                    filter = { id: term, scope: '' }
                   }
                 } else {
-           
-                  let labelToOntology = ''
-                  if (element.label) {
-                    
-                    if (term.toLowerCase() === element.label.toLowerCase()) {
-                      labelToOntology = element.id
-               
-                      filter = {
-                        id: labelToOntology,
-                        scope: element.scope[0]
-                      }
-                    } else {
-                      filter = {
-                        id: term,
-                        scope: element.scope[0]
-                      }
+                  filter = { id: term, scope: element.scope[0] }
+                }
+              } else {
+                let labelToOntology = ''
+                if (element.label) {
+                  if (term.toLowerCase() === element.label.toLowerCase()) {
+                    labelToOntology = element.id
+
+                    filter = {
+                      id: labelToOntology,
+                      scope: element.scope[0]
+                    }
+                  } else {
+                    filter = {
+                      id: term,
+                      scope: element.scope[0]
                     }
                   }
                 }
               }
-            )
+            })
 
             if (Object.keys(filter).length !== 0) {
               arrayFilter.push(filter)
@@ -573,7 +567,6 @@ function BiosamplesResults (props) {
                 jsonData2
               )
               console.log(res)
-        
             } else {
               console.log('Querying WITH token')
               const headers = { Authorization: `Bearer ${token}` }
@@ -655,15 +648,15 @@ function BiosamplesResults (props) {
     apiCall()
   }, [ontologyMultipleScopeFinal])
 
-  useEffect (() => {
-    if(props.granularity === 'boolean'){
+  useEffect(() => {
+    if (props.granularity === 'boolean') {
       handleTypeResults1()
-    } else if (props.granularity === 'count'){
+    } else if (props.granularity === 'count') {
       handleTypeResults2()
-    } else if (props.granularity === 'record'){
+    } else if (props.granularity === 'record') {
       handleTypeResults3()
     }
-  },[])
+  }, [])
   return (
     <div>
       {timeOut === false && (
@@ -698,13 +691,18 @@ function BiosamplesResults (props) {
           })}
         </div>
       )}
-      {timeOut && error !== '' && props.granularity ==='boolean' &&<h6 className='NotfoundResult' >&nbsp; {error} </h6>}
-      {timeOut && error !== '' && props.granularity ==='count' &&<h6 className='NotfoundResult' >&nbsp; None, sorry </h6>}
-      {timeOut && error !== '' && props.granularity ==='record' &&<h6 className='NotfoundResult' >&nbsp; No results, sorry </h6>}
+      {timeOut && error !== '' && props.granularity === 'boolean' && (
+        <h6 className='NotfoundResult'>&nbsp; No, sorry </h6>
+      )}
+      {timeOut && error !== '' && props.granularity === 'count' && (
+        <h6 className='NotfoundResult'>&nbsp; None, sorry </h6>
+      )}
+      {timeOut && error !== '' && props.granularity === 'record' && (
+        <h6 className='NotfoundResult'>&nbsp; No results, sorry </h6>
+      )}
       {triggerSubmit && (
         <div>
           <div>
-          
             {/* {timeOut && error === '' && (
               <div>
                 <div className='selectGranularity'>
@@ -759,7 +757,7 @@ function BiosamplesResults (props) {
                 ></TableResultsBiosamples>
               </div>
             )}
-            {show3 && error && <h3>&nbsp; {error} </h3>}
+
             {show2 && !error && (
               <div className='containerTableResults'>
                 <TableResultsBiosamples
@@ -784,8 +782,6 @@ function BiosamplesResults (props) {
                 ></TableResultsBiosamples>
               </div>
             )}
-            {show2 && error && <h3>&nbsp; {error} </h3>}
-            {show1 && error && <h3>&nbsp; {error} </h3>}
           </div>
         </div>
       )}

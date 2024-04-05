@@ -162,6 +162,17 @@ function Layout (props) {
     }
   }
 
+  const removeModule = e => {
+    setGeneSub(false)
+  }
+  const removeModule2 = e => {
+    setGeneSub2(false)
+  }
+  const removeModule3 = e => {
+    setRangeSub2(false)
+    handleOptionVariant3()
+  }
+
   const handleChangeStart = e => {
     setStart(e.target.value)
   }
@@ -554,6 +565,7 @@ function Layout (props) {
     }
   }
   const handleOptionVariant3 = e => {
+    console.log(geneSubmitted2)
     if (e.target.checked) {
       let objectGene = {
         geneID: 'CTNNB1',
@@ -568,10 +580,11 @@ function Layout (props) {
       geneModuleArray.push(objectGene)
       setGeneSub(true)
 
-      setQuery('treatment=Chemotherapy, ')
+      setQuery('treatment=Chemotherapy, disease=Stage IIA, disease=Colon adenocarcinoma')
     } else {
       setGeneSub(false)
       setGeneModuleArray([])
+      setQuery(query.replace('treatment=Chemotherapy, disease=Stage IIA, disease=Colon adenocarcinoma', ''))
     }
   }
   const handleOptionVariant4 = e => {
@@ -588,9 +601,12 @@ function Layout (props) {
 
       geneModuleArray.push(objectGene)
       setGeneSub2(true)
+      setQuery('treatment=Fluorouracil, disease=Stage IVA, disease=Rectal adenocarcinoma')
+
     } else {
       setGeneSub2(false)
       setGeneModuleArray([])
+      setQuery(query.replace('treatment=Fluorouracil, disease=Stage IVA, disease=Rectal adenocarcinoma', ''))
     }
   }
 
@@ -802,6 +818,7 @@ function Layout (props) {
         )}
         {rangeSubmitted2 && (
           <div className='containerModulesVariants'>
+       
             <div className='moduleAddedVariant2'>
               <h4>Range query</h4>
               <h2>alternateBases: A</h2>
@@ -822,12 +839,14 @@ function Layout (props) {
         )}
         {geneSubmitted && (
           <div className='moduleAddedVariant'>
+        
             <h4>Gene query</h4>
             <h2>Gene ID: CTNNB1</h2>
           </div>
         )}
         {geneSubmitted2 && (
           <div className='moduleAddedVariant'>
+
             <h4>Gene query</h4>
             <h2>Gene ID: CSDE1</h2>
           </div>
@@ -887,8 +906,8 @@ function Layout (props) {
         </tr>
       )}
 
-      {showFilters === true && (
-        <div className='filterTermsContainer'>
+      
+        <div className={showFilters? 'filterTermsContainer':'filterTermsContainer2'}>
           <div className='divFilter'>
             <p>Diseases</p>
 
@@ -1322,7 +1341,7 @@ function Layout (props) {
             </ul>
           </div>
         </div>
-      )}
+      
       {showFilters === false && <button onClick={handleShowFilterEx} className='buttonShowExamples'>Show examples</button>}
       <hr></hr>
       <div className='results'>

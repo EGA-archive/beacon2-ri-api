@@ -7,15 +7,15 @@
   margin-top: -80px;
 }
 
-.buttonShowExamples{
+.buttonShowExamples {
   border: 1px solid #b3b6c1;
-    padding: 6px;
-    border-radius: 3px;
-    background: #f4fdfc;
+  padding: 6px;
+  border-radius: 3px;
+  background: #f4fdfc;
 }
 
-.buttonShowExamples:hover{
-background: rgb(244, 247, 255);
+.buttonShowExamples:hover {
+  background: rgb(244, 247, 255);
 }
 
 .formInput {
@@ -80,6 +80,10 @@ p {
   flex-wrap: wrap;
   margin-left: 53px;
 }
+.filterTermsContainer2 {
+  display: none;
+
+}
 p {
   font-weight: 500;
 }
@@ -94,11 +98,11 @@ p {
     sans-serif;
 }
 
-.buttonAlphanum ion-icon:hover{
+.buttonAlphanum ion-icon:hover {
   color: rgb(16, 130, 98);
 }
 
-.buttonAlphanum ion-icon{
+.buttonAlphanum ion-icon {
   color: rgb(73, 73, 163);
 }
 
@@ -228,7 +232,34 @@ label {
   color: #2fa458;
   font-weight: 500;
 }
+.deleteIcon ion-icon {
+  color: black;
+  margin-bottom: -11px;
+  font-size: 21px;
+}
+.deleteIcon ion-icon:hover{
+  color: rgb(205, 29, 29);
+}
+.deleteIcon {
+  width: fit-content;
+  height: fit-content;
+  margin-left: 170px;
+  margin-top: -21px;
+}
+.deleteIcon2 {
+  width: fit-content;
+  height: fit-content;
+  margin-top: -21px;
+}
 
+.deleteIcon2 ion-icon {
+  color: black;
+  margin-bottom: -11px;
+  font-size: 21px;
+}
+.deleteIcon2 ion-icon:hover{
+  color: rgb(205, 29, 29);
+}
 .divFilter2 {
   margin-right: 32px;
 
