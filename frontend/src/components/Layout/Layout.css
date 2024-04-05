@@ -7,6 +7,17 @@
   margin-top: -80px;
 }
 
+.buttonShowExamples{
+  border: 1px solid #b3b6c1;
+    padding: 6px;
+    border-radius: 3px;
+    background: #f4fdfc;
+}
+
+.buttonShowExamples:hover{
+background: rgb(244, 247, 255);
+}
+
 .formInput {
   display: flex;
   align-items: center;

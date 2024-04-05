@@ -26,6 +26,33 @@
   font-size: 12px;
 }
 
+.foundResult {
+  border: 1px solid rgb(30, 81, 32);
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  color: #fcfcfc;
+  font-weight: 600;
+  background: #0db474;
+}
+
+.NotfoundResult {
+  border: 1px solid rgb(197, 100, 100);
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  color: #fce8e8;
+  font-weight: 600;
+  background: #e93e3e;
+}
+
+.foundResult:hover{
+  color: white;
+}
+.NotfoundResult:hover{
+  color: white;
+}
+
 .resultSetsButton h6 {
   margin-top: 10px;
 }
@@ -108,12 +135,12 @@ h6:hover {
   font-size: 12px;
 }
 
-.divNote{
+.divNote {
   display: flex;
-    align-items: center;
-    justify-content: center;
-    align-content: center;
-    width: 100%;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  width: 100%;
 }
 h7 {
   text-transform: uppercase;

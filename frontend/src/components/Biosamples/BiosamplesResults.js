@@ -309,13 +309,20 @@ function BiosamplesResults (props) {
                     filter = { id: term, scope: element.scope[0] }
                   }
                 } else {
-                  console.log(term)
+           
                   let labelToOntology = ''
                   if (element.label) {
+                    
                     if (term.toLowerCase() === element.label.toLowerCase()) {
                       labelToOntology = element.id
+               
                       filter = {
                         id: labelToOntology,
+                        scope: element.scope[0]
+                      }
+                    } else {
+                      filter = {
+                        id: term,
                         scope: element.scope[0]
                       }
                     }
@@ -360,7 +367,7 @@ function BiosamplesResults (props) {
         if (postPoneQuery === false) {
           beaconsList.push(res.data.response)
           if (props.query === null) {
-            // show all individuals
+            // show all biosamples
 
             var jsonData1 = {}
 
@@ -641,7 +648,7 @@ function BiosamplesResults (props) {
         }
       } catch (error) {
         console.log(error)
-        setError('No results. Please retry')
+        setError('No, sorry')
         setTimeOut(true)
       }
     }
@@ -691,8 +698,9 @@ function BiosamplesResults (props) {
           })}
         </div>
       )}
-      {timeOut && error !== '' && <h3>&nbsp; {error} </h3>}
-
+      {timeOut && error !== '' && props.granularity ==='boolean' &&<h6 className='NotfoundResult' >&nbsp; {error} </h6>}
+      {timeOut && error !== '' && props.granularity ==='count' &&<h6 className='NotfoundResult' >&nbsp; None, sorry </h6>}
+      {timeOut && error !== '' && props.granularity ==='record' &&<h6 className='NotfoundResult' >&nbsp; No results, sorry </h6>}
       {triggerSubmit && (
         <div>
           <div>

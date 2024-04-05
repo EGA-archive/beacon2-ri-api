@@ -29,6 +29,7 @@ function Layout (props) {
 
   const [exampleQ, setExampleQ] = useState([])
 
+  const [showFilters, setShowFilters] = useState(true)
   const [expansionSection, setExpansionSection] = useState(false)
   const [arrayFilteringTermsQE, setArrayFilteringTermsQE] = useState([])
 
@@ -660,6 +661,8 @@ function Layout (props) {
   }, [collection])
 
   const onSubmit = async event => {
+  
+    setShowFilters(false)
     console.log(query)
     console.log(value)
     event.preventDefault()
@@ -710,6 +713,10 @@ function Layout (props) {
     setExampleQ([])
     setTimeOut(true)
     setResults('Variant')
+  }
+
+  const handleShowFilterEx = () => {
+    setShowFilters(true)
   }
 
   return (
@@ -880,323 +887,46 @@ function Layout (props) {
         </tr>
       )}
 
-      <div className='filterTermsContainer'>
-        <div className='divFilter'>
-          <p>Diseases</p>
+      {showFilters === true && (
+        <div className='filterTermsContainer'>
+          <div className='divFilter'>
+            <p>Diseases</p>
 
-          <ul>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionDisease}
-                id='subscribeNews'
-                name='subscribe'
-                value='Colon adenocarcinoma'
-              />
-              <label className='label'>Colon adenocarcinoma</label>
-              <label className='onHover'>NCIT:C4349</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionDisease}
-                id='subscribeNews'
-                name='subscribe'
-                value='Mucinous Adenocarcinoma of the Colon and Rectum'
-              />
-              <label className='label'>
-                Mucinous Adenocarcinoma of the Colon and Rectum
-              </label>
-              <label className='onHover'>NCIT:C7966</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionDisease}
-                id='subscribeNews'
-                name='subscribe'
-                value='Rectal Adenocarcinoma'
-              />
-              <label className='label'>Rectal Adenocarcinoma</label>
-              <label className='onHover'>NCIT:C9383</label>
-            </div>
-            <div>
-              <img
-                className='dictionary'
-                src='/../dictionary.png'
-                alt='dictionary'
-              ></img>
-              <button
-                className='othersButton'
-                onClick={handleSeeFilteringTerms}
-              >
-                Others
-              </button>
-            </div>
-          </ul>
-        </div>
-        <div className='divFilter2'>
-          <p>Demographics</p>
-
-          <ul>
-            <div>
-              <img
-                className='formula'
-                src='/../formula.png'
-                alt='formula'
-              ></img>
-              <button className='ageButton' onClick={handleOptionAge}>
-                Age at diagnosis
-              </button>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionSex}
-                id='subscribeNews'
-                name='subscribe'
-                value='Female'
-              />
-              <label className='label'>Female</label>
-              <label className='onHover'>NCIT:C16576</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionSex}
-                id='subscribeNews'
-                name='subscribe'
-                value='Male'
-              />
-              <label className='label'>Male</label>
-              <label className='onHover'>NCIT:C20197</label>
-            </div>
-            <div>
-              <img
-                className='dictionary'
-                src='/../dictionary.png'
-                alt='dictionary'
-              ></img>
-              <button
-                className='othersButton'
-                onClick={handleSeeFilteringTerms}
-              >
-                Others
-              </button>
-            </div>
-          </ul>
-        </div>
-        <div className='divFilter4'>
-          <p>Treatment</p>
-
-          <ul>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionTreatment}
-                id='subscribeNews'
-                name='subscribe'
-                value='Radiation Therapy'
-              />
-              <label className='label'>Radiation Therapy</label>
-              <label className='onHover'>NCIT:C15313</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionTreatment}
-                id='subscribeNews'
-                name='subscribe'
-                value='Chemotherapy'
-              />
-              <label className='label'>Chemotherapy</label>
-              <label className='onHover'>NCIT:C15632</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionTreatment}
-                id='subscribeNews'
-                name='subscribe'
-                value='Fluorouracil'
-              />
-              <label className='label'>Fluorouracil</label>
-              <label className='onHover'>NCIT:C505</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionTreatment}
-                id='subscribeNews'
-                name='subscribe'
-                value='Oxaliplatin'
-              />
-              <label className='label'>Oxaliplatin</label>
-              <label className='onHover'>NCIT:C1181</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionTreatment}
-                id='subscribeNews'
-                name='subscribe'
-                value='Zoledronic Acid'
-              />
-              <label className='label'>Zoledronic Acid</label>
-              <label className='onHover'>NCIT:C1699</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionTreatment}
-                id='subscribeNews'
-                name='subscribe'
-                value='Irinotecan'
-              />
-              <label className='label'>Irinotecan</label>
-              <label className='onHover'>NCIT:C62040</label>
-            </div>
-            <div>
-              <img
-                className='dictionary'
-                src='/../dictionary.png'
-                alt='dictionary'
-              ></img>
-              <button
-                className='othersButton'
-                onClick={handleSeeFilteringTerms}
-              >
-                Others
-              </button>
-            </div>
-          </ul>
-        </div>
-        <div className='divFilter3'>
-          <p>Histopathology</p>
-          <div className='divHisto'>
             <ul>
               <div>
                 <input
                   type='checkbox'
-                  onClick={handleOptionHisto}
+                  onClick={handleOptionDisease}
                   id='subscribeNews'
                   name='subscribe'
-                  value='Ascending colon'
+                  value='Colon adenocarcinoma'
                 />
-                <label className='label'>Ascending colon</label>
-                <label className='onHover'>ICD10:C18.2</label>
+                <label className='label'>Colon adenocarcinoma</label>
+                <label className='onHover'>NCIT:C4349</label>
               </div>
               <div>
                 <input
                   type='checkbox'
-                  onClick={handleOptionHisto}
+                  onClick={handleOptionDisease}
                   id='subscribeNews'
                   name='subscribe'
-                  value='Descending colon'
+                  value='Mucinous Adenocarcinoma of the Colon and Rectum'
                 />
-                <label className='label'>Descending colon</label>
-                <label className='onHover'>ICD10:C18.6</label>
+                <label className='label'>
+                  Mucinous Adenocarcinoma of the Colon and Rectum
+                </label>
+                <label className='onHover'>NCIT:C7966</label>
               </div>
               <div>
                 <input
                   type='checkbox'
-                  onClick={handleOptionHisto}
+                  onClick={handleOptionDisease}
                   id='subscribeNews'
                   name='subscribe'
-                  value='Transverse colon'
+                  value='Rectal Adenocarcinoma'
                 />
-                <label className='label'>Transverse colon</label>
-                <label className='onHover'>ICD10:C18.4</label>
-              </div>
-              <div>
-                <input
-                  type='checkbox'
-                  onClick={handleOptionHisto}
-                  id='subscribeNews'
-                  name='subscribe'
-                  value='Hepatic flexure'
-                />
-                <label className='label'>Hepatic flexure</label>
-                <label className='onHover'>ICD10:C18.3</label>
-              </div>
-              <div>
-                <input
-                  type='checkbox'
-                  onClick={handleOptionHisto}
-                  id='subscribeNews'
-                  name='subscribe'
-                  value='Splenic flexure'
-                />
-                <label className='label'>Splenic flexure</label>
-                <label className='onHover'>ICD10:C18.5</label>
-              </div>
-              <div>
-                <input
-                  type='checkbox'
-                  onClick={handleOptionHisto}
-                  id='subscribeNews'
-                  name='subscribe'
-                  value='Sigmoid colon'
-                />
-                <label className='label'>Sigmoid colon</label>
-                <label className='onHover'>ICD10:C18.7</label>
-              </div>
-            </ul>
-            <ul>
-              <div>
-                <input
-                  type='checkbox'
-                  onClick={handleOptionHisto}
-                  id='subscribeNews'
-                  name='subscribe'
-                  value='Caecum'
-                />
-                <label className='label'>Caecum</label>
-                <label className='onHover'>ICD10:C18.0</label>
-              </div>
-              <div>
-                <input
-                  type='checkbox'
-                  onClick={handleOptionHisto}
-                  id='subscribeNews'
-                  name='subscribe'
-                  value='Stage I'
-                />
-                <label className='label'>Tumor stage I</label>
-                <label className='onHover'>NCIT:C27966</label>
-              </div>
-              <div>
-                <input
-                  type='checkbox'
-                  onClick={handleOptionHisto}
-                  id='subscribeNews'
-                  name='subscribe'
-                  value='Stage II'
-                />
-                <label className='label'>Tumor stage II</label>
-                <label className='onHover'>NCIT:C28054</label>
-              </div>
-              <div>
-                <input
-                  type='checkbox'
-                  onClick={handleOptionHisto}
-                  id='subscribeNews'
-                  name='subscribe'
-                  value='Stage III'
-                />
-                <label className='label'>Tumor stage III</label>
-                <label className='onHover'>NCIT:C27970</label>
-              </div>
-              <div>
-                <input
-                  type='checkbox'
-                  onClick={handleOptionHisto}
-                  id='subscribeNews'
-                  name='subscribe'
-                  value='Stage IV'
-                />
-                <label className='label'>Tumor stage IV</label>
-                <label className='onHover'>NCIT:C27971</label>
+                <label className='label'>Rectal Adenocarcinoma</label>
+                <label className='onHover'>NCIT:C9383</label>
               </div>
               <div>
                 <img
@@ -1213,107 +943,387 @@ function Layout (props) {
               </div>
             </ul>
           </div>
-        </div>
+          <div className='divFilter2'>
+            <p>Demographics</p>
 
-        <div className='divFilter5'>
-          <p>Variant</p>
-
-          <ul>
-            <div className='containerMutation'>
-              <input
-                type='checkbox'
-                onClick={handleOptionVariant}
-                id='subscribeNews'
-                name='subscribe'
-                value='Radiation Therapy'
-              />
-              <label className='tittleVariant'>With mutation:</label>
-
+            <ul>
               <div>
+                <img
+                  className='formula'
+                  src='/../formula.png'
+                  alt='formula'
+                ></img>
+                <button className='ageButton' onClick={handleOptionAge}>
+                  Age at diagnosis
+                </button>
+              </div>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionSex}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Female'
+                />
+                <label className='label'>Female</label>
+                <label className='onHover'>NCIT:C16576</label>
+              </div>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionSex}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Male'
+                />
+                <label className='label'>Male</label>
+                <label className='onHover'>NCIT:C20197</label>
+              </div>
+              <div>
+                <img
+                  className='dictionary'
+                  src='/../dictionary.png'
+                  alt='dictionary'
+                ></img>
+                <button
+                  className='othersButton'
+                  onClick={handleSeeFilteringTerms}
+                >
+                  Others
+                </button>
+              </div>
+            </ul>
+          </div>
+          <div className='divFilter4'>
+            <p>Treatment</p>
+
+            <ul>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionTreatment}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Radiation Therapy'
+                />
+                <label className='label'>Radiation Therapy</label>
+                <label className='onHover'>NCIT:C15313</label>
+              </div>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionTreatment}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Chemotherapy'
+                />
+                <label className='label'>Chemotherapy</label>
+                <label className='onHover'>NCIT:C15632</label>
+              </div>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionTreatment}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Fluorouracil'
+                />
+                <label className='label'>Fluorouracil</label>
+                <label className='onHover'>NCIT:C505</label>
+              </div>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionTreatment}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Oxaliplatin'
+                />
+                <label className='label'>Oxaliplatin</label>
+                <label className='onHover'>NCIT:C1181</label>
+              </div>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionTreatment}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Zoledronic Acid'
+                />
+                <label className='label'>Zoledronic Acid</label>
+                <label className='onHover'>NCIT:C1699</label>
+              </div>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionTreatment}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Irinotecan'
+                />
+                <label className='label'>Irinotecan</label>
+                <label className='onHover'>NCIT:C62040</label>
+              </div>
+              <div>
+                <img
+                  className='dictionary'
+                  src='/../dictionary.png'
+                  alt='dictionary'
+                ></img>
+                <button
+                  className='othersButton'
+                  onClick={handleSeeFilteringTerms}
+                >
+                  Others
+                </button>
+              </div>
+            </ul>
+          </div>
+          <div className='divFilter3'>
+            <p>Histopathology</p>
+            <div className='divHisto'>
+              <ul>
+                <div>
+                  <input
+                    type='checkbox'
+                    onClick={handleOptionHisto}
+                    id='subscribeNews'
+                    name='subscribe'
+                    value='Ascending colon'
+                  />
+                  <label className='label'>Ascending colon</label>
+                  <label className='onHover'>ICD10:C18.2</label>
+                </div>
+                <div>
+                  <input
+                    type='checkbox'
+                    onClick={handleOptionHisto}
+                    id='subscribeNews'
+                    name='subscribe'
+                    value='Descending colon'
+                  />
+                  <label className='label'>Descending colon</label>
+                  <label className='onHover'>ICD10:C18.6</label>
+                </div>
+                <div>
+                  <input
+                    type='checkbox'
+                    onClick={handleOptionHisto}
+                    id='subscribeNews'
+                    name='subscribe'
+                    value='Transverse colon'
+                  />
+                  <label className='label'>Transverse colon</label>
+                  <label className='onHover'>ICD10:C18.4</label>
+                </div>
+                <div>
+                  <input
+                    type='checkbox'
+                    onClick={handleOptionHisto}
+                    id='subscribeNews'
+                    name='subscribe'
+                    value='Hepatic flexure'
+                  />
+                  <label className='label'>Hepatic flexure</label>
+                  <label className='onHover'>ICD10:C18.3</label>
+                </div>
+                <div>
+                  <input
+                    type='checkbox'
+                    onClick={handleOptionHisto}
+                    id='subscribeNews'
+                    name='subscribe'
+                    value='Splenic flexure'
+                  />
+                  <label className='label'>Splenic flexure</label>
+                  <label className='onHover'>ICD10:C18.5</label>
+                </div>
+                <div>
+                  <input
+                    type='checkbox'
+                    onClick={handleOptionHisto}
+                    id='subscribeNews'
+                    name='subscribe'
+                    value='Sigmoid colon'
+                  />
+                  <label className='label'>Sigmoid colon</label>
+                  <label className='onHover'>ICD10:C18.7</label>
+                </div>
+              </ul>
+              <ul>
+                <div>
+                  <input
+                    type='checkbox'
+                    onClick={handleOptionHisto}
+                    id='subscribeNews'
+                    name='subscribe'
+                    value='Caecum'
+                  />
+                  <label className='label'>Caecum</label>
+                  <label className='onHover'>ICD10:C18.0</label>
+                </div>
+                <div>
+                  <input
+                    type='checkbox'
+                    onClick={handleOptionHisto}
+                    id='subscribeNews'
+                    name='subscribe'
+                    value='Stage I'
+                  />
+                  <label className='label'>Tumor stage I</label>
+                  <label className='onHover'>NCIT:C27966</label>
+                </div>
+                <div>
+                  <input
+                    type='checkbox'
+                    onClick={handleOptionHisto}
+                    id='subscribeNews'
+                    name='subscribe'
+                    value='Stage II'
+                  />
+                  <label className='label'>Tumor stage II</label>
+                  <label className='onHover'>NCIT:C28054</label>
+                </div>
+                <div>
+                  <input
+                    type='checkbox'
+                    onClick={handleOptionHisto}
+                    id='subscribeNews'
+                    name='subscribe'
+                    value='Stage III'
+                  />
+                  <label className='label'>Tumor stage III</label>
+                  <label className='onHover'>NCIT:C27970</label>
+                </div>
+                <div>
+                  <input
+                    type='checkbox'
+                    onClick={handleOptionHisto}
+                    id='subscribeNews'
+                    name='subscribe'
+                    value='Stage IV'
+                  />
+                  <label className='label'>Tumor stage IV</label>
+                  <label className='onHover'>NCIT:C27971</label>
+                </div>
+                <div>
+                  <img
+                    className='dictionary'
+                    src='/../dictionary.png'
+                    alt='dictionary'
+                  ></img>
+                  <button
+                    className='othersButton'
+                    onClick={handleSeeFilteringTerms}
+                  >
+                    Others
+                  </button>
+                </div>
+              </ul>
+            </div>
+          </div>
+
+          <div className='divFilter5'>
+            <p>Variant</p>
+
+            <ul>
+              <div className='containerMutation'>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionVariant}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Radiation Therapy'
+                />
+                <label className='tittleVariant'>With mutation:</label>
+
+                <div>
+                  <div className='mutationDiv'>
+                    <label>alternateBases: T</label>
+                    <label>referenceBases: C</label>
+                    <label>start: 110173330</label>
+                    <label>end: 110173331</label>
+                    <label>type: SNP</label>
+                  </div>
+                </div>
+              </div>
+              <div className='containerMutation'>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionVariant2}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Fluorouracil'
+                />
+                <label className='tittleVariant'>With mutations:</label>
+                <div className='mutationDiv'>
+                  <label>alternateBases: A</label>
+                  <label>referenceBases: T</label>
+                  <label>start: 1334544</label>
+                  <label>end: 1334545</label>
+                  <label>type: SNP</label>
+                </div>
                 <div className='mutationDiv'>
                   <label>alternateBases: T</label>
                   <label>referenceBases: C</label>
-                  <label>start: 110173330</label>
-                  <label>end: 110173331</label>
+                  <label>start: 3670751</label>
+                  <label>end: 3670752</label>
                   <label>type: SNP</label>
                 </div>
               </div>
-            </div>
-            <div className='containerMutation'>
-              <input
-                type='checkbox'
-                onClick={handleOptionVariant2}
-                id='subscribeNews'
-                name='subscribe'
-                value='Fluorouracil'
-              />
-              <label className='tittleVariant'>With mutations:</label>
-              <div className='mutationDiv'>
-                <label>alternateBases: A</label>
-                <label>referenceBases: T</label>
-                <label>start: 1334544</label>
-                <label>end: 1334545</label>
-                <label>type: SNP</label>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionVariant3}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Oxaliplatin'
+                />
+                <label className='tittleVariant'>In gene:</label>
+                <label>CTNNB1</label>
+                <label className='label'>
+                  with Chemotherapy, tumor Stage IIA, Colon adenocarcinoma
+                </label>
+                <label className='onHover'>
+                  NCIT:C15632, NCIT:C27967, NCIT:C4349
+                </label>
               </div>
-              <div className='mutationDiv'>
-                <label>alternateBases: T</label>
-                <label>referenceBases: C</label>
-                <label>start: 3670751</label>
-                <label>end: 3670752</label>
-                <label>type: SNP</label>
+              <div>
+                <input
+                  type='checkbox'
+                  onClick={handleOptionVariant4}
+                  id='subscribeNews'
+                  name='subscribe'
+                  value='Oxaliplatin'
+                />
+                <label className='tittleVariant'>In gene:</label>
+                <label>CSDE1</label>
+                <label className='label'>
+                  with Fluorouracil, tumor Stage IVA, Rectal adenocarcinoma
+                </label>
+                <label className='onHover'>
+                  NCIT:C505, NCIT:C27979, NCIT:C9383
+                </label>
               </div>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionVariant3}
-                id='subscribeNews'
-                name='subscribe'
-                value='Oxaliplatin'
-              />
-              <label className='tittleVariant'>In gene:</label>
-              <label>CTNNB1</label>
-              <label className='label'>
-                with Chemotherapy, tumor Stage IIA, Colon adenocarcinoma
-              </label>
-              <label className='onHover'>
-                NCIT:C15632, NCIT:C27967, NCIT:C4349
-              </label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionVariant4}
-                id='subscribeNews'
-                name='subscribe'
-                value='Oxaliplatin'
-              />
-              <label className='tittleVariant'>In gene:</label>
-              <label>CSDE1</label>
-              <label className='label'>
-                with Fluorouracil, tumor Stage IVA, Rectal adenocarcinoma
-              </label>
-              <label className='onHover'>
-                NCIT:C505, NCIT:C27979, NCIT:C9383
-              </label>
-            </div>
 
-            <div>
-              <img
-                className='dictionary'
-                src='/../dictionary.png'
-                alt='dictionary'
-              ></img>
-              <button
-                className='othersButton'
-                onClick={handleSeeFilteringTerms}
-              >
-                Others
-              </button>
-            </div>
-          </ul>
+              <div>
+                <img
+                  className='dictionary'
+                  src='/../dictionary.png'
+                  alt='dictionary'
+                ></img>
+                <button
+                  className='othersButton'
+                  onClick={handleSeeFilteringTerms}
+                >
+                  Others
+                </button>
+              </div>
+            </ul>
+          </div>
         </div>
-      </div>
+      )}
+      {showFilters === false && <button onClick={handleShowFilterEx} className='buttonShowExamples'>Show examples</button>}
       <hr></hr>
       <div className='results'>
         {timeOut === false && (
@@ -1541,6 +1551,7 @@ function Layout (props) {
         )}
 
         {timeOut === true && error && showFilteringTerms && <h5>{error}</h5>}
+
       </div>
     </div>
   )
