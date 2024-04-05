@@ -188,7 +188,7 @@
   }
 
   .Members4 {
-    width: 146px;
+    width: 130px;
     background-color: #4961b8;
   }
 
@@ -211,7 +211,7 @@
   }
 
   .Sign-in5 {
-    width: 143px;
+    width: 136px;
     background-color: #7a9f9f;
   }
 
@@ -239,7 +239,7 @@
     margin-right: 50px;
   }
 
-  .Sign-in3:hover {
+  .Sign-in3:hover ~ .animation {
     width: 96px;
     border-radius: 2px;
     background-color: #7a9f9f;
@@ -272,8 +272,8 @@
   }
 
   .Members3:hover ~ .animation {
-    width: 120px;
-    right: 20.5%;
+    width: 110px;
+    right: 19%;
     background-color: #4961b8;
   }
 
@@ -281,6 +281,21 @@
     width: 120px;
 
     background-color: #acc2c1;
+  }
+
+  .Home6 {
+    width: 143px;
+  }
+
+  .Home5 {
+    width: 123px;
+    background-color: #acc2c1;
+  }
+
+  .Home6:hover ~ .animation {
+    background-color: #acc2c1;
+    right: 390px;
+    width: 100px;
   }
 
   .Home:hover ~ .animation {
@@ -291,26 +306,31 @@
 
   .Home {
     width: 120px;
-    
   }
 
- 
+  .Home6 ion-icon {
+    margin-top: 16px;
+    font-size: 26px;
+  }
+
+  .Home5 ion-icon {
+    margin-top: 16px;
+    font-size: 26px;
+  }
 
   .Home ion-icon {
     margin-top: 16px;
     font-size: 26px;
   }
 
-
   .Home2 ion-icon {
     margin-top: 16px;
     font-size: 26px;
   }
 
-  .Home3 .active{
+  .Home3 .active {
     margin-top: 30px;
   }
-
 
   .About:hover ~ .animation {
     width: 116px;

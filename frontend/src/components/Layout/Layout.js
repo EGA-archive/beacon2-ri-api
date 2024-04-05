@@ -354,6 +354,9 @@ function Layout (props) {
     if (e.target.value === 'Variant') {
       setCollection('Variant')
     }
+    if (e.target.value === 'Biosamples') {
+      setCollection('Biosamples')
+    }
   }
 
   const handleOptionDisease = e => {
@@ -650,6 +653,10 @@ function Layout (props) {
       setExtraIndividuals(true)
       setShowVariants(true)
     }
+    if (collection === 'Biosamples') {
+      setPlaceholder('filtering term comma-separated, ID><=value')
+      setExtraIndividuals(true)
+    }
   }, [collection])
 
   const onSubmit = async event => {
@@ -748,6 +755,7 @@ function Layout (props) {
               Individuals
             </option>
             <option value='Variant'>Genomic variants</option>
+            <option value='Biosamples'>Biosamples</option>
           </select>
           <h14>having ... </h14>
           <form onSubmit={onSubmit} className='formInput'>
@@ -885,7 +893,8 @@ function Layout (props) {
                 name='subscribe'
                 value='Colon adenocarcinoma'
               />
-              <label>Colon adenocarcinoma</label>
+              <label className='label'>Colon adenocarcinoma</label>
+              <label className='onHover'>NCIT:C4349</label>
             </div>
             <div>
               <input
@@ -895,7 +904,10 @@ function Layout (props) {
                 name='subscribe'
                 value='Mucinous Adenocarcinoma of the Colon and Rectum'
               />
-              <label>Mucinous Adenocarcinoma of the Colon and Rectum</label>
+              <label className='label'>
+                Mucinous Adenocarcinoma of the Colon and Rectum
+              </label>
+              <label className='onHover'>NCIT:C7966</label>
             </div>
             <div>
               <input
@@ -905,29 +917,9 @@ function Layout (props) {
                 name='subscribe'
                 value='Rectal Adenocarcinoma'
               />
-              <label>Rectal Adenocarcinoma</label>
+              <label className='label'>Rectal Adenocarcinoma</label>
+              <label className='onHover'>NCIT:C9383</label>
             </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionDisease}
-                id='subscribeNews'
-                name='subscribe'
-                value='Rectal Adenocarcinoma'
-              />
-              <label>Rectal Adenocarcinoma</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionDisease}
-                id='subscribeNews'
-                name='subscribe'
-                value='Primary adenocarcinoma of colon'
-              />
-              <label>Primary adenocarcinoma of colon</label>
-            </div>
-
             <div>
               <img
                 className='dictionary'
@@ -965,7 +957,8 @@ function Layout (props) {
                 name='subscribe'
                 value='Female'
               />
-              <label>Female</label>
+              <label className='label'>Female</label>
+              <label className='onHover'>NCIT:C16576</label>
             </div>
             <div>
               <input
@@ -975,7 +968,93 @@ function Layout (props) {
                 name='subscribe'
                 value='Male'
               />
-              <label>Male</label>
+              <label className='label'>Male</label>
+              <label className='onHover'>NCIT:C20197</label>
+            </div>
+            <div>
+              <img
+                className='dictionary'
+                src='/../dictionary.png'
+                alt='dictionary'
+              ></img>
+              <button
+                className='othersButton'
+                onClick={handleSeeFilteringTerms}
+              >
+                Others
+              </button>
+            </div>
+          </ul>
+        </div>
+        <div className='divFilter4'>
+          <p>Treatment</p>
+
+          <ul>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionTreatment}
+                id='subscribeNews'
+                name='subscribe'
+                value='Radiation Therapy'
+              />
+              <label className='label'>Radiation Therapy</label>
+              <label className='onHover'>NCIT:C15313</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionTreatment}
+                id='subscribeNews'
+                name='subscribe'
+                value='Chemotherapy'
+              />
+              <label className='label'>Chemotherapy</label>
+              <label className='onHover'>NCIT:C15632</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionTreatment}
+                id='subscribeNews'
+                name='subscribe'
+                value='Fluorouracil'
+              />
+              <label className='label'>Fluorouracil</label>
+              <label className='onHover'>NCIT:C505</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionTreatment}
+                id='subscribeNews'
+                name='subscribe'
+                value='Oxaliplatin'
+              />
+              <label className='label'>Oxaliplatin</label>
+              <label className='onHover'>NCIT:C1181</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionTreatment}
+                id='subscribeNews'
+                name='subscribe'
+                value='Zoledronic Acid'
+              />
+              <label className='label'>Zoledronic Acid</label>
+              <label className='onHover'>NCIT:C1699</label>
+            </div>
+            <div>
+              <input
+                type='checkbox'
+                onClick={handleOptionTreatment}
+                id='subscribeNews'
+                name='subscribe'
+                value='Irinotecan'
+              />
+              <label className='label'>Irinotecan</label>
+              <label className='onHover'>NCIT:C62040</label>
             </div>
             <div>
               <img
@@ -1004,7 +1083,8 @@ function Layout (props) {
                   name='subscribe'
                   value='Ascending colon'
                 />
-                <label>Ascending colon</label>
+                <label className='label'>Ascending colon</label>
+                <label className='onHover'>ICD10:C18.2</label>
               </div>
               <div>
                 <input
@@ -1014,7 +1094,8 @@ function Layout (props) {
                   name='subscribe'
                   value='Descending colon'
                 />
-                <label>Descending colon</label>
+                <label className='label'>Descending colon</label>
+                <label className='onHover'>ICD10:C18.6</label>
               </div>
               <div>
                 <input
@@ -1024,7 +1105,8 @@ function Layout (props) {
                   name='subscribe'
                   value='Transverse colon'
                 />
-                <label>Transverse colon</label>
+                <label className='label'>Transverse colon</label>
+                <label className='onHover'>ICD10:C18.4</label>
               </div>
               <div>
                 <input
@@ -1034,7 +1116,8 @@ function Layout (props) {
                   name='subscribe'
                   value='Hepatic flexure'
                 />
-                <label>Hepatic flexure</label>
+                <label className='label'>Hepatic flexure</label>
+                <label className='onHover'>ICD10:C18.3</label>
               </div>
               <div>
                 <input
@@ -1044,7 +1127,8 @@ function Layout (props) {
                   name='subscribe'
                   value='Splenic flexure'
                 />
-                <label>Splenic flexure</label>
+                <label className='label'>Splenic flexure</label>
+                <label className='onHover'>ICD10:C18.5</label>
               </div>
               <div>
                 <input
@@ -1054,7 +1138,8 @@ function Layout (props) {
                   name='subscribe'
                   value='Sigmoid colon'
                 />
-                <label>Sigmoid colon</label>
+                <label className='label'>Sigmoid colon</label>
+                <label className='onHover'>ICD10:C18.7</label>
               </div>
             </ul>
             <ul>
@@ -1066,7 +1151,8 @@ function Layout (props) {
                   name='subscribe'
                   value='Caecum'
                 />
-                <label>Caecum</label>
+                <label className='label'>Caecum</label>
+                <label className='onHover'>ICD10:C18.0</label>
               </div>
               <div>
                 <input
@@ -1076,7 +1162,8 @@ function Layout (props) {
                   name='subscribe'
                   value='Stage I'
                 />
-                <label>Tumor stage I</label>
+                <label className='label'>Tumor stage I</label>
+                <label className='onHover'>NCIT:C27966</label>
               </div>
               <div>
                 <input
@@ -1086,7 +1173,8 @@ function Layout (props) {
                   name='subscribe'
                   value='Stage II'
                 />
-                <label>Tumor stage II</label>
+                <label className='label'>Tumor stage II</label>
+                <label className='onHover'>NCIT:C28054</label>
               </div>
               <div>
                 <input
@@ -1096,7 +1184,8 @@ function Layout (props) {
                   name='subscribe'
                   value='Stage III'
                 />
-                <label>Tumor stage III</label>
+                <label className='label'>Tumor stage III</label>
+                <label className='onHover'>NCIT:C27970</label>
               </div>
               <div>
                 <input
@@ -1106,7 +1195,8 @@ function Layout (props) {
                   name='subscribe'
                   value='Stage IV'
                 />
-                <label>Tumor stage IV</label>
+                <label className='label'>Tumor stage IV</label>
+                <label className='onHover'>NCIT:C27971</label>
               </div>
               <div>
                 <img
@@ -1123,67 +1213,6 @@ function Layout (props) {
               </div>
             </ul>
           </div>
-        </div>
-
-        <div className='divFilter4'>
-          <p>Treatment</p>
-
-          <ul>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionTreatment}
-                id='subscribeNews'
-                name='subscribe'
-                value='Radiation Therapy'
-              />
-              <label>Radiation Therapy</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionTreatment}
-                id='subscribeNews'
-                name='subscribe'
-                value='Chemotherapy'
-              />
-              <label>Chemotherapy</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionTreatment}
-                id='subscribeNews'
-                name='subscribe'
-                value='Fluorouracil'
-              />
-              <label>Fluorouracil</label>
-            </div>
-            <div>
-              <input
-                type='checkbox'
-                onClick={handleOptionTreatment}
-                id='subscribeNews'
-                name='subscribe'
-                value='Oxaliplatin'
-              />
-              <label>Oxaliplatin</label>
-            </div>
-
-            <div>
-              <img
-                className='dictionary'
-                src='/../dictionary.png'
-                alt='dictionary'
-              ></img>
-              <button
-                className='othersButton'
-                onClick={handleSeeFilteringTerms}
-              >
-                Others
-              </button>
-            </div>
-          </ul>
         </div>
 
         <div className='divFilter5'>
@@ -1244,8 +1273,11 @@ function Layout (props) {
               />
               <label className='tittleVariant'>In gene:</label>
               <label>CTNNB1</label>
-              <label>
+              <label className='label'>
                 with Chemotherapy, tumor Stage IIA, Colon adenocarcinoma
+              </label>
+              <label className='onHover'>
+                NCIT:C15632, NCIT:C27967, NCIT:C4349
               </label>
             </div>
             <div>
@@ -1258,8 +1290,11 @@ function Layout (props) {
               />
               <label className='tittleVariant'>In gene:</label>
               <label>CSDE1</label>
-              <label>
+              <label className='label'>
                 with Fluorouracil, tumor Stage IVA, Rectal adenocarcinoma
+              </label>
+              <label className='onHover'>
+                NCIT:C505, NCIT:C27979, NCIT:C9383
               </label>
             </div>
 
@@ -1403,37 +1438,14 @@ function Layout (props) {
           <div>
             <VariantsResults
               filteringTerms={filteringTerms}
-              geneSubmitted={geneSubmitted}
-              sequenceSubmitted={sequenceSubmitted}
-              rangeSubmitted={rangeSubmitted}
               query={query}
               resultSets={resultSetAux}
-              showResultsVariants={showResultsVariants}
-              setHideForm={setHideForm}
-              showBar={showBar}
-              aminoacid2={aminoacid2}
-              assemblyId2={assemblyId2}
-              assemblyId3={assemblyId3}
-              alternateBases3={alternateBases3}
-              alternateBases2={alternateBases2}
+              ID={ID}
+              operator={operator}
+              valueFree={valueFree}
+              descendantTerm={descendantTerm}
+              similarity={similarity}
               isSubmitted={isSubmitted}
-              variantType2={variantType2}
-              start2={start2}
-              referenceName2={referenceName2}
-              referenceName={referenceName}
-              assemblyId={assemblyId}
-              start={start}
-              end={end}
-              variantType={variantType}
-              alternateBases={alternateBases}
-              referenceBases={referenceBases}
-              referenceBases2={referenceBases2}
-              aminoacid={aminoacid}
-              geneID={geneID}
-              variantMaxLength={variantMaxLength}
-              variantMaxLength2={variantMaxLength2}
-              variantMinLength={variantMinLength}
-              variantMinLength2={variantMinLength2}
               rangeModuleArray={rangeModuleArray}
               seqModuleArray={seqModuleArray}
               geneModuleArray={geneModuleArray}
@@ -1445,37 +1457,14 @@ function Layout (props) {
           <div>
             <VariantsResults
               filteringTerms={filteringTerms}
-              geneSubmitted={geneSubmitted}
-              sequenceSubmitted={sequenceSubmitted}
-              rangeSubmitted={rangeSubmitted}
               query={query}
               resultSets={resultSetAux}
-              showResultsVariants={showResultsVariants}
-              setHideForm={setHideForm}
-              showBar={showBar}
-              aminoacid2={aminoacid2}
-              assemblyId2={assemblyId2}
-              assemblyId3={assemblyId3}
-              alternateBases3={alternateBases3}
-              alternateBases2={alternateBases2}
+              ID={ID}
+              operator={operator}
+              valueFree={valueFree}
+              descendantTerm={descendantTerm}
+              similarity={similarity}
               isSubmitted={isSubmitted}
-              variantType2={variantType2}
-              start2={start2}
-              referenceName2={referenceName2}
-              referenceName={referenceName}
-              assemblyId={assemblyId}
-              start={start}
-              end={end}
-              variantType={variantType}
-              alternateBases={alternateBases}
-              referenceBases={referenceBases}
-              referenceBases2={referenceBases2}
-              aminoacid={aminoacid}
-              geneID={geneID}
-              variantMaxLength={variantMaxLength}
-              variantMaxLength2={variantMaxLength2}
-              variantMinLength={variantMinLength}
-              variantMinLength2={variantMinLength2}
               rangeModuleArray={rangeModuleArray}
               seqModuleArray={seqModuleArray}
               geneModuleArray={geneModuleArray}
@@ -1487,37 +1476,14 @@ function Layout (props) {
           <div>
             <VariantsResults
               filteringTerms={filteringTerms}
-              geneSubmitted={geneSubmitted}
-              sequenceSubmitted={sequenceSubmitted}
-              rangeSubmitted={rangeSubmitted}
               query={query}
               resultSets={resultSetAux}
-              showResultsVariants={showResultsVariants}
-              setHideForm={setHideForm}
-              showBar={showBar}
-              aminoacid2={aminoacid2}
-              assemblyId2={assemblyId2}
-              assemblyId3={assemblyId3}
-              alternateBases3={alternateBases3}
-              alternateBases2={alternateBases2}
+              ID={ID}
+              operator={operator}
+              valueFree={valueFree}
+              descendantTerm={descendantTerm}
+              similarity={similarity}
               isSubmitted={isSubmitted}
-              variantType2={variantType2}
-              start2={start2}
-              referenceName2={referenceName2}
-              referenceName={referenceName}
-              assemblyId={assemblyId}
-              start={start}
-              end={end}
-              variantType={variantType}
-              alternateBases={alternateBases}
-              referenceBases={referenceBases}
-              referenceBases2={referenceBases2}
-              aminoacid={aminoacid}
-              geneID={geneID}
-              variantMaxLength={variantMaxLength}
-              variantMaxLength2={variantMaxLength2}
-              variantMinLength={variantMinLength}
-              variantMinLength2={variantMinLength2}
               rangeModuleArray={rangeModuleArray}
               seqModuleArray={seqModuleArray}
               geneModuleArray={geneModuleArray}
@@ -1531,9 +1497,16 @@ function Layout (props) {
               filteringTerms={filteringTerms}
               query={query}
               resultSets={resultSetAux}
+              ID={ID}
+              operator={operator}
+              valueFree={valueFree}
               descendantTerm={descendantTerm}
               similarity={similarity}
               isSubmitted={isSubmitted}
+              rangeModuleArray={rangeModuleArray}
+              seqModuleArray={seqModuleArray}
+              geneModuleArray={geneModuleArray}
+              granularity={granularity}
             />
           </div>
         )}
@@ -1543,16 +1516,23 @@ function Layout (props) {
               filteringTerms={filteringTerms}
               query={query}
               resultSets={resultSetAux}
+              ID={ID}
+              operator={operator}
+              valueFree={valueFree}
               descendantTerm={descendantTerm}
               similarity={similarity}
               isSubmitted={isSubmitted}
+              rangeModuleArray={rangeModuleArray}
+              seqModuleArray={seqModuleArray}
+              geneModuleArray={geneModuleArray}
+              granularity={granularity}
             />
           </div>
         )}
         {results === null && timeOut === true && showFilteringTerms && (
           <FilteringTerms
             filteringTerms={filteringTerms}
-            collection={props.collection}
+            collection={collection}
             setPlaceholder={setPlaceholder}
             placeholder={placeholder}
             query={query}

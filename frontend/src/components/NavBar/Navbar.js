@@ -46,6 +46,7 @@ function Navbar () {
     }
   }, [userNameToShare])
 
+
   const handleHelpModal1 = () => {
     setIsOpenModal1(true)
   }
@@ -139,6 +140,14 @@ function Navbar () {
             className={({ isActive }) => (isActive ? 'Sign-in5' : 'Sign-in6')}
           >
             Log in
+          </NavLink>
+        )}
+        {isLoggedIn && (
+          <NavLink
+            to='/'
+            className={({ isActive }) => (isActive ? 'Home5' : 'Home6')}
+          >
+            <ion-icon name='home-outline'></ion-icon>
           </NavLink>
         )}
 

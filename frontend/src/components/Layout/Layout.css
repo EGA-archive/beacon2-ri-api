@@ -18,27 +18,26 @@ h14 {
   margin-right: 20px;
 }
 
-.moduleAddedVariant h4{
+.moduleAddedVariant h4 {
   font-size: 12px;
-    color: rgba(12, 16, 64, 0.606);
-    margin-left: 10px;
-    margin-top: 6px;
+  color: rgba(12, 16, 64, 0.606);
+  margin-left: 10px;
+  margin-top: 6px;
 }
 
-.moduleAddedVariant2 h4{
+.moduleAddedVariant2 h4 {
   font-size: 12px;
-    color: rgba(12, 16, 64, 0.606);
-    margin-left: 10px;
-    margin-top: 6px;
+  color: rgba(12, 16, 64, 0.606);
+  margin-left: 10px;
+  margin-top: 6px;
 }
-
 
 p {
   font-size: 15px !important;
   color: #2a6169;
 }
 
-.tittleVariant{
+.tittleVariant {
   color: rgb(125, 125, 141);
 }
 
@@ -82,6 +81,14 @@ p {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
+}
+
+.buttonAlphanum ion-icon:hover{
+  color: rgb(16, 130, 98);
+}
+
+.buttonAlphanum ion-icon{
+  color: rgb(73, 73, 163);
 }
 
 .textAreaDiv {
@@ -182,7 +189,7 @@ label {
   margin-right: 10px;
   margin-left: 10px;
   margin-bottom: 30px;
-  width: 350px;
+  width: 278px;
 }
 
 .resetButton {
@@ -201,6 +208,16 @@ label {
   accent-color: #4480bd;
 }
 
+.onHover {
+  display: none;
+}
+
+.label:hover + .onHover {
+  display: block;
+  color: #2fa458;
+  font-weight: 500;
+}
+
 .divFilter2 {
   margin-right: 32px;
 
@@ -210,7 +227,7 @@ label {
 .divFilter3 {
   margin-right: 32px;
   margin-bottom: 30px;
-  width: 290px;
+  width: 380px;
 }
 .divFilter4 {
   margin-right: 32px;

@@ -64,15 +64,15 @@
   border-radius: 6px;
 }
 
-.Sign-inLS:hover{
-  background-color: #a2ced8;
+.Sign-inLS:hover {
+  background-color: #d2dde0;
   height: 35px;
   border-radius: 4px;
   margin: 0px;
 }
 
 .Sign-inNoLs:hover {
-  background-color: #a2ced8;
+  background-color: #d2dde0;
   border: solid 1px #87dff0;
   padding-top: 0px;
   padding-bottom: 0px;

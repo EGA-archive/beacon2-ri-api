@@ -3,9 +3,9 @@ import '../Individuals/Individuals.css'
 import '../../App.css'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { AuthContext } from '../context/AuthContext'
 import { useAuth } from 'oidc-react'
 import configData from '../../config.json'
-import { AuthContext } from '../context/AuthContext'
 import { useContext } from 'react'
 import TableResultsVariant from '../Results/VariantResults/TableResultsVariant'
 
@@ -86,6 +86,7 @@ function VariantsResults (props) {
     let ontologyMultipleScope2 = ontologyMultipleScope.shift()
     console.log(ontologyMultipleScope2)
     ontologyMultipleScope2['scopes'] = chosenScope
+    console.log(chosenScope)
 
     setOntologyMultipleScopeFinal([ontologyMultipleScope2])
   }
@@ -162,6 +163,7 @@ function VariantsResults (props) {
           if (element.referenceBases !== '') {
             requestParametersRange['referenceBases'] = element.referenceBases
           }
+
           if (element.aminoacid !== '') {
             requestParametersRange['aminoacidChange'] = element.aminoacid
           }
@@ -184,6 +186,7 @@ function VariantsResults (props) {
 
       if (props.geneModuleArray.length > 0) {
         props.geneModuleArray.forEach(element => {
+          console.log(element)
           if (element.geneID !== '') {
             requestParametersGene['geneId'] = element.geneID
           }
@@ -213,45 +216,49 @@ function VariantsResults (props) {
 
       if (props.query !== null) {
         if (props.query.includes(',')) {
-          queryStringTerm = props.query.split(',')
+          let queryStringTerm2 = props.query.split(',')
+          queryStringTerm2.forEach(element => {
+            queryStringTerm.push(element.trim())
+          })
         } else {
-          queryStringTerm = props.query
+          queryStringTerm.push(props.query.trim())
         }
-
-        queryStringTerm.forEach(term => {
+        console.log(queryStringTerm)
+  
+        queryStringTerm.forEach((term, index) => {
           if (
-            props.query.includes('=') ||
-            props.query.includes('>') ||
-            props.query.includes('<') ||
-            props.query.includes('!') ||
-            props.query.includes('%')
+            term.includes('=') ||
+            term.includes('>') ||
+            term.includes('<') ||
+            term.includes('!') ||
+            term.includes('%')
           ) {
-            if (props.query.includes('=')) {
-              queryArray[0] = props.query.split('=')
-              queryArray[0].push('=')
-            } else if (props.query.includes('>')) {
-              queryArray[0] = props.query.split('>')
-              queryArray[0].push('>')
-            } else if (props.query.includes('<')) {
-              queryArray[0] = props.query.split('<')
-              queryArray[0].push('<')
-            } else if (props.query.includes('!')) {
-              queryArray[0] = props.query.split('!')
-              queryArray[0].push('!')
+            if (term.includes('=')) {
+              queryArray[index] = term.split('=')
+              queryArray[index].push('=')
+            } else if (term.includes('>')) {
+              queryArray[index] = term.split('>')
+              queryArray[index].push('>')
+            } else if (term.includes('<')) {
+              queryArray[index] = term.split('<')
+              queryArray[index].push('<')
+            } else if (term.includes('!')) {
+              queryArray[index] = term.split('!')
+              queryArray[index].push('!')
             } else {
-              queryArray[0] = props.query.split('%')
-              queryArray[0].push('%')
+              queryArray[index] = term.split('%')
+              queryArray[index].push('%')
             }
 
             let alphaNumFilter = {}
-            console.log(queryArray[0][0])
+            
             props.filteringTerms.forEach(
               element2 => {
                 if (element2.label) {
                   if (
-                    queryArray[0][1].toLowerCase() ===
+                    queryArray[index][1].toLowerCase() ===
                       element2.id.toLowerCase() ||
-                    queryArray[0][1].toLowerCase() ===
+                    queryArray[index][1].toLowerCase() ===
                       element2.label.toLowerCase()
                   ) {
                     if (element2.scope.length > 1) {
@@ -264,18 +271,14 @@ function VariantsResults (props) {
 
                       if (chosenScope === '') {
                         alphaNumFilter = {
-                          id: queryArray[0][0],
-                          operator: queryArray[0][2],
-                          value: queryArray[0][1],
+                          id: element2.id,
                           scope: ''
                         }
                       }
                     } else {
                       if (chosenScope === '') {
                         alphaNumFilter = {
-                          id: queryArray[0][0],
-                          operator: queryArray[0][2],
-                          value: queryArray[0][1],
+                          id: element2.id,
                           scope: element2.scope[0]
                         }
                       }
@@ -291,7 +294,7 @@ function VariantsResults (props) {
             let filter = {}
             props.filteringTerms.forEach(
               element => {
-                if (props.query === element.id) {
+                if (term === element.id) {
                   if (element.scope.length > 1) {
                     ontologyMultipleScope.push({
                       ontology: element.id,
@@ -301,17 +304,16 @@ function VariantsResults (props) {
                     setOptionsScope(element.scope)
 
                     if (chosenScope === '') {
-                      filter = { id: props.query, scope: '' }
+                      filter = { id: term, scope: '' }
                     }
                   } else {
-                    filter = { id: props.query, scope: element.scope[0] }
+                    filter = { id: term, scope: element.scope[0] }
                   }
                 } else {
+                  console.log(term)
                   let labelToOntology = ''
                   if (element.label) {
-                    if (
-                      props.query.toLowerCase() === element.label.toLowerCase()
-                    ) {
+                    if (term.toLowerCase() === element.label.toLowerCase()) {
                       labelToOntology = element.id
                       filter = {
                         id: labelToOntology,
@@ -338,7 +340,7 @@ function VariantsResults (props) {
 
           ontologyMultipleScopeFinal.forEach(element => {
             arrayFilter.forEach(element2 => {
-              console.log('')
+              console.log(element2.id)
               if (element2.id === element.ontology) {
                 element2.scope = element.scopes
               }
@@ -360,6 +362,7 @@ function VariantsResults (props) {
           beaconsList.push(res.data.response)
           if (props.query === null) {
             // show all individuals
+
             var jsonData1 = {}
 
             if (arrayRequestParameters.length > 0) {
@@ -557,14 +560,14 @@ function VariantsResults (props) {
             }
 
             if (token === null) {
+              console.log(jsonData2)
               console.log('Querying without token')
               res = await axios.post(
                 configData.API_URL + '/g_variants',
                 jsonData2
               )
-              console.log(jsonData2)
-
               console.log(res)
+        
             } else {
               console.log('Querying WITH token')
               const headers = { Authorization: `Bearer ${token}` }
@@ -645,6 +648,16 @@ function VariantsResults (props) {
     }
     apiCall()
   }, [ontologyMultipleScopeFinal])
+
+  useEffect (() => {
+    if(props.granularity === 'boolean'){
+      handleTypeResults1()
+    } else if (props.granularity === 'count'){
+      handleTypeResults2()
+    } else if (props.granularity === 'record'){
+      handleTypeResults3()
+    }
+  },[])
   return (
     <div>
       {timeOut === false && (
@@ -662,7 +675,7 @@ function VariantsResults (props) {
         <div className='scopeDiv'>
           {ontologyMultipleScope.map(element => {
             return (
-              <>
+              <div className='scopeSelection'>
                 <h10>Please choose a scope for {element.ontology} :</h10>
 
                 <select id='miSelect' onChange={handleChangeScope}>
@@ -674,19 +687,18 @@ function VariantsResults (props) {
                 <button onClick={submitScopeChosen} className='doneButton'>
                   <ion-icon name='checkmark-circle-outline'></ion-icon>
                 </button>
-              </>
+              </div>
             )
           })}
         </div>
       )}
-      {timeOut && error !== '' && (
-        <h3>&nbsp; {error} </h3>
-      )}
+      {timeOut && error !== '' && <h3>&nbsp; {error} </h3>}
+
       {triggerSubmit && (
         <div>
           <div>
-            {' '}
-            {timeOut && error === '' && (
+          
+            {/* {timeOut && error === '' && (
               <div>
                 <div className='selectGranularity'>
                   <h4>Granularity:</h4>
@@ -727,7 +739,8 @@ function VariantsResults (props) {
                   )}
                 </div>
               </div>
-            )}
+            )} */}
+
             {show3 && logInRequired === false && !error && (
               <div className='containerTableResults'>
                 <TableResultsVariant
