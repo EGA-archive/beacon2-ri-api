@@ -1301,10 +1301,10 @@ function Layout (props) {
                 <label className='tittleVariant'>In gene:</label>
                 <label>CTNNB1</label>
                 <label className='label'>
-                  with Chemotherapy, tumor Stage IIA, Colon adenocarcinoma
+                  with Chemotherapy, tumor Stage IIIB, Colon adenocarcinoma
                 </label>
                 <label className='onHover'>
-                  NCIT:C15632, NCIT:C27967, NCIT:C4349
+                  NCIT:C15632, NCIT:C27978, NCIT:C4349
                 </label>
               </div>
               <div>
