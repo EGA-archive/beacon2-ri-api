@@ -109,12 +109,18 @@ function TableResultsIndividuals (props) {
       width: 350,
       headerClassName: 'super-app-theme--header'
     },
+    {
+      field: 'phenotypicFeatures',
+      headerName: 'phenotypicFeatures',
+      width: 350,
+      headerClassName: 'super-app-theme--header'
+    },
     // { field: 'pedigrees', headerName: 'pedigrees', width: 150 },
-    { field: 'treatments', headerName: 'treatments', width: 150 },
+    { field: 'treatments', headerName: 'treatments', width: 250,      headerClassName: 'super-app-theme--header' },
     {
       field: 'interventionsOrProcedures',
       headerName: 'interventionsOrProcedures',
-      width: 150
+      width: 250,      headerClassName: 'super-app-theme--header'
     }
     //{ field: 'exposures', headerName: 'exposures', width: 150 },
     //{ field: 'karyotypicSex', headerName: 'karyotypicSex', width: 150 }
@@ -168,6 +174,7 @@ function TableResultsIndividuals (props) {
           stringSex = ''
         }
 
+
         let geographic_id = ''
         let geographic_label = ''
         let stringGeographic = ''
@@ -220,6 +227,46 @@ function TableResultsIndividuals (props) {
               .replaceAll(', ', ',')
               .replaceAll(' ,', ',')
             measuresJson = measuresJson.replaceAll(',', '')
+          }
+        }
+
+        let phenoJson = []
+        if (element[1].phenotypicFeatures !== '' && element[1].phenotypicFeatures !== undefined) {
+          if (typeof element[1].phenotypicFeatures === 'object') {
+            element[1].phenotypicFeatures.forEach(element2 => {
+              phenoJson.push(
+                JSON.stringify(element2, null, 2)
+                  .replaceAll('[', '')
+                  .replaceAll(']', '')
+                  .replaceAll('{', '')
+                  .replaceAll('}', '')
+                  .replaceAll(',', '')
+                  .replaceAll(' ,', '')
+                  .replaceAll(', ', '')
+                  .replaceAll('"', '')
+              )
+            })
+            phenoJson = phenoJson.toString()
+            phenoJson = phenoJson
+              .replaceAll(', ', ',')
+              .replaceAll(' ,', ',')
+              phenoJson = phenoJson.replaceAll(',', '')
+          } else {
+            phenoJson = JSON.stringify(element[1].measures, null, 2)
+              .replaceAll('[', '')
+              .replaceAll(']', '')
+              .replaceAll('{', '')
+              .replaceAll('}', '')
+              .replaceAll(',', '')
+              .replaceAll(' ,', '')
+              .replaceAll(', ', '')
+              .replaceAll('"', '')
+
+              phenoJson = phenoJson.toString()
+              phenoJson = phenoJson
+              .replaceAll(', ', ',')
+              .replaceAll(' ,', ',')
+              phenoJson = phenoJson.replaceAll(',', '')
           }
         }
 
@@ -312,15 +359,52 @@ function TableResultsIndividuals (props) {
           }
         }
 
+        let treatments = []
+
+        if (element[1].treatments !== '' && element[1].treatments !== undefined) {
+          if (typeof element[1].treatments === 'object') {
+            element[1].treatments.forEach(element2 => {
+              treatments.push(
+                JSON.stringify(element2, null, 2)
+                  .replaceAll('[', '')
+                  .replaceAll(']', '')
+                  .replaceAll('{', '')
+                  .replaceAll('}', '')
+                  .replaceAll(',', '')
+                  .replaceAll(' ,', '')
+                  .replaceAll(', ', '')
+                  .replaceAll('"', '')
+              )
+            })
+            treatments = treatments.toString()
+            treatments = treatments.replaceAll(', ', ',').replaceAll(' ,', ',')
+            treatments = treatments.replaceAll(',', '')
+          } else {
+            treatments = JSON.stringify(element[1].treatments, null, 2)
+              .replaceAll('[', '')
+              .replaceAll(']', '')
+              .replaceAll('{', '')
+              .replaceAll('}', '')
+              .replaceAll(',', '')
+              .replaceAll(' ,', '')
+              .replaceAll(', ', '')
+              .replaceAll('"', '')
+              treatments = treatments.toString()
+              treatments = treatments.replaceAll(', ', ',').replaceAll(' ,', ',')
+              treatments = treatments.replaceAll(',', '')
+          }
+        }
+
         rows.push({
           id: index,
           IndividualId: element[1].id,
           Beacon: element[0],
           ethnicity: stringEth,
           interventionsOrProcedures: interventionsProcedures,
-          //measures: measuresJson,
           sex: stringSex,
-          diseases: diseases
+          diseases: diseases,
+          treatments: treatments,
+          phenotypicFeatures: phenoJson
         })
 
         if (index === resultsSelectedFinal.length - 1) {
