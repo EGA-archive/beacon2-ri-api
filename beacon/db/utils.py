@@ -188,12 +188,9 @@ def get_docs_by_response_type(include: str, query: dict, datasets_dict: dict, da
         )
     elif include == 'HIT':
         count=0
-        LOG.debug(query)
-        #LOG.debug(count)
-        query_count={}
+        query_count=query
         i=1
         query_count["$or"]=[]
-        LOG.debug(query)
         for k, v in datasets_dict.items():
             if k == dataset:
                 for id in v:
@@ -208,10 +205,8 @@ def get_docs_by_response_type(include: str, query: dict, datasets_dict: dict, da
                         query_count["$or"].append(queryid)
                         i=1
                 if query_count["$or"]!=[]:
-                    #LOG.debug(query_count)
-                    dataset_count = get_count(mongo_collection, query)
+                    dataset_count = get_count(mongo_collection, query_count)
                     #LOG.debug(dataset_count)
-                    #LOG.debug(limit)
                     docs = get_documents(
                         mongo_collection,
                         query_count,
