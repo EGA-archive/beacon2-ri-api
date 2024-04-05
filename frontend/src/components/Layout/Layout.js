@@ -580,11 +580,11 @@ function Layout (props) {
       geneModuleArray.push(objectGene)
       setGeneSub(true)
 
-      setQuery('treatment=Chemotherapy, disease=Stage IIA, disease=Colon adenocarcinoma')
+      setQuery('treatment=Chemotherapy, disease=STAGE IIIB, disease=Colon adenocarcinoma')
     } else {
       setGeneSub(false)
       setGeneModuleArray([])
-      setQuery(query.replace('treatment=Chemotherapy, disease=Stage IIA, disease=Colon adenocarcinoma', ''))
+      setQuery(query.replace('treatment=Chemotherapy, disease=STAGE IIIB, disease=Colon adenocarcinoma', ''))
     }
   }
   const handleOptionVariant4 = e => {
