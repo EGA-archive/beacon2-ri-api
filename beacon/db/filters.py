@@ -15,7 +15,7 @@ import logging
 
 LOG = logging.getLogger(__name__)
 
-CURIE_REGEX = r'^([a-zA-Z0-9]*):\/?[a-zA-Z0-9]*$'
+CURIE_REGEX = r'^([a-zA-Z0-9]*):\/?[a-zA-Z0-9./]*$'
 
 def cross_query(query: dict, scope: str, collection: str, request_parameters: dict):
     if scope == 'genomicVariation' and collection == 'g_variants' or scope == collection[0:-1]:
@@ -411,7 +411,7 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
     scope = filter.scope
     if scope is None:
         scope = collection[0:-1]
-
+    LOG.debug(scope)
     is_filter_id_required = True
     # Search similar
     if filter.similarity != Similarity.EXACT:
@@ -614,6 +614,7 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
             new_query['$or'].append(query)
             query = new_query
         LOG.debug(query)
+        query=cross_query(query, scope, collection, request_parameters)
    
 
     #LOG.debug("QUERY: %s", query)
