@@ -127,4 +127,4 @@ ontologies_folder = "deploy/ontologies/"
 
 #json_buffer_size = 10000
 
-alphanumeric_terms = ['libraryStrategy', 'molecularAttributes.geneIds']
+alphanumeric_terms = ['libraryStrategy', 'molecularAttributes.geneIds', 'diseases.ageOfOnset.iso8601duration']

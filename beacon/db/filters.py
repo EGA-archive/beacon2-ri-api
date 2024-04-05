@@ -787,46 +787,97 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                 query_id={}
                 query_id[query_term]=filter.value
                 query['$nor'].append(query_id) 
-    else:
-        query_filtering={}
-        query_filtering['$and']=[]
-        dict_type={}
-        dict_id={}
-        dict_regex={}
-        dict_regex['$regex']=filter.id
-        dict_type['type']='custom'
-        dict_id['id']=dict_regex
-        query_filtering['$and'].append(dict_type)
-        query_filtering['$and'].append(dict_id)
-        docs = get_documents(
-            client.beacon.filtering_terms,
-            query_filtering,
-            0,
-            1
-        )
-        for doc in docs:
-            LOG.debug(doc)
-            prefield_splitted = doc['id'].split(':')
-            prefield = prefield_splitted[0]
-        field = prefield.replace('assayCode', 'measurementValue.value')
         
-        assayfield = 'assayCode' + '.label'
-        fieldsplitted = field.split('.')
-        measuresfield=fieldsplitted[0]
+    else:
+        if "iso8601duration" in filter.id:
+            if '>' in filter.operator:
+                LOG.debug(filter.id)
+                age_in_number=""
+                for char in filter.value:
+                    try:
+                        int(char)
+                        age_in_number = age_in_number+char
+                    except Exception:
+                        continue
+                new_age_list=[]
+                
+                if "=" in filter.operator:
+                    z = int(age_in_number)
+                else:
+                    z = int(age_in_number)+1
+                while z < 150:
+                    newagechar="P"+str(z)+"Y"
+                    new_age_list.append(newagechar)
+                    z+=1
+                dict_in={}
+                dict_in["$in"]=new_age_list
+                query[filter.id] = dict_in
+                query=cross_query(query, scope, collection, {})
+                LOG.debug(query)
+            elif '<' in filter.operator:
+                LOG.debug(filter.id)
+                age_in_number=""
+                for char in filter.value:
+                    try:
+                        int(char)
+                        age_in_number = age_in_number+char
+                    except Exception:
+                        continue
+                new_age_list=[]
+                if "=" in filter.operator:
+                    z = int(age_in_number)
+                else:
+                    z = int(age_in_number)-1
+                while z > 0:
+                    newagechar="P"+str(z)+"Y"
+                    new_age_list.append(newagechar)
+                    z-=1
+                dict_in={}
+                dict_in["$in"]=new_age_list
+                query[filter.id] = dict_in
+                query=cross_query(query, scope, collection, {})
+                LOG.debug(query)
+        else:
+            LOG.debug(filter.id)
+            query_filtering={}
+            query_filtering['$and']=[]
+            dict_type={}
+            dict_id={}
+            dict_regex={}
+            dict_regex['$regex']=filter.id
+            dict_type['type']='custom'
+            dict_id['id']=dict_regex
+            query_filtering['$and'].append(dict_type)
+            query_filtering['$and'].append(dict_id)
+            docs = get_documents(
+                client.beacon.filtering_terms,
+                query_filtering,
+                0,
+                1
+            )
+            for doc in docs:
+                LOG.debug(doc)
+                prefield_splitted = doc['id'].split(':')
+                prefield = prefield_splitted[0]
+            field = prefield.replace('assayCode', 'measurementValue.value')
+            
+            assayfield = 'assayCode' + '.label'
+            fieldsplitted = field.split('.')
+            measuresfield=fieldsplitted[0]
 
-        field = field.replace(measuresfield+'.', '')
+            field = field.replace(measuresfield+'.', '')
 
-        query[field] = { formatted_operator: float(formatted_value) }
-        query[assayfield]=filter.id
-        #LOG.debug(query)
-        dict_elemmatch={}
-        dict_elemmatch['$elemMatch']=query
-        dict_measures={}
-        dict_measures[measuresfield]=dict_elemmatch
-        query = dict_measures
-        LOG.debug(collection)
-        query=cross_query(query, scope, collection, {})
-        LOG.debug(query)
+            query[field] = { formatted_operator: float(formatted_value) }
+            query[assayfield]=filter.id
+            #LOG.debug(query)
+            dict_elemmatch={}
+            dict_elemmatch['$elemMatch']=query
+            dict_measures={}
+            dict_measures[measuresfield]=dict_elemmatch
+            query = dict_measures
+            LOG.debug(collection)
+            query=cross_query(query, scope, collection, {})
+            LOG.debug(query)
 
     #LOG.debug("QUERY: %s", query)
     return query
