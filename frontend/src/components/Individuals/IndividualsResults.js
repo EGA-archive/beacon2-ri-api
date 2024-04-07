@@ -7,6 +7,7 @@ import { useAuth } from 'oidc-react'
 import configData from '../../config.json'
 import { useContext } from 'react'
 import TableResultsIndividuals from '../Results/IndividualsResults/TableResultsIndividuals'
+import { alpha } from '@mui/material'
 
 function IndividualsResults (props) {
   const [error, setError] = useState('')
@@ -39,12 +40,13 @@ function IndividualsResults (props) {
   const [isActive2, setIsActive2] = useState(false)
   const [isActive3, setIsActive3] = useState(false)
 
+  const [pause, setPause] = useState(false)
   const [ontologyMultipleScope, setOntologyMultipleScope] = useState([])
-  const [ontologyMultipleScopeFinal, setOntologyMultipleScopeFinal] = useState(
-    []
-  )
+  const [triggerQueryScope, setTriggerQScope] = useState(false)
+
   const [optionsScope, setOptionsScope] = useState([])
   const [chosenScope, setChosenScope] = useState('')
+  const [ontologyChosenScope, setOntologyScope] = useState([])
 
   const [triggerSubmit, settriggerSubmit] = useState(false)
   const handleChangeScope = event => {
@@ -81,18 +83,18 @@ function IndividualsResults (props) {
   }
 
   const submitScopeChosen = e => {
-    console.log(ontologyMultipleScope)
-    let ontologyMultipleScope2 = ontologyMultipleScope.shift()
-    console.log(ontologyMultipleScope2)
-    ontologyMultipleScope2['scopes'] = chosenScope
     console.log(chosenScope)
-
-    setOntologyMultipleScopeFinal([ontologyMultipleScope2])
+    arrayFilter.length = 0
+    beaconsList.length = 0
+    console.log(arrayFilter)
+    setTriggerQScope(!triggerQueryScope)
   }
 
   const auth = useAuth()
   let isAuthenticated = auth.userData?.id_token ? true : false
   useEffect(() => {
+    setTimeOut(false)
+    console.log(arrayFilter)
     const apiCall = async () => {
       if (isAuthenticated === false) {
         authenticateUser()
@@ -223,8 +225,10 @@ function IndividualsResults (props) {
           queryStringTerm.push(props.query.trim())
         }
         console.log(queryStringTerm)
-  
+        let filter = {}
+
         queryStringTerm.forEach((term, index) => {
+          console.log(term)
           if (
             term.includes('=') ||
             term.includes('>') ||
@@ -235,6 +239,7 @@ function IndividualsResults (props) {
             if (term.includes('=')) {
               queryArray[index] = term.split('=')
               queryArray[index].push('=')
+              console.log(queryArray)
             } else if (term.includes('>')) {
               queryArray[index] = term.split('>')
               queryArray[index].push('>')
@@ -248,163 +253,102 @@ function IndividualsResults (props) {
               queryArray[index] = term.split('%')
               queryArray[index].push('%')
             }
-
-            let alphaNumFilter = {}
-            
-            props.filteringTerms.forEach(
-              element2 => {
-                if (element2.label) {
-                  if (
-                    queryArray[index][1].toLowerCase() ===
-                      element2.id.toLowerCase() ||
-                    queryArray[index][1].toLowerCase() ===
-                      element2.label.toLowerCase()
-                  ) {
-                    if (element2.scope.length > 1) {
-                      ontologyMultipleScope.push({
-                        ontology: element2.id,
-                        scopes: element2.scope
-                      })
-                      console.log(ontologyMultipleScope)
-                      setOptionsScope(element2.scope)
-
-                      if (chosenScope === '') {
-                        alphaNumFilter = {
-                          id: element2.id,
-                          scope: ''
-                        }
-                      }
-                    } else {
-                      if (chosenScope === '') {
-                        alphaNumFilter = {
-                          id: element2.id,
-                          scope: element2.scope[0]
-                        }
-                      }
-                    }
+            console.log(queryArray[index][1].toLowerCase())
+            let alphanumericFilter = {}
+            props.filteringTerms.forEach(element => {
+              if (element.label) {
+                if (
+                  queryArray[index][1].toLowerCase() ===
+                  element.label.toLowerCase()
+                ) {
+                  alphanumericFilter = {
+                    id: element.id,
+                    scope: element.scope
                   }
                 }
+              } 
+            })
+
+            if (Object.keys(alphanumericFilter).length === 0) {
+              console.log(queryArray[index][0])
+              props.filteringTerms.forEach(element => {
+                if (
+                  queryArray[index][0].toLowerCase() ===
+                  element.id.toLowerCase()
+                ) {
+                  queryArray[index][3] = element.scope
+                }
+              })
+
+              if (queryArray[index][3] === undefined) {
+                queryArray[index][3] = props.collection
               }
-            )
-            if (Object.keys(alphaNumFilter).length !== 0) {
-              arrayFilter.push(alphaNumFilter)
+              console.log(queryArray)
+              alphanumericFilter = {
+                id: queryArray[index][0],
+                operator: queryArray[index][2],
+                value: queryArray[index][1],
+                scope: queryArray[index][3]
+              }
+              console.log(alphanumericFilter)
             }
+
+            arrayFilter.push(alphanumericFilter)
           } else {
-            let filter = {}
-            props.filteringTerms.forEach(
-              element => {
-                if (term === element.id) {
-                  if (element.scope.length > 1) {
-                    ontologyMultipleScope.push({
-                      ontology: element.id,
-                      scopes: element.scope
-                    })
-                    console.log(ontologyMultipleScope)
-                    setOptionsScope(element.scope)
-
-                    if (chosenScope === '') {
-                      filter = { id: term, scope: '' }
-                    }
-                  } else {
-                    filter = { id: term, scope: element.scope[0] }
+            props.filteringTerms.forEach(element => {
+              if (element.label) {
+                if (
+                  term.toLowerCase() === element.label.toLowerCase() ||
+                  term.toLowerCase() === element.id.toLowerCase()
+                ) {
+                  filter = {
+                    id: element.id,
+                    scope: element.scope
                   }
-                } else {
-           
-                  let labelToOntology = ''
-                  if (element.label) {
-                    
-                    if (term.toLowerCase() === element.label.toLowerCase()) {
-                      labelToOntology = element.id
-               
-                      filter = {
-                        id: labelToOntology,
-                        scope: element.scope[0]
-                      }
-                    } else {
-                      filter = {
-                        id: term,
-                        scope: element.scope[0]
-                      }
-                    }
+                }
+              } else {
+                if (element.id.toLowerCase() === term.toLowerCase()) {
+                  filter = {
+                    id: element.id,
+                    scope: element.scope
                   }
                 }
               }
-            )
+            })
 
-            if (Object.keys(filter).length !== 0) {
-              arrayFilter.push(filter)
-            }
+            arrayFilter.push(filter)
           }
         })
       }
 
+      console.log(arrayFilter)
+
       try {
         let res = await axios.get(configData.API_URL + '/info')
-        console.log(ontologyMultipleScopeFinal)
-        if (ontologyMultipleScopeFinal.length > 0) {
-          console.log(ontologyMultipleScopeFinal)
+        beaconsList.push(res.data.response)
 
-          ontologyMultipleScopeFinal.forEach(element => {
-            arrayFilter.forEach(element2 => {
-              console.log(element2.id)
-              if (element2.id === element.ontology) {
-                element2.scope = element.scopes
-              }
-            })
-          })
-          console.log(arrayFilter)
-        }
+        console.log(ontologyMultipleScope)
+        if (props.query === null) {
+          // show all individuals
 
-        let postPoneQuery = false
-        console.log(arrayFilter)
-        arrayFilter.forEach(element => {
-          if (element.scope === '') {
-            postPoneQuery = true
-            setTimeOut(true)
-          }
-        })
+          var jsonData1 = {}
 
-        if (postPoneQuery === false) {
-          beaconsList.push(res.data.response)
-          if (props.query === null) {
-            // show all individuals
-
-            var jsonData1 = {}
-
-            if (arrayRequestParameters.length > 0) {
-              if (arrayRequestParameters.length === 1) {
-                jsonData1 = {
-                  meta: {
-                    apiVersion: '2.0'
+          if (arrayRequestParameters.length > 0) {
+            if (arrayRequestParameters.length === 1) {
+              jsonData1 = {
+                meta: {
+                  apiVersion: '2.0'
+                },
+                query: {
+                  requestParameters: arrayRequestParameters[0],
+                  filters: arrayFilter,
+                  includeResultsetResponses: `${props.resultSets}`,
+                  pagination: {
+                    skip: skip,
+                    limit: limit
                   },
-                  query: {
-                    requestParameters: arrayRequestParameters[0],
-                    filters: arrayFilter,
-                    includeResultsetResponses: `${props.resultSets}`,
-                    pagination: {
-                      skip: skip,
-                      limit: limit
-                    },
-                    testMode: false,
-                    requestedGranularity: 'record'
-                  }
-                }
-              } else {
-                jsonData1 = {
-                  meta: {
-                    apiVersion: '2.0'
-                  },
-                  query: {
-                    requestParameters: arrayRequestParameters,
-                    filters: arrayFilter,
-                    includeResultsetResponses: `${props.resultSets}`,
-                    pagination: {
-                      skip: skip,
-                      limit: limit
-                    },
-                    testMode: false,
-                    requestedGranularity: 'record'
-                  }
+                  testMode: false,
+                  requestedGranularity: 'record'
                 }
               }
             } else {
@@ -413,95 +357,130 @@ function IndividualsResults (props) {
                   apiVersion: '2.0'
                 },
                 query: {
+                  requestParameters: arrayRequestParameters,
                   filters: arrayFilter,
                   includeResultsetResponses: `${props.resultSets}`,
                   pagination: {
-                    skip: 0,
-                    limit: 0
+                    skip: skip,
+                    limit: limit
                   },
                   testMode: false,
                   requestedGranularity: 'record'
                 }
               }
             }
-
-            jsonData1 = JSON.stringify(jsonData1)
-            console.log(jsonData1)
-            let token = null
-            if (auth.userData === null) {
-              token = getStoredToken()
-            } else {
-              token = auth.userData.access_token
-            }
-
-            if (token === null) {
-              res = await axios.post(
-                configData.API_URL + '/individuals',
-                jsonData1
-              )
-              console.log(jsonData1)
-              console.log(res)
-            } else {
-              const headers = { Authorization: `Bearer ${token}` }
-
-              res = await axios.post(
-                configData.API_URL + '/individuals',
-                jsonData1,
-                { headers: headers }
-              )
-            }
-            setTimeOut(true)
-
-            if (
-              (res.data.responseSummary.numTotalResults < 1 ||
-                res.data.responseSummary.numTotalResults === undefined) &&
-              props.resultSets !== 'MISS'
-            ) {
-              setNumberResults(0)
-              setBoolean(false)
-            } else {
-              res.data.response.resultSets.forEach((element, index) => {
-                if (element.id && element.id !== '') {
-                  if (resultsPerDataset.length > 0) {
-                    resultsPerDataset.forEach(element2 => {
-                      element2[0].push(element.id)
-                      element2[1].push(element.exists)
-                      element2[2].push(element.resultsCount)
-                      element2[3].push(element.resultsHandover)
-                    })
-                  } else {
-                    let arrayResultsPerDataset = [
-                      //element.beaconId,
-                      [element.id],
-                      [element.exists],
-                      [element.resultsCount],
-                      [element.resultsHandover]
-                    ]
-                    resultsPerDataset.push(arrayResultsPerDataset)
-                  }
-                }
-
-                if (element.id === undefined || element.id === '') {
-                  let arrayResultsNoDatasets = [element.beaconId]
-                  resultsNotPerDataset.push(arrayResultsNoDatasets)
-                }
-
-                if (res.data.response.resultSets[index].results) {
-                  res.data.response.resultSets[index].results.forEach(
-                    (element2, index2) => {
-                      let arrayResult = [
-                        res.data.meta.beaconId,
-                        res.data.response.resultSets[index].results[index2]
-                      ]
-                      results.push(arrayResult)
-                    }
-                  )
-                }
-              })
-            }
           } else {
-            var jsonData2 = {}
+            jsonData1 = {
+              meta: {
+                apiVersion: '2.0'
+              },
+              query: {
+                filters: arrayFilter,
+                includeResultsetResponses: `${props.resultSets}`,
+                pagination: {
+                  skip: 0,
+                  limit: 0
+                },
+                testMode: false,
+                requestedGranularity: 'record'
+              }
+            }
+          }
 
+          jsonData1 = JSON.stringify(jsonData1)
+          console.log(jsonData1)
+          let token = null
+          if (auth.userData === null) {
+            token = getStoredToken()
+          } else {
+            token = auth.userData.access_token
+          }
+
+          if (token === null) {
+            res = await axios.post(
+              configData.API_URL + '/individuals',
+              jsonData1
+            )
+            console.log(jsonData1)
+            console.log(res)
+          } else {
+            const headers = { Authorization: `Bearer ${token}` }
+
+            res = await axios.post(
+              configData.API_URL + '/individuals',
+              jsonData1,
+              { headers: headers }
+            )
+          }
+          setTimeOut(true)
+
+          if (
+            (res.data.responseSummary.numTotalResults < 1 ||
+              res.data.responseSummary.numTotalResults === undefined) &&
+            props.resultSets !== 'MISS'
+          ) {
+            setNumberResults(0)
+            setBoolean(false)
+          } else {
+            res.data.response.resultSets.forEach((element, index) => {
+              if (element.id && element.id !== '') {
+                if (resultsPerDataset.length > 0) {
+                  resultsPerDataset.forEach(element2 => {
+                    element2[0].push(element.id)
+                    element2[1].push(element.exists)
+                    element2[2].push(element.resultsCount)
+                    element2[3].push(element.resultsHandover)
+                  })
+                } else {
+                  let arrayResultsPerDataset = [
+                    //element.beaconId,
+                    [element.id],
+                    [element.exists],
+                    [element.resultsCount],
+                    [element.resultsHandover]
+                  ]
+                  resultsPerDataset.push(arrayResultsPerDataset)
+                }
+              }
+
+              if (element.id === undefined || element.id === '') {
+                let arrayResultsNoDatasets = [element.beaconId]
+                resultsNotPerDataset.push(arrayResultsNoDatasets)
+              }
+
+              if (res.data.response.resultSets[index].results) {
+                res.data.response.resultSets[index].results.forEach(
+                  (element2, index2) => {
+                    let arrayResult = [
+                      res.data.meta.beaconId,
+                      res.data.response.resultSets[index].results[index2]
+                    ]
+                    results.push(arrayResult)
+                  }
+                )
+              }
+            })
+          }
+          settriggerSubmit(true)
+        } else {
+          var jsonData2 = {}
+          let variablePause = false
+          arrayFilter.forEach(element => {
+            if (element.scope.length > 1 && chosenScope === '') {
+              setPause(true)
+              variablePause = true
+              element.scope.forEach(element => {
+                optionsScope.push(element)
+              })
+              ontologyMultipleScope.push(element.id)
+            } else if (element.scope.length > 1 && chosenScope !== '') {
+              element.scope = chosenScope
+            } else {
+              element.scope = element.scope[0]
+            }
+          })
+
+          if (variablePause === false) {
             if (arrayRequestParameters.length > 0) {
               if (arrayRequestParameters.length === 1) {
                 jsonData2 = {
@@ -563,7 +542,6 @@ function IndividualsResults (props) {
             } else {
               token = auth.userData.access_token
             }
-
             if (token === null) {
               console.log(jsonData2)
               console.log('Querying without token')
@@ -572,7 +550,6 @@ function IndividualsResults (props) {
                 jsonData2
               )
               console.log(res)
-        
             } else {
               console.log('Querying WITH token')
               const headers = { Authorization: `Bearer ${token}` }
@@ -643,9 +620,11 @@ function IndividualsResults (props) {
                 }
               })
             }
-          }
 
-          settriggerSubmit(true)
+            settriggerSubmit(true)
+          } else {
+            setTimeOut(true)
+          }
         }
       } catch (error) {
         console.log(error)
@@ -654,17 +633,17 @@ function IndividualsResults (props) {
       }
     }
     apiCall()
-  }, [ontologyMultipleScopeFinal])
+  }, [triggerQueryScope])
 
-  useEffect (() => {
-    if(props.granularity === 'boolean'){
+  useEffect(() => {
+    if (props.granularity === 'boolean') {
       handleTypeResults1()
-    } else if (props.granularity === 'count'){
+    } else if (props.granularity === 'count') {
       handleTypeResults2()
-    } else if (props.granularity === 'record'){
+    } else if (props.granularity === 'record') {
       handleTypeResults3()
     }
-  },[])
+  }, [])
   return (
     <div>
       {timeOut === false && (
@@ -678,12 +657,13 @@ function IndividualsResults (props) {
           </div>
         </div>
       )}
-      {optionsScope.length > 0 && !triggerSubmit && (
+
+      {pause && (
         <div className='scopeDiv'>
           {ontologyMultipleScope.map(element => {
             return (
               <div className='scopeSelection'>
-                <h10>Please choose a scope for {element.ontology} :</h10>
+                <h10>Please choose a scope for {element} :</h10>
 
                 <select id='miSelect' onChange={handleChangeScope}>
                   <option value={''}>{''}</option>
@@ -699,13 +679,19 @@ function IndividualsResults (props) {
           })}
         </div>
       )}
-      {timeOut && error !== '' && props.granularity ==='boolean' &&<h6 className='NotfoundResult' >&nbsp; No, sorry </h6>}
-      {timeOut && error !== '' && props.granularity ==='count' &&<h6 className='NotfoundResult' >&nbsp; None, sorry </h6>}
-      {timeOut && error !== '' && props.granularity ==='record' &&<h6 className='NotfoundResult' >&nbsp; No results, sorry </h6>}
+
+      {timeOut && error !== '' && props.granularity === 'boolean' && (
+        <h6 className='NotfoundResult'>&nbsp; No, sorry </h6>
+      )}
+      {timeOut && error !== '' && props.granularity === 'count' && (
+        <h6 className='NotfoundResult'>&nbsp; None, sorry </h6>
+      )}
+      {timeOut && error !== '' && props.granularity === 'record' && (
+        <h6 className='NotfoundResult'>&nbsp; No results, sorry </h6>
+      )}
       {triggerSubmit && (
         <div>
           <div>
-          
             {/* {timeOut && error === '' && (
               <div>
                 <div className='selectGranularity'>
@@ -760,7 +746,7 @@ function IndividualsResults (props) {
                 ></TableResultsIndividuals>
               </div>
             )}
-    
+
             {show2 && !error && (
               <div className='containerTableResults'>
                 <TableResultsIndividuals
@@ -785,7 +771,6 @@ function IndividualsResults (props) {
                 ></TableResultsIndividuals>
               </div>
             )}
-       
           </div>
         </div>
       )}

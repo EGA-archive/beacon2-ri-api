@@ -152,7 +152,7 @@ function TableResultsVariant (props) {
     // })
     // setTrigger2(true)
     // setStringDataToCopy(resultsJSON)
-    if (props.show === 'full'){
+    if (props.show === 'full') {
       setResultsSelectedFinal(resultsSelected)
       setShowResults(true)
       setShowDatasets(false)
@@ -387,51 +387,57 @@ function TableResultsVariant (props) {
 
   return (
     <div className='containerBeaconResults'>
-    {showDatsets === true &&
-      props.beaconsList.map(result => {
-        return (
-          <>
-            {props.show !== 'full' &&
-              props.resultsPerDataset.map((element, index) => {
-                return (
-                  <>
-                    {element[1][0] === true && props.show === 'boolean' && (
-                      <h6 className='foundResult'>FOUND</h6>
-                    )}
-                    {element[1][0] === false && props.show === 'boolean' && (
-                      <h5 className='NotFoundResult'>NOT FOUND</h5>
-                    )}
-                    {props.show === 'count' &&
-                      element[2][0] !== 0 &&
-                      element[2][0] !== 1 && <h6 className='foundResult'>{element[2][0]} RESULTS</h6>}
-                    {props.show === 'count' && element[2][0] === 0 && (
-                      <h5 className='NotFoundResult'>{element[2][0]} RESULTS</h5>
-                    )}
-                    {props.show === 'count' && element[2][0] === 1 && (
-                      <h6 className='foundResult'>{element[2][0]} RESULT</h6>
-                    )}
-                  </>
-                )
-              })}
-          </>
-        )
-      })}
+      {showDatsets === true &&
+        props.beaconsList.map(result => {
+          return (
+            <>
+              {props.show !== 'full' &&
+                props.resultsPerDataset.map((element, index) => {
+                  return (
+                    <>
+                      {element[1][0] === true && props.show === 'boolean' && (
+                        <h6 className='foundResult'>FOUND</h6>
+                      )}
+                      {element[1][0] === false && props.show === 'boolean' && (
+                        <h5 className='NotFoundResult'>NOT FOUND</h5>
+                      )}
+                      {props.show === 'count' &&
+                        element[2][0] !== 0 &&
+                        element[2][0] !== 1 && (
+                          <h6 className='foundResult'>
+                            {element[2][0]} RESULTS
+                          </h6>
+                        )}
+                      {props.show === 'count' && element[2][0] === 0 && (
+                        <h5 className='NotFoundResult'>
+                          {element[2][0]} RESULTS
+                        </h5>
+                      )}
+                      {props.show === 'count' && element[2][0] === 1 && (
+                        <h6 className='foundResult'>{element[2][0]} RESULT</h6>
+                      )}
+                    </>
+                  )
+                })}
+            </>
+          )
+        })}
 
-    {showDatsets === false && showResults === true && trigger2 === true && (
-      <DataGrid
-        getRowHeight={() => 'auto'}
-        checkboxSelection
-        columns={columns}
-        rows={editable}
-        slots={{ toolbar: CustomToolbar }}
-        slotProps={{
-          toolbar: {
-            printOptions: { getRowsToExport: getSelectedRowsToExport }
-          }
-        }}
-      />
-    )}
-  </div>
+      {showDatsets === false && showResults === true && trigger2 === true && (
+        <DataGrid
+          getRowHeight={() => 'auto'}
+          checkboxSelection
+          columns={columns}
+          rows={editable}
+          slots={{ toolbar: CustomToolbar }}
+          slotProps={{
+            toolbar: {
+              printOptions: { getRowsToExport: getSelectedRowsToExport }
+            }
+          }}
+        />
+      )}
+    </div>
   )
 }
 

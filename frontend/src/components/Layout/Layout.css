@@ -50,6 +50,7 @@ p {
 
 .tittleVariant {
   color: rgb(125, 125, 141);
+  width: 135px;
 }
 
 .termsAlphanum {
@@ -82,7 +83,6 @@ p {
 }
 .filterTermsContainer2 {
   display: none;
-
 }
 p {
   font-weight: 500;
@@ -129,19 +129,19 @@ p {
 .moduleAddedVariant {
   display: flex;
   flex-direction: column;
-  width: 132px;
+  width: fit-content;
   justify-content: center;
   border: 0px solid #f2eded;
   /* padding: 11px; */
   padding-left: 22px;
   padding-bottom: 8px;
+  padding-right: 19px;
   margin-top: -10px;
   border-radius: 15px;
   padding-right: -7px;
   /* margin-top: 11px; */
   margin-bottom: 45px;
-  box-shadow: rgba(192, 200, 227, 0.27) 0px 0px 0.25em,
-    rgba(159, 167, 184, 0.05) 0px 0.25em 1em;
+  box-shadow: rgba(192, 200, 227, 0.27) 0px 0px 0.25em, rgba(159, 167, 184, 0.05) 0px 0.25em 1em;
   margin-left: 58vw;
   animation: slide-in-blurred-right 0.4s ease-in both;
 }
@@ -237,7 +237,7 @@ label {
   margin-bottom: -11px;
   font-size: 21px;
 }
-.deleteIcon ion-icon:hover{
+.deleteIcon ion-icon:hover {
   color: rgb(205, 29, 29);
 }
 .deleteIcon {
@@ -257,7 +257,7 @@ label {
   margin-bottom: -11px;
   font-size: 21px;
 }
-.deleteIcon2 ion-icon:hover{
+.deleteIcon2 ion-icon:hover {
   color: rgb(205, 29, 29);
 }
 .divFilter2 {

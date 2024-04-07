@@ -435,10 +435,9 @@ function TableResultsIndividuals (props) {
     //     beaconsArrayResultsOrdered.push(element)
     //   }
     // })
-    props.resultsPerDataset.forEach(element => {
-      console.log(element[3])
-    })
+    
     setShowDatasets(true)
+  
   }, [])
 
   return (
@@ -451,6 +450,7 @@ function TableResultsIndividuals (props) {
                 props.resultsPerDataset.map((element, index) => {
                   return (
                     <>
+                  
                       {element[1][0] === true && props.show === 'boolean' && (
                         <h6 className='foundResult'>FOUND</h6>
                       )}

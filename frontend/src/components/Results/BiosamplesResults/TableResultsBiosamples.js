@@ -29,6 +29,8 @@ function TableResultsBiosamples (props) {
   const [rows, setRows] = useState([])
   const [ids, setIds] = useState([])
 
+  const [errorMessage, setErrorMessage] = useState('')
+
   const [beaconsArrayResults, setBeaconsArrayResults] = useState([])
 
   const [beaconsArrayResultsOrdered, setBeaconsArrayResultsOrdered] = useState(
@@ -200,7 +202,6 @@ function TableResultsBiosamples (props) {
   ]
 
   const handleSeeResults = e => {
-
     resultsSelected.forEach(element => {
       if (element[0] === e) {
         resultsSelectedFinal.push(element)
@@ -218,9 +219,17 @@ function TableResultsBiosamples (props) {
   }
 
   useEffect(() => {
+    if (props.show === 'full') {
+      setResultsSelectedFinal(resultsSelected)
+      setShowResults(true)
+      setShowDatasets(false)
+      setTrigger(true)
+    }
     setRows([])
     setIds([])
-
+    if (resultsSelected.length === 0) {
+      setErrorMessage('NO RESULTS')
+    }
     resultsSelected.forEach((element, index) => {
       arrayBeaconsIds.push(element[0])
     })
@@ -435,50 +444,17 @@ function TableResultsBiosamples (props) {
           }
         }
 
-        let pathologicalStageJson = []
+        let pathologicalStageJson = {}
 
         if (
           element[1].pathologicalStage !== '' &&
           element[1].pathologicalStage !== undefined
         ) {
           if (typeof element[1].pathologicalStage === 'object') {
-            element[1].pathologicalStage.forEach(element2 => {
-              pathologicalStageJson.push(
-                JSON.stringify(element2, null, 2)
-                  .replaceAll('[', '')
-                  .replaceAll(']', '')
-                  .replaceAll('{', '')
-                  .replaceAll('}', '')
-                  .replaceAll(',', '')
-                  .replaceAll(' ,', '')
-                  .replaceAll(', ', '')
-                  .replaceAll('"', '')
-              )
-            })
-            pathologicalStageJson = pathologicalStageJson.toString()
-            pathologicalStageJson = pathologicalStageJson
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            pathologicalStageJson = pathologicalStageJson.replaceAll(',', '')
-          } else {
-            pathologicalStageJson = JSON.stringify(
-              element[1].pathologicalStage,
-              null,
-              2
-            )
-              .replaceAll('[', '')
-              .replaceAll(']', '')
-              .replaceAll('{', '')
-              .replaceAll('}', '')
-              .replaceAll(',', '')
-              .replaceAll(' ,', '')
-              .replaceAll(', ', '')
-              .replaceAll('"', '')
-            pathologicalStageJson = pathologicalStageJson.toString()
-            pathologicalStageJson = pathologicalStageJson
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            pathologicalStageJson = pathologicalStageJson.replaceAll(',', '')
+            pathologicalStageJson = {
+              id: element[1].pathologicalStage.id,
+              label: element[1].pathologicalStage.label
+            }
           }
         }
 
@@ -535,56 +511,17 @@ function TableResultsBiosamples (props) {
           }
         }
 
-        let histologicalDiagnosisJson = []
+        let histologicalDiagnosisJson = {}
 
         if (
           element[1].histologicalDiagnosis !== '' &&
           element[1].histologicalDiagnosis !== undefined
         ) {
           if (typeof element[1].histologicalDiagnosis === 'object') {
-            element[1].histologicalDiagnosis.forEach(element2 => {
-              histologicalDiagnosisJson.push(
-                JSON.stringify(element2, null, 2)
-                  .replaceAll('[', '')
-                  .replaceAll(']', '')
-                  .replaceAll('{', '')
-                  .replaceAll('}', '')
-                  .replaceAll(',', '')
-                  .replaceAll(' ,', '')
-                  .replaceAll(', ', '')
-                  .replaceAll('"', '')
-              )
-            })
-            histologicalDiagnosisJson = histologicalDiagnosisJson.toString()
-            histologicalDiagnosisJson = histologicalDiagnosisJson
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            histologicalDiagnosisJson = histologicalDiagnosisJson.replaceAll(
-              ',',
-              ''
-            )
-          } else {
-            histologicalDiagnosisJson = JSON.stringify(
-              element[1].histologicalDiagnosis,
-              null,
-              2
-            )
-              .replaceAll('[', '')
-              .replaceAll(']', '')
-              .replaceAll('{', '')
-              .replaceAll('}', '')
-              .replaceAll(',', '')
-              .replaceAll(' ,', '')
-              .replaceAll(', ', '')
-              .replaceAll('"', '')
-            histologicalDiagnosisJson = histologicalDiagnosisJson.toString()
-            histologicalDiagnosisJson = histologicalDiagnosisJson
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            histologicalDiagnosisJson = histologicalDiagnosisJson.replaceAll(
-              ',',
-              ''
-            )
+            histologicalDiagnosisJson = {
+              id: element[1].histologicalDiagnosis.id,
+              label: element[1].histologicalDiagnosis.label
+            }
           }
         }
 
@@ -772,53 +709,19 @@ function TableResultsBiosamples (props) {
           }
         }
 
-        let sampleStorageJson = []
+        let sampleStorageJson = {}
 
         if (
           element[1].sampleStorage !== '' &&
           element[1].sampleStorage !== undefined
         ) {
           if (typeof element[1].sampleStorage === 'object') {
-            element[1].sampleStorage.forEach(element2 => {
-              sampleStorageJson.push(
-                JSON.stringify(element2, null, 2)
-                  .replaceAll('[', '')
-                  .replaceAll(']', '')
-                  .replaceAll('{', '')
-                  .replaceAll('}', '')
-                  .replaceAll(',', '')
-                  .replaceAll(' ,', '')
-                  .replaceAll(', ', '')
-                  .replaceAll('"', '')
-              )
-            })
-            sampleStorageJson = sampleStorageJson.toString()
-            sampleStorageJson = sampleStorageJson
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            sampleStorageJson = sampleStorageJson.replaceAll(',', '')
-          } else {
-            sampleStorageJson = JSON.stringify(
-              element[1].sampleStorage,
-              null,
-              2
-            )
-              .replaceAll('[', '')
-              .replaceAll(']', '')
-              .replaceAll('{', '')
-              .replaceAll('}', '')
-              .replaceAll(',', '')
-              .replaceAll(' ,', '')
-              .replaceAll(', ', '')
-              .replaceAll('"', '')
-            sampleStorageJson = sampleStorageJson.toString()
-            sampleStorageJson = sampleStorageJson
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            sampleStorageJson = sampleStorageJson.replaceAll(',', '')
+            sampleStorageJson = {
+              id: element[1].sampleStorage.id,
+              label: element[1].sampleStorage.label
+            }
           }
         }
-
         var myObjRows = new Object()
         myObjRows.id = index
         if (element[1].id !== '') {
@@ -880,7 +783,7 @@ function TableResultsBiosamples (props) {
         if (sampleStorageJson !== '') {
           myObjRows.sampleStorage = sampleStorageJson
         }
-
+        console.log(rows)
         rows.push(myObjRows)
 
         if (index === resultsSelectedFinal.length - 1) {
@@ -894,75 +797,63 @@ function TableResultsBiosamples (props) {
 
   useEffect(() => {
     let count = 0
-    props.beaconsList.forEach((element2, index2) => {
-      count = getOccurrence(arrayBeaconsIds, element2.meta.beaconId)
-      if (count > 0) {
-        beaconsArrayResults.push([element2, count, true])
-      } else {
-        beaconsArrayResults.push([element2, count, false])
-      }
-    })
-    beaconsArrayResults.forEach(element => {
-      if (element[2] === true) {
-        beaconsArrayResultsOrdered.push(element)
-      }
-    })
-    beaconsArrayResults.forEach(element => {
-      if (element[2] === false) {
-        beaconsArrayResultsOrdered.push(element)
-      }
-    })
 
     setShowDatasets(true)
   }, [])
 
   return (
     <div className='containerBeaconResults'>
-    {showDatsets === true &&
-      props.beaconsList.map(result => {
-        return (
-          <>
-            {props.show !== 'full' &&
-              props.resultsPerDataset.map((element, index) => {
-                return (
-                  <>
-                    {element[1][0] === true && props.show === 'boolean' && (
-                      <h6 className='foundResult'>FOUND</h6>
-                    )}
-                    {element[1][0] === false && props.show === 'boolean' && (
-                      <h5 className='NotFoundResult'>NOT FOUND</h5>
-                    )}
-                    {props.show === 'count' &&
-                      element[2][0] !== 0 &&
-                      element[2][0] !== 1 && <h6 className='foundResult'>{element[2][0]} RESULTS</h6>}
-                    {props.show === 'count' && element[2][0] === 0 && (
-                      <h5 className='NotFoundResult'>{element[2][0]} RESULTS</h5>
-                    )}
-                    {props.show === 'count' && element[2][0] === 1 && (
-                      <h6 className='foundResult'>{element[2][0]} RESULT</h6>
-                    )}
-                  </>
-                )
-              })}
-          </>
-        )
-      })}
+      {showDatsets === true &&
+        props.beaconsList.map(result => {
+          return (
+            <>
+              {props.show !== 'full' &&
+                props.resultsPerDataset.map((element, index) => {
+                  return (
+                    <>
+                      {element[1][0] === true && props.show === 'boolean' && (
+                        <h6 className='foundResult'>FOUND</h6>
+                      )}
+                      {element[1][0] === false && props.show === 'boolean' && (
+                        <h5 className='NotFoundResult'>NOT FOUND</h5>
+                      )}
+                      {props.show === 'count' &&
+                        element[2][0] !== 0 &&
+                        element[2][0] !== 1 && (
+                          <h6 className='foundResult'>
+                            {element[2][0]} RESULTS
+                          </h6>
+                        )}
+                      {props.show === 'count' && element[2][0] === 0 && (
+                        <h5 className='NotFoundResult'>
+                          {element[2][0]} RESULTS
+                        </h5>
+                      )}
+                      {props.show === 'count' && element[2][0] === 1 && (
+                        <h6 className='foundResult'>{element[2][0]} RESULT</h6>
+                      )}
+                    </>
+                  )
+                })}
+            </>
+          )
+        })}
 
-    {showDatsets === false && showResults === true && trigger2 === true && (
-      <DataGrid
-        getRowHeight={() => 'auto'}
-        checkboxSelection
-        columns={columns}
-        rows={editable}
-        slots={{ toolbar: CustomToolbar }}
-        slotProps={{
-          toolbar: {
-            printOptions: { getRowsToExport: getSelectedRowsToExport }
-          }
-        }}
-      />
-    )}
-  </div>
+      {showDatsets === false && showResults === true && trigger2 === true && (
+        <DataGrid
+          getRowHeight={() => 'auto'}
+          checkboxSelection
+          columns={columns}
+          rows={editable}
+          slots={{ toolbar: CustomToolbar }}
+          slotProps={{
+            toolbar: {
+              printOptions: { getRowsToExport: getSelectedRowsToExport }
+            }
+          }}
+        />
+      )}
+    </div>
   )
 }
 
