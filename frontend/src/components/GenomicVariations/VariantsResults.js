@@ -6,7 +6,7 @@ import { AuthContext } from '../context/AuthContext'
 import { useAuth } from 'oidc-react'
 import configData from '../../config.json'
 import { useContext } from 'react'
-import TableResultsVariant from '../Results/VariantResults/TableResultsVariant'
+import TableResultsVariants from '../Results/VariantResults/TableResultsVariant'
 
 function VariantsResults (props) {
   const [error, setError] = useState('')
@@ -93,7 +93,15 @@ function VariantsResults (props) {
   let isAuthenticated = auth.userData?.id_token ? true : false
   useEffect(() => {
     setTimeOut(false)
-    console.log(arrayFilter)
+    let collection = ''
+    if (props.collection === 'Individuals'){
+      collection = 'individual'
+    } else if (props.collection === 'Variant'){
+      collection = 'variant'
+    } else if (props.collection === 'Biosamples'){
+      collection = 'biosample'
+    }
+
     const apiCall = async () => {
       if (isAuthenticated === false) {
         authenticateUser()
@@ -280,7 +288,7 @@ function VariantsResults (props) {
               })
 
               if (queryArray[index][3] === undefined) {
-                queryArray[index][3] = props.collection
+                queryArray[index][3] = [collection]
               }
               console.log(queryArray)
               alphanumericFilter = {
@@ -736,38 +744,38 @@ function VariantsResults (props) {
 
             {show3 && logInRequired === false && !error && (
               <div className='containerTableResults'>
-                <TableResultsVariant
+                <TableResultsVariants
                   show={'full'}
                   results={results}
                   resultsPerDataset={resultsPerDataset}
                   beaconsList={beaconsList}
                   resultSets={props.resultSets}
-                ></TableResultsVariant>
+                ></TableResultsVariants>
               </div>
             )}
 
             {show2 && !error && (
               <div className='containerTableResults'>
-                <TableResultsVariant
+                <TableResultsVariants
                   show={'count'}
                   resultsPerDataset={resultsPerDataset}
                   resultsNotPerDataset={resultsNotPerDataset}
                   results={results}
                   beaconsList={beaconsList}
                   resultSets={props.resultSets}
-                ></TableResultsVariant>
+                ></TableResultsVariants>
               </div>
             )}
             {show1 && !error && (
               <div className='containerTableResults'>
-                <TableResultsVariant
+                <TableResultsVariants
                   show={'boolean'}
                   resultsPerDataset={resultsPerDataset}
                   resultsNotPerDataset={resultsNotPerDataset}
                   results={results}
                   beaconsList={beaconsList}
                   resultSets={props.resultSets}
-                ></TableResultsVariant>
+                ></TableResultsVariants>
               </div>
             )}
           </div>

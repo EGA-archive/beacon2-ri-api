@@ -93,7 +93,15 @@ function BiosamplesResults (props) {
   let isAuthenticated = auth.userData?.id_token ? true : false
   useEffect(() => {
     setTimeOut(false)
-    console.log(arrayFilter)
+    let collection = ''
+    if (props.collection === 'Individuals'){
+      collection = 'individual'
+    } else if (props.collection === 'Variant'){
+      collection = 'variant'
+    } else if (props.collection === 'Biosamples'){
+      collection = 'biosample'
+    }
+
     const apiCall = async () => {
       if (isAuthenticated === false) {
         authenticateUser()
@@ -280,7 +288,7 @@ function BiosamplesResults (props) {
               })
 
               if (queryArray[index][3] === undefined) {
-                queryArray[index][3] = props.collection
+                queryArray[index][3] = [collection]
               }
               console.log(queryArray)
               alphanumericFilter = {

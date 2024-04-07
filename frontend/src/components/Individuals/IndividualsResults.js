@@ -7,7 +7,7 @@ import { useAuth } from 'oidc-react'
 import configData from '../../config.json'
 import { useContext } from 'react'
 import TableResultsIndividuals from '../Results/IndividualsResults/TableResultsIndividuals'
-import { alpha } from '@mui/material'
+
 
 function IndividualsResults (props) {
   const [error, setError] = useState('')
@@ -94,7 +94,15 @@ function IndividualsResults (props) {
   let isAuthenticated = auth.userData?.id_token ? true : false
   useEffect(() => {
     setTimeOut(false)
-    console.log(arrayFilter)
+    let collection = ''
+    if (props.collection === 'Individuals'){
+      collection = 'individual'
+    } else if (props.collection === 'Variant'){
+      collection = 'variant'
+    } else if (props.collection === 'Biosamples'){
+      collection = 'biosample'
+    }
+
     const apiCall = async () => {
       if (isAuthenticated === false) {
         authenticateUser()
@@ -266,7 +274,7 @@ function IndividualsResults (props) {
                     scope: element.scope
                   }
                 }
-              } 
+              }
             })
 
             if (Object.keys(alphanumericFilter).length === 0) {
@@ -281,7 +289,7 @@ function IndividualsResults (props) {
               })
 
               if (queryArray[index][3] === undefined) {
-                queryArray[index][3] = props.collection
+                queryArray[index][3] = [collection]
               }
               console.log(queryArray)
               alphanumericFilter = {

@@ -42,7 +42,7 @@ function Layout (props) {
 
   const [cohorts, setShowCohorts] = useState(false)
 
-  const [ID, setId] = useState('age')
+  const [ID, setId] = useState('diseases.ageOfOnset.iso8601duration')
   const [operator, setOperator] = useState('')
   const [valueFree, setValueFree] = useState('')
 
@@ -830,7 +830,7 @@ function Layout (props) {
                 ></img>
               </a>
             </div>
-            <h1 className='version'>v0.5.2</h1>
+            <h1 className='version'>v0.5.3</h1>
           </div>
         </div>
         <div className='containerSelection'>
@@ -947,7 +947,7 @@ function Layout (props) {
                 <input
                   className='IdForm2'
                   type='text'
-                  value={'age'}
+                  value={'diseases.ageOfOnset.iso8601duration'}
                   autoComplete='on'
                   placeholder={'write and filter by ID'}
                   onChange={handleIdChanges}
@@ -1501,6 +1501,7 @@ function Layout (props) {
               seqModuleArray={seqModuleArray}
               geneModuleArray={geneModuleArray}
               granularity={granularity}
+              collection= {collection}
             />
           </div>
         )}
@@ -1520,6 +1521,7 @@ function Layout (props) {
               seqModuleArray={seqModuleArray}
               geneModuleArray={geneModuleArray}
               granularity={granularity}
+              collection= {collection}
             />
           </div>
         )}
@@ -1605,6 +1607,7 @@ function Layout (props) {
               seqModuleArray={seqModuleArray}
               geneModuleArray={geneModuleArray}
               granularity={granularity}
+              collection= {collection}
             />
           </div>
         )}
@@ -1624,6 +1627,7 @@ function Layout (props) {
               seqModuleArray={seqModuleArray}
               geneModuleArray={geneModuleArray}
               granularity={granularity}
+              collection= {collection}
             />
           </div>
         )}
@@ -1643,6 +1647,7 @@ function Layout (props) {
               seqModuleArray={seqModuleArray}
               geneModuleArray={geneModuleArray}
               granularity={granularity}
+              collection= {collection}
             />
           </div>
         )}
@@ -1662,6 +1667,7 @@ function Layout (props) {
               seqModuleArray={seqModuleArray}
               geneModuleArray={geneModuleArray}
               granularity={granularity}
+              collection= {collection}
             />
           </div>
         )}
@@ -1681,6 +1687,7 @@ function Layout (props) {
               seqModuleArray={seqModuleArray}
               geneModuleArray={geneModuleArray}
               granularity={granularity}
+              collection= {collection}
             />
           </div>
         )}
