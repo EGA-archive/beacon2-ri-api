@@ -13,3 +13,5 @@ services:
   frontend:
     ports: !reset [] 
     expose: [ 3000 ]
+    networks:
+      - my-app-network      
