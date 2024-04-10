@@ -15,7 +15,7 @@ import logging
 
 LOG = logging.getLogger(__name__)
 
-CURIE_REGEX = r'^([a-zA-Z0-9]*):\/?[a-zA-Z0-9]*$'
+CURIE_REGEX = r'^([a-zA-Z0-9]*):\/?[a-zA-Z0-9./]*$'
 
 def cross_query(query: dict, scope: str, collection: str, request_parameters: dict):
     if scope == 'genomicVariation' and collection == 'g_variants' or scope == collection[0:-1]:
@@ -388,6 +388,7 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
 
 
 def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, request_parameters: dict) -> dict:
+    final_term_list=[]
     query_synonyms={}
     query_synonyms['id']=filter.id
     synonyms=get_documents(
@@ -403,13 +404,14 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
         synonym_id=None
     LOG.debug(synonym_id)
     if synonym_id is not None:
+        final_term_list.append(filter.id)
         filter.id=synonym_id
     
     
     scope = filter.scope
     if scope is None:
         scope = collection[0:-1]
-
+    LOG.debug(scope)
     is_filter_id_required = True
     # Search similar
     if filter.similarity != Similarity.EXACT:
@@ -470,20 +472,21 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
                 query_terms = doc2['id']
             query_terms = query_terms.split(':')
             query_term = query_terms[0] + '.id'
-            query_id={}
-            query['$or']=[]
-            for simil in final_term_list:
+            if final_term_list !=[]:
+                new_query={}
                 query_id={}
-                query_id[query_term]=simil
-                query['$or'].append(query_id)
-            LOG.debug(query)
+                new_query['$or']=[]
+                for simil in final_term_list:
+                    query_id={}
+                    query_id[query_term]=simil
+                    new_query['$or'].append(query_id)
+                query = new_query
         else:
             pass
         
 
     # Apply descendant terms
     if filter.include_descendant_terms == True:
-        final_term_list=[]
         final_term_list.append(filter.id)
         is_filter_id_required = False
         ontology=filter.id.replace("\n","")
@@ -546,13 +549,17 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
             query_terms = doc2['id']
             query_terms = query_terms.split(':')
             query_term = query_terms[0] + '.id'
-
-        query_id={}
-        query['$or']=[]
-        for simil in final_term_list:
+        
+        if final_term_list !=[]:
+            LOG.debug(final_term_list)
+            new_query={}
             query_id={}
-            query_id[query_term]=simil
-            query['$or'].append(query_id)
+            new_query['$or']=[]
+            for simil in final_term_list:
+                query_id={}
+                query_id[query_term]=simil
+                new_query['$or'].append(query_id)
+            query = new_query
         
         LOG.debug(query)
         query=cross_query(query, scope, collection, request_parameters)
@@ -596,7 +603,18 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
         query_terms = query_terms.split(':')
         query_term = query_terms[0] + '.id'
         query[query_term]=filter.id
+        if final_term_list !=[]:
+            new_query={}
+            query_id={}
+            new_query['$or']=[]
+            for simil in final_term_list:
+                query_id={}
+                query_id[query_term]=simil
+                new_query['$or'].append(query_id)
+            new_query['$or'].append(query)
+            query = new_query
         LOG.debug(query)
+        query=cross_query(query, scope, collection, request_parameters)
    
 
     #LOG.debug("QUERY: %s", query)
@@ -769,21 +787,97 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                 query_id={}
                 query_id[query_term]=filter.value
                 query['$nor'].append(query_id) 
+        
     else:
-        query['measurementValue.value'] = { formatted_operator: float(formatted_value) }
-        if "LOINC" in filter.id:
-            query['assayCode.id']=filter.id
+        if "iso8601duration" in filter.id:
+            if '>' in filter.operator:
+                LOG.debug(filter.id)
+                age_in_number=""
+                for char in filter.value:
+                    try:
+                        int(char)
+                        age_in_number = age_in_number+char
+                    except Exception:
+                        continue
+                new_age_list=[]
+                
+                if "=" in filter.operator:
+                    z = int(age_in_number)
+                else:
+                    z = int(age_in_number)+1
+                while z < 150:
+                    newagechar="P"+str(z)+"Y"
+                    new_age_list.append(newagechar)
+                    z+=1
+                dict_in={}
+                dict_in["$in"]=new_age_list
+                query[filter.id] = dict_in
+                query=cross_query(query, scope, collection, {})
+                LOG.debug(query)
+            elif '<' in filter.operator:
+                LOG.debug(filter.id)
+                age_in_number=""
+                for char in filter.value:
+                    try:
+                        int(char)
+                        age_in_number = age_in_number+char
+                    except Exception:
+                        continue
+                new_age_list=[]
+                if "=" in filter.operator:
+                    z = int(age_in_number)
+                else:
+                    z = int(age_in_number)-1
+                while z > 0:
+                    newagechar="P"+str(z)+"Y"
+                    new_age_list.append(newagechar)
+                    z-=1
+                dict_in={}
+                dict_in["$in"]=new_age_list
+                query[filter.id] = dict_in
+                query=cross_query(query, scope, collection, {})
+                LOG.debug(query)
         else:
-            query['assayCode.label']=filter.id
-        #LOG.debug(query)
-        dict_elemmatch={}
-        dict_elemmatch['$elemMatch']=query
-        dict_measures={}
-        dict_measures['measures']=dict_elemmatch
-        query = dict_measures
-        LOG.debug(collection)
-        query=cross_query(query, scope, collection, {})
-        LOG.debug(query)
+            LOG.debug(filter.id)
+            query_filtering={}
+            query_filtering['$and']=[]
+            dict_type={}
+            dict_id={}
+            dict_regex={}
+            dict_regex['$regex']=filter.id
+            dict_type['type']='custom'
+            dict_id['id']=dict_regex
+            query_filtering['$and'].append(dict_type)
+            query_filtering['$and'].append(dict_id)
+            docs = get_documents(
+                client.beacon.filtering_terms,
+                query_filtering,
+                0,
+                1
+            )
+            for doc in docs:
+                LOG.debug(doc)
+                prefield_splitted = doc['id'].split(':')
+                prefield = prefield_splitted[0]
+            field = prefield.replace('assayCode', 'measurementValue.value')
+            
+            assayfield = 'assayCode' + '.label'
+            fieldsplitted = field.split('.')
+            measuresfield=fieldsplitted[0]
+
+            field = field.replace(measuresfield+'.', '')
+
+            query[field] = { formatted_operator: float(formatted_value) }
+            query[assayfield]=filter.id
+            #LOG.debug(query)
+            dict_elemmatch={}
+            dict_elemmatch['$elemMatch']=query
+            dict_measures={}
+            dict_measures[measuresfield]=dict_elemmatch
+            query = dict_measures
+            LOG.debug(collection)
+            query=cross_query(query, scope, collection, {})
+            LOG.debug(query)
 
     #LOG.debug("QUERY: %s", query)
     return query
