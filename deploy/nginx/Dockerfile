@@ -16,4 +16,4 @@ COPY etc/nginx/conf.d/    /etc/nginx/conf.d/
 
 EXPOSE 5050 5051 3000
 
-# ENTRYPOINT ["nginx", "-t"] 
+ENTRYPOINT ["nginx", "-g", "daemon off;"] 
