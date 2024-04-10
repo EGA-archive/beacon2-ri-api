@@ -9,6 +9,8 @@ etc/nginx/conf.d:
   - beacon.conf
   - frontend.conf
 
+Currently hardcoded to `localhost`
+
 #### Build container:
 `docker build -t egarchive/beacon-revprox:1.0 .`
 
