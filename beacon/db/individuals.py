@@ -193,7 +193,8 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                 for id in v_list:
                     v_dict={}
                     v_dict['id']=id
-                    qparams.query.filters.append(v_dict)        
+                    qparams.query.filters.append(v_dict)    
+                LOG.debug(query)    
                 return query, True
 
 
@@ -207,11 +208,14 @@ def get_individuals(entry_id: Optional[str], qparams: RequestParams, dataset: st
     query_parameters, parameters_as_filters = apply_request_parameters({}, qparams)
     LOG.debug(query_parameters)
     LOG.debug(parameters_as_filters)
-    if parameters_as_filters == True:
+    if parameters_as_filters == True and query_parameters != {'$and': []}:
         query, parameters_as_filters = apply_request_parameters({}, qparams)
         query_parameters={}
-    else:
+    elif query_parameters != {'$and': []}:
         query=query_parameters
+    elif query_parameters == {'$and': []}:
+        query_parameters = {}
+        query={}
     query = apply_filters(query, qparams.query.filters, collection, query_parameters)
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.INDIVIDUALS
