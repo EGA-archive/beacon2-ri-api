@@ -27,7 +27,7 @@ OIDC_RP_CLIENT_SECRET='your_client_secret'
 ```
 
 Please, bear in mind that the name of the user has to be the same that you used when creating the user in LS or in IDP, whatever the AAI method you are working with.
-To give a user a certain type of response for their queries, please modify this file [response_type.yml](https://github.com/EGA-archive/beacon2-ri-api/blob/master/beacon/request/response_type.yml) adding the maximum type of response you want to allow every user.
+To give a user a certain type of response for their queries, please modify this file [response_type.yml](beacon/request/response_type.yml) adding the maximum type of response you want to allow every user.
 
 Also, you will need to edit the file [conf.py](beacon/conf.py) and introduce the domain where your keycloak is being hosted inside **idp_url**. 
 
@@ -57,7 +57,7 @@ middlewares=[web.normalize_path_middleware(), middlewares.error_middleware, cors
 ```
 ### Beacon security system
 
-![Beacon security](https://github.com/EGA-archive/beacon2-ri-api/blob/develop/deploy/beacon_security.png?raw=true)
+![Beacon security](deploy/beacon_security.png)
 
 ### Version notes
 
