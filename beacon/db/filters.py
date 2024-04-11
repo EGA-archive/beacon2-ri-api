@@ -243,6 +243,7 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
     request_parameters = query_parameters
     LOG.debug(request_parameters)
     total_query={}
+    LOG.debug(filters)
     if len(filters) >= 1:
         total_query["$and"] = []
         if query != {} and request_parameters == {}:
@@ -261,6 +262,7 @@ def apply_filters(query: dict, filters: List[dict], collection: str, query_param
                 #partial_query = {"$text": defaultdict(str) }
                 #partial_query =  { "$text": { "$search": "" } } 
                 partial_query = apply_ontology_filter(partial_query, filter, collection, request_parameters)
+                LOG.debug(partial_query)
             elif "similarity" in filter or "includeDescendantTerms" in filter or re.match(CURIE_REGEX, filter["id"]) and filter["id"].isupper():
                 filter = OntologyFilter(**filter)
                 LOG.debug("Ontology filter: %s", filter.id)

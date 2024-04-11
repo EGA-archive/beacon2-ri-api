@@ -286,7 +286,7 @@ def beacon_handovers():
         except Exception:
             url = ""
         if doc["id"] == "coadread_tcga_pan_can_atlas_2018":
-            beacon_handovers.append([
+            beacon_handovers.append(
             {
                 'handoverType': {
                     'id': 'NCIT:C189151',
@@ -295,7 +295,7 @@ def beacon_handovers():
                 'note': note,
                 'url': url
             }
-            ])
+            )
         else:
             beacon_handovers.append(conf.beacon_handovers)
     return beacon_handovers
