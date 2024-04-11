@@ -78,7 +78,7 @@ Then, repeat the same for the cohorts modifying this file [cohorts.yml](../beaco
 
 #### Fetch the ontologies and extract the filtering terms
 
-> This step consists of analyzing all the collections of the Mongo database for first extracting the ontology OBO files and then filling the filtering terms endpoint with the information of the data loaded in the database.∫
+> This step consists of analyzing all the collections of the Mongo database for first extracting the ontology OBO files and then filling the filtering terms endpoint with the information of the data loaded in the database.
 
 You can automatically fetch the ontologies and extract the filtering terms running the following script:
 
