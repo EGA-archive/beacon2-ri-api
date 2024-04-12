@@ -207,11 +207,14 @@ def get_variants(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     query_parameters, parameters_as_filters = apply_request_parameters({}, qparams)
     LOG.debug(query_parameters)
     LOG.debug(parameters_as_filters)
-    if parameters_as_filters == True:
+    if parameters_as_filters == True and query_parameters != {'$and': []}:
         query, parameters_as_filters = apply_request_parameters({}, qparams)
         query_parameters={}
-    else:
+    elif query_parameters != {'$and': []}:
         query=query_parameters
+    elif query_parameters == {'$and': []}:
+        query_parameters = {}
+        query={}
     query = apply_filters(query, qparams.query.filters, collection,query_parameters)
     LOG.debug(query)
     include = qparams.query.include_resultset_responses

@@ -411,8 +411,10 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
     
     
     scope = filter.scope
-    if scope is None:
+    if scope is None and collection != 'g_variants':
         scope = collection[0:-1]
+    elif scope is None:
+        scope = 'genomicVariation'
     LOG.debug(scope)
     is_filter_id_required = True
     # Search similar
@@ -653,8 +655,10 @@ def format_operator(operator: Operator) -> str:
 def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collection: str) -> dict:
     #LOG.debug(filter.value)
     scope = filter.scope
-    if scope is None:
+    if scope is None and collection != 'g_variants':
         scope = collection[0:-1]
+    elif scope is None:
+        scope = 'genomicVariation'
     formatted_value = format_value(filter.value)
     formatted_operator = format_operator(filter.operator)
     #LOG.debug(collection)
@@ -890,8 +894,10 @@ def apply_custom_filter(query: dict, filter: CustomFilter, collection:str) -> di
     #LOG.debug(query)
 
     scope = filter.scope
-    if scope is None:
+    if scope is None and collection != 'g_variants':
         scope = collection[0:-1]
+    elif scope is None:
+        scope = 'genomicVariation'
     value_splitted = filter.id.split(':')
     if value_splitted[0] in conf.alphanumeric_terms:
         query_term = value_splitted[0]
