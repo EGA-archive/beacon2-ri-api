@@ -173,7 +173,7 @@ def get_biosamples_of_cohort(entry_id: Optional[str], qparams: RequestParams, da
 
 
 def get_filtering_terms_of_cohort(entry_id: Optional[str], qparams: RequestParams):
-    query = {'scope': 'cohorts'}
+    query = {'scopes': 'cohort'}
     schema = DefaultSchemas.FILTERINGTERMS
     count = get_count(client.beacon.filtering_terms, query)
     remove_id={'_id':0}

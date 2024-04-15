@@ -360,7 +360,7 @@ def get_analyses_of_variant(entry_id: Optional[str], qparams: RequestParams, dat
     return schema, count, dataset_count, docs
 
 def get_filtering_terms_of_genomicvariation(entry_id: Optional[str], qparams: RequestParams):
-    query = {'scope': 'genomicVariations'}
+    query = {'scopes': 'genomicVariation'}
     schema = DefaultSchemas.FILTERINGTERMS
     count = get_count(client.beacon.filtering_terms, query)
     remove_id={'_id':0}

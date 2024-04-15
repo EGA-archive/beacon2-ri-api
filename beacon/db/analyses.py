@@ -99,7 +99,7 @@ def get_variants_of_analysis(entry_id: Optional[str], qparams: RequestParams, da
     return schema, count, dataset_count, docs
 
 def get_filtering_terms_of_analyse(entry_id: Optional[str], qparams: RequestParams):
-    query = {'scope': 'analyses'}
+    query = {'scopes': 'analysis'}
     schema = DefaultSchemas.FILTERINGTERMS
     count = get_count(client.beacon.filtering_terms, query)
     remove_id={'_id':0}

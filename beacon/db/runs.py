@@ -228,7 +228,7 @@ def get_analyses_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
     return schema, count, dataset_count, docs
 
 def get_filtering_terms_of_run(entry_id: Optional[str], qparams: RequestParams):
-    query = {'scope': 'runs'}
+    query = {'scopes': 'run'}
     schema = DefaultSchemas.FILTERINGTERMS
     count = get_count(client.beacon.filtering_terms, query)
     remove_id={'_id':0}
