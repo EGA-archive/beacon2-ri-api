@@ -39,6 +39,7 @@ services:
   db:
     image: mongo:5
     hostname: mongo
+    container_name: rimongo
     ports:
       - 27017:27017
     environment:
