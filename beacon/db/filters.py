@@ -439,7 +439,7 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
         final_term_list.append(filter.id)
         query_filtering={}
         query_filtering['$and']=[]
-        dict_scope['scope']=scope
+        dict_scope['scopes']=scope
         query_filtering['$and'].append(dict_scope)
         dict_id={}
         dict_id['id']=filter.id
@@ -514,7 +514,7 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
         query_filtering['$and']=[]
         dict_scope={}
 
-        dict_scope['scope']=scope
+        dict_scope['scopes']=scope
         dict_id={}
         dict_id['id']=filter.id
         query_filtering['$and'].append(dict_id)
@@ -540,7 +540,7 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
         dict_id={}
         dict_id['id']=dict_regex
         dict_scope={}
-        dict_scope['scope']=scope
+        dict_scope['scopes']=scope
         query_filtering['$and'].append(dict_id)
         query_filtering['$and'].append(dict_scope)
         docs_2 = get_documents(
@@ -573,7 +573,7 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
         query_filtering={}
         query_filtering['$and']=[]
         dict_scope={}
-        dict_scope['scope']=scope
+        dict_scope['scopes']=scope
         query_filtering['$and'].append(dict_scope)
         dict_id={}
         dict_id['id']=filter.id
