@@ -9,14 +9,13 @@ import {
   selectedGridRowsSelector,
   gridFilteredSortedRowIdsSelector,
   GridToolbarContainer,
-  GridToolbarExport
 } from '@mui/x-data-grid'
 import ReactModal from 'react-modal'
 
 function CustomToolbar () {
   return (
     <GridToolbarContainer>
-      <GridToolbarExport />
+
     </GridToolbarContainer>
   )
 }
@@ -396,10 +395,10 @@ function TableResultsVariant (props) {
                   return (
                     <>
                       {element[1][0] === true && props.show === 'boolean' && (
-                        <h6 className='foundResult'>FOUND</h6>
+                        <h6 className='foundResult'>YES</h6>
                       )}
                       {element[1][0] === false && props.show === 'boolean' && (
-                        <h5 className='NotFoundResult'>NOT FOUND</h5>
+                        <h5 className='NotFoundResult'>No, sorry</h5>
                       )}
                       {props.show === 'count' &&
                         element[2][0] !== 0 &&

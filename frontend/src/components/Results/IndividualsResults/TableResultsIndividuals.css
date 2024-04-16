@@ -208,8 +208,8 @@ h1 {
   overflow-inline: scroll;
   overflow: scroll;
   width: 350px;
-  align-content: center;
-  align-items: center;
+  align-content: flex-start;
+  align-items: flex-start;
 }
 
 .MuiDataGrid-root {

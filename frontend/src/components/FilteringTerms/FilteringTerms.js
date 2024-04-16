@@ -198,9 +198,9 @@ function FilteringTerms (props) {
         if (e.target.value === '') {
           return props.filteringTerms
         } else {
-          if (post.scope !== undefined) {
+          if (post.scopes !== undefined) {
             var returnedPosts = []
-            post.scope.forEach(element => {
+            post.scopes.forEach(element => {
               console.log(element.toLowerCase())
               console.log(e.target.value.toLowerCase())
               if (
@@ -222,34 +222,34 @@ function FilteringTerms (props) {
   }
 
   const handleCheck = e => {
+    console.log(e.target)
     let infoValue = e.target.value.split(',')
 
-    if (infoValue[1].toLowerCase() !== 'alphanumeric') {
-      const alreadySelected = selected.filter(
-        term => term.label === infoValue[0]
-      )
-
-      if (alreadySelected.length !== 0) {
-        setSelected(selected.filter(t => t.value !== infoValue[0]))
-      } else {
-        const newTag = {
-          label: infoValue[0],
-          value: infoValue[0]
-        }
-
-        selected.push(newTag)
-      }
+    if (infoValue[2].toLowerCase() !== 'alphanumeric') {
 
       if (props.query !== null) {
         let stringQuery = ''
         if (props.query.includes(',')) {
           let arrayTerms = props.query.split(',')
           arrayTerms.forEach(element => {
-            if (element === infoValue[0]) {
-              stringQuery = props.query
+
+            if (infoValue[1]){
+      
+              if (element === `${infoValue[3]}=${infoValue[1]}`) {
+                stringQuery = props.query
+              } else {
+                stringQuery = props.query + ',' + `${infoValue[3]}=${infoValue[1]}`
+              }
             } else {
-              stringQuery = props.query + ',' + infoValue[0]
+              console.log("holi")
+              if (element === `${infoValue[3]}=${infoValue[0]}`) {
+                stringQuery = props.query
+              } else {
+                stringQuery = props.query + ',' + `${infoValue[3]}=${infoValue[0]}`
+              }
             }
+
+        
           })
 
           if (stringQuery === '' || stringQuery === ',') {
@@ -258,17 +258,35 @@ function FilteringTerms (props) {
             props.setQuery(stringQuery)
           }
         } else {
-          if (infoValue[0] !== props.query && props.query !== '') {
-            stringQuery = `${props.query},` + infoValue[0]
-            props.setQuery(stringQuery)
-          } else if (infoValue[0] !== props.query && props.query === '') {
-            stringQuery = `${props.query}` + infoValue[0]
-            props.setQuery(stringQuery)
+       
+          if (infoValue[1]){
+            if (`${infoValue[3]}=${infoValue[1]}` !== props.query && props.query !== '') {
+              stringQuery = `${props.query},` + `${infoValue[3]}=${infoValue[1]}`
+              props.setQuery(stringQuery)
+            } else if (`${infoValue[3]}=${infoValue[1]}` !== props.query && props.query === '') {
+              stringQuery = `${props.query}` + `${infoValue[3]}=${infoValue[1]}`
+              props.setQuery(stringQuery)
+            }
+          } else {
+            if (`${infoValue[3]}=${infoValue[0]}` !== props.query && props.query !== '') {
+              stringQuery = `${props.query},` + `${infoValue[3]}=${infoValue[0]}`
+              props.setQuery(stringQuery)
+            } else if (`${infoValue[3]}=${infoValue[0]}` !== props.query && props.query === '') {
+              stringQuery = `${props.query}` + `${infoValue[3]}=${infoValue[0]}`
+              props.setQuery(stringQuery)
+            }
           }
+       
         }
       } else {
-        let stringQuery = infoValue[0]
-        props.setQuery(stringQuery)
+        if (infoValue[1]){
+          let stringQuery = `${infoValue[3]}=${infoValue[1]}`
+          props.setQuery(stringQuery)
+        } else {
+          let stringQuery = `${infoValue[3]}=${infoValue[0]}`
+          props.setQuery(stringQuery)
+        }
+      
       }
       const filteredItems = state.list.filter(item => item.id !== infoValue[0])
       e.target.checked = false
@@ -420,7 +438,7 @@ function FilteringTerms (props) {
                                 type='checkbox'
                                 id={term.id}
                                 name={term.id}
-                                value={[term.id, term.type, index]}
+                                value={[term.id, term.label, term.type, term.scopes, index]}
                               />
                               {term.id}
                             </td>
@@ -450,9 +468,9 @@ function FilteringTerms (props) {
                           )}
 
                           <td className='th4'>
-                            {Array.isArray(term.scope) &&
-                              term.scope.map((term2, index) => {
-                                return index < term.scope.length - 1
+                            {Array.isArray(term.scopes) &&
+                              term.scopes.map((term2, index) => {
+                                return index < term.scopes.length - 1
                                   ? term2 + '' + ','
                                   : term2 + ''
                               })}
@@ -470,7 +488,7 @@ function FilteringTerms (props) {
                                 type='checkbox'
                                 id={term.id}
                                 name={term.id}
-                                value={[term.id, term.type, index]}
+                                value={[term.id, term.label, term.type, term.scopes, index]}
                               />
                               {term.id}
                             </td>
@@ -500,9 +518,9 @@ function FilteringTerms (props) {
                           )}
 
                           <td className='th4'>
-                            {Array.isArray(term.scope) &&
-                              term.scope.map((term2, index) => {
-                                return index < term.scope.length - 1
+                            {Array.isArray(term.scopes) &&
+                              term.scopes.map((term2, index) => {
+                                return index < term.scopes.length - 1
                                   ? term2 + '' + ','
                                   : term2 + ''
                               })}

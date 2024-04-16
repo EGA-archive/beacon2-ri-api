@@ -37,7 +37,7 @@ function CrossQueries () {
   const handleClick = () => {
     setShowSubmit(true)
     setResults('')
-    setIdValue('')
+
     setValueFinal('')
     setValueInitial('')
     setError('')

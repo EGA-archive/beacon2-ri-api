@@ -62,6 +62,11 @@ p {
   margin-bottom: 30px;
 }
 
+.label-ontology-div {
+  display: flex;
+  flex-direction: column;
+}
+
 .inputSearch {
   width: 36vw;
   height: fit-content;
@@ -71,6 +76,7 @@ p {
   box-shadow: chocolate;
   box-shadow: 1px 1px 4px 0px #e9e9e9;
   text-overflow: clip;
+  line-height: 1.8;
 }
 
 .filterTermsContainer {
@@ -141,7 +147,8 @@ p {
   padding-right: -7px;
   /* margin-top: 11px; */
   margin-bottom: 45px;
-  box-shadow: rgba(192, 200, 227, 0.27) 0px 0px 0.25em, rgba(159, 167, 184, 0.05) 0px 0.25em 1em;
+  box-shadow: rgba(192, 200, 227, 0.27) 0px 0px 0.25em,
+    rgba(159, 167, 184, 0.05) 0px 0.25em 1em;
   margin-left: 58vw;
   animation: slide-in-blurred-right 0.4s ease-in both;
 }
@@ -269,18 +276,22 @@ label {
 .divFilter3 {
   margin-right: 32px;
   margin-bottom: 30px;
-  width: 380px;
+  width: 288px;
 }
 .divFilter4 {
   margin-right: 32px;
   margin-bottom: 30px;
-  width: 150px;
+  width: 165px;
 }
 
 .divFilter5 {
   margin-right: 32px;
   margin-bottom: 30px;
   width: 539px;
+}
+
+.divOthers{
+  margin-right: 45px;
 }
 
 .mutationDiv {

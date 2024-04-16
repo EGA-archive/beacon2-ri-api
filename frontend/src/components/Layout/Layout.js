@@ -65,7 +65,7 @@ function Layout (props) {
   const [showBar, setShowBar] = useState(true)
 
   const [collection, setCollection] = useState('Individuals')
-  const [granularity, setGranularity] = useState('boolean')
+  const [granularity, setGranularity] = useState('count')
 
   const [terms, setTerm] = useState([])
 
@@ -534,7 +534,6 @@ function Layout (props) {
       } else {
         setQuery('molecularAttributes.geneIds=TP53')
       }
-
     } else {
       setGeneModuleArray([])
       if (query.includes(',molecularAttributes.geneIds=TP53')) {
@@ -544,7 +543,6 @@ function Layout (props) {
       } else {
         setQuery(query.replace('molecularAttributes.geneIds=TP53', ''))
       }
-    
     }
   }
   const handleOptionVariant6 = e => {
@@ -593,36 +591,37 @@ function Layout (props) {
 
   const handleOptionVariant2 = e => {
     if (e.target.checked) {
-      let objectRange = {
-        assemblyId: assemblyId2,
-        referenceName: referenceName2,
-        start: '1334544',
-        end: '1334545',
-        variantType: 'SNP',
-        alternateBases: 'A',
-        referenceBases: 'T',
-        aminoacid: aminoacid,
-        variantMinLength: variantMinLength,
-        variantMaxLength: variantMaxLength,
-        clinicalRelevance: clinicalRelevance2
-      }
-      let objectRange2 = {
-        assemblyId: assemblyId2,
-        referenceName: referenceName2,
-        start: '3670751',
-        end: '3670752',
-        variantType: 'SNP',
-        alternateBases: 'T',
-        referenceBases: 'C',
-        aminoacid: aminoacid,
-        variantMinLength: variantMinLength,
-        variantMaxLength: variantMaxLength,
-        clinicalRelevance: clinicalRelevance2
-      }
-      rangeModuleArray.push(objectRange)
-      rangeModuleArray.push(objectRange2)
-      console.log(rangeModuleArray)
-      setRangeSub2(true)
+      // let objectRange = {
+      //   assemblyId: assemblyId2,
+      //   referenceName: referenceName2,
+      //   start: '1334544',
+      //   end: '1334545',
+      //   variantType: 'SNP',
+      //   alternateBases: 'A',
+      //   referenceBases: 'T',
+      //   aminoacid: aminoacid,
+      //   variantMinLength: variantMinLength,
+      //   variantMaxLength: variantMaxLength,
+      //   clinicalRelevance: clinicalRelevance2
+      // }
+      // let objectRange2 = {
+      //   assemblyId: assemblyId2,
+      //   referenceName: referenceName2,
+      //   start: '3670751',
+      //   end: '3670752',
+      //   variantType: 'SNP',
+      //   alternateBases: 'T',
+      //   referenceBases: 'C',
+      //   aminoacid: aminoacid,
+      //   variantMinLength: variantMinLength,
+      //   variantMaxLength: variantMaxLength,
+      //   clinicalRelevance: clinicalRelevance2
+      // }
+      // rangeModuleArray.push(objectRange)
+      // rangeModuleArray.push(objectRange2)
+      // console.log(rangeModuleArray)
+      // setRangeSub2(true)
+      setQuery('1334544-1334545,T>A,SNP, 3670751-3670752,C>T,SNP')
     } else {
       setRangeSub2(false)
       setRangeModuleArray([])
@@ -839,10 +838,10 @@ function Layout (props) {
             className='selectModule1'
             onChange={handleChangeSelection1}
           >
-            <option value='boolean' selected className='optionClass'>
+            <option value='boolean' className='optionClass'>
               Do you have?...{' '}
             </option>
-            <option value='count'>How many?...</option>
+            <option value='count' selected>How many?...</option>
             <option value='record'>Can you give me details on?...</option>
           </select>
           <select
@@ -1006,8 +1005,10 @@ function Layout (props) {
                 name='subscribe'
                 value='Colon adenocarcinoma'
               />
-              <label className='label'>Colon adenocarcinoma</label>
-              <label className='onHover'>NCIT:C4349</label>
+              <div className='label-ontology-div'>
+                <label className='label'>Colon adenocarcinoma</label>
+                <label className='onHover'>NCIT:C4349</label>
+              </div>
             </div>
             <div>
               <input
@@ -1017,10 +1018,12 @@ function Layout (props) {
                 name='subscribe'
                 value='Mucinous Adenocarcinoma of the Colon and Rectum'
               />
-              <label className='label'>
-                Mucinous Adenocarcinoma of the Colon and Rectum
-              </label>
-              <label className='onHover'>NCIT:C7966</label>
+              <div className='label-ontology-div'>
+                <label className='label'>
+                  Mucinous Adenocarcinoma of the Colon and Rectum
+                </label>
+                <label className='onHover'>NCIT:C7966</label>
+              </div>
             </div>
             <div>
               <input
@@ -1030,21 +1033,10 @@ function Layout (props) {
                 name='subscribe'
                 value='Rectal Adenocarcinoma'
               />
-              <label className='label'>Rectal Adenocarcinoma</label>
-              <label className='onHover'>NCIT:C9383</label>
-            </div>
-            <div>
-              <img
-                className='dictionary'
-                src='/../dictionary.png'
-                alt='dictionary'
-              ></img>
-              <button
-                className='othersButton'
-                onClick={handleSeeFilteringTerms}
-              >
-                Others
-              </button>
+              <div className='label-ontology-div'>
+                <label className='label'>Rectal Adenocarcinoma</label>
+                <label className='onHover'>NCIT:C9383</label>
+              </div>
             </div>
           </ul>
         </div>
@@ -1070,8 +1062,10 @@ function Layout (props) {
                 name='subscribe'
                 value='Female'
               />
-              <label className='label'>Female</label>
-              <label className='onHover'>NCIT:C16576</label>
+              <div className='label-ontology-div'>
+                <label className='label'>Female</label>
+                <label className='onHover'>NCIT:C16576</label>
+              </div>
             </div>
             <div>
               <input
@@ -1081,21 +1075,10 @@ function Layout (props) {
                 name='subscribe'
                 value='Male'
               />
-              <label className='label'>Male</label>
-              <label className='onHover'>NCIT:C20197</label>
-            </div>
-            <div>
-              <img
-                className='dictionary'
-                src='/../dictionary.png'
-                alt='dictionary'
-              ></img>
-              <button
-                className='othersButton'
-                onClick={handleSeeFilteringTerms}
-              >
-                Others
-              </button>
+              <div className='label-ontology-div'>
+                <label className='label'>Male</label>
+                <label className='onHover'>NCIT:C20197</label>
+              </div>
             </div>
           </ul>
         </div>
@@ -1111,8 +1094,10 @@ function Layout (props) {
                 name='subscribe'
                 value='Radiation Therapy'
               />
-              <label className='label'>Radiation Therapy</label>
-              <label className='onHover'>NCIT:C15313</label>
+              <div className='label-ontology-div'>
+                <label className='label'>Radiation Therapy</label>
+                <label className='onHover'>NCIT:C15313</label>
+              </div>
             </div>
             <div>
               <input
@@ -1122,8 +1107,10 @@ function Layout (props) {
                 name='subscribe'
                 value='Chemotherapy'
               />
-              <label className='label'>Chemotherapy</label>
-              <label className='onHover'>NCIT:C15632</label>
+              <div className='label-ontology-div'>
+                <label className='label'>Chemotherapy</label>
+                <label className='onHover'>NCIT:C15632</label>
+              </div>
             </div>
             <div>
               <input
@@ -1133,8 +1120,10 @@ function Layout (props) {
                 name='subscribe'
                 value='Fluorouracil'
               />
-              <label className='label'>Fluorouracil</label>
-              <label className='onHover'>NCIT:C505</label>
+              <div className='label-ontology-div'>
+                <label className='label'>Fluorouracil</label>
+                <label className='onHover'>NCIT:C505</label>
+              </div>
             </div>
             <div>
               <input
@@ -1144,8 +1133,10 @@ function Layout (props) {
                 name='subscribe'
                 value='Oxaliplatin'
               />
-              <label className='label'>Oxaliplatin</label>
-              <label className='onHover'>NCIT:C1181</label>
+              <div className='label-ontology-div'>
+                <label className='label'>Oxaliplatin</label>
+                <label className='onHover'>NCIT:C1181</label>
+              </div>
             </div>
             <div>
               <input
@@ -1155,8 +1146,10 @@ function Layout (props) {
                 name='subscribe'
                 value='Zoledronic Acid'
               />
-              <label className='label'>Zoledronic Acid</label>
-              <label className='onHover'>NCIT:C1699</label>
+              <div className='label-ontology-div'>
+                <label className='label'>Zoledronic Acid</label>
+                <label className='onHover'>NCIT:C1699</label>
+              </div>
             </div>
             <div>
               <input
@@ -1166,21 +1159,10 @@ function Layout (props) {
                 name='subscribe'
                 value='Irinotecan'
               />
-              <label className='label'>Irinotecan</label>
-              <label className='onHover'>NCIT:C62040</label>
-            </div>
-            <div>
-              <img
-                className='dictionary'
-                src='/../dictionary.png'
-                alt='dictionary'
-              ></img>
-              <button
-                className='othersButton'
-                onClick={handleSeeFilteringTerms}
-              >
-                Others
-              </button>
+              <div className='label-ontology-div'>
+                <label className='label'>Irinotecan</label>
+                <label className='onHover'>NCIT:C62040</label>
+              </div>
             </div>
           </ul>
         </div>
@@ -1196,8 +1178,10 @@ function Layout (props) {
                   name='subscribe'
                   value='Ascending colon'
                 />
-                <label className='label'>Ascending colon</label>
-                <label className='onHover'>ICD10:C18.2</label>
+                <div className='label-ontology-div'>
+                  <label className='label'>Ascending colon</label>
+                  <label className='onHover'>ICD10:C18.2</label>
+                </div>
               </div>
               <div>
                 <input
@@ -1207,8 +1191,10 @@ function Layout (props) {
                   name='subscribe'
                   value='Descending colon'
                 />
-                <label className='label'>Descending colon</label>
-                <label className='onHover'>ICD10:C18.6</label>
+                <div className='label-ontology-div'>
+                  <label className='label'>Descending colon</label>
+                  <label className='onHover'>ICD10:C18.6</label>
+                </div>
               </div>
               <div>
                 <input
@@ -1218,8 +1204,10 @@ function Layout (props) {
                   name='subscribe'
                   value='Transverse colon'
                 />
-                <label className='label'>Transverse colon</label>
-                <label className='onHover'>ICD10:C18.4</label>
+                <div className='label-ontology-div'>
+                  <label className='label'>Transverse colon</label>
+                  <label className='onHover'>ICD10:C18.4</label>
+                </div>
               </div>
               <div>
                 <input
@@ -1229,8 +1217,10 @@ function Layout (props) {
                   name='subscribe'
                   value='Hepatic flexure'
                 />
-                <label className='label'>Hepatic flexure</label>
-                <label className='onHover'>ICD10:C18.3</label>
+                <div className='label-ontology-div'>
+                  <label className='label'>Hepatic flexure</label>
+                  <label className='onHover'>ICD10:C18.3</label>
+                </div>
               </div>
               <div>
                 <input
@@ -1240,8 +1230,10 @@ function Layout (props) {
                   name='subscribe'
                   value='Splenic flexure'
                 />
-                <label className='label'>Splenic flexure</label>
-                <label className='onHover'>ICD10:C18.5</label>
+                <div className='label-ontology-div'>
+                  <label className='label'>Splenic flexure</label>
+                  <label className='onHover'>ICD10:C18.5</label>
+                </div>
               </div>
               <div>
                 <input
@@ -1251,8 +1243,10 @@ function Layout (props) {
                   name='subscribe'
                   value='Sigmoid colon'
                 />
-                <label className='label'>Sigmoid colon</label>
-                <label className='onHover'>ICD10:C18.7</label>
+                <div className='label-ontology-div'>
+                  <label className='label'>Sigmoid colon</label>
+                  <label className='onHover'>ICD10:C18.7</label>
+                </div>
               </div>
             </ul>
             <ul>
@@ -1264,8 +1258,10 @@ function Layout (props) {
                   name='subscribe'
                   value='Caecum'
                 />
-                <label className='label'>Caecum</label>
-                <label className='onHover'>ICD10:C18.0</label>
+                <div className='label-ontology-div'>
+                  <label className='label'>Caecum</label>
+                  <label className='onHover'>ICD10:C18.0</label>
+                </div>
               </div>
               <div>
                 <input
@@ -1275,8 +1271,10 @@ function Layout (props) {
                   name='subscribe'
                   value='Stage I'
                 />
-                <label className='label'>Tumor stage I</label>
-                <label className='onHover'>NCIT:C27966</label>
+                <div className='label-ontology-div'>
+                  <label className='label'>Tumor stage I</label>
+                  <label className='onHover'>NCIT:C27966</label>
+                </div>
               </div>
               <div>
                 <input
@@ -1286,8 +1284,10 @@ function Layout (props) {
                   name='subscribe'
                   value='Stage II'
                 />
-                <label className='label'>Tumor stage II</label>
-                <label className='onHover'>NCIT:C28054</label>
+                <div className='label-ontology-div'>
+                  <label className='label'>Tumor stage II</label>
+                  <label className='onHover'>NCIT:C28054</label>
+                </div>
               </div>
               <div>
                 <input
@@ -1297,8 +1297,10 @@ function Layout (props) {
                   name='subscribe'
                   value='Stage III'
                 />
-                <label className='label'>Tumor stage III</label>
-                <label className='onHover'>NCIT:C27970</label>
+                <div className='label-ontology-div'>
+                  <label className='label'>Tumor stage III</label>
+                  <label className='onHover'>NCIT:C27970</label>
+                </div>
               </div>
               <div>
                 <input
@@ -1308,24 +1310,24 @@ function Layout (props) {
                   name='subscribe'
                   value='Stage IV'
                 />
-                <label className='label'>Tumor stage IV</label>
-                <label className='onHover'>NCIT:C27971</label>
-              </div>
-              <div>
-                <img
-                  className='dictionary'
-                  src='/../dictionary.png'
-                  alt='dictionary'
-                ></img>
-                <button
-                  className='othersButton'
-                  onClick={handleSeeFilteringTerms}
-                >
-                  Others
-                </button>
+                <div className='label-ontology-div'>
+                  <label className='label'>Tumor stage IV</label>
+                  <label className='onHover'>NCIT:C27971</label>
+                </div>
               </div>
             </ul>
           </div>
+        </div>
+
+        <div className='divOthers'>
+          <img
+            className='dictionary'
+            src='/../dictionary.png'
+            alt='dictionary'
+          ></img>
+          <button className='othersButton' onClick={handleSeeFilteringTerms}>
+            Others
+          </button>
         </div>
 
         <div className='divFilter5'>
@@ -1446,20 +1448,6 @@ function Layout (props) {
                 NCIT:C505, NCIT:C27979, NCIT:C9383
               </label>
             </div>
-
-            <div>
-              <img
-                className='dictionary'
-                src='/../dictionary.png'
-                alt='dictionary'
-              ></img>
-              <button
-                className='othersButton'
-                onClick={handleSeeFilteringTerms}
-              >
-                Others
-              </button>
-            </div>
           </ul>
         </div>
       </div>
@@ -1501,7 +1489,7 @@ function Layout (props) {
               seqModuleArray={seqModuleArray}
               geneModuleArray={geneModuleArray}
               granularity={granularity}
-              collection= {collection}
+              collection={collection}
             />
           </div>
         )}
@@ -1521,7 +1509,7 @@ function Layout (props) {
               seqModuleArray={seqModuleArray}
               geneModuleArray={geneModuleArray}
               granularity={granularity}
-              collection= {collection}
+              collection={collection}
             />
           </div>
         )}
@@ -1607,7 +1595,7 @@ function Layout (props) {
               seqModuleArray={seqModuleArray}
               geneModuleArray={geneModuleArray}
               granularity={granularity}
-              collection= {collection}
+              collection={collection}
             />
           </div>
         )}
@@ -1627,7 +1615,7 @@ function Layout (props) {
               seqModuleArray={seqModuleArray}
               geneModuleArray={geneModuleArray}
               granularity={granularity}
-              collection= {collection}
+              collection={collection}
             />
           </div>
         )}
@@ -1647,7 +1635,7 @@ function Layout (props) {
               seqModuleArray={seqModuleArray}
               geneModuleArray={geneModuleArray}
               granularity={granularity}
-              collection= {collection}
+              collection={collection}
             />
           </div>
         )}
@@ -1667,7 +1655,7 @@ function Layout (props) {
               seqModuleArray={seqModuleArray}
               geneModuleArray={geneModuleArray}
               granularity={granularity}
-              collection= {collection}
+              collection={collection}
             />
           </div>
         )}
@@ -1687,7 +1675,7 @@ function Layout (props) {
               seqModuleArray={seqModuleArray}
               geneModuleArray={geneModuleArray}
               granularity={granularity}
-              collection= {collection}
+              collection={collection}
             />
           </div>
         )}

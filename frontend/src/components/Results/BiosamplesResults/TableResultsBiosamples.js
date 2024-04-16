@@ -8,7 +8,7 @@ import {
   selectedGridRowsSelector,
   gridFilteredSortedRowIdsSelector,
   GridToolbarContainer,
-  GridToolbarExport
+
 } from '@mui/x-data-grid'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
@@ -16,7 +16,7 @@ import { Link } from 'react-router-dom'
 function CustomToolbar () {
   return (
     <GridToolbarContainer>
-      <GridToolbarExport />
+
     </GridToolbarContainer>
   )
 }

@@ -7,7 +7,7 @@ import {
   selectedGridRowsSelector,
   gridFilteredSortedRowIdsSelector,
   GridToolbarContainer,
-  GridToolbarExport
+
 } from '@mui/x-data-grid'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom'
 function CustomToolbar () {
   return (
     <GridToolbarContainer>
-      <GridToolbarExport />
+   
     </GridToolbarContainer>
   )
 }
@@ -446,11 +446,11 @@ function TableResultsAnalyses (props) {
 
                                     {element[1][indexDataset] === true &&
                                       props.show === 'boolean' && (
-                                        <h6>FOUND</h6>
+                                        <h6>YES</h6>
                                       )}
                                     {element[1][indexDataset] === false &&
                                       props.show === 'boolean' && (
-                                        <h5>NOT FOUND</h5>
+                                        <h5>No, sorry</h5>
                                       )}
                                     {props.show === 'count' &&
                                       element[2][indexDataset] !== 0 &&
@@ -503,11 +503,11 @@ function TableResultsAnalyses (props) {
 
                                     {element[1][indexDataset] === true &&
                                       props.show === 'boolean' && (
-                                        <h6>FOUND</h6>
+                                        <h6>YES</h6>
                                       )}
                                     {element[1][indexDataset] === false &&
                                       props.show === 'boolean' && (
-                                        <h5>NOT FOUND</h5>
+                                        <h5>No, sorry</h5>
                                       )}
                                     {props.show === 'count' &&
                                       element[2][indexDataset] !== 0 &&
@@ -555,7 +555,7 @@ function TableResultsAnalyses (props) {
 
                                 <div className='resultSetsContainer'>
                                   <>
-                                    <h6>FOUND </h6>
+                                    <h6>YES</h6>
                                   </>
                                 </div>
                               </div>
@@ -636,7 +636,7 @@ function TableResultsAnalyses (props) {
 
                                 <div className='resultSetsContainer'>
                                   <>
-                                    <h6>FOUND </h6>
+                                    <h6>YES</h6>
                                   </>
                                 </div>
                               </div>

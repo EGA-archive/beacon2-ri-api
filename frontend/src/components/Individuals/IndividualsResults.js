@@ -271,7 +271,7 @@ function IndividualsResults (props) {
                 ) {
                   alphanumericFilter = {
                     id: element.id,
-                    scope: element.scope
+                    scopes: element.scopes
                   }
                 }
               }
@@ -284,7 +284,7 @@ function IndividualsResults (props) {
                   queryArray[index][0].toLowerCase() ===
                   element.id.toLowerCase()
                 ) {
-                  queryArray[index][3] = element.scope
+                  queryArray[index][3] = element.scopes
                 }
               })
 
@@ -296,7 +296,7 @@ function IndividualsResults (props) {
                 id: queryArray[index][0],
                 operator: queryArray[index][2],
                 value: queryArray[index][1],
-                scope: queryArray[index][3]
+                scopes: queryArray[index][3]
               }
               console.log(alphanumericFilter)
             }
@@ -311,14 +311,14 @@ function IndividualsResults (props) {
                 ) {
                   filter = {
                     id: element.id,
-                    scope: element.scope
+                    scopes: element.scopes
                   }
                 }
               } else {
                 if (element.id.toLowerCase() === term.toLowerCase()) {
                   filter = {
                     id: element.id,
-                    scope: element.scope
+                    scopes: element.scopes
                   }
                 }
               }
@@ -474,17 +474,17 @@ function IndividualsResults (props) {
           var jsonData2 = {}
           let variablePause = false
           arrayFilter.forEach(element => {
-            if (element.scope.length > 1 && chosenScope === '') {
+            if (element.scopes.length > 1 && chosenScope === '') {
               setPause(true)
               variablePause = true
-              element.scope.forEach(element => {
+              element.scopes.forEach(element => {
                 optionsScope.push(element)
               })
               ontologyMultipleScope.push(element.id)
-            } else if (element.scope.length > 1 && chosenScope !== '') {
-              element.scope = chosenScope
+            } else if (element.scopes.length > 1 && chosenScope !== '') {
+              element.scopes = chosenScope
             } else {
-              element.scope = element.scope[0]
+              element.scopes = element.scopes[0]
             }
           })
 
