@@ -74,19 +74,28 @@ function Layout (props) {
 
   const [referenceName, setRefName] = useState('')
   const [referenceName2, setRefName2] = useState('')
-  const [start, setStart] = useState('')
-  const [start2, setStart2] = useState('')
-  const [end, setEnd] = useState('')
-  const [variantType, setVariantType] = useState('')
-  const [variantType2, setVariantType2] = useState('')
-  const [alternateBases, setAlternateBases] = useState('')
-  const [alternateBases2, setAlternateBases2] = useState('')
-  const [alternateBases3, setAlternateBases3] = useState('')
-  const [referenceBases, setRefBases] = useState('')
-  const [referenceBases2, setRefBases2] = useState('')
-  const [aminoacid, setAminoacid] = useState('')
+  const [start, setStart] = useState('110173330')
+  const [start2, setStart2] = useState('1334544')
+  const [start3, setStart3] = useState('3670751')
+  const [end, setEnd] = useState('110173331')
+  const [end2, setEnd2] = useState('1334545')
+  const [end3, setEnd3] = useState('3670752')
+  const [variantType, setVariantType] = useState('SNP')
+  const [variantType2, setVariantType2] = useState('SNP')
+  const [variantType3, setVariantType3] = useState('SNP')
+  const [alternateBases, setAlternateBases] = useState('T')
+  const [alternateBases2, setAlternateBases2] = useState('A')
+  const [alternateBases3, setAlternateBases3] = useState('T')
+  const [referenceBases, setRefBases] = useState('C')
+  const [referenceBases2, setRefBases2] = useState('T')
+  const [referenceBases3, setRefBases3] = useState('C')
+  const [aminoacid, setAminoacid] = useState('p.Gly12Cys')
   const [aminoacid2, setAminoacid2] = useState('')
-  const [geneID, setGeneId] = useState('')
+  const [geneID, setGeneId] = useState('KRAS')
+  const [geneID2, setGeneId2] = useState('KRAS')
+  const [geneID3, setGeneId3] = useState('TP53')
+  const [geneID4, setGeneId4] = useState('CTNNB1')
+  const [geneID5, setGeneId5] = useState('CSDE1')
   const [assemblyId, setAssemblyId] = useState('')
   const [assemblyId2, setAssemblyId2] = useState('')
   const [assemblyId3, setAssemblyId3] = useState('')
@@ -184,12 +193,17 @@ function Layout (props) {
   const handleChangeStart2 = e => {
     setStart2(e.target.value)
   }
+  const handleChangeStart3 = e => {
+    setStart3(e.target.value)
+  }
   const handleChangeRefN2 = e => {
     setRefName2(e.target.value)
   }
+
   const handleChangeAlternateB2 = e => {
     setAlternateBases2(e.target.value)
   }
+
   const handleChangeAssembly2 = e => {
     setAssemblyId2(e.target.value)
   }
@@ -212,6 +226,10 @@ function Layout (props) {
     setRefBases2(e.target.value)
   }
 
+  const handleChangeReferenceB3 = e => {
+    setRefBases3(e.target.value)
+  }
+
   const handleChangeRefN = e => {
     setRefName(e.target.value)
   }
@@ -219,12 +237,21 @@ function Layout (props) {
   const handleChangeEnd = e => {
     setEnd(e.target.value)
   }
+  const handleChangeEnd2 = e => {
+    setEnd2(e.target.value)
+  }
+  const handleChangeEnd3 = e => {
+    setEnd3(e.target.value)
+  }
 
   const handleChangeVariantType = e => {
     setVariantType(e.target.value)
   }
   const handleChangeVariantType2 = e => {
     setVariantType2(e.target.value)
+  }
+  const handleChangeVariantType3 = e => {
+    setVariantType3(e.target.value)
   }
 
   const handleChangeAminoacid = e => {
@@ -237,7 +264,18 @@ function Layout (props) {
   const handleChangeGeneId = e => {
     setGeneId(e.target.value)
   }
-
+  const handleChangeGeneId2 = e => {
+    setGeneId2(e.target.value)
+  }
+  const handleChangeGeneId3 = e => {
+    setGeneId3(e.target.value)
+  }
+  const handleChangeGeneId4 = e => {
+    setGeneId4(e.target.value)
+  }
+  const handleChangeGeneId5 = e => {
+    setGeneId5(e.target.value)
+  }
   const handleChangeAssembly = e => {
     setAssemblyId(e.target.value)
   }
@@ -510,17 +548,9 @@ function Layout (props) {
 
   const handleOptionVariant5 = e => {
     if (e.target.checked) {
-      let objectGene = {
-        geneID: 'KRAS',
-        aminoacid: aminoacid2,
-        assemblyId: assemblyId3,
-        variantType: variantType2,
-        variantMinLength: variantMinLength2,
-        variantMaxLength: variantMaxLength2,
-        clinicalRelevance: clinicalRelevance3
-      }
-
-      geneModuleArray.push(objectGene)
+      setQuery(
+        `geneId:${geneID2}`
+      )
       setGeneSub3(true)
     } else {
       setGeneSub3(false)
@@ -530,59 +560,39 @@ function Layout (props) {
   const handleOptionVariant7 = e => {
     if (e.target.checked) {
       if (query !== null && query !== '') {
-        setQuery(query + ',' + 'molecularAttributes.geneIds=TP53')
+        setQuery(query + ',' + `molecularAttributes.geneIds=${geneID3}`)
       } else {
-        setQuery('molecularAttributes.geneIds=TP53')
+        setQuery(`molecularAttributes.geneIds=${geneID3}`)
       }
     } else {
       setGeneModuleArray([])
-      if (query.includes(',molecularAttributes.geneIds=TP53')) {
-        setQuery(query.replace(',molecularAttributes.geneIds=TP53', ''))
-      } else if (query.includes(`molecularAttributes.geneIds=TP53,`)) {
-        setQuery(query.replace('molecularAttributes.geneIds=TP53,', ''))
+      if (query.includes(`,molecularAttributes.geneIds=${geneID3}`)) {
+        setQuery(query.replace(`,molecularAttributes.geneIds=${geneID3}`, ''))
+      } else if (query.includes(`molecularAttributes.geneIds=${geneID3},`)) {
+        setQuery(query.replace(`molecularAttributes.geneIds=${geneID3},`, ''))
       } else {
-        setQuery(query.replace('molecularAttributes.geneIds=TP53', ''))
+        setQuery(query.replace(`molecularAttributes.geneIds=${geneID3}`, ''))
       }
     }
   }
   const handleOptionVariant6 = e => {
     if (e.target.checked) {
-      let objectGene = {
-        geneID: 'KRAS',
-        aminoacid: 'p.Gly12Cys',
-        assemblyId: assemblyId3,
-        variantType: variantType2,
-        variantMinLength: variantMinLength2,
-        variantMaxLength: variantMaxLength2,
-        clinicalRelevance: clinicalRelevance3
-      }
-
-      geneModuleArray.push(objectGene)
+      setQuery(
+        `geneId:${geneID}&aminoacidChange:${aminoacid}`
+      )
       setGeneSub4(true)
     } else {
       setGeneSub4(false)
       setGeneModuleArray([])
+     
     }
   }
 
   const handleOptionVariant = e => {
     if (e.target.checked) {
-      let objectRange = {
-        assemblyId: assemblyId2,
-        referenceName: referenceName2,
-        start: '110173330',
-        end: '110173331',
-        variantType: 'SNP',
-        alternateBases: 'T',
-        referenceBases: 'C',
-        aminoacid: aminoacid,
-        variantMinLength: variantMinLength,
-        variantMaxLength: variantMaxLength,
-        clinicalRelevance: clinicalRelevance2
-      }
-      rangeModuleArray.push(objectRange)
-      console.log(rangeModuleArray)
-      setRangeSub1(true)
+      setQuery(
+        `${start}-${end}:${variantType}:${referenceBases}>${alternateBases}`
+      )
     } else {
       setRangeSub1(false)
       setRangeModuleArray([])
@@ -621,7 +631,9 @@ function Layout (props) {
       // rangeModuleArray.push(objectRange2)
       // console.log(rangeModuleArray)
       // setRangeSub2(true)
-      setQuery('1334544-1334545,T>A,SNP, 3670751-3670752,C>T,SNP')
+      setQuery(
+        `${start3}-${end3}:${variantType3}:${referenceBases3}>${alternateBases3}, ${start2}-${end2}:${variantType2}:${referenceBases2}>${alternateBases2}`
+      )
     } else {
       setRangeSub2(false)
       setRangeModuleArray([])
@@ -630,58 +642,30 @@ function Layout (props) {
   const handleOptionVariant3 = e => {
     console.log(geneSubmitted2)
     if (e.target.checked) {
-      let objectGene = {
-        geneID: 'CTNNB1',
-        aminoacid: aminoacid2,
-        assemblyId: assemblyId3,
-        variantType: variantType2,
-        variantMinLength: variantMinLength2,
-        variantMaxLength: variantMaxLength2,
-        clinicalRelevance: clinicalRelevance3
-      }
-
-      geneModuleArray.push(objectGene)
       setGeneSub(true)
 
       setQuery(
-        'treatment=Chemotherapy, disease=STAGE IIIB, disease=Colon adenocarcinoma'
+        `geneId:${geneID4}, treatment=Chemotherapy, disease=STAGE IIIB, disease=Colon adenocarcinoma`
       )
     } else {
       setGeneSub(false)
       setGeneModuleArray([])
       setQuery(
-        query.replace(
-          'treatment=Chemotherapy, disease=STAGE IIIB, disease=Colon adenocarcinoma',
-          ''
-        )
+        `geneId:${geneID4}, treatment=Chemotherapy, disease=STAGE IIIB, disease=Colon adenocarcinoma`
       )
     }
   }
   const handleOptionVariant4 = e => {
     if (e.target.checked) {
-      let objectGene = {
-        geneID: 'CSDE1',
-        aminoacid: aminoacid2,
-        assemblyId: assemblyId3,
-        variantType: variantType2,
-        variantMinLength: variantMinLength2,
-        variantMaxLength: variantMaxLength2,
-        clinicalRelevance: clinicalRelevance3
-      }
-
-      geneModuleArray.push(objectGene)
       setGeneSub2(true)
       setQuery(
-        'treatment=Fluorouracil, disease=Stage IVA, disease=Rectal adenocarcinoma'
+        `geneId:${geneID5}, treatment=Chemotherapy, disease=STAGE IIIB, disease=Colon adenocarcinoma`
       )
     } else {
       setGeneSub2(false)
       setGeneModuleArray([])
       setQuery(
-        query.replace(
-          'treatment=Fluorouracil, disease=Stage IVA, disease=Rectal adenocarcinoma',
-          ''
-        )
+        `geneId:${geneID5}, treatment=Chemotherapy, disease=STAGE IIIB, disease=Colon adenocarcinoma`
       )
     }
   }
@@ -794,15 +778,14 @@ function Layout (props) {
 
   function search (e) {
     setQuery(e.target.value)
-    var ele=document.getElementsByName('subscribe')
-    for(var i=0; i<ele.length; i++){  
-      if(query.includes(ele[i].value)){
-        ele[i].checked=true 
+    var ele = document.getElementsByName('subscribe')
+    for (var i = 0; i < ele.length; i++) {
+      if (query.includes(ele[i].value)) {
+        ele[i].checked = true
       } else {
-        ele[i].checked= false 
+        ele[i].checked = false
       }
     }
-
   }
 
   const handleSubmit = async e => {
@@ -850,7 +833,9 @@ function Layout (props) {
             <option value='boolean' className='optionClass'>
               Do you have?...{' '}
             </option>
-            <option value='count' selected>How many?...</option>
+            <option value='count' selected>
+              How many?...
+            </option>
             <option value='record'>Can you give me details on?...</option>
           </select>
           <select
@@ -890,58 +875,8 @@ function Layout (props) {
             </button>
           </form>
         </div>
-        {rangeSubmitted1 && (
-          <div className='moduleAddedVariant'>
-            <h2>alternateBases: T</h2>
-            <h2>referenceBases: C</h2>
-            <h2>start: 110173330</h2>
-            <h2>end: 110173331</h2>
-            <h2>type: SNP</h2>
-          </div>
-        )}
-        {rangeSubmitted2 && (
-          <div className='containerModulesVariants'>
-            <div className='moduleAddedVariant2'>
-              <h2>alternateBases: A</h2>
-              <h2>referenceBases: T</h2>
-              <h2>start: 1334544</h2>
-              <h2>end: 1334545</h2>
-              <h2>type: SNP</h2>
-            </div>
-            <div className='moduleAddedVariant2'>
-              <h2>alternateBases: T</h2>
-              <h2>referenceBases: C</h2>
-              <h2>start: 3670751</h2>
-              <h2>end: 3670752</h2>
-              <h2>type: SNP</h2>
-            </div>
-          </div>
-        )}
-        {geneSubmitted && (
-          <div className='moduleAddedVariant'>
-            <h4>Gene query</h4>
-            <h2>Gene ID: CTNNB1</h2>
-          </div>
-        )}
-        {geneSubmitted2 && (
-          <div className='moduleAddedVariant'>
-            <h4>Gene query</h4>
-            <h2>Gene ID: CSDE1</h2>
-          </div>
-        )}
-        {geneSubmitted3 && (
-          <div className='moduleAddedVariant'>
-            <h4>Gene query</h4>
-            <h2>Gene ID: KRAS</h2>
-          </div>
-        )}
-        {geneSubmitted4 && (
-          <div className='moduleAddedVariant'>
-            <h4>Gene query</h4>
-            <h2>Gene ID: KRAS</h2>
-            <h2>Aminoacid: p.Gly12Cys</h2>
-          </div>
-        )}
+     
+      
       </div>
       {showAlphanum && (
         <tr className='termsAlphanum'>
@@ -959,7 +894,7 @@ function Layout (props) {
                   autoComplete='on'
                   placeholder={'write and filter by ID'}
                   onChange={handleIdChanges}
-                  aria-label='ID' 
+                  aria-label='ID'
                 />
 
                 <div id='operator2'>
@@ -1353,7 +1288,20 @@ function Layout (props) {
               />
 
               <label className='tittleVariant'>Mutations in:</label>
-              <label>KRAS-G12C</label>
+              <label>gene:</label>
+              <input
+                className='inputVariants'
+                type='text'
+                value={geneID}
+                onChange={handleChangeGeneId}
+              ></input>
+              <label>aminoacid</label>
+              <input
+                className='inputVariants'
+                type='text'
+                value={aminoacid}
+                onChange={handleChangeAminoacid}
+              ></input>
             </div>
             <div className='containerMutation'>
               <input
@@ -1364,8 +1312,15 @@ function Layout (props) {
                 value='KRAS'
               />
 
-              <label className='tittleVariant'>Mutations in gene:</label>
-              <label>KRAS</label>
+              <label className='tittleVariant'>Mutations in:</label>
+
+              <label>gene</label>
+              <input
+                className='inputVariants'
+                type='text'
+                value={geneID2}
+                onChange={handleChangeGeneId2}
+              ></input>
             </div>
             <div className='containerMutation'>
               <input
@@ -1377,7 +1332,13 @@ function Layout (props) {
               />
 
               <label className='tittleVariant'>Mutations in:</label>
-              <label>TP53</label>
+              <label>gene</label>
+              <input
+                className='inputVariants'
+                type='text'
+                value={geneID3}
+                onChange={handleChangeGeneId3}
+              ></input>
             </div>
             <div className='containerMutation'>
               <input
@@ -1391,11 +1352,56 @@ function Layout (props) {
 
               <div>
                 <div className='mutationDiv'>
-                  <label>alternateBases: T</label>
-                  <label>referenceBases: C</label>
-                  <label>start: 110173330</label>
-                  <label>end: 110173331</label>
-                  <label>type: SNP</label>
+                  <div>
+                    {' '}
+                    <label>alternateBases:</label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={alternateBases}
+                      onChange={handleChangeAlternateB}
+                    ></input>
+                  </div>
+                  <div>
+                    {' '}
+                    <label>referenceBases:</label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={referenceBases}
+                      onChange={handleChangeReferenceB}
+                    ></input>
+                  </div>
+                  <div>
+                    {' '}
+                    <label>start:</label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={start}
+                      onChange={handleChangeStart}
+                    ></input>
+                  </div>
+                  <div>
+                    {' '}
+                    <label>end:</label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={end}
+                      onChange={handleChangeEnd}
+                    ></input>
+                  </div>
+                  <div>
+                    {' '}
+                    <label>type:</label>
+                    <input
+                      className='inputVariants'
+                      type='text'
+                      value={variantType}
+                      onChange={handleChangeVariantType}
+                    ></input>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1409,18 +1415,108 @@ function Layout (props) {
               />
               <label className='tittleVariant'>With mutations:</label>
               <div className='mutationDiv'>
-                <label>alternateBases: A</label>
-                <label>referenceBases: T</label>
-                <label>start: 1334544</label>
-                <label>end: 1334545</label>
-                <label>type: SNP</label>
+                <div>
+                  {' '}
+                  <label>alternateBases:</label>
+                  <input
+                    className='inputVariants'
+                    type='text'
+                    value={alternateBases3}
+                    onChange={handleChangeAlternateB3}
+                  ></input>
+                </div>
+                <div>
+                  {' '}
+                  <label>referenceBases:</label>
+                  <input
+                    className='inputVariants'
+                    type='text'
+                    value={referenceBases3}
+                    onChange={handleChangeReferenceB3}
+                  ></input>
+                </div>
+                <div>
+                  {' '}
+                  <label>start:</label>
+                  <input
+                    className='inputVariants'
+                    type='text'
+                    value={start3}
+                    onChange={handleChangeStart3}
+                  ></input>
+                </div>
+                <div>
+                  {' '}
+                  <label>end:</label>
+                  <input
+                    className='inputVariants'
+                    type='text'
+                    value={end3}
+                    onChange={handleChangeEnd3}
+                  ></input>
+                </div>
+                <div>
+                  {' '}
+                  <label>type:</label>
+                  <input
+                    className='inputVariants'
+                    type='text'
+                    value={variantType3}
+                    onChange={handleChangeVariantType3}
+                  ></input>
+                </div>
               </div>
               <div className='mutationDiv'>
-                <label>alternateBases: T</label>
-                <label>referenceBases: C</label>
-                <label>start: 3670751</label>
-                <label>end: 3670752</label>
-                <label>type: SNP</label>
+                <div>
+                  {' '}
+                  <label>alternateBases:</label>
+                  <input
+                    className='inputVariants'
+                    type='text'
+                    value={alternateBases2}
+                    onChange={handleChangeAlternateB2}
+                  ></input>
+                </div>
+                <div>
+                  {' '}
+                  <label>referenceBases:</label>
+                  <input
+                    className='inputVariants'
+                    type='text'
+                    value={referenceBases2}
+                    onChange={handleChangeReferenceB2}
+                  ></input>
+                </div>
+                <div>
+                  {' '}
+                  <label>start:</label>
+                  <input
+                    className='inputVariants'
+                    type='text'
+                    value={start2}
+                    onChange={handleChangeStart2}
+                  ></input>
+                </div>
+                <div>
+                  {' '}
+                  <label>end:</label>
+                  <input
+                    className='inputVariants'
+                    type='text'
+                    value={end2}
+                    onChange={handleChangeEnd2}
+                  ></input>
+                </div>
+                <div>
+                  {' '}
+                  <label>type:</label>
+                  <input
+                    className='inputVariants'
+                    type='text'
+                    value={variantType2}
+                    onChange={handleChangeVariantType2}
+                  ></input>
+                </div>
               </div>
             </div>
             <div>
@@ -1431,14 +1527,21 @@ function Layout (props) {
                 name='subscribe'
                 value='Oxaliplatin'
               />
-              <label className='tittleVariant'>In gene:</label>
-              <label>CTNNB1</label>
-              <label className='label'>
-                with Chemotherapy, tumor Stage IIIB, Colon adenocarcinoma
-              </label>
-              <label className='onHover'>
-                NCIT:C15632, NCIT:C27978, NCIT:C4349
-              </label>
+              <label>In gene</label>
+              <input
+                className='inputVariants'
+                type='text'
+                value={geneID4}
+                onChange={handleChangeGeneId4}
+              ></input>
+              <div className='termsOntologies'>
+                <label className='label'>
+                  with Chemotherapy, tumor Stage IIIB, Colon adenocarcinoma
+                </label>
+                <label className='onHover'>
+                  NCIT:C15632, NCIT:C27978, NCIT:C4349
+                </label>
+              </div>
             </div>
             <div>
               <input
@@ -1448,14 +1551,22 @@ function Layout (props) {
                 name='subscribe'
                 value='Oxaliplatin'
               />
-              <label className='tittleVariant'>In gene:</label>
-              <label>CSDE1</label>
-              <label className='label'>
-                with Fluorouracil, tumor Stage IVA, Rectal adenocarcinoma
-              </label>
-              <label className='onHover'>
-                NCIT:C505, NCIT:C27979, NCIT:C9383
-              </label>
+
+              <label>In gene</label>
+              <input
+                className='inputVariants'
+                type='text'
+                value={geneID5}
+                onChange={handleChangeGeneId5}
+              ></input>
+              <div className='termsOntologies'>
+                <label className='label'>
+                  with Fluorouracil, tumor Stage IVA, Rectal adenocarcinoma
+                </label>
+                <label className='onHover'>
+                  NCIT:C505, NCIT:C27979, NCIT:C9383
+                </label>
+              </div>
             </div>
           </ul>
         </div>

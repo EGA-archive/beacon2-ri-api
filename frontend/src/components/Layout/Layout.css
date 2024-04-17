@@ -106,12 +106,11 @@ p {
     sans-serif;
 }
 
-.othersButton :hover{
+.othersButton :hover {
   background-color: rgb(228, 236, 250);
   box-shadow: 1px 1px 1px 1px #2269bf;
   border: solid #2269bf;
 }
-
 
 .buttonAlphanum ion-icon:hover {
   color: rgb(16, 130, 98);
@@ -296,7 +295,12 @@ label {
 .divFilter5 {
   margin-right: 32px;
   margin-bottom: 30px;
-  width: 539px;
+  width: 610px;
+}
+
+.termsOntologies {
+  display: flex;
+  flex-direction: column;
 }
 
 .divOthers {
@@ -307,10 +311,9 @@ label {
   border-radius: 4px;
   display: flex;
   align-items: center;
-  
 }
 
-.divOthers:hover{
+.divOthers:hover {
   background-color: rgb(228, 236, 250);
   box-shadow: 1px 1px 1px 1px #2269bf;
   border: solid #2269bf;
