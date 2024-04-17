@@ -799,8 +799,7 @@ function Layout (props) {
       if(query.includes(ele[i].value)){
         ele[i].checked=true 
       } else {
-        ele[i].checked=false 
-
+        ele[i].checked= false 
       }
     }
 

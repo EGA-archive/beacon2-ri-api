@@ -435,7 +435,7 @@ function TableResultsVariant (props) {
         />
       )}
       {showCrossQuery &&
-      <CrossQueries parameter={parameterCrossQuery} collection={'individuals'} setShowCrossQuery={setShowCrossQuery}/>}
+      <CrossQueries parameter={parameterCrossQuery} beaconsList= {props.beaconsList} collection={'individuals'} setShowCrossQuery={setShowCrossQuery}/>}
     </div>
   )
 }
