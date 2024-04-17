@@ -2,9 +2,10 @@ import './CrossQueries.css'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
 import configData from '../../config.json'
-import { useParams } from 'react-router-dom'
 
-function CrossQueries () {
+import { useNavigate } from 'react-router-dom'
+
+function CrossQueries (props) {
   const [valueInitial, setValueInitial] = useState('')
   const [valueFinal, setValueFinal] = useState('')
 
@@ -15,11 +16,14 @@ function CrossQueries () {
   const [showSubmit, setShowSubmit] = useState(true)
   const [trigger, setTrigger] = useState(true)
 
+  const navigate = useNavigate()
+
   const handleChangeInitial = e => {
     setValueInitial(e.target.value)
   }
 
-  let { scope, id } = useParams()
+  let scope = props.collection
+  let id = props.parameter
 
   const [scope2, setScope2] = useState(scope)
 
@@ -146,13 +150,20 @@ function CrossQueries () {
         {error !== '' && results === '' && <h5>Not found. Please retry</h5>}
         {results === null && <h5>Not found. Please retry</h5>}
       </form>
-
-      {!showSubmit && (
-        <button className='formButton' onClick={handleClick}>
-          New search
+      <div>
+      <button
+          className='goBackCrossQ'
+          onClick={() => props.setShowCrossQuery(false)}
+        >
+          Back
         </button>
-      )}
-
+        {!showSubmit && (
+          <button className='formButton' onClick={handleClick}>
+            New search
+          </button>
+        )}
+   
+      </div>
       {results !== null && results !== '' && (
         <div>
           <pre className='preCrossQueries'>

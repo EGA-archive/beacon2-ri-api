@@ -6,18 +6,14 @@ import {
   GridToolbar,
   selectedGridRowsSelector,
   gridFilteredSortedRowIdsSelector,
-  GridToolbarContainer,
- 
+  GridToolbarContainer
 } from '@mui/x-data-grid'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import ReactModal from 'react-modal'
+import CrossQueries from '../../CrossQueries/CrossQueries'
 function CustomToolbar () {
-  return (
-    <GridToolbarContainer>
- 
-    </GridToolbarContainer>
-  )
+  return <GridToolbarContainer></GridToolbarContainer>
 }
 function TableResultsIndividuals (props) {
   const [showDatsets, setShowDatasets] = useState(false)
@@ -31,9 +27,6 @@ function TableResultsIndividuals (props) {
   const [resultsSelected, setResultsSelected] = useState(props.results)
   const [resultsSelectedFinal, setResultsSelectedFinal] = useState([])
 
-  const [openDatasetArray, setOpenDataset] = useState([])
-  const [openDatasetArray2, setOpenDataset2] = useState([])
-
   const [editable, setEditable] = useState([])
 
   const [trigger, setTrigger] = useState(false)
@@ -42,7 +35,11 @@ function TableResultsIndividuals (props) {
   const [triggerArray, setTriggerArray] = useState([])
   const [triggerArray2, setTriggerArray2] = useState([])
 
+  const [showCrossQuery, setShowCrossQuery] = useState(false)
+  const [parameterCrossQuery, setParamCrossQuery]= useState('')
+
   const [errorMessage, setErrorMessage] = useState('')
+
   const [note, setNote] = useState('')
   const [isOpenModal2, setIsOpenModal2] = useState(false)
 
@@ -60,6 +57,12 @@ function TableResultsIndividuals (props) {
     setIsOpenModal2(true)
   }
 
+  const handleShowCrossQuery = e => {
+    setShowCrossQuery(true)
+    console.log(e.target.innerText)
+    setParamCrossQuery(e.target.innerText)
+  }
+
   const columns = [
     {
       field: 'IndividualId',
@@ -67,9 +70,9 @@ function TableResultsIndividuals (props) {
       width: 150,
       headerClassName: 'super-app-theme--header',
       renderCell: params => (
-        <Link to={`/individuals/cross-queries/${params.row.IndividualId}`}>
+        <button className='buttonId' onClick={handleShowCrossQuery}>
           {params.row.IndividualId}
-        </Link>
+        </button>
       )
     },
     {
@@ -116,11 +119,17 @@ function TableResultsIndividuals (props) {
       headerClassName: 'super-app-theme--header'
     },
     // { field: 'pedigrees', headerName: 'pedigrees', width: 150 },
-    { field: 'treatments', headerName: 'treatments', width: 250,      headerClassName: 'super-app-theme--header' },
+    {
+      field: 'treatments',
+      headerName: 'treatments',
+      width: 250,
+      headerClassName: 'super-app-theme--header'
+    },
     {
       field: 'interventionsOrProcedures',
       headerName: 'interventionsOrProcedures',
-      width: 250,      headerClassName: 'super-app-theme--header'
+      width: 250,
+      headerClassName: 'super-app-theme--header'
     }
     //{ field: 'exposures', headerName: 'exposures', width: 150 },
     //{ field: 'karyotypicSex', headerName: 'karyotypicSex', width: 150 }
@@ -173,7 +182,6 @@ function TableResultsIndividuals (props) {
         } else {
           stringSex = ''
         }
-
 
         let geographic_id = ''
         let geographic_label = ''
@@ -231,7 +239,10 @@ function TableResultsIndividuals (props) {
         }
 
         let phenoJson = []
-        if (element[1].phenotypicFeatures !== '' && element[1].phenotypicFeatures !== undefined) {
+        if (
+          element[1].phenotypicFeatures !== '' &&
+          element[1].phenotypicFeatures !== undefined
+        ) {
           if (typeof element[1].phenotypicFeatures === 'object') {
             element[1].phenotypicFeatures.forEach(element2 => {
               phenoJson.push(
@@ -247,10 +258,8 @@ function TableResultsIndividuals (props) {
               )
             })
             phenoJson = phenoJson.toString()
-            phenoJson = phenoJson
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-              phenoJson = phenoJson.replaceAll(',', '')
+            phenoJson = phenoJson.replaceAll(', ', ',').replaceAll(' ,', ',')
+            phenoJson = phenoJson.replaceAll(',', '')
           } else {
             phenoJson = JSON.stringify(element[1].measures, null, 2)
               .replaceAll('[', '')
@@ -262,11 +271,9 @@ function TableResultsIndividuals (props) {
               .replaceAll(', ', '')
               .replaceAll('"', '')
 
-              phenoJson = phenoJson.toString()
-              phenoJson = phenoJson
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-              phenoJson = phenoJson.replaceAll(',', '')
+            phenoJson = phenoJson.toString()
+            phenoJson = phenoJson.replaceAll(', ', ',').replaceAll(' ,', ',')
+            phenoJson = phenoJson.replaceAll(',', '')
           }
         }
 
@@ -361,7 +368,10 @@ function TableResultsIndividuals (props) {
 
         let treatments = []
 
-        if (element[1].treatments !== '' && element[1].treatments !== undefined) {
+        if (
+          element[1].treatments !== '' &&
+          element[1].treatments !== undefined
+        ) {
           if (typeof element[1].treatments === 'object') {
             element[1].treatments.forEach(element2 => {
               treatments.push(
@@ -389,9 +399,9 @@ function TableResultsIndividuals (props) {
               .replaceAll(' ,', '')
               .replaceAll(', ', '')
               .replaceAll('"', '')
-              treatments = treatments.toString()
-              treatments = treatments.replaceAll(', ', ',').replaceAll(' ,', ',')
-              treatments = treatments.replaceAll(',', '')
+            treatments = treatments.toString()
+            treatments = treatments.replaceAll(', ', ',').replaceAll(' ,', ',')
+            treatments = treatments.replaceAll(',', '')
           }
         }
 
@@ -435,9 +445,9 @@ function TableResultsIndividuals (props) {
     //     beaconsArrayResultsOrdered.push(element)
     //   }
     // })
-    
+
     setShowDatasets(true)
-    
+    console.log(props.resultsPerDataset)
   }, [])
 
   return (
@@ -450,27 +460,30 @@ function TableResultsIndividuals (props) {
                 props.resultsPerDataset.map((element, index) => {
                   return (
                     <>
-                  
-                      {element[1][0] === true && props.show === 'boolean' && (
-                        <h6 className='foundResult'>YES</h6>
-                      )}
-                      {element[1][0] === false && props.show === 'boolean' && (
-                        <h5 className='NotFoundResult'>No, sorry</h5>
-                      )}
+                      {element[1][index] === true &&
+                        props.show === 'boolean' && (
+                          <h6 className='foundResult'>YES</h6>
+                        )}
+                      {element[1][index] === false &&
+                        props.show === 'boolean' && (
+                          <h5 className='NotFoundResult'>No, sorry</h5>
+                        )}
                       {props.show === 'count' &&
-                        element[2][0] !== 0 &&
-                        element[2][0] !== 1 && (
+                        element[2][index] !== 0 &&
+                        element[2][index] !== 1 && (
                           <h6 className='foundResult'>
-                            {element[2][0]} RESULTS
+                            {element[2][index]} RESULTS
                           </h6>
                         )}
-                      {props.show === 'count' && element[2][0] === 0 && (
+                      {props.show === 'count' && element[2][index] === 0 && (
                         <h5 className='NotFoundResult'>
-                          {element[2][0]} RESULTS
+                          {element[2][index]} RESULTS
                         </h5>
                       )}
-                      {props.show === 'count' && element[2][0] === 1 && (
-                        <h6 className='foundResult'>{element[2][0]} RESULT</h6>
+                      {props.show === 'count' && element[2][index] === 1 && (
+                        <h6 className='foundResult'>
+                          {element[2][index]} RESULT
+                        </h6>
                       )}
                     </>
                   )
@@ -479,7 +492,7 @@ function TableResultsIndividuals (props) {
           )
         })}
 
-      {showDatsets === false && showResults === true && trigger2 === true && (
+      {!showCrossQuery && showDatsets === false && showResults === true && trigger2 === true && (
         <DataGrid
           getRowHeight={() => 'auto'}
           checkboxSelection
@@ -493,6 +506,8 @@ function TableResultsIndividuals (props) {
           }}
         />
       )}
+      {showCrossQuery &&
+      <CrossQueries parameter={parameterCrossQuery} collection={'individuals'} setShowCrossQuery={setShowCrossQuery}/>}
     </div>
   )
 }

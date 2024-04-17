@@ -2,7 +2,7 @@ import './TableResultsVariant.css'
 import '../IndividualsResults/TableResultsIndividuals.css'
 import '../../Dataset/BeaconInfo'
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import CrossQueries from '../../CrossQueries/CrossQueries'
 import {
   DataGrid,
   GridToolbar,
@@ -29,9 +29,8 @@ function TableResultsVariant (props) {
   const [rows, setRows] = useState([])
   const [ids, setIds] = useState([])
 
-  const [resultsJSON, setResultsJSON] = useState([])
-
-  const [stringDataToCopy, setStringDataToCopy] = useState('')
+  const [showCrossQuery, setShowCrossQuery] = useState(false)
+  const [parameterCrossQuery, setParamCrossQuery]= useState('')
 
   const [resultsSelected, setResultsSelected] = useState(props.results)
   const [resultsSelectedFinal, setResultsSelectedFinal] = useState([])
@@ -61,12 +60,7 @@ function TableResultsVariant (props) {
   }
 
   const columns = [
-    {
-      field: 'id',
-      headerName: 'Row',
-      width: 100,
-      headerClassName: 'super-app-theme--header'
-    },
+  
     {
       field: 'variantInternalId',
       headerName: 'Variant ID',
@@ -394,26 +388,30 @@ function TableResultsVariant (props) {
                 props.resultsPerDataset.map((element, index) => {
                   return (
                     <>
-                      {element[1][0] === true && props.show === 'boolean' && (
-                        <h6 className='foundResult'>YES</h6>
-                      )}
-                      {element[1][0] === false && props.show === 'boolean' && (
-                        <h5 className='NotFoundResult'>No, sorry</h5>
-                      )}
+                      {element[1][index] === true &&
+                        props.show === 'boolean' && (
+                          <h6 className='foundResult'>YES</h6>
+                        )}
+                      {element[1][index] === false &&
+                        props.show === 'boolean' && (
+                          <h5 className='NotFoundResult'>No, sorry</h5>
+                        )}
                       {props.show === 'count' &&
-                        element[2][0] !== 0 &&
-                        element[2][0] !== 1 && (
+                        element[2][index] !== 0 &&
+                        element[2][index] !== 1 && (
                           <h6 className='foundResult'>
-                            {element[2][0]} RESULTS
+                            {element[2][index]} RESULTS
                           </h6>
                         )}
-                      {props.show === 'count' && element[2][0] === 0 && (
+                      {props.show === 'count' && element[2][index] === 0 && (
                         <h5 className='NotFoundResult'>
-                          {element[2][0]} RESULTS
+                          {element[2][index]} RESULTS
                         </h5>
                       )}
-                      {props.show === 'count' && element[2][0] === 1 && (
-                        <h6 className='foundResult'>{element[2][0]} RESULT</h6>
+                      {props.show === 'count' && element[2][index] === 1 && (
+                        <h6 className='foundResult'>
+                          {element[2][index]} RESULT
+                        </h6>
                       )}
                     </>
                   )
@@ -422,7 +420,7 @@ function TableResultsVariant (props) {
           )
         })}
 
-      {showDatsets === false && showResults === true && trigger2 === true && (
+      {!showCrossQuery && showDatsets === false && showResults === true && trigger2 === true && (
         <DataGrid
           getRowHeight={() => 'auto'}
           checkboxSelection
@@ -436,6 +434,8 @@ function TableResultsVariant (props) {
           }}
         />
       )}
+      {showCrossQuery &&
+      <CrossQueries parameter={parameterCrossQuery} collection={'individuals'} setShowCrossQuery={setShowCrossQuery}/>}
     </div>
   )
 }

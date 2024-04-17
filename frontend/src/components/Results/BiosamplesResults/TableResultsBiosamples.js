@@ -11,7 +11,7 @@ import {
 
 } from '@mui/x-data-grid'
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import CrossQueries from '../../CrossQueries/CrossQueries'
 
 function CustomToolbar () {
   return (
@@ -28,6 +28,9 @@ function TableResultsBiosamples (props) {
   const [arrayBeaconsIds, setArrayBeaconsIds] = useState([])
   const [rows, setRows] = useState([])
   const [ids, setIds] = useState([])
+
+  const [showCrossQuery, setShowCrossQuery] = useState(false)
+  const [parameterCrossQuery, setParamCrossQuery]= useState('')
 
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -60,34 +63,22 @@ function TableResultsBiosamples (props) {
     return gridFilteredSortedRowIdsSelector(apiRef)
   }
 
-  const handleClickDatasets = e => {
-    openDatasetArray[e] = true
-    triggerArray[e] = true
-    setTrigger(!trigger)
-  }
-
-  const handleClickDatasets2 = e => {
-    openDatasetArray2[e] = true
-    triggerArray2[e] = true
-    setTrigger(!trigger)
+  const handleShowCrossQuery = e => {
+    setShowCrossQuery(true)
+    console.log(e.target.innerText)
+    setParamCrossQuery(e.target.innerText)
   }
 
   let columns = [
-    {
-      field: 'id',
-      headerName: 'Row',
-      width: 100,
-      headerClassName: 'super-app-theme--header'
-    },
     {
       field: 'BiosampleId',
       headerName: 'Biosample ID',
       width: 150,
       headerClassName: 'super-app-theme--header',
       renderCell: params => (
-        <Link to={`cross-queries/${params.row.BiosampleId}`}>
+        <button className='buttonId' onClick={handleShowCrossQuery}>
           {params.row.BiosampleId}
-        </Link>
+        </button>
       )
     },
     {
@@ -108,18 +99,18 @@ function TableResultsBiosamples (props) {
       width: 240,
       headerClassName: 'super-app-theme--header'
     },
-    {
-      field: 'collectionDate',
-      headerName: 'Collection date',
-      width: 250,
-      headerClassName: 'super-app-theme--header'
-    },
-    {
-      field: 'collectionMoment',
-      headerName: 'Collection moment',
-      width: 350,
-      headerClassName: 'super-app-theme--header'
-    },
+    // {
+    //   field: 'collectionDate',
+    //   headerName: 'Collection date',
+    //   width: 250,
+    //   headerClassName: 'super-app-theme--header'
+    // },
+    // {
+    //   field: 'collectionMoment',
+    //   headerName: 'Collection moment',
+    //   width: 350,
+    //   headerClassName: 'super-app-theme--header'
+    // },
     {
       field: 'sampleOriginType',
       headerName: 'Sample origin type',
@@ -127,36 +118,36 @@ function TableResultsBiosamples (props) {
       headerClassName: 'super-app-theme--header',
       cellClass: 'pre'
     },
-    {
-      field: 'sampleOriginDetail',
-      headerName: 'Sample origin detail',
-      width: 200,
-      headerClassName: 'super-app-theme--header'
-    },
-    {
-      field: 'obtentionProcedure',
-      headerName: 'Obtention procedure',
-      width: 300,
-      headerClassName: 'super-app-theme--header'
-    },
-    {
-      field: 'tumorProgression',
-      headerName: 'Tumor progression',
-      width: 350,
-      headerClassName: 'super-app-theme--header'
-    },
-    {
-      field: 'tumorGrade',
-      headerName: 'Tumor Grade',
-      width: 200,
-      headerClassName: 'super-app-theme--header'
-    },
-    {
-      field: 'pathologicalStage',
-      headerName: 'Pathological stage',
-      width: 350,
-      headerClassName: 'super-app-theme--header'
-    },
+    // {
+    //   field: 'sampleOriginDetail',
+    //   headerName: 'Sample origin detail',
+    //   width: 200,
+    //   headerClassName: 'super-app-theme--header'
+    // },
+    // {
+    //   field: 'obtentionProcedure',
+    //   headerName: 'Obtention procedure',
+    //   width: 300,
+    //   headerClassName: 'super-app-theme--header'
+    // },
+    // {
+    //   field: 'tumorProgression',
+    //   headerName: 'Tumor progression',
+    //   width: 350,
+    //   headerClassName: 'super-app-theme--header'
+    // },
+    // {
+    //   field: 'tumorGrade',
+    //   headerName: 'Tumor Grade',
+    //   width: 200,
+    //   headerClassName: 'super-app-theme--header'
+    // },
+    // {
+    //   field: 'pathologicalStage',
+    //   headerName: 'Pathological stage',
+    //   width: 350,
+    //   headerClassName: 'super-app-theme--header'
+    // },
     {
       field: 'pathologicalTnmFinding',
       headerName: 'Pathological TNM findings',
@@ -169,30 +160,30 @@ function TableResultsBiosamples (props) {
       width: 350,
       headerClassName: 'super-app-theme--header'
     },
-    {
-      field: 'diagnosticMarkers',
-      headerName: 'Diagnostic markers',
-      width: 300,
-      headerClassName: 'super-app-theme--header'
-    },
-    {
-      field: 'phenotypicFeatures',
-      headerName: 'Phenotypic features',
-      width: 300,
-      headerClassName: 'super-app-theme--header'
-    },
+    // {
+    //   field: 'diagnosticMarkers',
+    //   headerName: 'Diagnostic markers',
+    //   width: 300,
+    //   headerClassName: 'super-app-theme--header'
+    // },
+    // {
+    //   field: 'phenotypicFeatures',
+    //   headerName: 'Phenotypic features',
+    //   width: 300,
+    //   headerClassName: 'super-app-theme--header'
+    // },
     {
       field: 'measurements',
       headerName: 'Measurements',
       width: 300,
       headerClassName: 'super-app-theme--header'
     },
-    {
-      field: 'sampleProcessing',
-      headerName: 'Sample processing',
-      width: 300,
-      headerClassName: 'super-app-theme--header'
-    },
+    // {
+    //   field: 'sampleProcessing',
+    //   headerName: 'Sample processing',
+    //   width: 300,
+    //   headerClassName: 'super-app-theme--header'
+    // },
     {
       field: 'sampleStorage',
       headerName: 'Sample storage',
@@ -511,19 +502,24 @@ function TableResultsBiosamples (props) {
           }
         }
 
-        let histologicalDiagnosisJson = {}
+
+
+        let histologicalDiagnosis_id = ''
+        let histologicalDiagnosis_label = ''
+        let stringHistologicalDiagnosis = ''
 
         if (
           element[1].histologicalDiagnosis !== '' &&
           element[1].histologicalDiagnosis !== undefined
         ) {
-          if (typeof element[1].histologicalDiagnosis === 'object') {
-            histologicalDiagnosisJson = {
-              id: element[1].histologicalDiagnosis.id,
-              label: element[1].histologicalDiagnosis.label
-            }
-          }
+          histologicalDiagnosis_id = element[1].histologicalDiagnosis.id
+          histologicalDiagnosis_label = element[1].histologicalDiagnosis.label
+          stringHistologicalDiagnosis = `${histologicalDiagnosis_id} / ${histologicalDiagnosis_label}`
+        } else {
+          stringHistologicalDiagnosis = ''
         }
+
+  
 
         let diagnosticMarkersJson = []
 
@@ -709,19 +705,23 @@ function TableResultsBiosamples (props) {
           }
         }
 
-        let sampleStorageJson = {}
+        let sampleStorage_id = ''
+        let sampleStorage_label = ''
+        let stringSampleStorage = ''
 
         if (
           element[1].sampleStorage !== '' &&
           element[1].sampleStorage !== undefined
         ) {
-          if (typeof element[1].sampleStorage === 'object') {
-            sampleStorageJson = {
-              id: element[1].sampleStorage.id,
-              label: element[1].sampleStorage.label
-            }
-          }
+          sampleStorage_id = element[1].sampleStorage.id
+          sampleStorage_label = element[1].sampleStorage.label
+          stringSampleStorage = `${sampleStorage_id} / ${sampleStorage_label}`
+        } else {
+          stringSampleStorage = ''
         }
+
+
+
         var myObjRows = new Object()
         myObjRows.id = index
         if (element[1].id !== '') {
@@ -765,8 +765,8 @@ function TableResultsBiosamples (props) {
           myObjRows.pathologicalTnmFinding = pathologicalTnmFindingJson
         }
 
-        if (histologicalDiagnosisJson !== '') {
-          myObjRows.histologicalDiagnosis = histologicalDiagnosisJson
+        if (stringHistologicalDiagnosis !== '') {
+          myObjRows.histologicalDiagnosis = stringHistologicalDiagnosis
         }
         if (diagnosticMarkersJson !== '') {
           myObjRows.diagnosticMarkers = diagnosticMarkersJson
@@ -780,8 +780,8 @@ function TableResultsBiosamples (props) {
         if (sampleProcessingJson !== '') {
           myObjRows.sampleProcessing = sampleProcessingJson
         }
-        if (sampleStorageJson !== '') {
-          myObjRows.sampleStorage = sampleStorageJson
+        if (stringSampleStorage !== '') {
+          myObjRows.sampleStorage = stringSampleStorage
         }
         console.log(rows)
         rows.push(myObjRows)
@@ -811,26 +811,30 @@ function TableResultsBiosamples (props) {
                 props.resultsPerDataset.map((element, index) => {
                   return (
                     <>
-                      {element[1][0] === true && props.show === 'boolean' && (
-                        <h6 className='foundResult'>FOUND</h6>
-                      )}
-                      {element[1][0] === false && props.show === 'boolean' && (
-                        <h5 className='NotFoundResult'>NOT FOUND</h5>
-                      )}
+                      {element[1][index] === true &&
+                        props.show === 'boolean' && (
+                          <h6 className='foundResult'>YES</h6>
+                        )}
+                      {element[1][index] === false &&
+                        props.show === 'boolean' && (
+                          <h5 className='NotFoundResult'>No, sorry</h5>
+                        )}
                       {props.show === 'count' &&
-                        element[2][0] !== 0 &&
-                        element[2][0] !== 1 && (
+                        element[2][index] !== 0 &&
+                        element[2][index] !== 1 && (
                           <h6 className='foundResult'>
-                            {element[2][0]} RESULTS
+                            {element[2][index]} RESULTS
                           </h6>
                         )}
-                      {props.show === 'count' && element[2][0] === 0 && (
+                      {props.show === 'count' && element[2][index] === 0 && (
                         <h5 className='NotFoundResult'>
-                          {element[2][0]} RESULTS
+                          {element[2][index]} RESULTS
                         </h5>
                       )}
-                      {props.show === 'count' && element[2][0] === 1 && (
-                        <h6 className='foundResult'>{element[2][0]} RESULT</h6>
+                      {props.show === 'count' && element[2][index] === 1 && (
+                        <h6 className='foundResult'>
+                          {element[2][index]} RESULT
+                        </h6>
                       )}
                     </>
                   )
@@ -839,7 +843,7 @@ function TableResultsBiosamples (props) {
           )
         })}
 
-      {showDatsets === false && showResults === true && trigger2 === true && (
+      {!showCrossQuery && showDatsets === false && showResults === true && trigger2 === true && (
         <DataGrid
           getRowHeight={() => 'auto'}
           checkboxSelection
@@ -853,6 +857,8 @@ function TableResultsBiosamples (props) {
           }}
         />
       )}
+      {showCrossQuery &&
+      <CrossQueries parameter={parameterCrossQuery} collection={'biosamples'} setShowCrossQuery={setShowCrossQuery}/>}
     </div>
   )
 }

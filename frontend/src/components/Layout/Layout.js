@@ -794,6 +794,16 @@ function Layout (props) {
 
   function search (e) {
     setQuery(e.target.value)
+    var ele=document.getElementsByName('subscribe')
+    for(var i=0; i<ele.length; i++){  
+      if(query.includes(ele[i].value)){
+        ele[i].checked=true 
+      } else {
+        ele[i].checked=false 
+
+      }
+    }
+
   }
 
   const handleSubmit = async e => {
@@ -946,11 +956,11 @@ function Layout (props) {
                 <input
                   className='IdForm2'
                   type='text'
-                  value={'diseases.ageOfOnset.iso8601duration'}
+                  value={'age at diagnosis'}
                   autoComplete='on'
                   placeholder={'write and filter by ID'}
                   onChange={handleIdChanges}
-                  aria-label='ID'
+                  aria-label='ID' 
                 />
 
                 <div id='operator2'>

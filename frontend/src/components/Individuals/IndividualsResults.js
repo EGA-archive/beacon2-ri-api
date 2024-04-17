@@ -480,7 +480,17 @@ function IndividualsResults (props) {
               element.scopes.forEach(element => {
                 optionsScope.push(element)
               })
-              ontologyMultipleScope.push(element.id)
+              console.log(element)
+
+              props.filteringTerms.forEach(element2 => {
+                if (element2.label) {
+                  if (element2.id === element.id){
+                    console.log(element2.label)
+                    ontologyMultipleScope.push(element2.label)
+                  }
+                }
+              })
+        
             } else if (element.scopes.length > 1 && chosenScope !== '') {
               element.scopes = chosenScope
             } else {
@@ -489,6 +499,7 @@ function IndividualsResults (props) {
           })
 
           if (variablePause === false) {
+        
             if (arrayRequestParameters.length > 0) {
               if (arrayRequestParameters.length === 1) {
                 jsonData2 = {
@@ -571,7 +582,7 @@ function IndividualsResults (props) {
             }
 
             setTimeOut(true)
-
+            setPause(false)
             if (
               (res.data.responseSummary.numTotalResults < 1 ||
                 res.data.responseSummary.numTotalResults === undefined) &&

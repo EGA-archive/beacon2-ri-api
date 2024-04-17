@@ -17,6 +17,17 @@
   color: #5c5cb5;
 }
 
+.buttonId{
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  color: rgb(60, 60, 249);
+  margin-top: 10px;
+}
+
+.buttonId:hover{
+  color: #a498f3;
+}
+
 .resultSetsButton {
   display: flex;
   align-items: center;
@@ -208,8 +219,13 @@ h1 {
   overflow-inline: scroll;
   overflow: scroll;
   width: 350px;
-  align-content: flex-start;
-  align-items: flex-start;
+  align-content: flex-start !important;
+  align-items: flex-start !important;
+}
+
+.css-6h1dhi-MuiDataGrid-root .MuiDataGrid-cell--textLeft {
+display: flex;
+align-items: start !important;
 }
 
 .MuiDataGrid-root {

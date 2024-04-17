@@ -17,6 +17,8 @@ function FilteringTerms (props) {
 
   const [results, setResults] = useState('')
 
+  const [popUp, showPopUp] = useState(false)
+
   const [state, setstate] = useState({
     query: '',
     list:
@@ -92,6 +94,8 @@ function FilteringTerms (props) {
 
   const [ID, setId] = useState('')
 
+ 
+
   useEffect(() => {
     console.log(props.filteringTerms)
     if (state.list === 'error') {
@@ -99,6 +103,26 @@ function FilteringTerms (props) {
     } else {
       setError(false)
     }
+    
+
+    state.list.forEach((element, index) => {
+      console.log(element.scopes.length)
+      if (element.scopes.length> 1){
+        console.log(element.scopes)
+        element.scopes.forEach(element2 => {
+          let arrayNew = {}
+          arrayNew = {...element}
+          console.log(element2)
+          arrayNew["scopes"] = [element2]
+          console.log(arrayNew)
+          state.list.push(arrayNew)
+     
+        })
+       // state.list.splice(index, 1)
+      }
+   
+    })
+
     setstate({
       query: '',
       list: props.filteringTerms !== false ? state.list : 'error'
@@ -222,8 +246,12 @@ function FilteringTerms (props) {
   }
 
   const handleCheck = e => {
+
+    
+
     console.log(e.target)
     let infoValue = e.target.value.split(',')
+
 
     if (infoValue[2].toLowerCase() !== 'alphanumeric') {
 
@@ -241,7 +269,7 @@ function FilteringTerms (props) {
                 stringQuery = props.query + ',' + `${infoValue[3]}=${infoValue[1]}`
               }
             } else {
-              console.log("holi")
+          
               if (element === `${infoValue[3]}=${infoValue[0]}`) {
                 stringQuery = props.query
               } else {
@@ -262,6 +290,7 @@ function FilteringTerms (props) {
           if (infoValue[1]){
             if (`${infoValue[3]}=${infoValue[1]}` !== props.query && props.query !== '') {
               stringQuery = `${props.query},` + `${infoValue[3]}=${infoValue[1]}`
+              
               props.setQuery(stringQuery)
             } else if (`${infoValue[3]}=${infoValue[1]}` !== props.query && props.query === '') {
               stringQuery = `${props.query}` + `${infoValue[3]}=${infoValue[1]}`
@@ -438,7 +467,7 @@ function FilteringTerms (props) {
                                 type='checkbox'
                                 id={term.id}
                                 name={term.id}
-                                value={[term.id, term.label, term.type, term.scopes, index]}
+                                value={[term.id, term.label, term.type, [term.scopes], index]}
                               />
                               {term.id}
                             </td>
@@ -488,7 +517,7 @@ function FilteringTerms (props) {
                                 type='checkbox'
                                 id={term.id}
                                 name={term.id}
-                                value={[term.id, term.label, term.type, term.scopes, index]}
+                                value={[term.id, term.label, term.type, [term.scopes], index]}
                               />
                               {term.id}
                             </td>

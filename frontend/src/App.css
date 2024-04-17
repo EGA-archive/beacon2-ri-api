@@ -39,16 +39,20 @@ html {
 
 .scopeSelection{
   position: absolute;
-  top: 95px;
+  top: 286px;
   z-index: 5;
-  background-color: #f4f5f5;
+  background-color: #e2f4ff;
   /* height: 80px; */
   display: flex;
   align-items: center;
   padding: 7px;
   padding-left: 19px;
   padding-right: 19px;
-  border-radius: 6px;
+  height: 123px;
+  border-radius: 13px;
+  color: #1a4b1a;
+  font-size: 17px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
 }
 .resultSetsDiv2 .multi-switch-container {
   margin-left: -5px;

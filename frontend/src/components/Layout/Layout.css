@@ -8,14 +8,16 @@
 }
 
 .buttonShowExamples {
-  border: 1px solid #b3b6c1;
-  padding: 6px;
+  border: 1px solid #dadce3;
+  padding: 8px;
   border-radius: 3px;
   background: #f4fdfc;
 }
 
 .buttonShowExamples:hover {
-  background: rgb(244, 247, 255);
+  background-color: rgb(228, 236, 250);
+  box-shadow: 1px 1px 1px 1px #2269bf;
+  border: solid #2269bf;
 }
 
 .formInput {
@@ -103,6 +105,13 @@ p {
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
 }
+
+.othersButton :hover{
+  background-color: rgb(228, 236, 250);
+  box-shadow: 1px 1px 1px 1px #2269bf;
+  border: solid #2269bf;
+}
+
 
 .buttonAlphanum ion-icon:hover {
   color: rgb(16, 130, 98);
@@ -290,8 +299,21 @@ label {
   width: 539px;
 }
 
-.divOthers{
+.divOthers {
   margin-right: 45px;
+  border: 1px solid #86a5c6;
+  height: fit-content;
+  padding: 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  
+}
+
+.divOthers:hover{
+  background-color: rgb(228, 236, 250);
+  box-shadow: 1px 1px 1px 1px #2269bf;
+  border: solid #2269bf;
 }
 
 .mutationDiv {

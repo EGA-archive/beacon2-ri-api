@@ -1,11 +1,14 @@
 .crossQueriesForm {
+  padding: 34px;
   display: flex;
   flex-direction: column;
   /* justify-content: center; */
-  margin-top: -83px;
+  margin-top: -37vh;
   /* margin-right: 30px; */
   align-content: center;
   align-items: flex-start;
+  border: 1px solid #c0cbd5;
+  border-radius: 19px;
 }
 
 select {
@@ -42,6 +45,25 @@ select {
   height: 100vh;
 }
 
+.goBackCrossQ{
+  cursor: pointer;
+  background: rgb(255 255 255);
+  border: 2px 2px 2px 0px solid #f3f4ff;
+  font-size: medium;
+  border-radius: 5px;
+  width: 100px;
+  height: 35px;
+  box-shadow: rgba(50, 50, 105, 0.15) 0px 2px 5px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px;
+  margin-top: 30px;
+  margin-right: 3px;
+}
+
+.goBackCrossQ:hover{
+  background-color: rgb(228, 236, 250);
+  box-shadow: 1px 1px 1px 1px #2269bf;
+  border: solid #2269bf;
+}
+
 .crossQueriesForm label {
   margin-top: 20px;
   margin-bottom: 20px;
@@ -55,14 +77,15 @@ select {
   border-radius: 5px;
   width: 100px;
   height: 35px;
-  box-shadow: 1px 2px 2px #cecece;
+  box-shadow: rgba(50, 50, 105, 0.15) 0px 2px 5px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px;
   margin-top: 30px;
+  margin-left: 3px;
 }
 
 .formButton:hover {
-  background: #d4c223;
-  box-shadow: 1px 1px 1px 1px #d4c223;
-  border: solid #d4c223;
+  background-color: rgb(228, 236, 250);
+  box-shadow: 1px 1px 1px 1px #2269bf;
+  border: solid #2269bf;
 }
 
 h5 {
@@ -98,14 +121,16 @@ h5:hover {
     width: 104px;
   }
   .crossQueriesForm {
+    padding: 34px;
     display: flex;
     flex-direction: column;
     /* justify-content: center; */
-    margin-top: 40px;
-    margin: 10px;
+    margin-top: -30vh;
     /* margin-right: 30px; */
     align-content: center;
     align-items: flex-start;
+    border: 1px solid #c0cbd5;
+    border-radius: 19px;
   }
 
 .inputId {
