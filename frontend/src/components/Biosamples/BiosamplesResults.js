@@ -251,7 +251,6 @@ function BiosamplesResults (props) {
               arrayRequestParameters.push(requestParameters)
             }
           } else if (props.query.includes(':') && props.query.includes('>')) {
-     
             let reqParameters = props.query.split(':')
             console.log(reqParameters)
             let position = []
@@ -285,10 +284,11 @@ function BiosamplesResults (props) {
           requestParameters = {}
           if (
             (term.includes('=') ||
-            term.includes('>') ||
-            term.includes('<') ||
-            term.includes('!') ||
-            term.includes('%') ) && !term.includes(':')
+              term.includes('>') ||
+              term.includes('<') ||
+              term.includes('!') ||
+              term.includes('%')) &&
+            !term.includes(':')
           ) {
             if (term.includes('=')) {
               queryArray[index] = term.split('=')
@@ -315,9 +315,40 @@ function BiosamplesResults (props) {
                   queryArray[index][1].toLowerCase() ===
                   element.label.toLowerCase()
                 ) {
-                  alphanumericFilter = {
-                    id: element.id,
-                    scope: element.scopes
+                  if (queryArray[index][0].toLowerCase() === 'individual') {
+                    alphanumericFilter = {
+                      id: element.id,
+                      scope: ['individual']
+                    }
+                  } else if (
+                    queryArray[index][0].toLowerCase() === 'genomicvariation'
+                  ) {
+                    alphanumericFilter = {
+                      id: element.id,
+                      scope: ['genomicVariation']
+                    }
+                  } else if (
+                    queryArray[index][0].toLowerCase() === 'biosample'
+                  ) {
+                    alphanumericFilter = {
+                      id: element.id,
+                      scope: ['biosample']
+                    }
+                  } else if (queryArray[index][0].toLowerCase() === 'cohort') {
+                    alphanumericFilter = {
+                      id: element.id,
+                      scope: ['cohort']
+                    }
+                  } else if (queryArray[index][0].toLowerCase() === 'run') {
+                    alphanumericFilter = {
+                      id: element.id,
+                      scope: ['run']
+                    }
+                  } else {
+                    alphanumericFilter = {
+                      id: element.id,
+                      scope: element.scopes
+                    }
                   }
                 }
               }
@@ -368,7 +399,6 @@ function BiosamplesResults (props) {
               arrayRequestParameters.push(requestParameters)
             }
           } else if (term.includes(':') && term.includes('>')) {
-       
             let reqParameters = term.split(':')
             console.log(reqParameters)
             let position = []
@@ -388,7 +418,6 @@ function BiosamplesResults (props) {
             requestParameters['alternateBases'] = bases[1]
             requestParameters['referenceBases'] = bases[0]
             arrayRequestParameters.push(requestParameters)
-      
           } else {
             props.filteringTerms.forEach(element => {
               if (element.label) {
