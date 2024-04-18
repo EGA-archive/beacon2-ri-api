@@ -548,9 +548,12 @@ function Layout (props) {
 
   const handleOptionVariant5 = e => {
     if (e.target.checked) {
-      setQuery(
-        `geneId:${geneID2}`
-      )
+      if (query !== null && query !== '') {
+        setQuery(query + ',' + `geneId:${geneID2}`)
+      } else {
+        setQuery(`geneId:${geneID2}`)
+      }
+    
       setGeneSub3(true)
     } else {
       setGeneSub3(false)
@@ -577,22 +580,32 @@ function Layout (props) {
   }
   const handleOptionVariant6 = e => {
     if (e.target.checked) {
-      setQuery(
-        `geneId:${geneID}&aminoacidChange:${aminoacid}`
-      )
+      if (query !== null && query !== '') {
+        setQuery(query + ',' + `geneId:${geneID}&aminoacidChange:${aminoacid}`)
+      } else {
+        setQuery(`geneId:${geneID}&aminoacidChange:${aminoacid}`)
+      }
+
       setGeneSub4(true)
     } else {
       setGeneSub4(false)
       setGeneModuleArray([])
-     
     }
   }
 
   const handleOptionVariant = e => {
     if (e.target.checked) {
-      setQuery(
-        `${start}-${end}:${variantType}:${referenceBases}>${alternateBases}`
-      )
+      if (query !== null && query !== '') {
+        setQuery(
+          query +
+            ',' +
+            `${start}-${end}:${variantType}:${referenceBases}>${alternateBases}`
+        )
+      } else {
+        setQuery(
+          `${start}-${end}:${variantType}:${referenceBases}>${alternateBases}`
+        )
+      }
     } else {
       setRangeSub1(false)
       setRangeModuleArray([])
@@ -631,9 +644,18 @@ function Layout (props) {
       // rangeModuleArray.push(objectRange2)
       // console.log(rangeModuleArray)
       // setRangeSub2(true)
-      setQuery(
-        `${start3}-${end3}:${variantType3}:${referenceBases3}>${alternateBases3}, ${start2}-${end2}:${variantType2}:${referenceBases2}>${alternateBases2}`
-      )
+
+      if (query !== null && query !== '') {
+        setQuery(
+          query +
+            ',' +
+            `${start3}-${end3}:${variantType3}:${referenceBases3}>${alternateBases3}, ${start2}-${end2}:${variantType2}:${referenceBases2}>${alternateBases2}`
+        )
+      } else {
+        setQuery(
+          `${start3}-${end3}:${variantType3}:${referenceBases3}>${alternateBases3}, ${start2}-${end2}:${variantType2}:${referenceBases2}>${alternateBases2}`
+        )
+      }
     } else {
       setRangeSub2(false)
       setRangeModuleArray([])
@@ -644,29 +666,39 @@ function Layout (props) {
     if (e.target.checked) {
       setGeneSub(true)
 
-      setQuery(
-        `geneId:${geneID4}, treatment=Chemotherapy, disease=STAGE IIIB, disease=Colon adenocarcinoma`
-      )
+      if (query !== null && query !== '') {
+        setQuery(
+          query +
+            ',' +
+            `geneId:${geneID4}, treatment=Chemotherapy, disease=STAGE IIIB, disease=Colon adenocarcinoma`
+        )
+      } else {
+        setQuery(
+          `geneId:${geneID4}, treatment=Chemotherapy, disease=STAGE IIIB, disease=Colon adenocarcinoma`
+        )
+      }
     } else {
       setGeneSub(false)
       setGeneModuleArray([])
-      setQuery(
-        `geneId:${geneID4}, treatment=Chemotherapy, disease=STAGE IIIB, disease=Colon adenocarcinoma`
-      )
     }
   }
   const handleOptionVariant4 = e => {
     if (e.target.checked) {
       setGeneSub2(true)
-      setQuery(
-        `geneId:${geneID5}, treatment=Chemotherapy, disease=STAGE IIIB, disease=Colon adenocarcinoma`
-      )
+      if (query !== null && query !== '') {
+        setQuery(
+          query +
+            ',' +
+            `geneId:${geneID5}, treatment=Chemotherapy, disease=STAGE IIIB, disease=Colon adenocarcinoma`
+        )
+      } else {
+        setQuery(
+          `geneId:${geneID5}, treatment=Chemotherapy, disease=STAGE IIIB, disease=Colon adenocarcinoma`
+        )
+      }
     } else {
       setGeneSub2(false)
       setGeneModuleArray([])
-      setQuery(
-        `geneId:${geneID5}, treatment=Chemotherapy, disease=STAGE IIIB, disease=Colon adenocarcinoma`
-      )
     }
   }
 
@@ -875,8 +907,6 @@ function Layout (props) {
             </button>
           </form>
         </div>
-     
-      
       </div>
       {showAlphanum && (
         <tr className='termsAlphanum'>

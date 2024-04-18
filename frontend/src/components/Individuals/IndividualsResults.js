@@ -251,7 +251,6 @@ function IndividualsResults (props) {
               arrayRequestParameters.push(requestParameters)
             }
           } else if (props.query.includes(':') && props.query.includes('>')) {
-     
             let reqParameters = props.query.split(':')
             console.log(reqParameters)
             let position = []
@@ -285,10 +284,11 @@ function IndividualsResults (props) {
           requestParameters = {}
           if (
             (term.includes('=') ||
-            term.includes('>') ||
-            term.includes('<') ||
-            term.includes('!') ||
-            term.includes('%') ) && !term.includes(':')
+              term.includes('>') ||
+              term.includes('<') ||
+              term.includes('!') ||
+              term.includes('%')) &&
+            !term.includes(':')
           ) {
             if (term.includes('=')) {
               queryArray[index] = term.split('=')
@@ -315,9 +315,40 @@ function IndividualsResults (props) {
                   queryArray[index][1].toLowerCase() ===
                   element.label.toLowerCase()
                 ) {
-                  alphanumericFilter = {
-                    id: element.id,
-                    scopes: element.scopes
+                  if (queryArray[index][0].toLowerCase() === 'individual') {
+                    alphanumericFilter = {
+                      id: element.id,
+                      scope: ['individual']
+                    }
+                  } else if (
+                    queryArray[index][0].toLowerCase() === 'genomicvariation'
+                  ) {
+                    alphanumericFilter = {
+                      id: element.id,
+                      scope: ['genomicVariation']
+                    }
+                  } else if (
+                    queryArray[index][0].toLowerCase() === 'biosample'
+                  ) {
+                    alphanumericFilter = {
+                      id: element.id,
+                      scope: ['biosample']
+                    }
+                  } else if (queryArray[index][0].toLowerCase() === 'cohort') {
+                    alphanumericFilter = {
+                      id: element.id,
+                      scope: ['cohort']
+                    }
+                  } else if (queryArray[index][0].toLowerCase() === 'run') {
+                    alphanumericFilter = {
+                      id: element.id,
+                      scope: ['run']
+                    }
+                  } else {
+                    alphanumericFilter = {
+                      id: element.id,
+                      scope: element.scopes
+                    }
                   }
                 }
               }
@@ -342,7 +373,7 @@ function IndividualsResults (props) {
                 id: queryArray[index][0],
                 operator: queryArray[index][2],
                 value: queryArray[index][1],
-                scopes: queryArray[index][3]
+                scope: queryArray[index][3]
               }
               console.log(alphanumericFilter)
             }
@@ -368,7 +399,6 @@ function IndividualsResults (props) {
               arrayRequestParameters.push(requestParameters)
             }
           } else if (term.includes(':') && term.includes('>')) {
-       
             let reqParameters = term.split(':')
             console.log(reqParameters)
             let position = []
@@ -388,7 +418,6 @@ function IndividualsResults (props) {
             requestParameters['alternateBases'] = bases[1]
             requestParameters['referenceBases'] = bases[0]
             arrayRequestParameters.push(requestParameters)
-      
           } else {
             props.filteringTerms.forEach(element => {
               if (element.label) {
@@ -398,14 +427,14 @@ function IndividualsResults (props) {
                 ) {
                   filter = {
                     id: element.id,
-                    scopes: element.scopes
+                    scope: element.scopes
                   }
                 }
               } else {
                 if (element.id.toLowerCase() === term.toLowerCase()) {
                   filter = {
                     id: element.id,
-                    scopes: element.scopes
+                    scope: element.scopes
                   }
                 }
               }
@@ -561,10 +590,10 @@ function IndividualsResults (props) {
           var jsonData2 = {}
           let variablePause = false
           arrayFilter.forEach(element => {
-            if (element.scopes.length > 1 && chosenScope === '') {
+            if (element.scope.length > 1 && chosenScope === '') {
               setPause(true)
               variablePause = true
-              element.scopes.forEach(element => {
+              element.scope.forEach(element => {
                 optionsScope.push(element)
               })
               console.log(element)
@@ -577,10 +606,10 @@ function IndividualsResults (props) {
                   }
                 }
               })
-            } else if (element.scopes.length > 1 && chosenScope !== '') {
-              element.scopes = chosenScope
+            } else if (element.scope.length > 1 && chosenScope !== '') {
+              element.scope = chosenScope
             } else {
-              element.scopes = element.scopes[0]
+              element.scope = element.scope[0]
             }
           })
 

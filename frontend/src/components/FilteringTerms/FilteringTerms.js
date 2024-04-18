@@ -21,10 +21,7 @@ function FilteringTerms (props) {
 
   const [state, setstate] = useState({
     query: '',
-    list:
-      props.filteringTerms !== undefined
-        ? props.filteringTerms
-        : 'error'
+    list: props.filteringTerms !== undefined ? props.filteringTerms : 'error'
   })
 
   const [trigger, setTrigger] = useState(false)
@@ -94,8 +91,6 @@ function FilteringTerms (props) {
 
   const [ID, setId] = useState('')
 
- 
-
   useEffect(() => {
     console.log(props.filteringTerms)
     if (state.list === 'error') {
@@ -103,24 +98,23 @@ function FilteringTerms (props) {
     } else {
       setError(false)
     }
-    
 
     state.list.forEach((element, index) => {
       console.log(element.scopes.length)
-      if (element.scopes.length> 1){
+
+      if (element.scopes.length > 1) {
         console.log(element.scopes)
+
         element.scopes.forEach(element2 => {
           let arrayNew = {}
-          arrayNew = {...element}
+          arrayNew = { ...element }
           console.log(element2)
-          arrayNew["scopes"] = [element2]
+          arrayNew['scopes'] = [element2]
           console.log(arrayNew)
+
           state.list.push(arrayNew)
-     
         })
-       // state.list.splice(index, 1)
       }
-   
     })
 
     setstate({
@@ -141,23 +135,21 @@ function FilteringTerms (props) {
   }, [props.filteringTerms, trigger])
 
   const handleChange = e => {
-    const results = props.filteringTerms.filter(
-      post => {
-        if (e.target.value === '') {
-          return props.filteringTerms
+    const results = props.filteringTerms.filter(post => {
+      if (e.target.value === '') {
+        return props.filteringTerms
+      } else {
+        if (post.id != undefined) {
+          if (post.id.toLowerCase().includes(e.target.value.toLowerCase())) {
+            return post
+          }
         } else {
-          if (post.id != undefined) {
-            if (post.id.toLowerCase().includes(e.target.value.toLowerCase())) {
-              return post
-            }
-          } else {
-            if (post.id.toLowerCase().includes(e.target.value.toLowerCase())) {
-              return post
-            }
+          if (post.id.toLowerCase().includes(e.target.value.toLowerCase())) {
+            return post
           }
         }
       }
-    )
+    })
     setstate({
       //query: e.target.value,
       list: results
@@ -167,117 +159,97 @@ function FilteringTerms (props) {
   }
 
   const handleChange2 = e => {
-    const results = props.filteringTerms.filter(
-      post => {
-        if (post.label !== '' && post.label !== undefined) {
-          if (e.target.value === '') {
-            return props.filteringTerms
-          } else {
-            if (post.label !== undefined) {
-              if (
-                post.label.toLowerCase().includes(e.target.value.toLowerCase())
-              ) {
-                return post
-              }
+    const results = props.filteringTerms.filter(post => {
+      if (post.label !== '' && post.label !== undefined) {
+        if (e.target.value === '') {
+          return props.filteringTerms
+        } else {
+          if (post.label !== undefined) {
+            if (
+              post.label.toLowerCase().includes(e.target.value.toLowerCase())
+            ) {
+              return post
             }
           }
         }
       }
-    )
+    })
     setstate({
       list: results
     })
   }
 
   const handleChange3 = e => {
-    const results = props.filteringTerms.filter(
-      post => {
-        if (e.target.value === '') {
-          return props.filteringTerms
+    const results = props.filteringTerms.filter(post => {
+      if (e.target.value === '') {
+        return props.filteringTerms
+      } else {
+        if (post.type !== undefined) {
+          if (post.type.toLowerCase().includes(e.target.value.toLowerCase())) {
+            return post
+          }
         } else {
-          if (post.type !== undefined) {
-            if (
-              post.type.toLowerCase().includes(e.target.value.toLowerCase())
-            ) {
-              return post
-            }
-          } else {
-            if (
-              post.type.toLowerCase().includes(e.target.value.toLowerCase())
-            ) {
-              return post
-            }
+          if (post.type.toLowerCase().includes(e.target.value.toLowerCase())) {
+            return post
           }
         }
       }
-    )
+    })
     setstate({
       list: results
     })
   }
 
   const handleChange4 = e => {
-    const results = props.filteringTerms.filter(
-      post => {
-        if (e.target.value === '') {
-          return props.filteringTerms
-        } else {
-          if (post.scopes !== undefined) {
-            var returnedPosts = []
-            post.scopes.forEach(element => {
-              console.log(element.toLowerCase())
-              console.log(e.target.value.toLowerCase())
-              if (
-                element.toLowerCase().includes(e.target.value.toLowerCase())
-              ) {
-                returnedPosts.push(post)
-              }
-            })
-            if (returnedPosts.length > 0) {
-              return returnedPosts
+    const results = props.filteringTerms.filter(post => {
+      if (e.target.value === '') {
+        return props.filteringTerms
+      } else {
+        if (post.scopes !== undefined) {
+          var returnedPosts = []
+          post.scopes.forEach(element => {
+            console.log(element.toLowerCase())
+            console.log(e.target.value.toLowerCase())
+            if (element.toLowerCase().includes(e.target.value.toLowerCase())) {
+              returnedPosts.push(post)
             }
+          })
+          if (returnedPosts.length > 0) {
+            return returnedPosts
           }
         }
       }
-    )
+    })
     setstate({
       list: results
     })
   }
 
   const handleCheck = e => {
-
-    
-
     console.log(e.target)
     let infoValue = e.target.value.split(',')
 
-
     if (infoValue[2].toLowerCase() !== 'alphanumeric') {
-
       if (props.query !== null) {
         let stringQuery = ''
         if (props.query.includes(',')) {
           let arrayTerms = props.query.split(',')
           arrayTerms.forEach(element => {
-
-            if (infoValue[1]){
-      
+            if (infoValue[1]) {
               if (element === `${infoValue[3]}=${infoValue[1]}`) {
                 stringQuery = props.query
               } else {
-                stringQuery = props.query + ',' + `${infoValue[3]}=${infoValue[1]}`
+                stringQuery =
+                  props.query + ',' + `${infoValue[3]}=${infoValue[1]}`
               }
             } else {
-          
               if (element === `${infoValue[3]}=${infoValue[0]}`) {
                 stringQuery = props.query
               } else {
-                stringQuery = props.query + ',' + `${infoValue[3]}=${infoValue[0]}`
+                stringQuery =
+                  props.query + ',' + `${infoValue[3]}=${infoValue[0]}`
               }
             }
-
-        
           })
 
           if (stringQuery === '' || stringQuery === ',') {
@@ -286,36 +258,47 @@ function FilteringTerms (props) {
             props.setQuery(stringQuery)
           }
         } else {
-       
-          if (infoValue[1]){
-            if (`${infoValue[3]}=${infoValue[1]}` !== props.query && props.query !== '') {
-              stringQuery = `${props.query},` + `${infoValue[3]}=${infoValue[1]}`
-              
+          if (infoValue[1]) {
+            if (
+              `${infoValue[3]}=${infoValue[1]}` !== props.query &&
+              props.query !== ''
+            ) {
+              stringQuery =
+                `${props.query},` + `${infoValue[3]}=${infoValue[1]}`
+
               props.setQuery(stringQuery)
-            } else if (`${infoValue[3]}=${infoValue[1]}` !== props.query && props.query === '') {
+            } else if (
+              `${infoValue[3]}=${infoValue[1]}` !== props.query &&
+              props.query === ''
+            ) {
               stringQuery = `${props.query}` + `${infoValue[3]}=${infoValue[1]}`
               props.setQuery(stringQuery)
             }
           } else {
-            if (`${infoValue[3]}=${infoValue[0]}` !== props.query && props.query !== '') {
-              stringQuery = `${props.query},` + `${infoValue[3]}=${infoValue[0]}`
+            if (
+              `${infoValue[3]}=${infoValue[0]}` !== props.query &&
+              props.query !== ''
+            ) {
+              stringQuery =
+                `${props.query},` + `${infoValue[3]}=${infoValue[0]}`
               props.setQuery(stringQuery)
-            } else if (`${infoValue[3]}=${infoValue[0]}` !== props.query && props.query === '') {
+            } else if (
+              `${infoValue[3]}=${infoValue[0]}` !== props.query &&
+              props.query === ''
+            ) {
               stringQuery = `${props.query}` + `${infoValue[3]}=${infoValue[0]}`
               props.setQuery(stringQuery)
             }
           }
-       
         }
       } else {
-        if (infoValue[1]){
+        if (infoValue[1]) {
           let stringQuery = `${infoValue[3]}=${infoValue[1]}`
           props.setQuery(stringQuery)
         } else {
           let stringQuery = `${infoValue[3]}=${infoValue[0]}`
           props.setQuery(stringQuery)
         }
-      
       }
       const filteredItems = state.list.filter(item => item.id !== infoValue[0])
       e.target.checked = false
@@ -467,7 +450,13 @@ function FilteringTerms (props) {
                                 type='checkbox'
                                 id={term.id}
                                 name={term.id}
-                                value={[term.id, term.label, term.type, [term.scopes], index]}
+                                value={[
+                                  term.id,
+                                  term.label,
+                                  term.type,
+                                  [term.scopes],
+                                  index
+                                ]}
                               />
                               {term.id}
                             </td>
@@ -517,7 +506,13 @@ function FilteringTerms (props) {
                                 type='checkbox'
                                 id={term.id}
                                 name={term.id}
-                                value={[term.id, term.label, term.type, [term.scopes], index]}
+                                value={[
+                                  term.id,
+                                  term.label,
+                                  term.type,
+                                  [term.scopes],
+                                  index
+                                ]}
                               />
                               {term.id}
                             </td>

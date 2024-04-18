@@ -6,7 +6,7 @@ import { AuthContext } from '../context/AuthContext'
 import { useAuth } from 'oidc-react'
 import configData from '../../config.json'
 import { useContext } from 'react'
-import TableResultsVariants from '../Results/VariantResults/TableResultsVariant'
+import TableResultsVariant from '../Results/VariantResults/TableResultsVariant'
 
 function VariantsResults (props) {
   const [error, setError] = useState('')
@@ -94,11 +94,11 @@ function VariantsResults (props) {
   useEffect(() => {
     setTimeOut(false)
     let collection = ''
-    if (props.collection === 'Individuals'){
+    if (props.collection === 'Individuals') {
       collection = 'individual'
-    } else if (props.collection === 'Variant'){
+    } else if (props.collection === 'Variant') {
       collection = 'variant'
-    } else if (props.collection === 'Biosamples'){
+    } else if (props.collection === 'Biosamples') {
       collection = 'biosample'
     }
 
@@ -113,114 +113,116 @@ function VariantsResults (props) {
       }
 
       var arrayRequestParameters = []
-      var requestParametersSequence = {}
+      // var requestParametersSequence = {}
 
-      var requestParametersRange = {}
+      // var requestParametersRange = {}
 
-      var requestParametersGene = {}
+      // var requestParametersGene = {}
 
-      if (props.seqModuleArray.length > 0) {
-        props.seqModuleArray.forEach(element => {
-          if (element.assemblyId !== '') {
-            requestParametersSequence['assemblyId'] = element.assemblyId
-          }
-          if (element.referenceName !== '') {
-            requestParametersSequence['referenceName'] = element.referenceName
-          }
-          if (element.start !== '') {
-            requestParametersSequence['start'] = element.start
-          }
-          if (element.referenceBases !== '') {
-            requestParametersSequence['referenceBases'] = element.referenceBases
-          }
-          if (element.alternateBases !== '') {
-            requestParametersSequence['alternateBases'] = element.alternateBases
-          }
-          if (element.clinicalRelevance !== '') {
-            requestParametersSequence['clinicalRelevance'] =
-              element.clinicalRelevance
-          }
+      // if (props.seqModuleArray.length > 0) {
+      //   props.seqModuleArray.forEach(element => {
+      //     if (element.assemblyId !== '') {
+      //       requestParametersSequence['assemblyId'] = element.assemblyId
+      //     }
+      //     if (element.referenceName !== '') {
+      //       requestParametersSequence['referenceName'] = element.referenceName
+      //     }
+      //     if (element.start !== '') {
+      //       requestParametersSequence['start'] = element.start
+      //     }
+      //     if (element.referenceBases !== '') {
+      //       requestParametersSequence['referenceBases'] = element.referenceBases
+      //     }
+      //     if (element.alternateBases !== '') {
+      //       requestParametersSequence['alternateBases'] = element.alternateBases
+      //     }
+      //     if (element.clinicalRelevance !== '') {
+      //       requestParametersSequence['clinicalRelevance'] =
+      //         element.clinicalRelevance
+      //     }
 
-          arrayRequestParameters.push(requestParametersSequence)
-          requestParametersSequence = {}
-        })
-      }
+      //     arrayRequestParameters.push(requestParametersSequence)
+      //     requestParametersSequence = {}
+      //   })
+      // }
 
-      if (props.rangeModuleArray.length > 0) {
-        console.log(props.rangeModuleArray)
-        props.rangeModuleArray.forEach(element => {
-          if (element.assemblyId !== '') {
-            requestParametersRange['assemblyId'] = element.assemblyId
-          }
-          if (element.referenceName !== '') {
-            requestParametersRange['referenceName'] = element.referenceName
-          }
-          if (element.start !== '') {
-            requestParametersRange['start'] = element.start
-          }
-          if (element.end !== '') {
-            requestParametersRange['end'] = element.end
-          }
-          if (element.variantType !== '') {
-            requestParametersRange['variantType'] = element.variantType
-          }
-          if (element.alternateBases !== '') {
-            requestParametersRange['alternateBases'] = element.alternateBases
-          }
+      // if (props.rangeModuleArray.length > 0) {
+      //   console.log(props.rangeModuleArray)
+      //   props.rangeModuleArray.forEach(element => {
+      //     if (element.assemblyId !== '') {
+      //       requestParametersRange['assemblyId'] = element.assemblyId
+      //     }
+      //     if (element.referenceName !== '') {
+      //       requestParametersRange['referenceName'] = element.referenceName
+      //     }
+      //     if (element.start !== '') {
+      //       requestParametersRange['start'] = element.start
+      //     }
+      //     if (element.end !== '') {
+      //       requestParametersRange['end'] = element.end
+      //     }
+      //     if (element.variantType !== '') {
+      //       requestParametersRange['variantType'] = element.variantType
+      //     }
+      //     if (element.alternateBases !== '') {
+      //       requestParametersRange['alternateBases'] = element.alternateBases
+      //     }
 
-          if (element.referenceBases !== '') {
-            requestParametersRange['referenceBases'] = element.referenceBases
-          }
+      //     if (element.referenceBases !== '') {
+      //       requestParametersRange['referenceBases'] = element.referenceBases
+      //     }
 
-          if (element.aminoacid !== '') {
-            requestParametersRange['aminoacidChange'] = element.aminoacid
-          }
-          if (element.variantMinLength !== '') {
-            requestParametersRange['variantMinLength'] =
-              element.variantMinLength
-          }
-          if (element.variantMaxLength !== '') {
-            requestParametersRange['variantMaxLength'] =
-              element.variantMaxLength
-          }
-          if (element.clinicalRelevance !== '') {
-            requestParametersSequence['clinicalRelevance'] =
-              element.clinicalRelevance
-          }
-          arrayRequestParameters.push(requestParametersRange)
-          requestParametersRange = {}
-        })
-      }
+      //     if (element.aminoacid !== '') {
+      //       requestParametersRange['aminoacidChange'] = element.aminoacid
+      //     }
+      //     if (element.variantMinLength !== '') {
+      //       requestParametersRange['variantMinLength'] =
+      //         element.variantMinLength
+      //     }
+      //     if (element.variantMaxLength !== '') {
+      //       requestParametersRange['variantMaxLength'] =
+      //         element.variantMaxLength
+      //     }
+      //     if (element.clinicalRelevance !== '') {
+      //       requestParametersSequence['clinicalRelevance'] =
+      //         element.clinicalRelevance
+      //     }
+      //     arrayRequestParameters.push(requestParametersRange)
+      //     requestParametersRange = {}
+      //   })
+      // }
 
-      if (props.geneModuleArray.length > 0) {
-        props.geneModuleArray.forEach(element => {
-          console.log(element)
-          if (element.geneID !== '') {
-            requestParametersGene['geneId'] = element.geneID
-          }
-          if (element.assemblyId !== '') {
-            requestParametersGene['assemblyId'] = element.assemblyId
-          }
-          if (element.variantType !== '') {
-            requestParametersGene['variantType'] = element.variantType
-          }
-          if (element.variantMinLength !== '') {
-            requestParametersGene['variantMinLength'] = element.variantMinLength
-          }
-          if (element.variantMaxLength !== '') {
-            requestParametersGene['variantMaxLength'] = element.variantMaxLength
-          }
-          if (element.aminoacid !== '') {
-            requestParametersGene['aminoacidChange'] = element.aminoacid
-          }
-          if (element.clinicalRelevance !== '') {
-            requestParametersSequence['clinicalRelevance'] =
-              element.clinicalRelevance
-          }
-          arrayRequestParameters.push(requestParametersGene)
-          requestParametersGene = {}
-        })
-      }
+      // if (props.geneModuleArray.length > 0) {
+      //   props.geneModuleArray.forEach(element => {
+      //     console.log(element)
+      //     if (element.geneID !== '') {
+      //       requestParametersGene['geneId'] = element.geneID
+      //     }
+      //     if (element.assemblyId !== '') {
+      //       requestParametersGene['assemblyId'] = element.assemblyId
+      //     }
+      //     if (element.variantType !== '') {
+      //       requestParametersGene['variantType'] = element.variantType
+      //     }
+      //     if (element.variantMinLength !== '') {
+      //       requestParametersGene['variantMinLength'] = element.variantMinLength
+      //     }
+      //     if (element.variantMaxLength !== '') {
+      //       requestParametersGene['variantMaxLength'] = element.variantMaxLength
+      //     }
+      //     if (element.aminoacid !== '') {
+      //       requestParametersGene['aminoacidChange'] = element.aminoacid
+      //     }
+      //     if (element.clinicalRelevance !== '') {
+      //       requestParametersSequence['clinicalRelevance'] =
+      //         element.clinicalRelevance
+      //     }
+      //     arrayRequestParameters.push(requestParametersGene)
+      //     requestParametersGene = {}
+      //   })
+      // }
+
+      var requestParameters = {}
 
       if (props.query !== null) {
         if (props.query.includes(',')) {
@@ -229,19 +231,64 @@ function VariantsResults (props) {
             queryStringTerm.push(element.trim())
           })
         } else {
-          queryStringTerm.push(props.query.trim())
+          if (props.query.includes(':') && !props.query.includes('>')) {
+            let arrayParameters = []
+            let reqParameters = []
+            if (props.query.includes('&')) {
+              arrayParameters = props.query.split('&')
+              console.log(arrayParameters)
+              arrayParameters.forEach(element => {
+                reqParameters.length = 0
+                reqParameters = element.split(':')
+                console.log(reqParameters)
+                requestParameters[reqParameters[0]] = reqParameters[1]
+              })
+              arrayRequestParameters.push(requestParameters)
+            } else {
+              let reqParameters = props.query.split(':')
+              console.log(reqParameters)
+              requestParameters[reqParameters[0]] = reqParameters[1]
+              arrayRequestParameters.push(requestParameters)
+            }
+          } else if (props.query.includes(':') && props.query.includes('>')) {
+     
+            let reqParameters = props.query.split(':')
+            console.log(reqParameters)
+            let position = []
+            if (props.query.includes('-')) {
+              position = reqParameters[0].split('-')
+            } else {
+              position = reqParameters[0]
+            }
+
+            console.log(position)
+            let bases = reqParameters[2].split('>')
+            console.log(bases)
+            requestParameters['start'] = position[0]
+            if (position[1]) {
+              requestParameters['end'] = position[1]
+            }
+            requestParameters['variantType'] = reqParameters[1]
+            requestParameters['alternateBases'] = bases[1]
+            requestParameters['referenceBases'] = bases[0]
+            arrayRequestParameters.push(requestParameters)
+          } else {
+            queryStringTerm.push(props.query.trim())
+          }
         }
+
         console.log(queryStringTerm)
         let filter = {}
 
         queryStringTerm.forEach((term, index) => {
           console.log(term)
+          requestParameters = {}
           if (
-            term.includes('=') ||
+            (term.includes('=') ||
             term.includes('>') ||
             term.includes('<') ||
             term.includes('!') ||
-            term.includes('%')
+            term.includes('%') ) && !term.includes(':')
           ) {
             if (term.includes('=')) {
               queryArray[index] = term.split('=')
@@ -270,7 +317,7 @@ function VariantsResults (props) {
                 ) {
                   alphanumericFilter = {
                     id: element.id,
-                    scopes: element.scopes
+                    scope: element.scopes
                   }
                 }
               }
@@ -295,12 +342,53 @@ function VariantsResults (props) {
                 id: queryArray[index][0],
                 operator: queryArray[index][2],
                 value: queryArray[index][1],
-                scopes: queryArray[index][3]
+                scope: queryArray[index][3]
               }
               console.log(alphanumericFilter)
             }
 
             arrayFilter.push(alphanumericFilter)
+          } else if (term.includes(':') && !term.includes('>')) {
+            let arrayParameters = []
+            let reqParameters = []
+            if (term.includes('&')) {
+              arrayParameters = term.split('&')
+              console.log(arrayParameters)
+              arrayParameters.forEach(element => {
+                reqParameters.length = 0
+                reqParameters = element.split(':')
+                console.log(reqParameters)
+                requestParameters[reqParameters[0]] = reqParameters[1]
+              })
+              arrayRequestParameters.push(requestParameters)
+            } else {
+              let reqParameters = term.split(':')
+              console.log(reqParameters)
+              requestParameters[reqParameters[0]] = reqParameters[1]
+              arrayRequestParameters.push(requestParameters)
+            }
+          } else if (term.includes(':') && term.includes('>')) {
+       
+            let reqParameters = term.split(':')
+            console.log(reqParameters)
+            let position = []
+            if (term.includes('-')) {
+              position = reqParameters[0].split('-')
+            } else {
+              position = reqParameters[0]
+            }
+
+            let bases = reqParameters[2].split('>')
+            console.log(bases)
+            requestParameters['start'] = position[0]
+            if (position[1]) {
+              requestParameters['end'] = position[1]
+            }
+            requestParameters['variantType'] = reqParameters[1]
+            requestParameters['alternateBases'] = bases[1]
+            requestParameters['referenceBases'] = bases[0]
+            arrayRequestParameters.push(requestParameters)
+      
           } else {
             props.filteringTerms.forEach(element => {
               if (element.label) {
@@ -310,14 +398,14 @@ function VariantsResults (props) {
                 ) {
                   filter = {
                     id: element.id,
-                    scopes: element.scopes
+                    scope: element.scopes
                   }
                 }
               } else {
                 if (element.id.toLowerCase() === term.toLowerCase()) {
                   filter = {
                     id: element.id,
-                    scopes: element.scopes
+                    scope: element.scopes
                   }
                 }
               }
@@ -473,17 +561,26 @@ function VariantsResults (props) {
           var jsonData2 = {}
           let variablePause = false
           arrayFilter.forEach(element => {
-            if (element.scopes.length > 1 && chosenScope === '') {
+            if (element.scope.length > 1 && chosenScope === '') {
               setPause(true)
               variablePause = true
-              element.scopes.forEach(element => {
+              element.scope.forEach(element => {
                 optionsScope.push(element)
               })
-              ontologyMultipleScope.push(element.id)
-            } else if (element.scopes.length > 1 && chosenScope !== '') {
-              element.scopes = chosenScope
+              console.log(element)
+
+              props.filteringTerms.forEach(element2 => {
+                if (element2.label) {
+                  if (element2.id === element.id) {
+                    console.log(element2.label)
+                    ontologyMultipleScope.push(element2.label)
+                  }
+                }
+              })
+            } else if (element.scope.length > 1 && chosenScope !== '') {
+              element.scope = chosenScope
             } else {
-              element.scopes = element.scopes[0]
+              element.scope = element.scope[0]
             }
           })
 
@@ -570,7 +667,7 @@ function VariantsResults (props) {
             }
 
             setTimeOut(true)
-
+            setPause(false)
             if (
               (res.data.responseSummary.numTotalResults < 1 ||
                 res.data.responseSummary.numTotalResults === undefined) &&
@@ -744,38 +841,38 @@ function VariantsResults (props) {
 
             {show3 && logInRequired === false && !error && (
               <div className='containerTableResults'>
-                <TableResultsVariants
+                <TableResultsVariant
                   show={'full'}
                   results={results}
                   resultsPerDataset={resultsPerDataset}
                   beaconsList={beaconsList}
                   resultSets={props.resultSets}
-                ></TableResultsVariants>
+                ></TableResultsVariant>
               </div>
             )}
 
             {show2 && !error && (
               <div className='containerTableResults'>
-                <TableResultsVariants
+                <TableResultsVariant
                   show={'count'}
                   resultsPerDataset={resultsPerDataset}
                   resultsNotPerDataset={resultsNotPerDataset}
                   results={results}
                   beaconsList={beaconsList}
                   resultSets={props.resultSets}
-                ></TableResultsVariants>
+                ></TableResultsVariant>
               </div>
             )}
             {show1 && !error && (
               <div className='containerTableResults'>
-                <TableResultsVariants
+                <TableResultsVariant
                   show={'boolean'}
                   resultsPerDataset={resultsPerDataset}
                   resultsNotPerDataset={resultsNotPerDataset}
                   results={results}
                   beaconsList={beaconsList}
                   resultSets={props.resultSets}
-                ></TableResultsVariants>
+                ></TableResultsVariant>
               </div>
             )}
           </div>
