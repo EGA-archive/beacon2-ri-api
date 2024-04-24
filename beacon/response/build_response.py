@@ -300,6 +300,12 @@ def build_filtering_terms_response(data,
         # TODO: 'extendedInfo': build_extended_info(),
         'response': {
             'filteringTerms': data,
+            'resources': [{"id":"hp",
+			"name":"Human Phenotype Ontology",
+			"url":"https://purl.obolibrary.org/obo/hp.owl",
+			"version":"27-03-2020",
+			"namespacePrefix":"HP",
+			"iriPrefix":"https://purl.obolibrary.org/obo/HP_"}]
         },
         'beaconHandovers': beacon_handovers(),
     }
