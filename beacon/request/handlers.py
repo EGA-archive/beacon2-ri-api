@@ -43,7 +43,7 @@ def collection_handler(db_fn, request=None):
                 response_converted, count, qparams, lambda x, y: x, entity_schema
             )
         except Exception as err:
-            qparams = RequestParams(**json_body).from_request(request)
+            qparams=''
             if str(err) == 'Not Found':
                 response = build_beacon_error_response(404, qparams, str(err))
             else:
@@ -199,9 +199,11 @@ def generic_handler(db_fn, request=None):
                 else:
                     response = build_beacon_resultset_response_by_dataset(datasets_docs, datasets_count, count, qparams, lambda x, y: x, entity_schema)
         except Exception as err:
-            qparams = RequestParams(**json_body).from_request(request)
+            qparams = ''
             if str(err) == 'Not Found':
                 response = build_beacon_error_response(404, qparams, str(err))
+            elif str(err) == 'Bad Request':
+                response = build_beacon_error_response(400, qparams, str(err))
             else:
                 response = build_beacon_error_response(500, qparams, str(err))
                 
@@ -301,9 +303,11 @@ def filtering_terms_handler(db_fn, request=None):
                 else:
                     response = build_filtering_terms_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
         except Exception as err:
-            qparams = RequestParams(**json_body).from_request(request)
+            qparams = ''
             if str(err) == 'Not Found':
                 response = build_beacon_error_response(404, qparams, str(err))
+            elif str(err) == 'Bad Request':
+                response = build_beacon_error_response(400, qparams, str(err))
             else:
                 response = build_beacon_error_response(500, qparams, str(err))
                 

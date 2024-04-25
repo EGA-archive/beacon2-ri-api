@@ -15,8 +15,7 @@ async def handler(request: Request):
     LOG.error('Running an error request')
 
     # Fetch datasets info
-    json_body = await request.json() if request.method == "POST" and request.has_body and request.can_read_body else {}
-    qparams = RequestParams(**json_body).from_request(request)
+    qparams = ''
     
     response_converted= build_beacon_error_response(404, qparams, 'Not Found')
     return await json_stream(request, response_converted)

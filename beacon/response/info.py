@@ -68,9 +68,11 @@ async def handler(request: Request):
                                                                     lambda x,y,z: x,
                                                                     authorized_datasets if authenticated else [])
     except Exception as err:
-        qparams = RequestParams(**json_body).from_request(request)
+        qparams = ''
         if str(err) == 'Not Found':
             response_converted = build_beacon_error_response(404, qparams, str(err))
+        elif str(err) == 'Bad Request':
+            response_converted = build_beacon_error_response(400, qparams, str(err))
         else:
             response_converted = build_beacon_error_response(500, qparams, str(err))
     return await json_stream(request, response_converted)

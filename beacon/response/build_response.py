@@ -15,14 +15,22 @@ def build_meta(qparams: RequestParams, entity_schema: Optional[DefaultSchemas], 
 
     We assume that receivedRequest is the evaluated request (qparams) sent by the user.
     """
-
-    meta = {
-        'beaconId': conf.beacon_id,
-        'apiVersion': conf.api_version,
-        'returnedGranularity': returned_granularity,
-        'receivedRequestSummary': qparams.summary(),
-        'returnedSchemas': [entity_schema.value] if entity_schema is not None else []
-    }
+    try:
+        meta = {
+            'beaconId': conf.beacon_id,
+            'apiVersion': conf.api_version,
+            'returnedGranularity': returned_granularity,
+            'receivedRequestSummary': qparams.summary(),
+            'returnedSchemas': [entity_schema.value] if entity_schema is not None else []
+        }
+    except Exception:
+        meta = {
+            'beaconId': conf.beacon_id,
+            'apiVersion': conf.api_version,
+            'returnedGranularity': returned_granularity,
+            'receivedRequestSummary': qparams,
+            'returnedSchemas': [entity_schema.value] if entity_schema is not None else []
+        }
     return meta
 
 def build_response_summary(exists, num_total_results):

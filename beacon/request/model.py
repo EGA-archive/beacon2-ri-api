@@ -6,6 +6,7 @@ from typing import List, Optional, Union
 from beacon import conf
 from humps.main import camelize
 from aiohttp.web_request import Request
+from aiohttp import web
 
 LOG = logging.getLogger(__name__)
 
@@ -97,8 +98,10 @@ class RequestParams(CamelModel):
                     self.query.pagination.limit = int(v)
                 elif k == "includeResultsetResponses":
                     self.query.include_resultset_responses = IncludeResultsetResponses(v)
-                else:
+                elif k == 'filters':
                     self.query.request_parameters[k] = v
+                else:
+                    raise web.HTTPBadRequest
         return self
 
     def summary(self):
