@@ -254,6 +254,22 @@ def build_beacon_info_response(data, qparams, func_response_type, authorized_dat
     return beacon_response
 
 ########################################
+# Error Response
+########################################
+
+def build_beacon_error_response(errorCode, qparams, errorMessage):
+
+    beacon_response = {
+        'meta': build_meta(qparams, None, Granularity.RECORD),
+        'error': {
+            'errorCode': str(errorCode),
+            'errorMessage': str(errorMessage)
+        }
+    }
+
+    return beacon_response
+
+########################################
 # Service Info Response
 ########################################
 
