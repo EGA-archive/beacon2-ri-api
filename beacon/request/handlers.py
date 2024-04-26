@@ -46,6 +46,12 @@ def collection_handler(db_fn, request=None):
             qparams=''
             if str(err) == 'Not Found':
                 response = build_beacon_error_response(404, qparams, str(err))
+            elif str(err) == 'Bad Request':
+                response = build_beacon_error_response(400, qparams, str(err))
+            elif str(err) == 'Bad Gateway':
+                response = build_beacon_error_response(502, qparams, str(err))
+            elif str(err) == 'Method Not Allowed':
+                response = build_beacon_error_response(405, qparams, str(err))
             else:
                 response = build_beacon_error_response(500, qparams, str(err))
         return await json_stream(request, response)
@@ -308,6 +314,10 @@ def filtering_terms_handler(db_fn, request=None):
                 response = build_beacon_error_response(404, qparams, str(err))
             elif str(err) == 'Bad Request':
                 response = build_beacon_error_response(400, qparams, str(err))
+            elif str(err) == 'Bad Gateway':
+                response = build_beacon_error_response(502, qparams, str(err))
+            elif str(err) == 'Method Not Allowed':
+                response = build_beacon_error_response(405, qparams, str(err))
             else:
                 response = build_beacon_error_response(500, qparams, str(err))
                 
