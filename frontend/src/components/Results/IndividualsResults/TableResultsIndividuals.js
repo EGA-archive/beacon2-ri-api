@@ -3,6 +3,7 @@ import * as React from 'react'
 import { useState, useEffect } from 'react'
 import CrossQueries from '../../CrossQueries/CrossQueries'
 import { FaBars, FaEye, FaEyeSlash } from 'react-icons/fa' // Import icons from react-icons library
+import { FiLayers } from 'react-icons/fi'
 
 function TableResultsIndividuals (props) {
   const [showDatsets, setShowDatasets] = useState(false)
@@ -50,10 +51,11 @@ function TableResultsIndividuals (props) {
     phenotypicFeatures: true
     // Add more columns as needed
   })
-
   const showAllColumns = () => {
     const columns = document.querySelectorAll('th')
     const rows = document.querySelectorAll('td')
+
+    // Update column visibility state and remove hidden class for all columns
     columns.forEach(column => {
       column.classList.remove('hidden')
       const columnName = column.dataset.columnName
@@ -62,8 +64,18 @@ function TableResultsIndividuals (props) {
         [columnName]: true
       }))
     })
+
+    // Change the icon of all rows to the normal eye
     rows.forEach(row => {
       row.classList.remove('hidden')
+    })
+
+    setColumnVisibility(prevState => {
+      const updatedVisibility = {}
+      Object.keys(prevState).forEach(column => {
+        updatedVisibility[column] = true
+      })
+      return updatedVisibility
     })
   }
 
@@ -394,23 +406,30 @@ function TableResultsIndividuals (props) {
           <div className='table-container'>
             <div className='menu-icon-container'>
               <div className='menu-container'>
-              <FaBars onClick={toggleMenu} />
-              {menuVisible && (
-                <>
-                  {/* <button onClick={showAllColumns}>Show All Columns</button> */}
-                  <ul className='column-list'>
-                    {Object.keys(columnVisibility).map(column => (
-                      <li
-                        key={column}
-                        onClick={() => toggleColumnVisibility(column)}
-                      >
-                        {column}
-                        {columnVisibility[column] ? <FaEye /> : <FaEyeSlash />}
+                <FaBars onClick={toggleMenu} />
+                {menuVisible && (
+                  <>
+                    <ul className='column-list'>
+                      <li onClick={showAllColumns}>
+                        Show All Columns
+                        <FiLayers />
                       </li>
-                    ))}
-                  </ul>
-                </>
-              )}
+                      {Object.keys(columnVisibility).map(column => (
+                        <li
+                          key={column}
+                          onClick={() => toggleColumnVisibility(column)}
+                        >
+                          {column}
+                          {columnVisibility[column] ? (
+                            <FaEye />
+                          ) : (
+                            <FaEyeSlash />
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
               </div>
             </div>
             <div className='header-container'>
