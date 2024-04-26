@@ -1,55 +1,110 @@
 import './TableResultsIndividuals.css'
-import '../../Dataset/BeaconInfo'
 import * as React from 'react'
-import {
-  DataGrid,
-  GridToolbar,
-  selectedGridRowsSelector,
-  gridFilteredSortedRowIdsSelector,
-  GridToolbarContainer
-} from '@mui/x-data-grid'
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import ReactModal from 'react-modal'
 import CrossQueries from '../../CrossQueries/CrossQueries'
-function CustomToolbar () {
-  return <GridToolbarContainer></GridToolbarContainer>
-}
+import { FaBars, FaEye, FaEyeSlash } from 'react-icons/fa' // Import icons from react-icons library
+
 function TableResultsIndividuals (props) {
   const [showDatsets, setShowDatasets] = useState(false)
-
   const [showResults, setShowResults] = useState(false)
-
-  const [arrayBeaconsIds, setArrayBeaconsIds] = useState([])
-  const [rows, setRows] = useState([])
-  const [ids, setIds] = useState([])
-
   const [resultsSelected, setResultsSelected] = useState(props.results)
+  const [arrayBeaconsIds, setArrayBeaconsIds] = useState([])
+  const [errorMessage, setErrorMessage] = useState('')
   const [resultsSelectedFinal, setResultsSelectedFinal] = useState([])
-
   const [editable, setEditable] = useState([])
-
   const [trigger, setTrigger] = useState(false)
   const [trigger2, setTrigger2] = useState(false)
 
-  const [triggerArray, setTriggerArray] = useState([])
-  const [triggerArray2, setTriggerArray2] = useState([])
-
   const [showCrossQuery, setShowCrossQuery] = useState(false)
-  const [parameterCrossQuery, setParamCrossQuery]= useState('')
-
-  const [errorMessage, setErrorMessage] = useState('')
+  const [parameterCrossQuery, setParamCrossQuery] = useState('')
 
   const [note, setNote] = useState('')
   const [isOpenModal2, setIsOpenModal2] = useState(false)
 
-  const getSelectedRowsToExport = ({ apiRef }) => {
-    const selectedRowIds = selectedGridRowsSelector(apiRef)
-    if (selectedRowIds.size > 0) {
-      return Array.from(selectedRowIds.keys())
-    }
+  const [filterValues, setFilterValues] = useState({
+    IndividualId: '',
+    ethnicity: '',
+    Beacon: '',
+    interventionsOrProcedures: '',
+    sex: '',
+    diseases: '',
+    treatments: '',
+    phenotypicFeatures: ''
+    // Add other column names here
+  })
 
-    return gridFilteredSortedRowIdsSelector(apiRef)
+  const [menuVisible, setMenuVisible] = useState(false)
+
+  const toggleMenu = () => {
+    setMenuVisible(prevState => !prevState)
+  }
+
+  const [columnVisibility, setColumnVisibility] = useState({
+    IndividualId: true,
+    ethnicity: true,
+    Beacon: true,
+    interventionsOrProcedures: true,
+    sex: true,
+    diseases: true,
+    treatments: true,
+    phenotypicFeatures: true
+    // Add more columns as needed
+  })
+
+  const showAllColumns = () => {
+    const columns = document.querySelectorAll('th')
+    const rows = document.querySelectorAll('td')
+    columns.forEach(column => {
+      column.classList.remove('hidden')
+      const columnName = column.dataset.columnName
+      setColumnVisibility(prevState => ({
+        ...prevState,
+        [columnName]: true
+      }))
+    })
+    rows.forEach(row => {
+      row.classList.remove('hidden')
+    })
+  }
+
+  const [filteredData, setFilteredData] = useState(editable)
+  const toggleColumnVisibility = columnName => {
+    const columns = document.querySelectorAll('th[data-column-name]')
+    const rows = document.querySelectorAll(
+      `td[data-column-name="${columnName}"]`
+    )
+
+    columns.forEach(column => {
+      if (column.dataset.columnName === columnName) {
+        column.classList.toggle('hidden')
+      }
+    })
+
+    rows.forEach(row => {
+      row.classList.toggle('hidden')
+    })
+
+    setColumnVisibility(prevVisibility => ({
+      ...prevVisibility,
+      [columnName]: !prevVisibility[columnName]
+    }))
+  }
+
+  const handleFilterChange = (e, columnName) => {
+    const { value } = e.target
+    setFilterValues({ ...filterValues, [columnName]: value })
+
+    const updatedFilteredData = editable.filter(row =>
+      row[columnName].toLowerCase().includes(value.toLowerCase())
+    )
+
+    setFilteredData(updatedFilteredData)
+  }
+
+  const getSelectedRowsToExport = () => {
+    // Logic to get selected rows for export
+    // You need to implement this based on your requirements
+    return []
   }
 
   const showNote = e => {
@@ -63,82 +118,6 @@ function TableResultsIndividuals (props) {
     setParamCrossQuery(e.target.innerText)
   }
 
-  const columns = [
-    {
-      field: 'IndividualId',
-      headerName: 'Individual ID',
-      width: 150,
-      headerClassName: 'super-app-theme--header',
-      renderCell: params => (
-        <button className='buttonId' onClick={handleShowCrossQuery}>
-          {params.row.IndividualId}
-        </button>
-      )
-    },
-    {
-      field: 'ethnicity',
-      headerName: 'ethnicity',
-      width: 240,
-      headerClassName: 'super-app-theme--header'
-    },
-    // {
-    //   field: 'geographicOrigin',
-    //   headerName: 'geographicOrigin',
-    //   width: 250,
-    //   headerClassName: 'super-app-theme--header'
-    // },
-    {
-      field: 'interventionsOrProcedures',
-      headerName: 'interventionsOrProcedures',
-      width: 350,
-      headerClassName: 'super-app-theme--header'
-    },
-    // {
-    //   field: 'measures',
-    //   headerName: 'measures',
-    //   width: 350,
-    //   headerClassName: 'super-app-theme--header',
-    //   cellClass: 'pre'
-    // },
-    {
-      field: 'sex',
-      headerName: 'sex',
-      width: 200,
-      headerClassName: 'super-app-theme--header'
-    },
-    {
-      field: 'diseases',
-      headerName: 'diseases',
-      width: 350,
-      headerClassName: 'super-app-theme--header'
-    },
-    {
-      field: 'phenotypicFeatures',
-      headerName: 'phenotypicFeatures',
-      width: 350,
-      headerClassName: 'super-app-theme--header'
-    },
-    // { field: 'pedigrees', headerName: 'pedigrees', width: 150 },
-    {
-      field: 'treatments',
-      headerName: 'treatments',
-      width: 250,
-      headerClassName: 'super-app-theme--header'
-    },
-    {
-      field: 'interventionsOrProcedures',
-      headerName: 'interventionsOrProcedures',
-      width: 250,
-      headerClassName: 'super-app-theme--header'
-    }
-    //{ field: 'exposures', headerName: 'exposures', width: 150 },
-    //{ field: 'karyotypicSex', headerName: 'karyotypicSex', width: 150 }
-  ]
-
-  const handleCloseModal2 = () => {
-    setIsOpenModal2(false)
-  }
-
   useEffect(() => {
     if (props.show === 'full') {
       setResultsSelectedFinal(resultsSelected)
@@ -146,14 +125,14 @@ function TableResultsIndividuals (props) {
       setShowDatasets(false)
       setTrigger(true)
     }
-    setRows([])
-    setIds([])
+
     if (resultsSelected.length === 0) {
       setErrorMessage('NO RESULTS')
     }
     resultsSelected.forEach((element, index) => {
       arrayBeaconsIds.push(element[0])
     })
+
     resultsSelectedFinal.forEach((element, index) => {
       if (element[1] !== undefined) {
         let eth_id = ''
@@ -198,27 +177,18 @@ function TableResultsIndividuals (props) {
           stringGeographic = ''
         }
 
-        let measuresJson = []
+        let measuresJson = ''
         if (element[1].measures !== '' && element[1].measures !== undefined) {
           if (typeof element[1].measures === 'object') {
-            element[1].measures.forEach(element2 => {
-              measuresJson.push(
-                JSON.stringify(element2, null, 2)
-                  .replaceAll('[', '')
-                  .replaceAll(']', '')
-                  .replaceAll('{', '')
-                  .replaceAll('}', '')
-                  .replaceAll(',', '')
-                  .replaceAll(' ,', '')
-                  .replaceAll(', ', '')
-                  .replaceAll('"', '')
-              )
-            })
-            measuresJson = measuresJson.toString()
-            measuresJson = measuresJson
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            measuresJson = measuresJson.replaceAll(',', '')
+            measuresJson = JSON.stringify(element[1].measures, null, 2)
+              .replaceAll('[', '')
+              .replaceAll(']', '')
+              .replaceAll('{', '')
+              .replaceAll('}', '')
+              .replaceAll(',', '')
+              .replaceAll(' ,', '')
+              .replaceAll(', ', '')
+              .replaceAll('"', '')
           } else {
             measuresJson = JSON.stringify(element[1].measures, null, 2)
               .replaceAll('[', '')
@@ -229,39 +199,16 @@ function TableResultsIndividuals (props) {
               .replaceAll(' ,', '')
               .replaceAll(', ', '')
               .replaceAll('"', '')
-
-            measuresJson = measuresJson.toString()
-            measuresJson = measuresJson
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            measuresJson = measuresJson.replaceAll(',', '')
           }
         }
 
-        let phenoJson = []
+        let phenoJson = ''
         if (
           element[1].phenotypicFeatures !== '' &&
           element[1].phenotypicFeatures !== undefined
         ) {
           if (typeof element[1].phenotypicFeatures === 'object') {
-            element[1].phenotypicFeatures.forEach(element2 => {
-              phenoJson.push(
-                JSON.stringify(element2, null, 2)
-                  .replaceAll('[', '')
-                  .replaceAll(']', '')
-                  .replaceAll('{', '')
-                  .replaceAll('}', '')
-                  .replaceAll(',', '')
-                  .replaceAll(' ,', '')
-                  .replaceAll(', ', '')
-                  .replaceAll('"', '')
-              )
-            })
-            phenoJson = phenoJson.toString()
-            phenoJson = phenoJson.replaceAll(', ', ',').replaceAll(' ,', ',')
-            phenoJson = phenoJson.replaceAll(',', '')
-          } else {
-            phenoJson = JSON.stringify(element[1].measures, null, 2)
+            phenoJson = JSON.stringify(element[1].phenotypicFeatures, null, 2)
               .replaceAll('[', '')
               .replaceAll(']', '')
               .replaceAll('{', '')
@@ -270,41 +217,39 @@ function TableResultsIndividuals (props) {
               .replaceAll(' ,', '')
               .replaceAll(', ', '')
               .replaceAll('"', '')
-
-            phenoJson = phenoJson.toString()
-            phenoJson = phenoJson.replaceAll(', ', ',').replaceAll(' ,', ',')
-            phenoJson = phenoJson.replaceAll(',', '')
+          } else {
+            phenoJson = JSON.stringify(element[1].phenotypicFeatures, null, 2)
+              .replaceAll('[', '')
+              .replaceAll(']', '')
+              .replaceAll('{', '')
+              .replaceAll('}', '')
+              .replaceAll(',', '')
+              .replaceAll(' ,', '')
+              .replaceAll(', ', '')
+              .replaceAll('"', '')
           }
         }
 
-        let interventionsProcedures = []
+        let interventionsProcedures = ''
 
         if (
           element[1].interventionsOrProcedures !== '' &&
           element[1].interventionsOrProcedures !== undefined
         ) {
           if (typeof element[1].interventionsOrProcedures === 'object') {
-            element[1].interventionsOrProcedures.forEach(element2 => {
-              interventionsProcedures.push(
-                JSON.stringify(element2, null, 2)
-                  .replaceAll('[', '')
-                  .replaceAll(']', '')
-                  .replaceAll('{', '')
-                  .replaceAll('}', '')
-                  .replaceAll(',', '')
-                  .replaceAll(' ,', '')
-                  .replaceAll(', ', '')
-                  .replaceAll('"', '')
-              )
-            })
-            interventionsProcedures = interventionsProcedures.toString()
-            interventionsProcedures = interventionsProcedures
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            interventionsProcedures = interventionsProcedures.replaceAll(
-              ',',
-              ''
+            interventionsProcedures = JSON.stringify(
+              element[1].interventionsOrProcedures,
+              null,
+              2
             )
+              .replaceAll('[', '')
+              .replaceAll(']', '')
+              .replaceAll('{', '')
+              .replaceAll('}', '')
+              .replaceAll(',', '')
+              .replaceAll(' ,', '')
+              .replaceAll(', ', '')
+              .replaceAll('"', '')
           } else {
             interventionsProcedures = JSON.stringify(
               element[1].interventionsOrProcedures,
@@ -319,37 +264,22 @@ function TableResultsIndividuals (props) {
               .replaceAll(' ,', '')
               .replaceAll(', ', '')
               .replaceAll('"', '')
-            interventionsProcedures = interventionsProcedures.toString()
-            interventionsProcedures = interventionsProcedures
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            interventionsProcedures = interventionsProcedures.replaceAll(
-              ',',
-              ''
-            )
           }
         }
 
-        let diseases = []
+        let diseases = ''
 
         if (element[1].diseases !== '' && element[1].diseases !== undefined) {
           if (typeof element[1].diseases === 'object') {
-            element[1].diseases.forEach(element2 => {
-              diseases.push(
-                JSON.stringify(element2, null, 2)
-                  .replaceAll('[', '')
-                  .replaceAll(']', '')
-                  .replaceAll('{', '')
-                  .replaceAll('}', '')
-                  .replaceAll(',', '')
-                  .replaceAll(' ,', '')
-                  .replaceAll(', ', '')
-                  .replaceAll('"', '')
-              )
-            })
-            diseases = diseases.toString()
-            diseases = diseases.replaceAll(', ', ',').replaceAll(' ,', ',')
-            diseases = diseases.replaceAll(',', '')
+            diseases = JSON.stringify(element[1].diseases, null, 2)
+              .replaceAll('[', '')
+              .replaceAll(']', '')
+              .replaceAll('{', '')
+              .replaceAll('}', '')
+              .replaceAll(',', '')
+              .replaceAll(' ,', '')
+              .replaceAll(', ', '')
+              .replaceAll('"', '')
           } else {
             diseases = JSON.stringify(element[1].diseases, null, 2)
               .replaceAll('[', '')
@@ -360,35 +290,25 @@ function TableResultsIndividuals (props) {
               .replaceAll(' ,', '')
               .replaceAll(', ', '')
               .replaceAll('"', '')
-            diseases = diseases.toString()
-            diseases = diseases.replaceAll(', ', ',').replaceAll(' ,', ',')
-            diseases = diseases.replaceAll(',', '')
           }
         }
 
-        let treatments = []
+        let treatments = ''
 
         if (
           element[1].treatments !== '' &&
           element[1].treatments !== undefined
         ) {
           if (typeof element[1].treatments === 'object') {
-            element[1].treatments.forEach(element2 => {
-              treatments.push(
-                JSON.stringify(element2, null, 2)
-                  .replaceAll('[', '')
-                  .replaceAll(']', '')
-                  .replaceAll('{', '')
-                  .replaceAll('}', '')
-                  .replaceAll(',', '')
-                  .replaceAll(' ,', '')
-                  .replaceAll(', ', '')
-                  .replaceAll('"', '')
-              )
-            })
-            treatments = treatments.toString()
-            treatments = treatments.replaceAll(', ', ',').replaceAll(' ,', ',')
-            treatments = treatments.replaceAll(',', '')
+            treatments = JSON.stringify(element[1].treatments, null, 2)
+              .replaceAll('[', '')
+              .replaceAll(']', '')
+              .replaceAll('{', '')
+              .replaceAll('}', '')
+              .replaceAll(',', '')
+              .replaceAll(' ,', '')
+              .replaceAll(', ', '')
+              .replaceAll('"', '')
           } else {
             treatments = JSON.stringify(element[1].treatments, null, 2)
               .replaceAll('[', '')
@@ -399,13 +319,10 @@ function TableResultsIndividuals (props) {
               .replaceAll(' ,', '')
               .replaceAll(', ', '')
               .replaceAll('"', '')
-            treatments = treatments.toString()
-            treatments = treatments.replaceAll(', ', ',').replaceAll(' ,', ',')
-            treatments = treatments.replaceAll(',', '')
           }
         }
 
-        rows.push({
+        editable.push({
           id: index,
           IndividualId: element[1].id,
           Beacon: element[0],
@@ -418,7 +335,6 @@ function TableResultsIndividuals (props) {
         })
 
         if (index === resultsSelectedFinal.length - 1) {
-          setEditable(rows.map(o => ({ ...o })))
           setTrigger2(true)
         }
       }
@@ -426,28 +342,7 @@ function TableResultsIndividuals (props) {
   }, [trigger, resultsSelectedFinal])
 
   useEffect(() => {
-    let count = 0
-    // props.beaconsList.forEach((element2, index2) => {
-    //   count = getOccurrence(arrayBeaconsIds, element2.meta.beaconId)
-    //   if (count > 0) {
-    //     beaconsArrayResults.push([element2, count, true])
-    //   } else {
-    //     beaconsArrayResults.push([element2, count, false])
-    //   }
-    // })
-    // beaconsArrayResults.forEach(element => {
-    //   if (element[2] === true) {
-    //     beaconsArrayResultsOrdered.push(element)
-    //   }
-    // })
-    // beaconsArrayResults.forEach(element => {
-    //   if (element[2] === false) {
-    //     beaconsArrayResultsOrdered.push(element)
-    //   }
-    // })
-
     setShowDatasets(true)
-    console.log(props.resultsPerDataset)
   }, [])
 
   return (
@@ -492,22 +387,285 @@ function TableResultsIndividuals (props) {
           )
         })}
 
-      {!showCrossQuery && showDatsets === false && showResults === true && trigger2 === true && (
-        <DataGrid
-          getRowHeight={() => 'auto'}
-          checkboxSelection
-          columns={columns}
-          rows={editable}
-          slots={{ toolbar: CustomToolbar }}
-          slotProps={{
-            toolbar: {
-              printOptions: { getRowsToExport: getSelectedRowsToExport }
-            }
-          }}
+      {!showCrossQuery &&
+        showDatsets === false &&
+        showResults === true &&
+        trigger2 === true && (
+          <div className='table-container'>
+            <div className='menu-icon-container'>
+              <div className='menu-container'>
+              <FaBars onClick={toggleMenu} />
+              {menuVisible && (
+                <>
+                  {/* <button onClick={showAllColumns}>Show All Columns</button> */}
+                  <ul className='column-list'>
+                    {Object.keys(columnVisibility).map(column => (
+                      <li
+                        key={column}
+                        onClick={() => toggleColumnVisibility(column)}
+                      >
+                        {column}
+                        {columnVisibility[column] ? <FaEye /> : <FaEyeSlash />}
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              </div>
+            </div>
+            <div className='header-container'>
+              <table className='table'>
+                <thead>
+                  <tr>
+                    <th
+                      className={`sticky-header ${
+                        columnVisibility.IndividualId ? 'visible' : 'hidden'
+                      }`}
+                    >
+                      <span>Individual ID</span>
+                      <button
+                        onClick={() => toggleColumnVisibility('IndividualId')}
+                      >
+                        {columnVisibility.IndividualId ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter Individual ID'
+                        onChange={e => handleFilterChange(e, 'IndividualId')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
+                        columnVisibility.ethnicity ? 'visible' : 'hidden'
+                      }`}
+                    >
+                      <span>Ethnicity</span>
+                      <button
+                        onClick={() => toggleColumnVisibility('ethnicity')}
+                      >
+                        {columnVisibility.ethnicity ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter Ethnicity'
+                        onChange={e => handleFilterChange(e, 'ethnicity')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
+                        columnVisibility.Beacon ? 'visible' : 'hidden'
+                      }`}
+                    >
+                      <span>Beacon</span>
+                      <button onClick={() => toggleColumnVisibility('Beacon')}>
+                        {columnVisibility.Beacon ? <FaEye /> : <FaEyeSlash />}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter Beacon'
+                        onChange={e => handleFilterChange(e, 'Beacon')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
+                        columnVisibility.interventionsOrProcedures
+                          ? 'visible'
+                          : 'hidden'
+                      }`}
+                    >
+                      <span>Procedures</span>
+                      <button
+                        onClick={() =>
+                          toggleColumnVisibility('interventionsOrProcedures')
+                        }
+                      >
+                        {columnVisibility.interventionsOrProcedures ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter Procedures'
+                        onChange={e =>
+                          handleFilterChange(e, 'interventionsOrProcedures')
+                        }
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
+                        columnVisibility.sex ? 'visible' : 'hidden'
+                      }`}
+                    >
+                      <span>Sex</span>
+                      <button onClick={() => toggleColumnVisibility('sex')}>
+                        {columnVisibility.sex ? <FaEye /> : <FaEyeSlash />}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter Sex'
+                        onChange={e => handleFilterChange(e, 'sex')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
+                        columnVisibility.diseases ? 'visible' : 'hidden'
+                      }`}
+                    >
+                      <span>Diseases</span>
+                      <button
+                        onClick={() => toggleColumnVisibility('diseases')}
+                      >
+                        {columnVisibility.diseases ? <FaEye /> : <FaEyeSlash />}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter Diseases'
+                        onChange={e => handleFilterChange(e, 'diseases')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
+                        columnVisibility.treatments ? 'visible' : 'hidden'
+                      }`}
+                    >
+                      <span>Treatments</span>
+                      <button
+                        onClick={() => toggleColumnVisibility('treatments')}
+                      >
+                        {columnVisibility.treatments ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter Treatments'
+                        onChange={e => handleFilterChange(e, 'treatments')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
+                        columnVisibility.phenotypicFeatures
+                          ? 'visible'
+                          : 'hidden'
+                      }`}
+                    >
+                      <span>Phenotypic Features</span>
+                      <button
+                        onClick={() =>
+                          toggleColumnVisibility('phenotypicFeatures')
+                        }
+                      >
+                        {columnVisibility.phenotypicFeatures ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter Phenotypic Features'
+                        onChange={e =>
+                          handleFilterChange(e, 'phenotypicFeatures')
+                        }
+                      />
+                    </th>
+
+                    {/* Add more column headers here */}
+                  </tr>
+                </thead>
+              </table>
+            </div>
+            <div className='body-container'>
+              <table className='table'>
+                <tbody>
+                  {filteredData.map((row, index) => (
+                    <tr key={index}>
+                      <td
+                        className={
+                          columnVisibility.IndividualId ? 'visible' : 'hidden'
+                        }
+                      >
+                        {row.IndividualId}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.ethnicity ? 'visible' : 'hidden'
+                        }
+                      >
+                        {row.ethnicity}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.Beacon ? 'visible' : 'hidden'
+                        }
+                      >
+                        {row.Beacon}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.interventionsOrProcedures
+                            ? 'visible'
+                            : 'hidden'
+                        }
+                      >
+                        {row.interventionsOrProcedures}
+                      </td>
+                      <td
+                        className={columnVisibility.sex ? 'visible' : 'hidden'}
+                      >
+                        {row.sex}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.diseases ? 'visible' : 'hidden'
+                        }
+                      >
+                        {row.diseases}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.treatments ? 'visible' : 'hidden'
+                        }
+                      >
+                        {row.treatments}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.phenotypicFeatures
+                            ? 'visible'
+                            : 'hidden'
+                        }
+                      >
+                        {row.phenotypicFeatures}
+                      </td>
+
+                      {/* Render other row cells here */}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      {showCrossQuery && (
+        <CrossQueries
+          parameter={parameterCrossQuery}
+          collection={'individuals'}
+          setShowCrossQuery={setShowCrossQuery}
         />
       )}
-      {showCrossQuery &&
-      <CrossQueries parameter={parameterCrossQuery} collection={'individuals'} setShowCrossQuery={setShowCrossQuery}/>}
     </div>
   )
 }

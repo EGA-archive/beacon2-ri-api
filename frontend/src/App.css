@@ -197,11 +197,13 @@ p a {
 }
 
 .containerTableResults {
+  width: 100vw;
   display: flex;
   align-content: center;
   justify-content: center;
   align-items: center;
 }
+
 
 .newSearchButton:hover {
   color: rgb(118, 151, 228);

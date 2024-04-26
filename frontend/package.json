@@ -29,6 +29,7 @@
     "react-fusioncharts": "^4.0.0",
     "react-google-charts": "^4.0.0",
     "react-html-parser": "^2.0.2",
+    "react-icons": "^5.1.0",
     "react-json-pretty": "^2.2.0",
     "react-modal": "^3.16.1",
     "react-modal-hover": "^1.1.13",
