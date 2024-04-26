@@ -72,7 +72,7 @@ async def handler(request: Request):
         if str(err) == 'Not Found':
             response_converted = build_beacon_error_response(404, qparams, str(err))
         elif str(err) == 'Bad Request':
-            response_converted = build_beacon_error_response(400, qparams, str(err))
+            response_converted = build_beacon_error_response(400, qparams, str(err)+':'+str(err.text))
         elif str(err) == 'Bad Gateway':
             response_converted = build_beacon_error_response(502, qparams, str(err))
         elif str(err) == 'Method Not Allowed':

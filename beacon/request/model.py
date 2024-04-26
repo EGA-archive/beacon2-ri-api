@@ -101,7 +101,7 @@ class RequestParams(CamelModel):
                 elif k == 'filters':
                     self.query.request_parameters[k] = v
                 else:
-                    raise web.HTTPBadRequest
+                    raise web.HTTPBadRequest(text='request parameter introduced is not allowed')
         return self
 
     def summary(self):

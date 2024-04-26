@@ -47,7 +47,7 @@ def collection_handler(db_fn, request=None):
             if str(err) == 'Not Found':
                 response = build_beacon_error_response(404, qparams, str(err))
             elif str(err) == 'Bad Request':
-                response = build_beacon_error_response(400, qparams, str(err))
+                response = build_beacon_error_response(400, qparams, str(err)+':'+str(err.text))
             elif str(err) == 'Bad Gateway':
                 response = build_beacon_error_response(502, qparams, str(err))
             elif str(err) == 'Method Not Allowed':
@@ -209,7 +209,11 @@ def generic_handler(db_fn, request=None):
             if str(err) == 'Not Found':
                 response = build_beacon_error_response(404, qparams, str(err))
             elif str(err) == 'Bad Request':
-                response = build_beacon_error_response(400, qparams, str(err))
+                response = build_beacon_error_response(400, qparams, str(err)+':'+str(err.text))
+            elif str(err) == 'Bad Gateway':
+                response = build_beacon_error_response(502, qparams, str(err))
+            elif str(err) == 'Method Not Allowed':
+                response = build_beacon_error_response(405, qparams, str(err))
             else:
                 response = build_beacon_error_response(500, qparams, str(err))
                 
@@ -313,7 +317,7 @@ def filtering_terms_handler(db_fn, request=None):
             if str(err) == 'Not Found':
                 response = build_beacon_error_response(404, qparams, str(err))
             elif str(err) == 'Bad Request':
-                response = build_beacon_error_response(400, qparams, str(err))
+                build_beacon_error_response(400, qparams, str(err)+':'+str(err.text))
             elif str(err) == 'Bad Gateway':
                 response = build_beacon_error_response(502, qparams, str(err))
             elif str(err) == 'Method Not Allowed':
