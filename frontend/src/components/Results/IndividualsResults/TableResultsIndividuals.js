@@ -3,7 +3,7 @@ import * as React from 'react'
 import { useState, useEffect } from 'react'
 import CrossQueries from '../../CrossQueries/CrossQueries'
 import { FaBars, FaEye, FaEyeSlash } from 'react-icons/fa' // Import icons from react-icons library
-import { FiLayers } from 'react-icons/fi'
+import { FiLayers, FiDownload } from 'react-icons/fi'
 
 function TableResultsIndividuals (props) {
   const [showDatsets, setShowDatasets] = useState(false)
@@ -15,7 +15,7 @@ function TableResultsIndividuals (props) {
   const [editable, setEditable] = useState([])
   const [trigger, setTrigger] = useState(false)
   const [trigger2, setTrigger2] = useState(false)
-
+  const [exportMenuVisible, setExportMenuVisible] = useState(false)
   const [showCrossQuery, setShowCrossQuery] = useState(false)
   const [parameterCrossQuery, setParamCrossQuery] = useState('')
 
@@ -113,11 +113,84 @@ function TableResultsIndividuals (props) {
     setFilteredData(updatedFilteredData)
   }
 
-  const getSelectedRowsToExport = () => {
-    // Logic to get selected rows for export
-    // You need to implement this based on your requirements
-    return []
+  const toggleExportMenu = () => {
+    setExportMenuVisible(prevState => !prevState)
   }
+
+  const exportToCSV = () => {
+    // Ensure props.results is not null or undefined
+    if (!props.results) return;
+  
+    // Get all keys from the first row of props.results
+    const header = Object.keys(props.results[0]);
+  
+    // Convert each row to CSV format
+    const csv = [
+      header.join(','), // Header row
+      ...props.results.map(row =>
+        header.map(fieldName => {
+          const value = row[fieldName];
+          // Check if the value is an object
+          if (typeof value === 'object') {
+            // Stringify the object
+            return JSON.stringify(value);
+          } else {
+            // Otherwise, return the value as is
+            return value;
+          }
+        }).join(',')
+      )
+    ].join('\n');
+  
+    // Create a blob object from the CSV content
+    const blob = new Blob([csv], { type: 'text/csv' });
+  
+    // Create a URL for the blob object
+    const url = window.URL.createObjectURL(blob);
+  
+    // Create a temporary <a> element to trigger the download
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'exported_data.csv');
+  
+    // Programmatically click the link to start the download
+    document.body.appendChild(link);
+    link.click();
+  
+    // Clean up by revoking the URL and removing the temporary <a> element
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+  };
+  
+
+  const exportToJSON = () => {
+    // Ensure props.results is not null or undefined
+    if (!props.results) return;
+  
+    // Convert the results to JSON
+    const jsonString = JSON.stringify(props.results, null, 2);
+  
+    // Create a blob object from the JSON content
+    const blob = new Blob([jsonString], { type: 'application/json' });
+  
+    // Create a URL for the blob object
+    const url = URL.createObjectURL(blob);
+  
+    // Create a temporary <a> element to trigger the download
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'exported_data.json');
+  
+    // Programmatically click the link to start the download
+    document.body.appendChild(link);
+    link.click();
+  
+    // Clean up by revoking the URL and removing the temporary <a> element
+    URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+  };
+  
+
 
   const showNote = e => {
     setNote(e)
@@ -405,6 +478,19 @@ function TableResultsIndividuals (props) {
         trigger2 === true && (
           <div className='table-container'>
             <div className='menu-icon-container'>
+              <div className='export-menu'>
+                <button className='exportButton' onClick={toggleExportMenu}>
+                  <FiDownload />
+                </button>
+                {exportMenuVisible && (
+                  <>
+                    <ul className='column-list'>
+                      <li onClick={exportToJSON}>Export to JSON</li>
+                      <li onClick={exportToCSV}>Export to CSV</li>
+                    </ul>
+                  </>
+                )}
+              </div>
               <div className='menu-container'>
                 <FaBars onClick={toggleMenu} />
                 {menuVisible && (
