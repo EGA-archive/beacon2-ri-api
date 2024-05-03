@@ -7,18 +7,13 @@ import {
   GridToolbar,
   selectedGridRowsSelector,
   gridFilteredSortedRowIdsSelector,
-  GridToolbarContainer,
-
+  GridToolbarContainer
 } from '@mui/x-data-grid'
 import { useState, useEffect } from 'react'
 import CrossQueries from '../../CrossQueries/CrossQueries'
 
 function CustomToolbar () {
-  return (
-    <GridToolbarContainer>
-
-    </GridToolbarContainer>
-  )
+  return <GridToolbarContainer></GridToolbarContainer>
 }
 function TableResultsBiosamples (props) {
   const [showDatsets, setShowDatasets] = useState(false)
@@ -30,7 +25,7 @@ function TableResultsBiosamples (props) {
   const [ids, setIds] = useState([])
 
   const [showCrossQuery, setShowCrossQuery] = useState(false)
-  const [parameterCrossQuery, setParamCrossQuery]= useState('')
+  const [parameterCrossQuery, setParamCrossQuery] = useState('')
 
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -502,8 +497,6 @@ function TableResultsBiosamples (props) {
           }
         }
 
-
-
         let histologicalDiagnosis_id = ''
         let histologicalDiagnosis_label = ''
         let stringHistologicalDiagnosis = ''
@@ -518,8 +511,6 @@ function TableResultsBiosamples (props) {
         } else {
           stringHistologicalDiagnosis = ''
         }
-
-  
 
         let diagnosticMarkersJson = []
 
@@ -720,8 +711,6 @@ function TableResultsBiosamples (props) {
           stringSampleStorage = ''
         }
 
-
-
         var myObjRows = new Object()
         myObjRows.id = index
         if (element[1].id !== '') {
@@ -843,22 +832,30 @@ function TableResultsBiosamples (props) {
           )
         })}
 
-      {!showCrossQuery && showDatsets === false && showResults === true && trigger2 === true && (
-        <DataGrid
-          getRowHeight={() => 'auto'}
-          checkboxSelection
-          columns={columns}
-          rows={editable}
-          slots={{ toolbar: CustomToolbar }}
-          slotProps={{
-            toolbar: {
-              printOptions: { getRowsToExport: getSelectedRowsToExport }
-            }
-          }}
+      {!showCrossQuery &&
+        showDatsets === false &&
+        showResults === true &&
+        trigger2 === true && (
+          <DataGrid
+            getRowHeight={() => 'auto'}
+            checkboxSelection
+            columns={columns}
+            rows={editable}
+            slots={{ toolbar: CustomToolbar }}
+            slotProps={{
+              toolbar: {
+                printOptions: { getRowsToExport: getSelectedRowsToExport }
+              }
+            }}
+          />
+        )}
+      {showCrossQuery && (
+        <CrossQueries
+          parameter={parameterCrossQuery}
+          collection={'biosamples'}
+          setShowCrossQuery={setShowCrossQuery}
         />
       )}
-      {showCrossQuery &&
-      <CrossQueries parameter={parameterCrossQuery} collection={'biosamples'} setShowCrossQuery={setShowCrossQuery}/>}
     </div>
   )
 }

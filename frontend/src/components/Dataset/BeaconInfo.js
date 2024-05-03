@@ -66,8 +66,8 @@ function BeaconInfo (props) {
               )}
               {resp[0].meta.beaconId !==
                 'org.ega-archive.ga4gh-approval-beacon-test' &&
-                resp.response && (
-                  <a href={resp.response.alternativeUrl} target='_blank'>
+                (
+                  <a href={resp[0].response.alternativeUrl} target='_blank'>
                     Beacon API
                   </a>
                 )}

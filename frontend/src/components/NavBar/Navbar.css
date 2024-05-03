@@ -212,13 +212,13 @@
 
   .Sign-in5 {
     width: 136px;
-    background-color: #7a9f9f;
+    background-color: #0c7a7a;
   }
 
   .Sign-in6:hover ~ .animation {
     width: 112px;
     right: 16px;
-    background-color: #7a9f9f;
+    background-color: #0c7a7a;
   }
 
   .nav3 .Sign-in3 {

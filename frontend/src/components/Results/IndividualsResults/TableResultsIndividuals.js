@@ -519,8 +519,8 @@ function TableResultsIndividuals (props) {
               </div>
             </div>
             <div className='header-container'>
-              <table className='table'>
-                <thead>
+              <table className='tableResults'>
+                <thead className='theadResults'>
                   <tr>
                     <th
                       className={`sticky-header ${
@@ -693,7 +693,7 @@ function TableResultsIndividuals (props) {
               </table>
             </div>
             <div className='body-container'>
-              <table className='table'>
+              <table className='tableResults'>
                 <tbody>
                   {filteredData.map((row, index) => (
                     <tr key={index}>

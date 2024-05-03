@@ -52,7 +52,8 @@ p {
 
 .tittleVariant {
   color: rgb(125, 125, 141);
-  width: 135px;
+  /* width: 94px; */
+  width: fit-content;
 }
 
 .termsAlphanum {
@@ -126,6 +127,7 @@ p {
   align-content: space-between;
   /* justify-content: space-around; */
   align-items: flex-end;
+  margin-top: 30px;
 }
 
 .moduleAddedVariant2 h2 {
@@ -433,6 +435,16 @@ label {
     margin-bottom: 40px;
     margin-top: 20px;
     width: 100vw;
+    flex-wrap: wrap;
+  }
+
+  .filterTermsContainer {
+    display: flex;
+    width: 95vw;
+    justify-content: space-evenly;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    margin-left: 0px;
   }
 
   .selectModule1 {

@@ -553,7 +553,7 @@ function Layout (props) {
       } else {
         setQuery(`geneId:${geneID2}`)
       }
-    
+
       setGeneSub3(true)
     } else {
       setGeneSub3(false)
@@ -1293,17 +1293,6 @@ function Layout (props) {
           </div>
         </div>
 
-        <div className='divOthers'>
-          <img
-            className='dictionary'
-            src='/../dictionary.png'
-            alt='dictionary'
-          ></img>
-          <button className='othersButton' onClick={handleSeeFilteringTerms}>
-            Others
-          </button>
-        </div>
-
         <div className='divFilter5'>
           <p>Variant</p>
 
@@ -1599,6 +1588,17 @@ function Layout (props) {
               </div>
             </div>
           </ul>
+        </div>
+
+        <div className='divOthers'>
+          <img
+            className='dictionary'
+            src='/../dictionary.png'
+            alt='dictionary'
+          ></img>
+          <button className='othersButton' onClick={handleSeeFilteringTerms}>
+            Others
+          </button>
         </div>
       </div>
 
