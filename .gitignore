@@ -136,3 +136,6 @@ node_modules
 
 genomicVariations_full.json
 genomicVariations_id.json
+deploy/cancer_dataset
+
+.env

@@ -38,4 +38,5 @@ mozilla-django-oidc==3.0.0
 pytest==7.4.4
 pytest-aiohttp==1.0.5
 pytest-asyncio==0.23.4
+python-dotenv==1.0.1
 

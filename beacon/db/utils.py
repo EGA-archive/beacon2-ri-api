@@ -74,7 +74,7 @@ def get_count(collection: Collection, query: dict) -> int:
         return total_counts
 
 def get_documents(collection: Collection, query: dict, skip: int, limit: int) -> Cursor:
-    LOG.debug("FINAL QUERY: {}".format(query))
+    #LOG.debug("FINAL QUERY: {}".format(query))
     ##LOG.debug(skip)
     return collection.find(query).skip(skip).limit(limit).max_time_ms(100 * 1000)
 
@@ -188,8 +188,6 @@ def get_docs_by_response_type(include: str, query: dict, datasets_dict: dict, da
         )
     elif include == 'HIT':
         count=0
-        #LOG.debug(query)
-        #LOG.debug(count)
         query_count=query
         i=1
         query_count["$or"]=[]
@@ -207,15 +205,13 @@ def get_docs_by_response_type(include: str, query: dict, datasets_dict: dict, da
                         query_count["$or"].append(queryid)
                         i=1
                 if query_count["$or"]!=[]:
-                    #LOG.debug(query_count)
-                    dataset_count = get_count(mongo_collection, query)
+                    dataset_count = get_count(mongo_collection, query_count)
                     #LOG.debug(dataset_count)
-                    #LOG.debug(limit)
                     docs = get_documents(
                         mongo_collection,
                         query_count,
-                        0,
-                        10
+                        skip*limit,
+                        limit
                     )
                 else:
                     dataset_count=0
@@ -225,8 +221,8 @@ def get_docs_by_response_type(include: str, query: dict, datasets_dict: dict, da
         count=0
         query_count=query
         i=1
+        query_count["$or"]=[]
         for k, v in datasets_dict.items():
-            query_count["$or"]=[]
             if k == dataset:
                 for id in v:
                     if i < len(v):

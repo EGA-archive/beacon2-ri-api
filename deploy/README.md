@@ -73,12 +73,12 @@ docker exec beacon python beacon/reindex.py
 
 #### List the ids
 
-After deploying all the data, you will need to tell the beacon which are the individual and biosample ids belonging to each dataset and cohort. In order to do that, please, add the name of each dataset with the respective array of all the ids together in this file [datasets.yml](https://github.com/EGA-archive/beacon2-ri-api/blob/master/beacon/request/datasets.yml).
-Then, repeat the same for the cohorts modifying this file [cohorts.yml](https://github.com/EGA-archive/beacon2-ri-api/blob/master/beacon/request/cohorts.yml).
+After deploying all the data, you will need to tell the beacon which are the individual and biosample ids belonging to each dataset and cohort. In order to do that, please, add the name of each dataset with the respective array of all the ids together in this file [datasets.yml](../beacon/request/datasets.yml).
+Then, repeat the same for the cohorts modifying this file [cohorts.yml](../beacon/request/cohorts.yml).
 
 #### Fetch the ontologies and extract the filtering terms
 
-> This step consists of analyzing all the collections of the Mongo database for first extracting the ontology OBO files and then filling the filtering terms endpoint with the information of the data loaded in the database.∫
+> This step consists of analyzing all the collections of the Mongo database for first extracting the ontology OBO files and then filling the filtering terms endpoint with the information of the data loaded in the database.
 
 You can automatically fetch the ontologies and extract the filtering terms running the following script:
 
@@ -196,7 +196,7 @@ But you can also use complex filters:
         "filters": [
             {
                 "id": "UBERON:0000178",
-                "scope": "biosamples",
+                "scope": "biosample",
                 "includeDescendantTerms": false
             }
         ],
