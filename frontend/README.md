@@ -1,4 +1,4 @@
-## Deploy
+# Getting Started with Create React App
 
 Use the deployment for all the containers for beacon to also deploy the UI [Deployment](../deploy/README.md). You will find it running in http://localhost:3000
 
@@ -32,3 +32,4 @@ Finally, please include the URL of your User interface to the file beacon/_ main
 
 
 Note that in the frontend folder you will find a file called .gitignore with the list of all files that need to be ignored.
+

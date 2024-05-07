@@ -1,23 +1,19 @@
+import './TableResultsBiosamples.css'
 import '../IndividualsResults/TableResultsIndividuals.css'
-import '../../Dataset/BeaconInfo.css'
+import '../../Dataset/BeaconInfo'
 import * as React from 'react'
 import {
   DataGrid,
   GridToolbar,
   selectedGridRowsSelector,
   gridFilteredSortedRowIdsSelector,
-  GridToolbarContainer,
-  GridToolbarExport
+  GridToolbarContainer
 } from '@mui/x-data-grid'
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import CrossQueries from '../../CrossQueries/CrossQueries'
 
 function CustomToolbar () {
-  return (
-    <GridToolbarContainer>
-      <GridToolbarExport />
-    </GridToolbarContainer>
-  )
+  return <GridToolbarContainer></GridToolbarContainer>
 }
 function TableResultsBiosamples (props) {
   const [showDatsets, setShowDatasets] = useState(false)
@@ -28,10 +24,22 @@ function TableResultsBiosamples (props) {
   const [rows, setRows] = useState([])
   const [ids, setIds] = useState([])
 
+  const [showCrossQuery, setShowCrossQuery] = useState(false)
+  const [parameterCrossQuery, setParamCrossQuery] = useState('')
+
+  const [errorMessage, setErrorMessage] = useState('')
+
+  const [beaconsArrayResults, setBeaconsArrayResults] = useState([])
+
+  const [beaconsArrayResultsOrdered, setBeaconsArrayResultsOrdered] = useState(
+    []
+  )
+
   const [resultsSelected, setResultsSelected] = useState(props.results)
   const [resultsSelectedFinal, setResultsSelectedFinal] = useState([])
 
   const [openDatasetArray, setOpenDataset] = useState([])
+  const [openDatasetArray2, setOpenDataset2] = useState([])
 
   const [editable, setEditable] = useState([])
 
@@ -39,6 +47,7 @@ function TableResultsBiosamples (props) {
   const [trigger2, setTrigger2] = useState(false)
 
   const [triggerArray, setTriggerArray] = useState([])
+  const [triggerArray2, setTriggerArray2] = useState([])
 
   const getSelectedRowsToExport = ({ apiRef }) => {
     const selectedRowIds = selectedGridRowsSelector(apiRef)
@@ -49,28 +58,22 @@ function TableResultsBiosamples (props) {
     return gridFilteredSortedRowIdsSelector(apiRef)
   }
 
-  const handleClickDatasets = e => {
-    openDatasetArray[e] = true
-    triggerArray[e] = true
-    setTrigger(!trigger)
+  const handleShowCrossQuery = e => {
+    setShowCrossQuery(true)
+    console.log(e.target.innerText)
+    setParamCrossQuery(e.target.innerText)
   }
 
   let columns = [
-    {
-      field: 'id',
-      headerName: 'Row',
-      width: 100,
-      headerClassName: 'super-app-theme--header'
-    },
     {
       field: 'BiosampleId',
       headerName: 'Biosample ID',
       width: 150,
       headerClassName: 'super-app-theme--header',
       renderCell: params => (
-        <Link to={`cross-queries/${params.row.BiosampleId}`}>
+        <button className='buttonId' onClick={handleShowCrossQuery}>
           {params.row.BiosampleId}
-        </Link>
+        </button>
       )
     },
     {
@@ -91,18 +94,18 @@ function TableResultsBiosamples (props) {
       width: 240,
       headerClassName: 'super-app-theme--header'
     },
-    {
-      field: 'collectionDate',
-      headerName: 'Collection date',
-      width: 250,
-      headerClassName: 'super-app-theme--header'
-    },
-    {
-      field: 'collectionMoment',
-      headerName: 'Collection moment',
-      width: 350,
-      headerClassName: 'super-app-theme--header'
-    },
+    // {
+    //   field: 'collectionDate',
+    //   headerName: 'Collection date',
+    //   width: 250,
+    //   headerClassName: 'super-app-theme--header'
+    // },
+    // {
+    //   field: 'collectionMoment',
+    //   headerName: 'Collection moment',
+    //   width: 350,
+    //   headerClassName: 'super-app-theme--header'
+    // },
     {
       field: 'sampleOriginType',
       headerName: 'Sample origin type',
@@ -110,36 +113,36 @@ function TableResultsBiosamples (props) {
       headerClassName: 'super-app-theme--header',
       cellClass: 'pre'
     },
-    {
-      field: 'sampleOriginDetail',
-      headerName: 'Sample origin detail',
-      width: 200,
-      headerClassName: 'super-app-theme--header'
-    },
-    {
-      field: 'obtentionProcedure',
-      headerName: 'Obtention procedure',
-      width: 300,
-      headerClassName: 'super-app-theme--header'
-    },
-    {
-      field: 'tumorProgression',
-      headerName: 'Tumor progression',
-      width: 350,
-      headerClassName: 'super-app-theme--header'
-    },
-    {
-      field: 'tumorGrade',
-      headerName: 'Tumor Grade',
-      width: 200,
-      headerClassName: 'super-app-theme--header'
-    },
-    {
-      field: 'pathologicalStage',
-      headerName: 'Pathological stage',
-      width: 350,
-      headerClassName: 'super-app-theme--header'
-    },
+    // {
+    //   field: 'sampleOriginDetail',
+    //   headerName: 'Sample origin detail',
+    //   width: 200,
+    //   headerClassName: 'super-app-theme--header'
+    // },
+    // {
+    //   field: 'obtentionProcedure',
+    //   headerName: 'Obtention procedure',
+    //   width: 300,
+    //   headerClassName: 'super-app-theme--header'
+    // },
+    // {
+    //   field: 'tumorProgression',
+    //   headerName: 'Tumor progression',
+    //   width: 350,
+    //   headerClassName: 'super-app-theme--header'
+    // },
+    // {
+    //   field: 'tumorGrade',
+    //   headerName: 'Tumor Grade',
+    //   width: 200,
+    //   headerClassName: 'super-app-theme--header'
+    // },
+    // {
+    //   field: 'pathologicalStage',
+    //   headerName: 'Pathological stage',
+    //   width: 350,
+    //   headerClassName: 'super-app-theme--header'
+    // },
     {
       field: 'pathologicalTnmFinding',
       headerName: 'Pathological TNM findings',
@@ -152,30 +155,30 @@ function TableResultsBiosamples (props) {
       width: 350,
       headerClassName: 'super-app-theme--header'
     },
-    {
-      field: 'diagnosticMarkers',
-      headerName: 'Diagnostic markers',
-      width: 300,
-      headerClassName: 'super-app-theme--header'
-    },
-    {
-      field: 'phenotypicFeatures',
-      headerName: 'Phenotypic features',
-      width: 300,
-      headerClassName: 'super-app-theme--header'
-    },
+    // {
+    //   field: 'diagnosticMarkers',
+    //   headerName: 'Diagnostic markers',
+    //   width: 300,
+    //   headerClassName: 'super-app-theme--header'
+    // },
+    // {
+    //   field: 'phenotypicFeatures',
+    //   headerName: 'Phenotypic features',
+    //   width: 300,
+    //   headerClassName: 'super-app-theme--header'
+    // },
     {
       field: 'measurements',
       headerName: 'Measurements',
       width: 300,
       headerClassName: 'super-app-theme--header'
     },
-    {
-      field: 'sampleProcessing',
-      headerName: 'Sample processing',
-      width: 300,
-      headerClassName: 'super-app-theme--header'
-    },
+    // {
+    //   field: 'sampleProcessing',
+    //   headerName: 'Sample processing',
+    //   width: 300,
+    //   headerClassName: 'super-app-theme--header'
+    // },
     {
       field: 'sampleStorage',
       headerName: 'Sample storage',
@@ -183,18 +186,36 @@ function TableResultsBiosamples (props) {
       headerClassName: 'super-app-theme--header'
     }
   ]
-  const handleSeeResults = () => {
-    setResultsSelectedFinal(resultsSelected)
 
+  const handleSeeResults = e => {
+    resultsSelected.forEach(element => {
+      if (element[0] === e) {
+        resultsSelectedFinal.push(element)
+      }
+    })
     setShowResults(true)
     setShowDatasets(false)
     setTrigger(true)
   }
 
+  function getOccurrence (array, value) {
+    var count = 0
+    array.forEach(v => v === value && count++)
+    return count
+  }
+
   useEffect(() => {
+    if (props.show === 'full') {
+      setResultsSelectedFinal(resultsSelected)
+      setShowResults(true)
+      setShowDatasets(false)
+      setTrigger(true)
+    }
     setRows([])
     setIds([])
-
+    if (resultsSelected.length === 0) {
+      setErrorMessage('NO RESULTS')
+    }
     resultsSelected.forEach((element, index) => {
       arrayBeaconsIds.push(element[0])
     })
@@ -409,50 +430,17 @@ function TableResultsBiosamples (props) {
           }
         }
 
-        let pathologicalStageJson = []
+        let pathologicalStageJson = {}
 
         if (
           element[1].pathologicalStage !== '' &&
           element[1].pathologicalStage !== undefined
         ) {
           if (typeof element[1].pathologicalStage === 'object') {
-            element[1].pathologicalStage.forEach(element2 => {
-              pathologicalStageJson.push(
-                JSON.stringify(element2, null, 2)
-                  .replaceAll('[', '')
-                  .replaceAll(']', '')
-                  .replaceAll('{', '')
-                  .replaceAll('}', '')
-                  .replaceAll(',', '')
-                  .replaceAll(' ,', '')
-                  .replaceAll(', ', '')
-                  .replaceAll('"', '')
-              )
-            })
-            pathologicalStageJson = pathologicalStageJson.toString()
-            pathologicalStageJson = pathologicalStageJson
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            pathologicalStageJson = pathologicalStageJson.replaceAll(',', '')
-          } else {
-            pathologicalStageJson = JSON.stringify(
-              element[1].pathologicalStage,
-              null,
-              2
-            )
-              .replaceAll('[', '')
-              .replaceAll(']', '')
-              .replaceAll('{', '')
-              .replaceAll('}', '')
-              .replaceAll(',', '')
-              .replaceAll(' ,', '')
-              .replaceAll(', ', '')
-              .replaceAll('"', '')
-            pathologicalStageJson = pathologicalStageJson.toString()
-            pathologicalStageJson = pathologicalStageJson
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            pathologicalStageJson = pathologicalStageJson.replaceAll(',', '')
+            pathologicalStageJson = {
+              id: element[1].pathologicalStage.id,
+              label: element[1].pathologicalStage.label
+            }
           }
         }
 
@@ -509,57 +497,19 @@ function TableResultsBiosamples (props) {
           }
         }
 
-        let histologicalDiagnosisJson = []
+        let histologicalDiagnosis_id = ''
+        let histologicalDiagnosis_label = ''
+        let stringHistologicalDiagnosis = ''
 
         if (
           element[1].histologicalDiagnosis !== '' &&
           element[1].histologicalDiagnosis !== undefined
         ) {
-          if (typeof element[1].histologicalDiagnosis === 'object') {
-            element[1].histologicalDiagnosis.forEach(element2 => {
-              histologicalDiagnosisJson.push(
-                JSON.stringify(element2, null, 2)
-                  .replaceAll('[', '')
-                  .replaceAll(']', '')
-                  .replaceAll('{', '')
-                  .replaceAll('}', '')
-                  .replaceAll(',', '')
-                  .replaceAll(' ,', '')
-                  .replaceAll(', ', '')
-                  .replaceAll('"', '')
-              )
-            })
-            histologicalDiagnosisJson = histologicalDiagnosisJson.toString()
-            histologicalDiagnosisJson = histologicalDiagnosisJson
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            histologicalDiagnosisJson = histologicalDiagnosisJson.replaceAll(
-              ',',
-              ''
-            )
-          } else {
-            histologicalDiagnosisJson = JSON.stringify(
-              element[1].histologicalDiagnosis,
-              null,
-              2
-            )
-              .replaceAll('[', '')
-              .replaceAll(']', '')
-              .replaceAll('{', '')
-              .replaceAll('}', '')
-              .replaceAll(',', '')
-              .replaceAll(' ,', '')
-              .replaceAll(', ', '')
-              .replaceAll('"', '')
-            histologicalDiagnosisJson = histologicalDiagnosisJson.toString()
-            histologicalDiagnosisJson = histologicalDiagnosisJson
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            histologicalDiagnosisJson = histologicalDiagnosisJson.replaceAll(
-              ',',
-              ''
-            )
-          }
+          histologicalDiagnosis_id = element[1].histologicalDiagnosis.id
+          histologicalDiagnosis_label = element[1].histologicalDiagnosis.label
+          stringHistologicalDiagnosis = `${histologicalDiagnosis_id} / ${histologicalDiagnosis_label}`
+        } else {
+          stringHistologicalDiagnosis = ''
         }
 
         let diagnosticMarkersJson = []
@@ -746,51 +696,19 @@ function TableResultsBiosamples (props) {
           }
         }
 
-        let sampleStorageJson = []
+        let sampleStorage_id = ''
+        let sampleStorage_label = ''
+        let stringSampleStorage = ''
 
         if (
           element[1].sampleStorage !== '' &&
           element[1].sampleStorage !== undefined
         ) {
-          if (typeof element[1].sampleStorage === 'object') {
-            element[1].sampleStorage.forEach(element2 => {
-              sampleStorageJson.push(
-                JSON.stringify(element2, null, 2)
-                  .replaceAll('[', '')
-                  .replaceAll(']', '')
-                  .replaceAll('{', '')
-                  .replaceAll('}', '')
-                  .replaceAll(',', '')
-                  .replaceAll(' ,', '')
-                  .replaceAll(', ', '')
-                  .replaceAll('"', '')
-              )
-            })
-            sampleStorageJson = sampleStorageJson.toString()
-            sampleStorageJson = sampleStorageJson
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            sampleStorageJson = sampleStorageJson.replaceAll(',', '')
-          } else {
-            sampleStorageJson = JSON.stringify(
-              element[1].sampleStorage,
-              null,
-              2
-            )
-              .replaceAll('[', '')
-              .replaceAll(']', '')
-              .replaceAll('{', '')
-              .replaceAll('}', '')
-              .replaceAll(',', '')
-              .replaceAll(' ,', '')
-              .replaceAll(', ', '')
-              .replaceAll('"', '')
-            sampleStorageJson = sampleStorageJson.toString()
-            sampleStorageJson = sampleStorageJson
-              .replaceAll(', ', ',')
-              .replaceAll(' ,', ',')
-            sampleStorageJson = sampleStorageJson.replaceAll(',', '')
-          }
+          sampleStorage_id = element[1].sampleStorage.id
+          sampleStorage_label = element[1].sampleStorage.label
+          stringSampleStorage = `${sampleStorage_id} / ${sampleStorage_label}`
+        } else {
+          stringSampleStorage = ''
         }
 
         var myObjRows = new Object()
@@ -836,8 +754,8 @@ function TableResultsBiosamples (props) {
           myObjRows.pathologicalTnmFinding = pathologicalTnmFindingJson
         }
 
-        if (histologicalDiagnosisJson !== '') {
-          myObjRows.histologicalDiagnosis = histologicalDiagnosisJson
+        if (stringHistologicalDiagnosis !== '') {
+          myObjRows.histologicalDiagnosis = stringHistologicalDiagnosis
         }
         if (diagnosticMarkersJson !== '') {
           myObjRows.diagnosticMarkers = diagnosticMarkersJson
@@ -851,10 +769,10 @@ function TableResultsBiosamples (props) {
         if (sampleProcessingJson !== '') {
           myObjRows.sampleProcessing = sampleProcessingJson
         }
-        if (sampleStorageJson !== '') {
-          myObjRows.sampleStorage = sampleStorageJson
+        if (stringSampleStorage !== '') {
+          myObjRows.sampleStorage = stringSampleStorage
         }
-
+        console.log(rows)
         rows.push(myObjRows)
 
         if (index === resultsSelectedFinal.length - 1) {
@@ -867,24 +785,7 @@ function TableResultsBiosamples (props) {
   }, [trigger, resultsSelectedFinal])
 
   useEffect(() => {
-    // props.beaconsList.forEach((element2, index2) => {
-    //   count = getOccurrence(arrayBeaconsIds, element2.meta.beaconId)
-    //   if (count > 0) {
-    //     beaconsArrayResults.push([element2, count, true])
-    //   } else {
-    //     beaconsArrayResults.push([element2, count, false])
-    //   }
-    // })
-    // beaconsArrayResults.forEach(element => {
-    //   if (element[2] === true) {
-    //     beaconsArrayResultsOrdered.push(element)
-    //   }
-    // })
-    // beaconsArrayResults.forEach(element => {
-    //   if (element[2] === false) {
-    //     beaconsArrayResultsOrdered.push(element)
-    //   }
-    // })
+    let count = 0
 
     setShowDatasets(true)
   }, [])
@@ -895,96 +796,64 @@ function TableResultsBiosamples (props) {
         props.beaconsList.map(result => {
           return (
             <>
-              {props.show && (
-                <>
-                  {props.resultsPerDataset.map((element, index) => {
-                    return (
-                      <>
-                        <div className='datasetCardResults'>
-                          <div className='tittleResults'>
-                            <div className='tittle4'>
-                              <img
-                                className='logoBeacon'
-                                src={result.organization.logoUrl}
-                                alt={result.id}
-                              />
-                              <h4>{result.organization.name}</h4>
-                            </div>
-
-                            {element[0].map((datasetObject, indexDataset) => {
-                              return (
-                                <div className='resultSetsContainer'>
-                                  <button
-                                    className='resultSetsButton'
-                                    onClick={() =>
-                                      handleClickDatasets([index, indexDataset])
-                                    }
-                                  >
-                                    <h7>
-                                      {datasetObject.replaceAll('_', ' ')}
-                                    </h7>
-                                  </button>
-                                  {openDatasetArray[[index, indexDataset]] ===
-                                    true &&
-                                    triggerArray[[index, indexDataset]] ===
-                                      true &&
-                                    element[1][indexDataset] === true &&
-                                    props.show === 'boolean' && <h6>FOUND</h6>}
-                                  {openDatasetArray[[index, indexDataset]] ===
-                                    true &&
-                                    triggerArray[[index, indexDataset]] ===
-                                      true &&
-                                    element[1][indexDataset] === false &&
-                                    props.show === 'boolean' && (
-                                      <h5>NOT FOUND</h5>
-                                    )}
-                                  {props.show === 'count' &&
-                                    triggerArray[[index, indexDataset]] ===
-                                      true && (
-                                      <h6>
-                                        {element[2][indexDataset]} RESULTS
-                                      </h6>
-                                    )}
-                                  {props.show === 'full' &&
-                                    element[1][indexDataset] === true && (
-                                      <button
-                                        className='buttonResults'
-                                        onClick={() => {
-                                          handleSeeResults()
-                                        }}
-                                      >
-                                        <h7 className='seeResultsButton'>
-                                          {' '}
-                                          SEE RESULTS
-                                        </h7>
-                                      </button>
-                                    )}
-                                </div>
-                              )
-                            })}
-                          </div>
-                        </div>
-                      </>
-                    )
-                  })}
-                </>
-              )}
+              {props.show !== 'full' &&
+                props.resultsPerDataset.map((element, index) => {
+                  return (
+                    <>
+                      {element[1][index] === true &&
+                        props.show === 'boolean' && (
+                          <h6 className='foundResult'>YES</h6>
+                        )}
+                      {element[1][index] === false &&
+                        props.show === 'boolean' && (
+                          <h5 className='NotFoundResult'>No, sorry</h5>
+                        )}
+                      {props.show === 'count' &&
+                        element[2][index] !== 0 &&
+                        element[2][index] !== 1 && (
+                          <h6 className='foundResult'>
+                            {element[2][index]} RESULTS
+                          </h6>
+                        )}
+                      {props.show === 'count' && element[2][index] === 0 && (
+                        <h5 className='NotFoundResult'>
+                          {element[2][index]} RESULTS
+                        </h5>
+                      )}
+                      {props.show === 'count' && element[2][index] === 1 && (
+                        <h6 className='foundResult'>
+                          {element[2][index]} RESULT
+                        </h6>
+                      )}
+                    </>
+                  )
+                })}
             </>
           )
         })}
 
-      {showDatsets === false && showResults === true && trigger2 === true && (
-        <DataGrid
-          getRowHeight={() => 'auto'}
-          checkboxSelection
-          columns={columns}
-          rows={editable}
-          slots={{ toolbar: CustomToolbar }}
-          slotProps={{
-            toolbar: {
-              printOptions: { getRowsToExport: getSelectedRowsToExport }
-            }
-          }}
+      {!showCrossQuery &&
+        showDatsets === false &&
+        showResults === true &&
+        trigger2 === true && (
+          <DataGrid
+            getRowHeight={() => 'auto'}
+            checkboxSelection
+            columns={columns}
+            rows={editable}
+            slots={{ toolbar: CustomToolbar }}
+            slotProps={{
+              toolbar: {
+                printOptions: { getRowsToExport: getSelectedRowsToExport }
+              }
+            }}
+          />
+        )}
+      {showCrossQuery && (
+        <CrossQueries
+          parameter={parameterCrossQuery}
+          collection={'biosamples'}
+          setShowCrossQuery={setShowCrossQuery}
         />
       )}
     </div>

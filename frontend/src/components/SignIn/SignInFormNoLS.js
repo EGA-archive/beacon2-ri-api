@@ -1,10 +1,11 @@
 import './SignInForm.css'
-import { NavLink } from 'react-router-dom'
+import configData from "../../config.json";
 import React, { Component, useState } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Navbar from '../NavBar/Navbar'
+
+
 
 export default function SignInFormNoLS () {
   const [userName, setUserName] = useState('dummy_user')
@@ -12,6 +13,7 @@ export default function SignInFormNoLS () {
   const [error, setError] = useState('')
 
   const navigate = useNavigate()
+
   const {
     storeToken,
     setIsLoggedIn,
@@ -37,7 +39,7 @@ export default function SignInFormNoLS () {
       var details = {
         grant_type: 'password',
         client_id: 'beacon',
-        client_secret: 'WGahOcaJcbQ2srhBsNH56NhhDxH5M51f',
+        client_secret: process.env.REACT_APP_KEYCLOAK_CLIENT_SECRET,
         username: userName,
         password: password,
         realm: 'Beacon',
@@ -54,7 +56,8 @@ export default function SignInFormNoLS () {
       formBody = formBody.join('&')
 
       const response = await fetch(
-        'https://beacon-network-demo2.ega-archive.org/auth/realms/Beacon/protocol/openid-connect/token',
+        configData.KEYCLOAK_URL +
+          '/auth/realms/Beacon/protocol/openid-connect/token',
         {
           method: 'POST',
           headers: {
@@ -77,7 +80,7 @@ export default function SignInFormNoLS () {
       if (readableResponse.access_token) {
         navigate('/')
         setIsLoggedIn(true)
-        setUserNameToShare(userName)
+        setUserNameToShare(localStorage.setItem('userName', userName))
       } else {
         setError(
           'User not found. Please check the username and the password and retry'

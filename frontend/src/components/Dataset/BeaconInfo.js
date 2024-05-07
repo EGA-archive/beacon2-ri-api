@@ -58,7 +58,7 @@ function BeaconInfo (props) {
               {resp[0].meta.beaconId ===
                 'org.ega-archive.ga4gh-approval-beacon-test' && (
                 <a
-                  href='https://ega-archive.org/test-beacon-apis/cineca'
+                  href='https://beacon-apis-demo.ega-archive.org/api'
                   target='_blank'
                 >
                   Beacon API
@@ -66,8 +66,8 @@ function BeaconInfo (props) {
               )}
               {resp[0].meta.beaconId !==
                 'org.ega-archive.ga4gh-approval-beacon-test' &&
-                resp.response && (
-                  <a href={resp.response.alternativeUrl} target='_blank'>
+                (
+                  <a href={resp[0].response.alternativeUrl} target='_blank'>
                     Beacon API
                   </a>
                 )}

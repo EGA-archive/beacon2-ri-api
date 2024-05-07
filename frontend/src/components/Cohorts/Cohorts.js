@@ -77,25 +77,33 @@ function Cohorts (props) {
       const fetchDataCohorts = async () => {
         try {
           let res = await axios.get(configData.API_URL + '/cohorts')
+
           res.data.response.collections.forEach(element => {
             if (optionsCohorts.length > 0) {
+              let found = 0
               optionsCohorts.forEach(cohort => {
+                found = 0
                 if (cohort.value === element.id) {
-                  let obj = {
-                    value: element.id + count,
-                    label: element.id
-                  }
-                  setCount(count + 1)
-                  element.id = element.id + count
-                  optionsCohorts.push(obj)
-                } else {
-                  let obj = {
-                    value: element.id,
-                    label: element.id
-                  }
-                  optionsCohorts.push(obj)
+                  console.log(element.id)
+                  found = 1
                 }
               })
+              if (found === 0) {
+                let obj = {
+                  value: element.id,
+                  label: element.id
+                }
+                optionsCohorts.push(obj)
+              }
+              if (found === 1) {
+                let obj = {
+                  value: element.id + count,
+                  label: element.id + count
+                }
+                setCount(count + 1)
+                element.id = element.id + count
+                optionsCohorts.push(obj)
+              }
             } else {
               let obj = {
                 value: element.id,
@@ -103,7 +111,7 @@ function Cohorts (props) {
               }
               optionsCohorts.push(obj)
             }
-
+            console.log(optionsCohorts)
             arrayCohorts.push(element)
             const timer = setTimeout(() => {
               setTriggerLayout(true)
@@ -201,7 +209,7 @@ function Cohorts (props) {
                 let entriesGeo = ''
                 let valuesDiseases = ''
                 let labelsDiseases = ''
-               
+
                 // for (var i = 0; i < res.data.response.collections.length; i++) {
                 if (element2.eventGenders !== undefined) {
                   sexs = element2.eventGenders.distribution.genders
@@ -262,7 +270,7 @@ function Cohorts (props) {
                 if (labelsEthnicities !== '') {
                   setLabelsEthnicities(labelsEthnicities)
                 }
-         
+
                 if (geoData !== '') {
                   valuesGeo = Object.values(geoData)
                   labelsGeo = Object.keys(geoData)

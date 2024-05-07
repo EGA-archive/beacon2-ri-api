@@ -257,8 +257,9 @@ h12 {
 .graphsDiv {
   display: flex;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
   flex-direction: column;
+  min-height: 900px;
 }
 
 .graphsDiv h3 {

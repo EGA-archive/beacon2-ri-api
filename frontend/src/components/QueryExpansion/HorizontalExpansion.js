@@ -80,7 +80,6 @@ function HorizontalExpansion (props) {
       }
     } catch (error) {
       setError('NOT FOUND')
-      console.log(error)
     }
   }
 
@@ -207,7 +206,7 @@ function HorizontalExpansion (props) {
             {matchesQE.length > 0 && (
               <p className='textQE'>
                 We looked for all the ontology terms derived from the typed
-                keyword <b>"{qeValue}" </b> that are part of the Beacon{' '}
+                keyword <b>"{qeValue}" </b> that are part of the Beacon Network{' '}
                 <b>filtering terms</b>. You can select them so that they are
                 automatically copied to your query. Please be aware that if you
                 want to look for individuals{' '}

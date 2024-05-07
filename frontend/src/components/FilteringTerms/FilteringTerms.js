@@ -17,16 +17,16 @@ function FilteringTerms (props) {
 
   const [results, setResults] = useState('')
 
+  const [popUp, showPopUp] = useState(false)
+
   const [state, setstate] = useState({
     query: '',
-    list:
-      props.filteringTerms !== false
-        ? props.filteringTerms.data.response.filteringTerms
-        : 'error'
+    list: props.filteringTerms !== undefined ? props.filteringTerms : 'error'
   })
 
   const [trigger, setTrigger] = useState(false)
 
+  const [hide, setHide] = useState(true)
   const remove = tag => {
     setSelected(selected.filter(t => t.value !== tag.value))
 
@@ -38,7 +38,7 @@ function FilteringTerms (props) {
       }
     })
 
-    props.filteringTerms.data.response.filteringTerms.forEach(element => {
+    props.filteringTerms.forEach(element => {
       if (element.id === tag.value) {
         state.list.unshift(element)
       }
@@ -92,15 +92,37 @@ function FilteringTerms (props) {
   const [ID, setId] = useState('')
 
   useEffect(() => {
+    console.log(props.filteringTerms)
     if (state.list === 'error') {
       setError(true)
     } else {
       setError(false)
     }
+
+    state.list.forEach((element, index) => {
+      console.log(element.scopes.length)
+
+      if (element.scopes.length > 1) {
+        console.log(element.scopes)
+
+        element.scopes.forEach(element2 => {
+          let arrayNew = {}
+          arrayNew = { ...element }
+          console.log(element2)
+          arrayNew['scopes'] = [element2]
+          console.log(arrayNew)
+
+          state.list.push(arrayNew)
+        })
+      }
+    })
+
     setstate({
       query: '',
       list: props.filteringTerms !== false ? state.list : 'error'
     })
+
+    console.log(state.list)
 
     if (state.list !== 'error') {
       const sampleTags = state.list.map(t => ({
@@ -113,23 +135,21 @@ function FilteringTerms (props) {
   }, [props.filteringTerms, trigger])
 
   const handleChange = e => {
-    const results = props.filteringTerms.data.response.filteringTerms.filter(
-      post => {
-        if (e.target.value === '') {
-          return props.filteringTerms.data.response.filteringTerms
+    const results = props.filteringTerms.filter(post => {
+      if (e.target.value === '') {
+        return props.filteringTerms
+      } else {
+        if (post.id != undefined) {
+          if (post.id.toLowerCase().includes(e.target.value.toLowerCase())) {
+            return post
+          }
         } else {
-          if (post.id != undefined) {
-            if (post.id.toLowerCase().includes(e.target.value.toLowerCase())) {
-              return post
-            }
-          } else {
-            if (post.id.toLowerCase().includes(e.target.value.toLowerCase())) {
-              return post
-            }
+          if (post.id.toLowerCase().includes(e.target.value.toLowerCase())) {
+            return post
           }
         }
       }
-    )
+    })
     setstate({
       //query: e.target.value,
       list: results
@@ -139,110 +159,96 @@ function FilteringTerms (props) {
   }
 
   const handleChange2 = e => {
-    const results = props.filteringTerms.data.response.filteringTerms.filter(
-      post => {
-        if (post.label !== '' && post.label !== undefined) {
-          if (e.target.value === '') {
-            return props.filteringTerms.data.response.filteringTerms
-          } else {
-            if (post.label !== undefined) {
-              if (
-                post.label.toLowerCase().includes(e.target.value.toLowerCase())
-              ) {
-                return post
-              }
+    const results = props.filteringTerms.filter(post => {
+      if (post.label !== '' && post.label !== undefined) {
+        if (e.target.value === '') {
+          return props.filteringTerms
+        } else {
+          if (post.label !== undefined) {
+            if (
+              post.label.toLowerCase().includes(e.target.value.toLowerCase())
+            ) {
+              return post
             }
           }
         }
       }
-    )
+    })
     setstate({
       list: results
     })
   }
 
   const handleChange3 = e => {
-    const results = props.filteringTerms.data.response.filteringTerms.filter(
-      post => {
-        if (e.target.value === '') {
-          return props.filteringTerms.data.response.filteringTerms
+    const results = props.filteringTerms.filter(post => {
+      if (e.target.value === '') {
+        return props.filteringTerms
+      } else {
+        if (post.type !== undefined) {
+          if (post.type.toLowerCase().includes(e.target.value.toLowerCase())) {
+            return post
+          }
         } else {
-          if (post.type !== undefined) {
-            if (
-              post.type.toLowerCase().includes(e.target.value.toLowerCase())
-            ) {
-              return post
-            }
-          } else {
-            if (
-              post.type.toLowerCase().includes(e.target.value.toLowerCase())
-            ) {
-              return post
-            }
+          if (post.type.toLowerCase().includes(e.target.value.toLowerCase())) {
+            return post
           }
         }
       }
-    )
+    })
     setstate({
       list: results
     })
   }
 
   const handleChange4 = e => {
-    const results = props.filteringTerms.data.response.filteringTerms.filter(
-      post => {
-        if (e.target.value === '') {
-          return props.filteringTerms.data.response.filteringTerms
-        } else {
-          if (post.scopes !== undefined) {
-            var returnedPosts = []
-            post.scopes.forEach(element => {
-              if (
-                element.toLowerCase().includes(e.target.value.toLowerCase())
-              ) {
-                returnedPosts.push(post)
-              }
-            })
-            if (returnedPosts.length > 0) {
-              return returnedPosts
+    const results = props.filteringTerms.filter(post => {
+      if (e.target.value === '') {
+        return props.filteringTerms
+      } else {
+        if (post.scopes !== undefined) {
+          var returnedPosts = []
+          post.scopes.forEach(element => {
+            console.log(element.toLowerCase())
+            console.log(e.target.value.toLowerCase())
+            if (element.toLowerCase().includes(e.target.value.toLowerCase())) {
+              returnedPosts.push(post)
             }
+          })
+          if (returnedPosts.length > 0) {
+            return returnedPosts
           }
         }
       }
-    )
+    })
     setstate({
       list: results
     })
   }
 
   const handleCheck = e => {
+    console.log(e.target)
     let infoValue = e.target.value.split(',')
 
-    if (infoValue[1].toLowerCase() !== 'alphanumeric') {
-      const alreadySelected = selected.filter(
-        term => term.label === infoValue[0]
-      )
-
-      if (alreadySelected.length !== 0) {
-        setSelected(selected.filter(t => t.value !== infoValue[0]))
-      } else {
-        const newTag = {
-          label: infoValue[0],
-          value: infoValue[0]
-        }
-
-        selected.push(newTag)
-      }
-
+    if (infoValue[2].toLowerCase() !== 'alphanumeric') {
       if (props.query !== null) {
         let stringQuery = ''
         if (props.query.includes(',')) {
           let arrayTerms = props.query.split(',')
           arrayTerms.forEach(element => {
-            if (element === infoValue[0]) {
-              stringQuery = props.query
+            if (infoValue[1]) {
+              if (element === `${infoValue[3]}=${infoValue[1]}`) {
+                stringQuery = props.query
+              } else {
+                stringQuery =
+                  props.query + ',' + `${infoValue[3]}=${infoValue[1]}`
+              }
             } else {
-              stringQuery = props.query + ',' + infoValue[0]
+              if (element === `${infoValue[3]}=${infoValue[0]}`) {
+                stringQuery = props.query
+              } else {
+                stringQuery =
+                  props.query + ',' + `${infoValue[3]}=${infoValue[0]}`
+              }
             }
           })
 
@@ -252,17 +258,47 @@ function FilteringTerms (props) {
             props.setQuery(stringQuery)
           }
         } else {
-          if (infoValue[0] !== props.query && props.query !== '') {
-            stringQuery = `${props.query},` + infoValue[0]
-            props.setQuery(stringQuery)
-          } else if (infoValue[0] !== props.query && props.query === '') {
-            stringQuery = `${props.query}` + infoValue[0]
-            props.setQuery(stringQuery)
+          if (infoValue[1]) {
+            if (
+              `${infoValue[3]}=${infoValue[1]}` !== props.query &&
+              props.query !== ''
+            ) {
+              stringQuery =
+                `${props.query},` + `${infoValue[3]}=${infoValue[1]}`
+
+              props.setQuery(stringQuery)
+            } else if (
+              `${infoValue[3]}=${infoValue[1]}` !== props.query &&
+              props.query === ''
+            ) {
+              stringQuery = `${props.query}` + `${infoValue[3]}=${infoValue[1]}`
+              props.setQuery(stringQuery)
+            }
+          } else {
+            if (
+              `${infoValue[3]}=${infoValue[0]}` !== props.query &&
+              props.query !== ''
+            ) {
+              stringQuery =
+                `${props.query},` + `${infoValue[3]}=${infoValue[0]}`
+              props.setQuery(stringQuery)
+            } else if (
+              `${infoValue[3]}=${infoValue[0]}` !== props.query &&
+              props.query === ''
+            ) {
+              stringQuery = `${props.query}` + `${infoValue[3]}=${infoValue[0]}`
+              props.setQuery(stringQuery)
+            }
           }
         }
       } else {
-        let stringQuery = infoValue[0]
-        props.setQuery(stringQuery)
+        if (infoValue[1]) {
+          let stringQuery = `${infoValue[3]}=${infoValue[1]}`
+          props.setQuery(stringQuery)
+        } else {
+          let stringQuery = `${infoValue[3]}=${infoValue[0]}`
+          props.setQuery(stringQuery)
+        }
       }
       const filteredItems = state.list.filter(item => item.id !== infoValue[0])
       e.target.checked = false
@@ -298,15 +334,12 @@ function FilteringTerms (props) {
         backspaceDelete={true}
         removeTag={remove}
       />
-      {error && (
-        <h3>No filtering terms available. Please check your connection</h3>
-      )}
 
       {!error && (
         <div className='tableWrapper'>
           <table id='table'>
             <thead className='thead1'>
-              <tr className='search-tr'>
+              <tr className='search-tr1'>
                 <th
                   className='search-box sorting'
                   tabIndex='0'
@@ -316,7 +349,7 @@ function FilteringTerms (props) {
                   aria-sort='ascending'
                   aria-label=': activate to sort column descending'
                 >
-                  <form>
+                  <form className='inputTerm'>
                     <input
                       className='searchTermInput1'
                       type='search'
@@ -327,7 +360,7 @@ function FilteringTerms (props) {
                   </form>
                 </th>
               </tr>
-              <tr className='search-tr'>
+              <tr className='search-tr2'>
                 <th
                   className='search-box sorting'
                   tabIndex='0'
@@ -337,7 +370,7 @@ function FilteringTerms (props) {
                   aria-sort='ascending'
                   aria-label=': activate to sort column descending'
                 >
-                  <form>
+                  <form className='inputLabel'>
                     <input
                       className='searchTermInput'
                       type='search'
@@ -347,56 +380,60 @@ function FilteringTerms (props) {
                   </form>
                 </th>
               </tr>
-              <tr className='search-tr'>
-                <th
-                  className='search-box sorting'
-                  tabIndex='0'
-                  aria-controls='DataTables_Table_0'
-                  rowSpan='1'
-                  colSpan='2'
-                  aria-sort='ascending'
-                  aria-label=': activate to sort column descending'
-                >
-                  <form>
-                    <input
-                      className='searchTermInput'
-                      type='search'
-                      onChange={handleChange3}
-                      placeholder='Search by type'
-                    />
-                  </form>
-                </th>
-              </tr>
-              <tr className='search-tr'>
-                <th
-                  className='search-box sorting'
-                  tabIndex='0'
-                  aria-controls='DataTables_Table_0'
-                  rowSpan='1'
-                  colSpan='2'
-                  aria-sort='ascending'
-                  aria-label=': activate to sort column descending'
-                >
-                  <form>
-                    <input
-                      className='searchTermInput'
-                      type='search'
-                      onChange={handleChange4}
-                      placeholder='Search by scope'
-                    />
-                  </form>
-                </th>
-              </tr>
+              {hide === false && (
+                <tr className='search-tr'>
+                  <th
+                    className='search-box sorting'
+                    tabIndex='0'
+                    aria-controls='DataTables_Table_0'
+                    rowSpan='1'
+                    colSpan='2'
+                    aria-sort='ascending'
+                    aria-label=': activate to sort column descending'
+                  >
+                    <form>
+                      <input
+                        className='searchTermInput'
+                        type='search'
+                        onChange={handleChange3}
+                        placeholder='Search by type'
+                      />
+                    </form>
+                  </th>
+                </tr>
+              )}
+              {
+                <tr className='search-tr'>
+                  <th
+                    className='search-box sorting'
+                    tabIndex='0'
+                    aria-controls='DataTables_Table_0'
+                    rowSpan='1'
+                    colSpan='2'
+                    aria-sort='ascending'
+                    aria-label=': activate to sort column descending'
+                  >
+                    <form>
+                      <input
+                        className='searchTermInput'
+                        type='search'
+                        onChange={handleChange4}
+                        placeholder='Search by scope'
+                      />
+                    </form>
+                  </th>
+                </tr>
+              }
             </thead>
             <thead className='thead2'>
               <tr>
                 <th className='th4'>term</th>
                 <th className='th5'>label</th>
-                <th className='th6'>type</th>
+                {hide === false && <th className='th6'>type</th>}
                 <th className='th7'>scopes</th>
               </tr>
             </thead>
-            {props.filteringTerms.data !== undefined &&
+            {props.filteringTerms !== undefined &&
               state.list !== 'error' &&
               state.list.map((term, index) => {
                 return (
@@ -413,7 +450,13 @@ function FilteringTerms (props) {
                                 type='checkbox'
                                 id={term.id}
                                 name={term.id}
-                                value={[term.id, term.type, index]}
+                                value={[
+                                  term.id,
+                                  term.label,
+                                  term.type,
+                                  [term.scopes],
+                                  index
+                                ]}
                               />
                               {term.id}
                             </td>
@@ -438,10 +481,12 @@ function FilteringTerms (props) {
                             <td className='th1'>-</td>
                           )}
 
-                          <td className='th3'>{term.type}</td>
+                          {hide === false && (
+                            <td className='th3'>{term.type}</td>
+                          )}
 
-                          <td className='th1'>
-                            {term.scopes !== undefined &&
+                          <td className='th4'>
+                            {Array.isArray(term.scopes) &&
                               term.scopes.map((term2, index) => {
                                 return index < term.scopes.length - 1
                                   ? term2 + '' + ','
@@ -461,7 +506,13 @@ function FilteringTerms (props) {
                                 type='checkbox'
                                 id={term.id}
                                 name={term.id}
-                                value={[term.id, term.type, index]}
+                                value={[
+                                  term.id,
+                                  term.label,
+                                  term.type,
+                                  [term.scopes],
+                                  index
+                                ]}
                               />
                               {term.id}
                             </td>
@@ -486,18 +537,18 @@ function FilteringTerms (props) {
                             <td className='th1'>-</td>
                           )}
 
-                          <td className='th3'>{term.type}</td>
+                          {hide === false && (
+                            <td className='th3'>{term.type}</td>
+                          )}
 
-                          {term.scopes && (
-                            <td className='th1'>
-                              {term.scopes.map((term2, index) => {
+                          <td className='th4'>
+                            {Array.isArray(term.scopes) &&
+                              term.scopes.map((term2, index) => {
                                 return index < term.scopes.length - 1
                                   ? term2 + '' + ','
                                   : term2 + ''
                               })}
-                            </td>
-                          )}
-                          {term.scope && <td className='th1'>{term.scope}</td>}
+                          </td>
                         </tr>
                       )}
 
@@ -554,7 +605,7 @@ function FilteringTerms (props) {
                                 className='buttonAlphanum'
                                 onClick={handdleInclude}
                               >
-                                Include
+                                <ion-icon name='add-circle'></ion-icon>
                               </button>
                             </div>
                           </tr>

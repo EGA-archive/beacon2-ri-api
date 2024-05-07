@@ -40,6 +40,10 @@ function AnalysesResults (props) {
   const [queryArray, setQueryArray] = useState([])
   const [arrayFilter, setArrayFilter] = useState([])
 
+  const [isActive1, setIsActive1] = useState(false)
+  const [isActive2, setIsActive2] = useState(false)
+  const [isActive3, setIsActive3] = useState(false)
+
   const { getStoredToken, authenticateUser } = useContext(AuthContext)
   let queryStringTerm = ''
 
@@ -94,10 +98,21 @@ function AnalysesResults (props) {
               }
               arrayFilter.push(alphaNumFilter)
             } else {
-              const filter2 = {
+              let filter2 = {
                 id: element,
                 includeDescendantTerms: props.descendantTerm
               }
+              props.filteringTerms.data.response.filteringTerms.forEach(
+                element2 => {
+                  if (element.toLowerCase() === element2.label.toLowerCase()) {
+                    filter2 = {
+                      id: element2.id,
+                      includeDescendantTerms: props.descendantTerm
+                    }
+                  }
+                }
+              )
+
               arrayFilter.push(filter2)
             }
           })
@@ -133,9 +148,24 @@ function AnalysesResults (props) {
             }
             arrayFilter.push(alphaNumFilter)
           } else {
-            const filter = {
-              id: props.query
-            }
+            let filter = { id: props.query }
+            let labelToOntology = 0
+            console.log('holi')
+            let queryTermLowerCase = props.query.toLowerCase()
+            console.log(props.filteringTerms)
+            props.filteringTerms.data.response.filteringTerms.forEach(
+              element => {
+                if (element.label) {
+                  element.label = element.label.toLowerCase()
+                }
+                if (queryTermLowerCase === element.label) {
+                  labelToOntology = element.id
+                  filter = {
+                    id: labelToOntology
+                  }
+                }
+              }
+            )
             arrayFilter.push(filter)
           }
         }
@@ -187,10 +217,11 @@ function AnalysesResults (props) {
           setTimeOut(true)
 
           if (
-            res.data.responseSummary.numTotalResults < 1 ||
-            res.data.responseSummary.numTotalResults === undefined
+            (res.data.responseSummary.numTotalResults < 1 ||
+              res.data.responseSummary.numTotalResults === undefined) &&
+            props.resultSets !== 'MISS'
           ) {
-            setError('ERROR. Please check the query and retry')
+            setError('No results. Please try another query')
             setNumberResults(0)
             setBoolean(false)
           } else {
@@ -209,7 +240,6 @@ function AnalysesResults (props) {
                     [element.exists],
                     [element.resultsCount]
                   ]
-
                   resultsPerDataset.push(arrayResultsPerDataset)
                 }
               }
@@ -249,33 +279,35 @@ function AnalysesResults (props) {
             }
           }
           jsonData2 = JSON.stringify(jsonData2)
+
           let token = null
           if (auth.userData === null) {
             token = getStoredToken()
           } else {
             token = auth.userData.access_token
           }
-
+          console.log(jsonData2)
           if (token === null) {
             console.log('Querying without token')
             res = await axios.post(configData.API_URL + '/analyses', jsonData2)
           } else {
             console.log('Querying WITH token')
             const headers = { Authorization: `Bearer ${token}` }
-
             res = await axios.post(
               configData.API_URL + '/analyses',
               jsonData2,
               { headers: headers }
             )
           }
+
           setTimeOut(true)
 
           if (
-            res.data.responseSummary.numTotalResults < 1 ||
-            res.data.responseSummary.numTotalResults === undefined
+            (res.data.responseSummary.numTotalResults < 1 ||
+              res.data.responseSummary.numTotalResults === undefined) &&
+            props.resultSets !== 'MISS'
           ) {
-            setError('ERROR. Please check the query and retry')
+            setError('No results. Please try another query')
             setNumberResults(0)
             setBoolean(false)
           } else {
@@ -294,8 +326,15 @@ function AnalysesResults (props) {
                     [element.exists],
                     [element.resultsCount]
                   ]
-
-                  resultsPerDataset.push(arrayResultsPerDataset)
+                  let found = false
+                  resultsPerDataset.forEach(element => {
+                    if (element[0] === arrayResultsPerDataset[0]) {
+                      found = true
+                    }
+                  })
+                  if (found === false) {
+                    resultsPerDataset.push(arrayResultsPerDataset)
+                  }
                 }
               }
 
@@ -319,9 +358,7 @@ function AnalysesResults (props) {
           }
         }
       } catch (error) {
-        setError(
-          'No results. Please check the query and the connection and retry'
-        )
+        setError('No results. Please retry')
         setTimeOut(true)
       }
     }
@@ -332,18 +369,27 @@ function AnalysesResults (props) {
     setShow1(true)
     setShow2(false)
     setShow3(false)
+    setIsActive1(true)
+    setIsActive2(false)
+    setIsActive3(false)
   }
 
   const handleTypeResults2 = () => {
     setShow2(true)
     setShow1(false)
     setShow3(false)
+    setIsActive2(true)
+    setIsActive3(false)
+    setIsActive1(false)
   }
 
   const handleTypeResults3 = () => {
     setShow3(true)
     setShow1(false)
     setShow2(false)
+    setIsActive3(true)
+    setIsActive1(false)
+    setIsActive2(false)
   }
   const onSubmit = () => {
     setSkipTrigger(skip)
@@ -372,14 +418,34 @@ function AnalysesResults (props) {
               <div className='selectGranularity'>
                 <h4>Granularity:</h4>
                 <button className='typeResults' onClick={handleTypeResults1}>
-                  <h5>Boolean</h5>
+                  <h5
+                    className={
+                      isActive1 ? 'granularityActive' : 'granularityNoActive'
+                    }
+                  >
+                    Boolean
+                  </h5>
                 </button>
                 <button className='typeResults' onClick={handleTypeResults2}>
-                  <h5>Count</h5>
+                  <h5
+                    className={
+                      isActive2 ? 'granularityActive' : 'granularityNoActive'
+                    }
+                  >
+                    Count
+                  </h5>
                 </button>
-                <button className='typeResults' onClick={handleTypeResults3}>
-                  <h5>Full response</h5>
-                </button>
+                {props.resultSets !== 'MISS' && (
+                  <button className='typeResults' onClick={handleTypeResults3}>
+                    <h5
+                      className={
+                        isActive3 ? 'granularityActive' : 'granularityNoActive'
+                      }
+                    >
+                      Full response
+                    </h5>
+                  </button>
+                )}
               </div>
             </div>
           )}

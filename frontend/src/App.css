@@ -37,6 +37,23 @@ html {
   margin-left: 10px;
 }
 
+.scopeSelection{
+  position: absolute;
+  top: 286px;
+  z-index: 5;
+  background-color: #e2f4ff;
+  /* height: 80px; */
+  display: flex;
+  align-items: center;
+  padding: 7px;
+  padding-left: 19px;
+  padding-right: 19px;
+  height: 123px;
+  border-radius: 13px;
+  color: #1a4b1a;
+  font-size: 17px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+}
 .resultSetsDiv2 .multi-switch-container {
   margin-left: -5px;
   margin-top: 8px;
@@ -66,17 +83,19 @@ html {
 }
 
 .version {
-  margin-bottom: 19px;
-  margin-right: 46px;
-  margin-top: 7px;
+  margin-right: 37px;
+  margin-top: -18px;
   color: rgb(102 116 152) !important;
   font-weight: 700 !important;
 }
 
-.beaconLogo {
-  height: 45px;
-  margin-top: 41px;
-  margin-right: 31px;
+.logosVersionContainer {
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+  justify-content: center;
+  align-items: flex-end;
+  margin-bottom: 20px;
 }
 
 .searchButton {
@@ -84,6 +103,26 @@ html {
   padding-left: 0px;
   cursor: pointer;
   margin-left: 12px;
+}
+
+.scopeDiv {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.scopeDiv h10 {
+  margin-top: 0px;
+}
+
+.doneButton ion-icon:hover {
+  color: rgb(36, 135, 128);
+}
+
+p a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .modeVariantsQuery {
@@ -109,6 +148,34 @@ html {
   font-variant-caps: all-petite-caps;
 }
 
+
+.variantsForm {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  margin-left: -70px;
+}
+
+
+
+
+.variantsFormVariant {
+  margin-top: -14px;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  margin-left: -70px;
+}
+.crossQueriesTittle {
+  margin-bottom: 18px;
+  font-size: 12px;
+  margin-top: -56px;
+}
 .modeVariantsBarMode:hover h2 {
   color: rgb(236, 149, 0) !important;
 }
@@ -130,16 +197,109 @@ html {
 }
 
 .containerTableResults {
+  width: 100vw;
   display: flex;
   align-content: center;
   justify-content: center;
   align-items: center;
 }
 
+
 .newSearchButton:hover {
   color: rgb(118, 151, 228);
 }
 
+.moduleAddedQuery {
+  display: flex;
+  flex-direction: column;
+  width: 145px;
+  justify-content: center;
+  border: 0px solid #f2eded;
+  padding: 11px;
+  border-radius: 15px;
+  margin-top: 11px;
+  margin-bottom: 11px;
+  box-shadow: rgba(192, 200, 227, 0.27) 0px 0px 0.25em,
+    rgba(159, 167, 184, 0.05) 0px 0.25em 1em;
+  margin-left: 14px;
+  animation: slide-in-blurred-right 0.4s ease-in both;
+}
+
+.doneButton ion-icon{
+  color: black;
+}
+
+
+
+.removeButton {
+  width: 130%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -18px;
+}
+
+.removeButton ion-icon {
+  color: rgb(221 221 221) !important;
+  font-size: 11px;
+  margin-right: 0px;
+}
+
+.removeButton ion-icon:hover {
+  color: rgb(212, 6, 6) !important;
+  font-weight: 800;
+}
+
+.moduleAdded {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  flex-direction: column;
+}
+@keyframes slide-in-blurred-right {
+  0% {
+    transform: translateX(1000px) scaleX(2.5) scaleY(0.2);
+    transform-origin: 0% 50%;
+    filter: blur(40px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0) scaleY(1) scaleX(1);
+    transform-origin: 50% 50%;
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+.moduleAddedQuery h13 {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  color: #bac0c6;
+  text-transform: capitalize;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 12px;
+  margin-top: -6px;
+}
+
+.moduleAdded ion-icon {
+  color: rgb(174 182 189);
+  margin-right: 12px;
+  font-size: 22px;
+}
+.moduleAddedContainer {
+  display: flex;
+  align-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  flex-wrap: wrap;
+}
+h14 {
+  color: #64646a;
+  font-size: 11px;
+}
 .searchButton2 {
   cursor: pointer;
   /* margin-left: 26px; */
@@ -168,8 +328,12 @@ html {
   width: 100%;
   margin-right: 10px;
   margin-left: 10px;
-  justify-content: center;
-  height: 35px;
+  justify-content: space-around;
+  /* height: 35px; */
+  align-content: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  align-items: flex-start;
 }
 
 .form-select {
@@ -225,15 +389,15 @@ html {
 }
 
 .formSearch {
-  width: 60vw;
-  margin-right: 3px;
+  width: 45vw;
+  margin-right: 0px;
   background: white;
   border: 2px solid #8985c1;
   font-size: medium;
   /* margin: 10px; */
   border-radius: 10px;
   /* box-shadow: 2px 1px 2px #cecece; */
-  height: 32px;
+  height: 30px;
 }
 
 .searchIcon {
@@ -260,7 +424,6 @@ html {
   flex-direction: column;
   align-content: center;
   align-items: center;
-  margin-top: -48px;
 }
 
 .variantsContainer {
@@ -273,16 +436,19 @@ html {
 }
 
 .inputVariants {
-  height: 24px;
-  border: 1.5px solid #dfdfdf;
+  width: 69px;
+  /* height: 24px; */
+  border: 0.5px solid #dfdfdf;
   border-radius: 2px;
-  margin-bottom: 30px;
-  font-size: 12.5px;
-  padding: 5px;
+  margin-bottom: 2px;
+  margin-left: 6px;
+  font-size: 11.5px;
+  padding: 3px;
+  box-shadow: rgb(234 221 221 / 16%) 0px 1px 4px;
 }
 
 .labelVariants {
-  font-size: 13.5px;
+  font-size: 11.5px;
   margin-bottom: 18px;
   margin-right: 4px;
   margin-left: 18px;
@@ -308,7 +474,6 @@ html {
   width: 100%;
   display: flex;
   justify-content: flex-end;
-  margin-top: -23px;
 }
 
 .buttonAlphanum {
@@ -317,6 +482,7 @@ html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
+  color: #756d6d;
 }
 
 .buttonAlphanum:hover {
@@ -440,11 +606,7 @@ html {
 }
 
 .buttonVariants {
-  margin-top: 9px;
   margin-bottom: -14px;
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 1px,
-    rgba(179, 179, 179, 0.22) 0px 1px 1px;
-  padding: 6px;
   cursor: pointer;
 }
 
@@ -455,9 +617,8 @@ html {
 }
 
 .basesSection {
-  margin-bottom: 30px;
   border: solid 1px #dadada;
-  margin-top: 25px;
+
   box-shadow: rgba(207, 192, 192, 0.15) 1.4px 1.4px 2.2px;
 }
 
@@ -486,7 +647,7 @@ html {
   font-weight: 700;
 }
 .variantExampleButton:hover {
-  background-color: #78beed;
+  background-color: #bfe1f7;
   border: solid #06c;
 }
 
@@ -505,20 +666,25 @@ html {
 }
 
 .exampleQuery:hover .text-example {
+  margin-right: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: solid #c8c8c8;
-  background-color: #c8c8c8;
+  background-color: #e1dddd;
   color: black;
+  width: -moz-fit-content;
   width: fit-content;
   border-radius: 6px;
-  margin-left: 10px;
-  padding: 1px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 2px;
+  padding-right: 2px;
+  margin-bottom: 6px;
 }
 
 .examplesQueriesList {
-  width: 111px;
+  width: fit-content;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -578,11 +744,94 @@ html {
   margin-bottom: 12px;
 }
 
+.cinecaLogo {
+  height: 51px;
+  align-items: center;
+  margin-top: 55px;
+  margin-bottom: 30px;
+  margin-right: 42px;
+}
+
 .container1 a {
   display: flex;
   align-content: center;
   text-underline-offset: 4px;
   align-items: center;
+}
+
+.eosc4cancer {
+  height: 85px;
+  margin-top: 20px;
+  margin-right: 30px;
+  -webkit-filter: grayscale(20%);
+  filter: grayscale(60%);
+  -webkit-transition: 0.2s ease-in-out;
+  transition: 0.2s ease-in-out;
+}
+
+.eosc4cancer:hover {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
+}
+
+.federLogo {
+  height: 33px;
+  margin-top: 42px;
+  margin-right: 14px;
+  -webkit-filter: grayscale(20%);
+  filter: grayscale(100%);
+  -webkit-transition: 0.2s ease-in-out;
+  transition: 0.2s ease-in-out;
+}
+
+.federLogo:hover {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
+}
+
+.iscLogo {
+  height: 33px;
+  margin-top: 42px;
+  margin-right: 14px;
+  -webkit-filter: grayscale(20%);
+  filter: grayscale(100%);
+  -webkit-transition: 0.2s ease-in-out;
+  transition: 0.2s ease-in-out;
+}
+
+.iscLogo:hover {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
+}
+
+.ministerioLogo {
+  height: 33px;
+  margin-top: 42px;
+  margin-right: 14px;
+  -webkit-filter: grayscale(20%);
+  filter: grayscale(100%);
+  -webkit-transition: 0.2s ease-in-out;
+  transition: 0.2s ease-in-out;
+}
+
+.ministerioLogo:hover {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
+}
+
+.laCaixaLogo {
+  height: 33px;
+  margin-top: 42px;
+  margin-right: 30px;
+  -webkit-filter: grayscale(20%);
+  filter: grayscale(100%);
+  -webkit-transition: 0.2s ease-in-out;
+  transition: 0.2s ease-in-out;
+}
+
+.laCaixaLogo:hover {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
 }
 
 .comming_message {
@@ -645,6 +894,8 @@ select {
   /* justify-content: center; */
   align-content: center;
   align-items: center;
+  padding-bottom: 55px;
+  min-height: 280px;
 }
 
 .resultSet2 {
@@ -653,6 +904,7 @@ select {
 
 .cohortsModule {
   display: flex;
+  width: 100vw;
 }
 
 .tittleAlph {
@@ -682,7 +934,6 @@ hr {
     sans-serif;
   text-transform: uppercase;
   font-size: 12px;
-  margin-left: 33px;
 }
 
 .exampleQueries:hover {
@@ -690,9 +941,13 @@ hr {
 }
 
 .bulbExample {
+  margin-right: 48px;
+  padding-right: 19px;
+  border-right: 1.7px solid #f1f1f1;
   display: flex;
+  justify-content: center;
   align-items: center;
-  border-left: 1.7px solid #f1f1f1;
+  flex-direction: row-reverse;
 }
 
 .helpButton {
@@ -705,9 +960,10 @@ hr {
   display: flex;
   width: 100vw;
   align-items: flex-end;
-  margin-bottom: -11px;
-  margin-top: -16px;
-  flex-direction: column;
+  margin-bottom: 19px;
+  margin-top: -8px;
+  flex-direction: row;
+  justify-content: flex-end;
 }
 
 .helpButton:hover {
@@ -761,7 +1017,6 @@ hr {
 }
 
 .additionalOptions {
-  width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -770,10 +1025,10 @@ hr {
 .example {
   display: flex;
   align-items: center;
-  margin-right: -117px;
+  /* margin-right: -117px; */
   margin-top: 22px;
   margin-bottom: 22px;
-  flex-direction: row-reverse;
+  flex-direction: row;
   align-content: space-between;
   justify-content: center;
 }
@@ -788,15 +1043,16 @@ hr {
 }
 
 .exampleQuery {
+  width: 100%;
   border: none;
   /* border-color: #5454bc; */
   padding: 5px;
   cursor: pointer;
   display: flex;
-  flex-direction: row-reverse;
-  align-content: center;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column-reverse;
+  align-items: flex-start;
+  justify-content: space-around;
+  align-content: space-around;
 }
 
 .exampleQueriesAlph {
@@ -999,8 +1255,8 @@ h5 {
   margin: 4px;
   padding: 6px;
   box-shadow: 1px 1px 2px #a3a0a0;
-  width: 222px;
-  height: 12px;
+  width: 168px;
+  height: 27px;
   border-radius: 4px;
   overflow: auto;
 }
@@ -1008,11 +1264,11 @@ h5 {
 .ValueForm {
   background: white;
   border: 2px solid rgba(12, 16, 64, 0.606);
-  margin: 20px;
+  margin-left: 5px;
   padding: 6px;
   box-shadow: 1px 1px 2px #a3a0a0;
-  width: 16%;
-  height: 12px;
+  width: 30%;
+  height: 27px;
   border-radius: 4px;
 }
 
@@ -1053,8 +1309,8 @@ h5 {
     sans-serif;
   text-transform: uppercase;
   font-size: 12px;
-  margin-right: 36px;
-  margin-left: 27px;
+  margin-right: 32px;
+  margin-left: -20px;
 }
 
 .filters:hover {
@@ -1062,25 +1318,33 @@ h5 {
 }
 
 .ReactModal__Content--after-open {
-  width: 485px;
-  font-size: 11px;
-  height: 33%;
+  width: 500px;
+  font-size: 12px !important;
+  /* height: 33%; */
+  height: fit-content;
   position: absolute !important;
-  inset: 35% !important;
+  top: 18% !important;
+  right: 10vw !important;
+  left: 32.4vw !important;
   border: 1px solid rgb(204, 204, 204) !important;
-  background: #be5930 !important;
+  background: #82a0b7 !important;
   overflow: auto !important;
-  border-radius: 4px !important;
+  border-radius: 12px !important;
   outline: none !important;
-  padding: 16px !important;
+  padding: 7px !important;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 
 .ReactModal__Content--after-open p {
-  font-size: 16px;
+  font-size: 12px;
   font-weight: normal;
+  inset: 0px !important;
   color: white;
   line-height: 30px;
   padding: 2px;
+  top: 28% !important;
+  right: 10vw !important;
+  left: 34.4vw !important;
 }
 @media (max-width: 1409px) {
   .containerExtraSections2 {
@@ -1098,6 +1362,10 @@ h5 {
     justify-content: center;
     align-items: center;
     align-content: center;
+  }
+
+  .variantsForm {
+    margin-left: 0px;
   }
   .containerExtraSections2 {
     display: flex;
@@ -1127,11 +1395,19 @@ h5 {
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .container1 a {
     display: flex;
     font-size: 11px;
     text-underline-offset: 1px;
+  }
+
+  .crossQueriesTittle {
+    margin-bottom: 12px;
+    font-size: 12px;
+    margin-top: 37px;
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
 
   .resultset2 {
@@ -1147,39 +1423,99 @@ h5 {
   }
 
   .version {
-    margin-bottom: 46px;
-    margin-right: 36px;
-    margin-top: -35px;
+    margin-bottom: 0px;
+    margin-right: 37px;
+    margin-top: -18px;
     color: rgb(102 116 152) !important;
-    font-weight: 600;
+    font-weight: 700 !important;
   }
 
-  .beaconLogo {
-    height: 45px;
-    margin-top: 18px;
-    margin-bottom: 37px;
-    margin-right: 21px;
+  .logosVersionContainer {
+    display: flex;
+    flex-direction: column;
+    align-content: stretch;
+    justify-content: center;
+    align-items: flex-end;
+    margin-bottom: 20px;
+  }
+
+  .eosc4cancer {
+    height: 61px;
+    margin-top: 20px;
+    margin-right: 33px;
+    -webkit-filter: grayscale(20%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+
+  .federLogo {
+    height: 31px;
+    margin-top: 31px;
+    margin-right: 10px;
+    -webkit-filter: grayscale(20%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+
+  .iscLogo {
+    height: 31px;
+    margin-top: 31px;
+    margin-right: 10px;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+
+  .ministerioLogo {
+    height: 31px;
+    margin-top: 31px;
+    margin-right: 10px;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+
+  .laCaixaLogo {
+    height: 31px;
+    margin-top: 31px;
+    margin-right: 30px;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
   }
 
   .inputVariants {
-    height: 24px;
-    border: 1.5px solid #dfdfdf;
+    width: 69px;
+    /* height: 24px; */
+    border: 0.5px solid #dfdfdf;
     border-radius: 2px;
-    margin-bottom: 30px;
-    font-size: 12px;
+    margin-bottom: 2px;
+    margin-left: 6px;
+    font-size: 11.5px;
+    padding: 3px;
+    box-shadow: rgb(234 221 221 / 16%) 0px 1px 4px;
+  }
+
+  .container2 {
+    margin-bottom: 0px;
   }
 
   .exampleQuery {
+    width: 100%;
     border: none;
     /* border-color: #5454bc; */
     padding: 5px;
     cursor: pointer;
     display: flex;
-    flex-direction: row-reverse;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
-    font-size: 12px;
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    justify-content: space-around;
+    align-content: space-around;
   }
 
   .labelVariants {
@@ -1193,11 +1529,329 @@ h5 {
   }
 
   .buttonVariants {
-    margin-top: 12px;
     margin-bottom: 20px;
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 1px,
-      rgba(179, 179, 179, 0.22) 0px 1px 1px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-right: 7px;
+  }
+
+  .switchDescendants h3 {
+    color: #e16e00;
+    text-transform: uppercase;
+    margin-left: 3px !important;
+    margin-top: 6px;
+    font-size: 10px;
+  }
+  .css-1ycxvqq-MuiSwitch-root {
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    width: 40px;
+    height: 24px;
+    overflow: hidden;
+    padding: 7px;
+    box-sizing: border-box;
+    position: relative;
+    -webkit-flex-shrink: 0;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    z-index: 0;
+    margin-top: -3px;
+    vertical-align: middle;
+  }
+
+  .ReactModal__Content--after-open p {
+    font-size: 14px;
+    font-weight: normal;
+    color: white;
+    line-height: 20px;
+    padding: 2px;
+    width: 500px;
+    top: 28% !important;
+    right: 10vw !important;
+    left: 34.4vw !important;
+    inset: 0px !important;
+  }
+
+  .ReactModal__Overlay {
+    z-index: 3;
+  }
+
+  .filters {
+    padding: 4px;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+    text-transform: uppercase;
+    font-size: 10px;
+    margin-right: 3px;
+    margin-left: -23px;
+  }
+
+  .container-fluid {
+    display: flex;
+    width: 100%;
+    margin-right: 10px;
+    margin-left: 10px;
+    justify-content: space-around;
+    /* height: 35px; */
+    align-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  .example {
+    display: flex;
+    align-items: center;
+    margin-right: 0px;
+    width: 230px;
+    margin-top: 22px;
+    margin-bottom: 22px;
+    flex-direction: row;
+    align-content: space-between;
+    justify-content: center;
+  }
+
+  .exampleQueries {
+    border: none;
+    background-color: #ffffff;
+    color: #4d4b4b;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+    text-transform: uppercase;
+    font-size: 10px;
+    margin-left: 0px !important;
+  }
+
+  .additionalOptions {
+    justify-content: center;
+    align-items: center;
+    z-index: 0;
+    height: 73px;
+    margin-top: 11px;
+  }
+
+  .bulbLogo {
+    display: none;
+  }
+
+  .formSearch {
+    width: 61vw;
+    margin-right: 3px;
+    background: white;
+    border: 2px solid #8985c1;
+    font-size: small;
+    /* margin: 10px; */
+    border-radius: 10px;
+    /* box-shadow: 2px 1px 2px #cecece; */
+    height: 27px;
+  }
+  .bulbExample {
+    margin-right: 48px;
+    padding-right: 19px;
+    border-right: 1.7px solid #f1f1f1;
+    display: flex;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+    text-transform: uppercase;
+  }
+  .searchIcon {
+    width: 26px;
+    margin-top: -1px;
+    margin-left: -8px;
+  }
+  .searchIcon:hover {
+    width: 26px;
+    margin-top: -1px;
+    margin-left: -8px;
+  }
+
+  .elixirLogo {
+    height: 70px;
+    margin-top: 18px;
+    margin-bottom: 37px;
+    margin-right: 21px;
+  }
+
+  .searchButton {
+    height: 30px;
+    cursor: pointer;
+  }
+
+  .examplesQueriesList {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: flex-start;
+    width: fit-content;
+    border-radius: 5px;
+    font-size: 9px;
+    margin-left: 10px !important;
+    background: #8dbde0;
+  }
+
+  .bulbExample {
+    margin-right: 49px;
+    display: flex;
+    padding-right: 13px;
+    border-right: 1.7px solid #f1f1f1;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+    text-transform: uppercase;
+  }
+
+  .NavlinkVerifier {
+    color: rgba(12, 16, 64, 0.606);
+    font-size: 15px !important;
+    font-feature-settings: 'pcap', 'c2pc', 'pcap', 'c2pc';
+    font-variant-caps: all-petite-caps;
+    margin-top: 0px;
+    font-size: 12px !important;
+  }
+}
+
+@media (max-width: 750px) {
+  .container1 a {
+    display: flex;
+    font-size: 11px;
+    text-underline-offset: 1px;
+  }
+
+  .crossQueriesTittle {
+    margin-bottom: 12px;
+    font-size: 12px;
+    margin-top: 37px;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .resultset2 {
+    display: flex;
+    align-items: flex-start;
+    width: 244px;
+    flex-direction: column;
+    justify-content: center;
+    /* margin-left: 46px; */
+    background: #e0e7ef;
+    padding-top: 10px;
+    padding-bottom: 1px;
+  }
+
+  .version {
+    margin-bottom: 0px;
+    margin-right: 37px;
+    margin-top: -18px;
+    color: rgb(102 116 152) !important;
+    font-weight: 700 !important;
+  }
+
+  .logosVersionContainer {
+    display: flex;
+    flex-direction: column;
+    align-content: stretch;
+    justify-content: center;
+    align-items: flex-end;
+    margin-bottom: 20px;
+  }
+
+  .eosc4cancer {
+    height: 61px;
+    margin-top: 20px;
+    margin-right: 33px;
+    -webkit-filter: grayscale(20%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+
+  .federLogo {
+    height: 31px;
+    margin-top: 31px;
+    margin-right: 10px;
+    -webkit-filter: grayscale(20%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+
+  .iscLogo {
+    height: 31px;
+    margin-top: 31px;
+    margin-right: 10px;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+
+  .ministerioLogo {
+    height: 31px;
+    margin-top: 31px;
+    margin-right: 10px;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+
+  .laCaixaLogo {
+    height: 31px;
+    margin-top: 31px;
+    margin-right: 30px;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+
+  .inputVariants {
+    width: 69px;
+    /* height: 24px; */
+    border: 0.5px solid #dfdfdf;
+    border-radius: 2px;
+    margin-bottom: 2px;
+    margin-left: 6px;
+    font-size: 11.5px;
+    padding: 3px;
+    box-shadow: rgb(234 221 221 / 16%) 0px 1px 4px;
+  }
+
+  .container2 {
+    margin-bottom: 0px;
+  }
+
+  .exampleQuery {
+    width: 100%;
+    border: none;
+    /* border-color: #5454bc; */
     padding: 5px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    justify-content: space-around;
+    align-content: space-around;
+  }
+
+  .labelVariants {
+    font-size: 11.5px;
+    margin-bottom: 18px;
+    margin-right: 4px;
+    margin-left: 18px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+  }
+
+  .buttonVariants {
+    margin-bottom: 20px;
     cursor: pointer;
     font-size: 12px;
     margin-right: 7px;
@@ -1229,25 +1883,34 @@ h5 {
     vertical-align: middle;
   }
   .ReactModal__Content--after-open {
-    width: 269px;
-    font-size: 12px;
-    height: fit-content;
+    width: 280px;
+    font-size: 11px;
+    /* height: 33%; */
+    height: 22%;
     position: absolute !important;
-    inset: 35% !important;
+    top: 28% !important;
+    right: 10vw !important;
+    left: 32.4vw !important;
     border: 1px solid rgb(204, 204, 204) !important;
-    background: #be5930 !important;
+    background: #82a0b7 !important;
     overflow: auto !important;
-    border-radius: 4px !important;
+    border-radius: 12px !important;
     outline: none !important;
-    padding: 16px !important;
+    padding: 7px !important;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    inset: 20vw !important;
   }
 
   .ReactModal__Content--after-open p {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: normal;
     color: white;
+    width: fit-content;
     line-height: 20px;
     padding: 2px;
+    top: 28% !important;
+    right: 10vw !important;
+    left: 34.4vw !important;
   }
 
   .ReactModal__Overlay {
@@ -1262,28 +1925,30 @@ h5 {
       'Helvetica Neue', sans-serif;
     text-transform: uppercase;
     font-size: 10px;
-    margin-left: 2px !important;
-    margin-right: 7px !important;
-    /* margin-right: 36px; */
-    /* margin-left: 27px; */
+    margin-right: 3px;
+    margin-left: -23px;
   }
 
   .container-fluid {
     display: flex;
     width: 100%;
-    margin-right: 0px;
-    margin-left: 0px;
-    justify-content: center;
-    height: 35px;
+    margin-right: 10px;
+    margin-left: 10px;
+    justify-content: space-around;
+    /* height: 35px; */
+    align-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
   }
 
   .example {
     display: flex;
     align-items: center;
     margin-right: 0px;
+    width: 230px;
     margin-top: 22px;
     margin-bottom: 22px;
-    flex-direction: row-reverse;
+    flex-direction: row;
     align-content: space-between;
     justify-content: center;
   }
@@ -1305,8 +1970,8 @@ h5 {
     justify-content: center;
     align-items: center;
     z-index: 0;
-    height: 84px;
-    margin-top: -21px;
+    height: 73px;
+    margin-top: 11px;
   }
 
   .bulbLogo {
@@ -1314,7 +1979,7 @@ h5 {
   }
 
   .formSearch {
-    width: 81vw;
+    width: 71vw;
     margin-right: 3px;
     background: white;
     border: 2px solid #8985c1;
@@ -1325,13 +1990,14 @@ h5 {
     height: 27px;
   }
   .bulbExample {
+    margin-right: 48px;
+    padding-right: 19px;
+    border-right: 1.7px solid #f1f1f1;
     display: flex;
-    border-left: 1.7px solid #f1f1f1;
-    flex-direction: column;
-    justify-content: center;
-    align-content: center;
-    align-items: center;
-    width: 112px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+    text-transform: uppercase;
   }
   .searchIcon {
     width: 26px;
@@ -1362,7 +2028,7 @@ h5 {
     justify-content: center;
     align-content: center;
     align-items: flex-start;
-    width: 189px;
+    width: fit-content;
     border-radius: 5px;
     font-size: 9px;
     margin-left: 10px !important;
@@ -1370,12 +2036,14 @@ h5 {
   }
 
   .bulbExample {
+    margin-right: 49px;
     display: flex;
-    border-left: 1.7px solid #f1f1f1;
-    flex-direction: column;
-    justify-content: center;
-    align-content: center;
-    align-items: center;
+    padding-right: 13px;
+    border-right: 1.7px solid #f1f1f1;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+    text-transform: uppercase;
   }
 
   .NavlinkVerifier {
@@ -1385,5 +2053,29 @@ h5 {
     font-variant-caps: all-petite-caps;
     margin-top: 0px;
     font-size: 12px !important;
+  }
+}
+
+@media (max-width: 460px) {
+  .containerForm {
+    margin-left: 0px;
+  }
+  .formSearch {
+    width: 71vw;
+    margin-right: 3px;
+    background: white;
+    border: 2px solid #8985c1;
+    font-size: small;
+    /* margin: 10px; */
+    border-radius: 10px;
+    /* box-shadow: 2px 1px 2px #cecece; */
+    height: 30px;
+  }
+  .crossQueriesTittle {
+    margin-bottom: 12px;
+    font-size: 10px;
+    margin-top: 24px;
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
 }

@@ -17,7 +17,7 @@
 .datasetCard {
   width: 40vw;
   margin: 30px;
-
+  margin-top: 50px !important;
   /* border: 2px solid #3b9ad5; */
   padding: 16px;
   display: flex;
@@ -281,16 +281,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 50%;
-  width: 100%;
+  height: 100%;
 }
 
 .resultSetsContainer h6 {
   background: #86e4a8;
   border-radius: 2px;
-  width: fit-content;
+  width: fit-content !important;
   margin-left: 5px;
   padding: 3px;
+  margin-bottom: 0px;
+  margin-top: 0px;
 }
 
 .tittle h2 {
@@ -345,6 +346,11 @@
   font-size: 16px;
 }
 
+h5 {
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+
 .resultsRecord {
   display: flex;
   flex-direction: row;
@@ -354,12 +360,16 @@
   align-content: center;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1200px) {
+  .tittleResults {
+    width: 37vw;
+    height: 200px;
+  }
   .datasetCardResults {
     /* width: 20vw; */
     height: 247px;
     margin: 24px !important;
-    width: 47vw;
+    width: 39vw;
     /* border: 2px solid #3b9ad5; */
     padding: 3px;
     display: flex;
@@ -400,7 +410,7 @@
   }
 
   .datasetCard {
-    width: 75vw;
+    width: 58vw;
     margin: 30px;
     /* border: 2px solid #3b9ad5; */
     padding: 16px;
@@ -414,7 +424,123 @@
     justify-content: flex-start;
   }
   .tittle {
-    width: 71vw;
+    width: 54vw;
+    background: #c8d4e6;
+    border-radius: 2px;
+    /* height: 80px; */
+    display: flex;
+    padding: 2px;
+    flex-direction: column;
+    font-size: 9px !important;
+  }
+
+  .tittle h2 {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+    color: rgba(12, 16, 64, 0.606);
+    font-size: 10px;
+    font-weight: 600;
+    margin-left: 10px;
+  }
+
+  .logoBeacon {
+    margin-left: 10px;
+  }
+
+  .datasetCard a {
+    margin-right: 14px;
+    font-size: 11px;
+    color: #0158aa;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+
+  .datasetCard a:hover {
+    margin-right: 14px;
+    font-size: 10px;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font-weight: 600;
+    color: #539ce6;
+  }
+
+  .tittle2 h1 {
+    font-size: 11px;
+    font-weight: normal;
+    margin: 14px;
+    color: #5d5454;
+  }
+}
+
+@media (max-width: 800px) {
+  .tittleResults {
+    width: 58vw;
+    height: 200px;
+  }
+  .datasetCardResults {
+    /* width: 20vw; */
+    height: 247px;
+    margin: 24px !important;
+    width: 61vw;
+    /* border: 2px solid #3b9ad5; */
+    padding: 3px;
+    display: flex;
+    box-shadow: 18 (0, 0, 0, -0.75) 0px 1px 0px, rgba(1, 1, 2, 12);
+    align-items: center;
+    align-content: center;
+    flex-direction: column;
+    background-color: #495782;
+    justify-content: center;
+    border-radius: 8px;
+  }
+
+  .resultsRecord {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 100vw;
+    height: 68vh;
+  }
+
+  .tittle4 {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background: #c8d4e6;
+    height: 60px;
+    margin-top: 2px;
+  }
+  .datasetCard p {
+    font-size: 11px;
+    font-weight: normal;
+    color: rgb(61 60 60);
+    line-height: 18px;
+    margin-top: -5px;
+  }
+
+  .datasetCard {
+    width: 58vw;
+    margin: 30px;
+    /* border: 2px solid #3b9ad5; */
+    padding: 16px;
+    display: flex;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 3px,
+      rgba(179, 179, 179, 0.22) 0px -4px 3px;
+    align-items: center;
+    align-content: center;
+    flex-direction: column;
+    background-color: white;
+    justify-content: flex-start;
+  }
+  .tittle {
+    width: 54vw;
     background: #c8d4e6;
     border-radius: 2px;
     /* height: 80px; */
@@ -466,6 +592,10 @@
 }
 
 @media (max-width: 600px) {
+  .tittleResults {
+    width: 72vw;
+    height: 200px;
+  }
   .datasetCardResults {
     width: 49vw;
     height: 247px;

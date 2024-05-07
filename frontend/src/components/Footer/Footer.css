@@ -1,0 +1,248 @@
+.social-icon,
+.menu {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100vw;
+}
+
+.social-icon {
+  margin: 0px;
+  padding: 0px;
+}
+
+ion-icon {
+  font-size: 26px;
+  color: white;
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
+
+ion-icon:hover{
+  color: greenyellow;
+}
+
+.social-icon__item {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.social-icon__item,
+.menu__item {
+  list-style: none;
+}
+
+.social-icon__link {
+  font-size: 12px;
+  color: #fff;
+  margin: 8px 20px;
+  display: inline-block;
+  transition: 0.3s;
+}
+.social-icon__link:hover {
+  transform: translateY(-10px);
+}
+
+.social-icon__item {
+  margin: 0 18px;
+}
+
+.menu__link {
+  font-size: 14.8px;
+  color: #cccccc;
+  margin: 0 30px;
+  display: inline-block;
+  transition: 0.35s;
+  text-decoration: none;
+  opacity: 0.75;
+  font-weight: 300;
+}
+
+.menu__linkActive {
+  font-size: 1rem;
+  color: #ffa601;
+  margin: 0 30px;
+  display: inline-block;
+  transition: 0.45s;
+  text-decoration: none;
+  opacity: 0.75;
+  font-weight: 440;
+}
+
+.menu__link:hover {
+  opacity: 1;
+}
+
+.footer p {
+  color: #fff;
+  margin: 15px 0 15px 0;
+  font-size: 1rem;
+  font-weight: 300;
+}
+
+@media (min-width: 1410px) {
+  .footerContainer {
+    background-color: #34495e;
+    height: 26vh;
+    position: relative;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 1409px) {
+  .footerContainer {
+    background-color: #3d72a6;
+    height: 26vh;
+    position: relative;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 1114px) {
+  .social-icon,
+  .menu {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100vw;
+  }
+
+  ion-icon {
+    font-size: 28px;
+  }
+
+  .social-icon__item {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .social-icon__item,
+  .menu__item {
+    list-style: none;
+  }
+
+  .social-icon__link {
+    font-size: 10px;
+    color: #fff;
+    margin: 8px 14px;
+    display: inline-block;
+    transition: 0.3s;
+  }
+  .social-icon__link:hover {
+    transform: translateY(-10px);
+  }
+
+  .social-icon__item {
+    margin: 0 2px;
+  }
+
+  .menu__link {
+    font-size: 1rem;
+    color: #cccccc;
+    margin: 0 30px;
+    display: inline-block;
+    transition: 0.35s;
+    text-decoration: none;
+    opacity: 0.75;
+    font-weight: 300;
+  }
+
+  .menu__linkActive {
+    font-size: 1rem;
+    color: #ffa601;
+    margin: 0 30px;
+    display: inline-block;
+    transition: 0.45s;
+    text-decoration: none;
+    opacity: 0.75;
+    font-weight: 440;
+  }
+
+  .menu__link:hover {
+    opacity: 1;
+  }
+
+  .footer p {
+    color: #fff;
+    margin: 15px 0 10px 0;
+    font-size: 1rem;
+    font-weight: 300;
+  }
+}
+
+@media (max-width: 882px) {
+  .footerContainer {
+    background-color: #3d72a6;
+    height: 30vh;
+    position: relative;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .social-icon__link {
+    font-size: 9px;
+    color: #fff;
+    margin: 8px 8px;
+    display: inline-block;
+    transition: 0.3s;
+  }
+  .menu__link {
+    font-size: 12.5px;
+    color: #cccccc;
+    margin: 0 30px;
+    display: inline-block;
+    transition: 0.35s;
+    text-decoration: none;
+    opacity: 0.75;
+    font-weight: 300;
+  }
+  .social-icon__item {
+    margin: 0 -2px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 350px) {
+  .footerContainer {
+    background-color: #3d72a6;
+    height: 40vh;
+    position: relative;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+  }
+}

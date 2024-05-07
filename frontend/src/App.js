@@ -18,6 +18,7 @@ import Validator from './components/Validator/Validator'
 import SignInFormNoLS from './components/SignIn/SignInFormNoLS'
 import AboutSection from './components/AboutSection/AboutSection'
 import SignInOptions from './components/SignInOptions/SignInOptions'
+import Footer from './components/Footer/Footer'
 import BeaconInfo from './components/Dataset/BeaconInfo'
 
 function App () {
@@ -42,6 +43,7 @@ function App () {
         <Route path='/about' element={<AboutSection />} />
         <Route path='*' element={<ErrorPage />} />
       </Routes>
+
     </div>
   )
 }

@@ -18,7 +18,6 @@
     text-decoration: none !important;
     font-weight: 400;
   }
-
   .userNameSmallScreen {
     display: none;
   }
@@ -30,7 +29,7 @@
   }
 
   .containerUserName h5 {
-    color: rgb(138 160 232);
+    color: rgb(210 252 255);
     font-weight: bold;
     /* width: 150%; */
     display: flex;
@@ -62,8 +61,8 @@
     display: flex;
     width: 100vw;
     position: relative;
-    height: 57px;
-    background-color: #34495e;
+    height: 62px;
+    background-color: #4480bd;
     font-size: 0;
     z-index: 2;
   }
@@ -180,7 +179,7 @@
   }
 
   .Members2 {
-    width: 160px;
+    width: 140px;
     background-color: #4961b8;
   }
 
@@ -189,7 +188,7 @@
   }
 
   .Members4 {
-    width: 156px;
+    width: 130px;
     background-color: #4961b8;
   }
 
@@ -212,14 +211,14 @@
   }
 
   .Sign-in5 {
-    width: 143px;
-    background-color: #7a9f9f;
+    width: 136px;
+    background-color: #0c7a7a;
   }
 
   .Sign-in6:hover ~ .animation {
-    width: 126px;
-    left: 90.5%;
-    background-color: #7a9f9f;
+    width: 112px;
+    right: 16px;
+    background-color: #0c7a7a;
   }
 
   .nav3 .Sign-in3 {
@@ -240,7 +239,7 @@
     margin-right: 50px;
   }
 
-  .Sign-in3:hover {
+  .Sign-in3:hover ~ .animation {
     width: 96px;
     border-radius: 2px;
     background-color: #7a9f9f;
@@ -267,26 +266,81 @@
   }
 
   .Members:hover ~ .animation {
-    width: 146px;
-    right: 18.8%;
+    width: 125px;
+    right: 151px;
     background-color: #4961b8;
   }
 
   .Members3:hover ~ .animation {
-    width: 150px;
-    right: 349px;
+    width: 110px;
+    right: 19%;
     background-color: #4961b8;
+  }
+
+  .Home2 {
+    width: 120px;
+
+    background-color: #acc2c1;
+  }
+
+  .Home6 {
+    width: 143px;
+  }
+
+  .Home5 {
+    width: 123px;
+    background-color: #acc2c1;
+  }
+
+  .Home6:hover ~ .animation {
+    background-color: #acc2c1;
+    right: 390px;
+    width: 100px;
+  }
+
+  .Home:hover ~ .animation {
+    background-color: #acc2c1;
+    right: 290px;
+    width: 100px;
+  }
+
+  .Home {
+    width: 120px;
+  }
+
+  .Home6 ion-icon {
+    margin-top: 16px;
+    font-size: 26px;
+  }
+
+  .Home5 ion-icon {
+    margin-top: 16px;
+    font-size: 26px;
+  }
+
+  .Home ion-icon {
+    margin-top: 16px;
+    font-size: 26px;
+  }
+
+  .Home2 ion-icon {
+    margin-top: 16px;
+    font-size: 26px;
+  }
+
+  .Home3 .active {
+    margin-top: 30px;
   }
 
   .About:hover ~ .animation {
     width: 116px;
-    right: 10%;
+    right: 143px;
     background-color: #e575dd;
   }
 
   .About5:hover ~ .animation {
     width: 76px;
-    right: 277px;
+    right: 19.5%;
     background-color: #e575dd;
   }
 
@@ -307,13 +361,13 @@
 
   .Variants:hover ~ .animation {
     width: 120px;
-    left: 240px;
+    left: 120px;
     background-color: #3498db;
   }
 
   .Runs:hover ~ .animation {
     width: 120px;
-    left: 360px;
+    left: 240px;
     background-color: #9b59b6;
   }
   .Analyses:hover ~ .animation {
@@ -350,6 +404,21 @@
     display: none;
   }
 
+  #copydata h1 {
+    text-transform: uppercase;
+    font-size: 10px;
+    margin-left: 7px;
+    margin-top: 5px;
+    width: -moz-fit-content;
+    width: fit-content;
+    margin-bottom: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+    color: black !important;
+    text-decoration: none !important;
+    font-weight: 400;
+  }
+
   .userNameSmallScreen {
     display: none;
   }
@@ -359,7 +428,7 @@
 
   .nav4Container {
     display: flex;
-    width: 180px;
+    width: 14px;
     z-index: 1;
   }
 
@@ -481,7 +550,7 @@
 
   .menuNav {
     background-color: #235c94;
-    height: 180px;
+    height: 160px;
     width: 145px;
     margin-top: 22px;
     border-radius: 9px;
@@ -615,13 +684,13 @@
 
   .Variants:hover ~ .animation {
     width: 120px;
-    left: 240px;
+    left: 120px;
     background-color: #3498db;
   }
 
   .Runs:hover ~ .animation {
     width: 120px;
-    left: 360px;
+    left: 240px;
     background-color: #9b59b6;
   }
   .Analyses:hover ~ .animation {
@@ -651,21 +720,6 @@
   input:focus {
     outline: 0;
   }
-  #copydata h1 {
-    text-transform: uppercase;
-    font-size: 10px;
-    margin-left: 7px;
-    margin-top: 5px;
-    width: -moz-fit-content;
-    width: fit-content;
-    margin-bottom: 5px;
-    padding-right: 10px;
-    padding-left: 10px;
-    color: black !important;
-    text-decoration: none !important;
-    font-weight: 400;
-  }
-
 }
 
 @media (max-width: 1030px) {
@@ -673,21 +727,6 @@
     width: 17px;
     margin-right: -11px;
     margin-top: 21px !important;
-  }
-
-  #copydata h1 {
-    text-transform: uppercase;
-    font-size: 10px;
-    margin-left: 7px;
-    margin-top: 5px;
-    width: -moz-fit-content;
-    width: fit-content;
-    margin-bottom: 5px;
-    padding-right: 10px;
-    padding-left: 10px;
-    color: black !important;
-    text-decoration: none !important;
-    font-weight: 400;
   }
 
   .userNameSmallScreen {
@@ -784,32 +823,33 @@
     margin-left: 2px;
     background-color: #1abc9c;
     border-radius: 4px;
+    margin-top: 5px;
   }
 
   .Variants2 {
     width: 157px;
-    height: 23px;
+    height: 22px;
     margin-left: 2px;
     border-radius: 4px;
   }
 
   .Biosamples2 {
     width: 157px;
-    height: 23px;
+    height: 27px;
     margin-left: 2px;
     border-radius: 4px;
   }
 
   .Members2 {
-    width: 146px;
-    height: 23px;
+    width: 160px;
+    height: 21px;
     border-radius: 4px;
     background-color: #4961b8;
   }
 
   .Sign-in5 {
     width: 157px;
-    height: 23px;
+    height: 27px;
     margin-top: 2px;
     margin-left: 2px;
     border-radius: 4px;
@@ -818,21 +858,21 @@
 
   .Runs2 {
     width: 157px;
-    height: 23px;
+    height: 27px;
     margin-left: 2px;
     border-radius: 4px;
   }
 
   .Cohorts2 {
     width: 157px;
-    height: 23px;
+    height: 27px;
     margin-left: 2px;
     border-radius: 4px;
   }
 
   .Cross-queries2 {
     width: 157px;
-    height: 23px;
+    height: 27px;
     margin-left: 2px;
     border-radius: 4px;
   }
@@ -849,7 +889,7 @@
 
   .Analyses2 {
     width: 157px;
-    height: 23px;
+    height: 27px;
     margin-left: 2px;
     border-radius: 4px;
   }
@@ -913,9 +953,23 @@
     display: none;
   }
 
+  #copydata h1 {
+    text-transform: uppercase;
+    font-size: 10px;
+    margin-left: 7px;
+    margin-top: 5px;
+    width: -moz-fit-content;
+    width: fit-content;
+    margin-bottom: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+    color: black !important;
+    text-decoration: none !important;
+    font-weight: 400;
+  }
   .menuNav2 {
     background-color: #235c94;
-    height: 266px;
+    height: 135px;
     width: 161px;
     margin-top: 22px;
     border-radius: 9px;
@@ -924,8 +978,8 @@
     display: flex;
     /* align-content: center; */
     justify-content: center;
-    /* align-items: center; */
     flex-direction: column;
     margin-left: 0px;
+    align-items: center;
   }
 }
