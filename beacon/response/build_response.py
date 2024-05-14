@@ -15,14 +15,22 @@ def build_meta(qparams: RequestParams, entity_schema: Optional[DefaultSchemas], 
 
     We assume that receivedRequest is the evaluated request (qparams) sent by the user.
     """
-
-    meta = {
-        'beaconId': conf.beacon_id,
-        'apiVersion': conf.api_version,
-        'returnedGranularity': returned_granularity,
-        'receivedRequestSummary': qparams.summary(),
-        'returnedSchemas': [entity_schema.value] if entity_schema is not None else []
-    }
+    try:
+        meta = {
+            'beaconId': conf.beacon_id,
+            'apiVersion': conf.api_version,
+            'returnedGranularity': returned_granularity,
+            'receivedRequestSummary': qparams.summary(),
+            'returnedSchemas': [entity_schema.value] if entity_schema is not None else []
+        }
+    except Exception:
+        meta = {
+            'beaconId': conf.beacon_id,
+            'apiVersion': conf.api_version,
+            'returnedGranularity': returned_granularity,
+            'receivedRequestSummary': qparams,
+            'returnedSchemas': [entity_schema.value] if entity_schema is not None else []
+        }
     return meta
 
 def build_response_summary(exists, num_total_results):
@@ -254,6 +262,22 @@ def build_beacon_info_response(data, qparams, func_response_type, authorized_dat
     return beacon_response
 
 ########################################
+# Error Response
+########################################
+
+def build_beacon_error_response(errorCode, qparams, errorMessage):
+
+    beacon_response = {
+        'meta': build_meta(qparams, None, Granularity.RECORD),
+        'error': {
+            'errorCode': str(errorCode),
+            'errorMessage': str(errorMessage)
+        }
+    }
+
+    return beacon_response
+
+########################################
 # Service Info Response
 ########################################
 
@@ -300,6 +324,18 @@ def build_filtering_terms_response(data,
         # TODO: 'extendedInfo': build_extended_info(),
         'response': {
             'filteringTerms': data,
+            'resources': [{"id": "hp","name": "Human Phenotype Ontology","url": "https://purl.obolibrary.org/obo/hp.owl","version": "27-03-2020","namespacePrefix": "HP","iriPrefix": "https://purl.obolibrary.org/obo/HP_"},
+                {"id": "icd10","name": "International Classification of Diseaes 10th edition","version": "17-03-2008","namespacePrefix": "ICD10"},
+                {"id": "ncit","name": "National Cancer Institute Thesaurus","url": "https://purl.obolibrary.org/obo/ncit.owl","version": "19-10-2023","namespacePrefix": "NCIT","iriPrefix": "https://purl.obolibrary.org/obo/NCIT_"},
+                {"id": "loinc","name": "Logical Observation Identifiers Names and Codes","url": "https://loinc.org/download/loinc-complete/","version": "19-10-2023","namespacePrefix": "LOINC"},
+                {"id": "gaz","name": "Gazetteer","url": "https://purl.obolibrary.org/obo/gaz.owl","namespacePrefix": "GAZ","iriPrefix": "https://purl.obolibrary.org/obo/GAZ_"},
+                {"id": "opcs4","name": "Office of Population Censuses and Surveys 4th revision","version": "01-04-2023","namespacePrefix": "OPCS4"},
+                {"id": "genepio","name": "Genomic Epidemiology Ontology","version": "19-08-2023","namespacePrefix": "GENEPIO"},
+                {"id": "obi","name": "Ontology for Biomedical Investigations","url": "http://purl.obolibrary.org/obo/obi.owl","version": "19-01-2024","namespacePrefix": "OBI","iriPrefix": "https://purl.obolibrary.org/obo/OBI_"},
+                {"id": "efo","name": "Experimental Factor Ontology","version": "15-04-2024","namespacePrefix": "EFO"},
+                {"id": "uberon","name": "Uber-anatomy ontology","version": "22-03-2024","namespacePrefix": "UBERON"},
+                {"id": "doid","name": "Human Disease Ontology","url": "http://purl.obolibrary.org/obo/doid.owl","version": "28-03-2024","namespacePrefix": "DOID","iriPrefix": "https://purl.obolibrary.org/obo/DOID_"},
+                {"id": "geno","name": "GENO ontology","version": "08-10-2023","namespacePrefix": "GENO"}]
         },
         'beaconHandovers': beacon_handovers(),
     }
