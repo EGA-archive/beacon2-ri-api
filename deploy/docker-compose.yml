@@ -39,6 +39,7 @@ services:
   db:
     image: mongo:5
     hostname: mongo
+    container_name: rimongo
     ports:
       - 27017:27017
     environment:
@@ -79,6 +80,7 @@ services:
       - ./conf.py:/beacon/beacon/conf.py
       - ./logger.yml:/beacon/beacon/logger.yml
       - ../beacon/request/datasets.yml:/beacon/beacon/request/datasets.yml
+      - ../beacon/request/cohorts.yml:/beacon/beacon/request/cohorts.yml
       - ../beacon/request/response_type.yml:/beacon/beacon/request/response_type.yml
     ports:
       - "5050:5050"
