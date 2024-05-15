@@ -66,12 +66,31 @@ class MyProgressBar:
 
 
 def get_ontology_field_name(ontology_id:str, term_id:str, collection:str):
-
-    query = {
-        '$text': {
-            '$search': '\"' + ontology_id + ":" + term_id + '\"'
-        }
-    }
+    biosamples=['biosampleStatus.id','diagnosticMarkers.id','histologicalDiagnosis.id','measurements.assayCode.id','measurements.measurementValue.id','measurements.measurementValue.referenceRange.unit.id','measurements.measurementValue.typedQuantities.quantity.unit.id','measurements.measurementValue.unit.id','measurements.observationMoment.id','measurements.procedure.bodySite.id','measurements.procedure.procedureCode.id','pathologicalStage.id','pathologicalTnmFinding.id','phenotypicFeatures.evidence.evidenceCode.id','phenotypicFeatures.evidence.reference.id','phenotypicFeatures.featureType.id','phenotypicFeatures.modifiers.id','phenotypicFeatures.onset.id','phenotypicFeatures.resolution.id','phenotypicFeatures.severity.id','sampleOriginDetail.id','sampleOriginType.id','sampleProcessing.id','sampleStorage.id','tumorGrade.id','tumorProgression.id']
+    cohorts=['cohortDataTypes.id','cohortDesign.id','exclusionCriteria.diseaseConditions.diseaseCode.id','exclusionCriteria.diseaseConditions.severity.id','exclusionCriteria.diseaseConditions.stage.id','exclusionCriteria.ethnicities.id','exclusionCriteria.genders.id','exclusionCriteria.locations.id','exclusionCriteria.phenotypicConditions.featureType.id','exclusionCriteria.phenotypicConditions.severity.id','inclusionCriteria.diseaseConditions.diseaseCode.id','inclusionCriteria.diseaseConditions.severity.id','inclusionCriteria.diseaseConditions.stage.id','inclusionCriteria.ethnicities.id','inclusionCriteria.genders.id','inclusionCriteria.locations.id','inclusionCriteria.phenotypicConditions.featureType.id','inclusionCriteria.phenotypicConditions.severity.id']
+    datasets=['dataUseConditions.duoDataUse.id']
+    genomicVariations=['caseLevelData.alleleOrigin.id','caseLevelData.clinicalInterpretations.category.id','caseLevelData.clinicalInterpretations.effect.id','caseLevelData.clinicalInterpretations.evidenceType.id','caseLevelData.id','caseLevelData.phenotypicEffects.category.id','caseLevelData.phenotypicEffects.effect.id','caseLevelData.phenotypicEffects.evidenceType.id','caseLevelData.zygosity.id','identifiers.variantAlternativeIds.id','molecularAttributes.molecularEffects.id','variantLevelData.clinicalInterpretations.category.id','variantLevelData.clinicalInterpretations.effect.id','variantLevelData.clinicalInterpretations.evidenceType.id','variantLevelData.phenotypicEffects.category.id','variantLevelData.phenotypicEffects.effect.id','variantLevelData.phenotypicEffects.evidenceType.id']
+    individuals=['diseases.ageOfOnset.id','diseases.diseaseCode.id','diseases.severity.id','diseases.stage.id','ethnicity.id','exposures.exposureCode.id','exposures.unit.id','geographicOrigin.id','interventionsOrProcedures.ageAtProcedure.id','interventionsOrProcedures.bodySite.id','interventionsOrProcedures.procedureCode.id','measures.assayCode.id','measures.measurementValue.id','measures.measurementValue.typedQuantities.quantity.unit.id','measures.measurementValue.unit.id','measures.observationMoment.id','measures.procedure.bodySite.id','measures.procedure.procedureCode.id','pedigrees.disease.diseaseCode.id','pedigrees.disease.severity.id','pedigrees.disease.stage.id','pedigrees.id','pedigrees.members.role.id','phenotypicFeatures.evidence.evidenceCode.id','phenotypicFeatures.evidence.reference.id','phenotypicFeatures.featureType.id','phenotypicFeatures.modifiers.id','phenotypicFeatures.onset.id','phenotypicFeatures.resolution.id','phenotypicFeatures.severity.id','sex.id','treatments.cumulativeDose.referenceRange.id','treatments.doseIntervals.id','treatments.routeOfAdministration.id','treatments.treatmentCode.id']
+    runs=['librarySource.id','platformModel.id']
+    array=[]
+    if collection == 'biosamples':
+        array=biosamples
+    elif collection == 'cohorts':
+        array=cohorts
+    elif collection == 'datasets':
+        array=datasets
+    elif collection == 'genomicVariations':
+        array=genomicVariations
+    elif collection == 'individuals':
+        array=individuals
+    elif collection == 'runs':
+        array=runs
+    query={}
+    query['$or']=[]
+    for field in array:
+        fieldquery={}
+        fieldquery[field]=ontology_id + ":" + term_id
+        query['$or'].append(fieldquery)
     results = client.beacon.get_collection(collection).find(query).limit(1)
     results = list(results)
     results = dumps(results)
