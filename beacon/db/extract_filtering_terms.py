@@ -251,6 +251,8 @@ def find_ontology_terms_used(collection_name: str) -> List[Dict]:
                     if term not in terms_ids:
                         terms_ids.append(term)
             i += 10000
+            if i > 30000:
+                break
             print(i)
     else:
         xs = client.beacon.get_collection(collection_name).find().skip(0).limit(10000)
@@ -401,7 +403,8 @@ def merge_terms():
                 'scopes': array_of_scopes        
                         })
         client.beacon.filtering_terms.delete_many({"id": repeated_id})
-    client.beacon.filtering_terms.insert_many(new_terms)
+    if new_terms != []:
+        client.beacon.filtering_terms.insert_many(new_terms)
         
     
     
