@@ -8,7 +8,7 @@ import configData from '../../config.json'
 import { useContext } from 'react'
 import TableResultsVariant from '../Results/VariantResults/TableResultsVariant'
 
-function VariantsResults (props) {
+function VariantResults (props) {
   const [error, setError] = useState('')
   const [timeOut, setTimeOut] = useState(false)
   const [logInRequired, setLoginRequired] = useState(false)
@@ -911,4 +911,4 @@ function VariantsResults (props) {
   )
 }
 
-export default VariantsResults
+export default VariantResults

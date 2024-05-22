@@ -845,6 +845,9 @@
     height: 21px;
     border-radius: 4px;
     background-color: #4961b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .Sign-in5 {
@@ -853,7 +856,10 @@
     margin-top: 2px;
     margin-left: 2px;
     border-radius: 4px;
+    display: flex;
     background-color: #7a9f9f;
+    align-items: center;
+    justify-content: center;
   }
 
   .Runs2 {

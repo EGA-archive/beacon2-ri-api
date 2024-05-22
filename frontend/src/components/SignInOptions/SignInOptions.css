@@ -41,27 +41,32 @@
 .Sign-inLS {
   text-decoration: none;
   height: 35px;
+  background: #fbfbfb;
+  border-radius: 7px;
+  border: solid 1.5px #00c4f7;
 }
 
 .login__field2 h6 {
   font-size: 14px !important;
   font-weight: 600;
-  color: #3d72a6;
+  color: #363737;
   margin-top: 12px;
   margin-bottom: 12px;
 }
+
 
 .login__field2 h6:hover {
   font-weight: 700;
 }
 
 .Sign-inNoLs {
-  border: solid 1px #00c4f7;
+  border: solid 2.8px #00c4f7;
   padding-top: 0px;
   padding-bottom: 0px;
   padding-left: 6px;
   padding-right: 6px;
   border-radius: 6px;
+  background: #fbfbfb;
 }
 
 .Sign-inLS:hover {
@@ -94,11 +99,11 @@
 
   .ls-login-image {
     width: 140px;
+    height: 35px;
   }
 
   .login__field2 h6 {
     font-size: 14px !important;
-    width: 51vw;
   }
   .login__field2 h6:hover {
     font-weight: 700;

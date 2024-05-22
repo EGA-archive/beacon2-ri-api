@@ -117,7 +117,7 @@ h5:hover {
 
 @media (max-width: 760px) {
   select {
-    font-size: 11px;
+    font-size: 13px;
     width: 104px;
   }
   .crossQueriesForm {

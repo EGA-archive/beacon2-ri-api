@@ -1,150 +1,213 @@
 import './TableResultsVariant.css'
 import '../IndividualsResults/TableResultsIndividuals.css'
 import '../../Dataset/BeaconInfo'
+import * as React from 'react'
 import { useState, useEffect } from 'react'
 import CrossQueries from '../../CrossQueries/CrossQueries'
-import {
-  DataGrid,
-  GridToolbar,
-  selectedGridRowsSelector,
-  gridFilteredSortedRowIdsSelector,
-  GridToolbarContainer,
-} from '@mui/x-data-grid'
-import ReactModal from 'react-modal'
+import { FaBars, FaEye, FaEyeSlash } from 'react-icons/fa' // Import icons from react-icons library
+import { FiLayers, FiDownload } from 'react-icons/fi'
 
-function CustomToolbar () {
-  return (
-    <GridToolbarContainer>
-
-    </GridToolbarContainer>
-  )
-}
-
-function TableResultsVariant (props) {
+function TableResultsVariants (props) {
   const [showDatsets, setShowDatasets] = useState(false)
-
   const [showResults, setShowResults] = useState(false)
-
-  const [arrayBeaconsIds, setArrayBeaconsIds] = useState([])
-  const [rows, setRows] = useState([])
-  const [ids, setIds] = useState([])
-
-  const [showCrossQuery, setShowCrossQuery] = useState(false)
-  const [parameterCrossQuery, setParamCrossQuery]= useState('')
-
   const [resultsSelected, setResultsSelected] = useState(props.results)
+  const [arrayBeaconsIds, setArrayBeaconsIds] = useState([])
+  const [errorMessage, setErrorMessage] = useState('')
   const [resultsSelectedFinal, setResultsSelectedFinal] = useState([])
-
-  const [openDatasetArray, setOpenDataset] = useState([])
-  const [openDatasetArray2, setOpenDataset2] = useState([])
-
   const [editable, setEditable] = useState([])
-
   const [trigger, setTrigger] = useState(false)
   const [trigger2, setTrigger2] = useState(false)
+  const [exportMenuVisible, setExportMenuVisible] = useState(false)
+  const [showCrossQuery, setShowCrossQuery] = useState(false)
+  const [parameterCrossQuery, setParamCrossQuery] = useState('')
 
-  const [triggerArray, setTriggerArray] = useState([])
-  const [triggerArray2, setTriggerArray2] = useState([])
-
-  const [errorMessage, setErrorMessage] = useState('')
   const [note, setNote] = useState('')
   const [isOpenModal2, setIsOpenModal2] = useState(false)
 
-  const getSelectedRowsToExport = ({ apiRef }) => {
-    const selectedRowIds = selectedGridRowsSelector(apiRef)
-    if (selectedRowIds.size > 0) {
-      return Array.from(selectedRowIds.keys())
-    }
+  const [filterValues, setFilterValues] = useState({
+    variantInternalId: '',
+    variation: '',
+    identifiers: '',
+    Beacon: '',
+    molecularAttributes: '',
+    molecularEffects: '',
+    caseLevelData: '',
+    variantLevelData: '',
+    frequencyInPopulations: ''
+    // Add other column names here
+  })
 
-    return gridFilteredSortedRowIdsSelector(apiRef)
+  const [menuVisible, setMenuVisible] = useState(false)
+
+  const toggleMenu = () => {
+    setMenuVisible(prevState => !prevState)
   }
 
-  const columns = [
+  const [columnVisibility, setColumnVisibility] = useState({
+    variantInternalId: true,
+    variation: true,
+    identifiers: true,
+    Beacon: true,
+    molecularAttributes: true,
+    molecularEffects: true,
+    caseLevelData: true,
+    variantLevelData: true,
+    frequencyInPopulations: true
+    // Add more columns as needed
+  })
+  const showAllColumns = () => {
+    const columns = document.querySelectorAll('th')
+    const rows = document.querySelectorAll('td')
+
+    // Update column visibility state and remove hidden class for all columns
+    columns.forEach(column => {
+      column.classList.remove('hidden')
+      const columnName = column.dataset.columnName
+      setColumnVisibility(prevState => ({
+        ...prevState,
+        [columnName]: true
+      }))
+    })
+
+    // Change the icon of all rows to the normal eye
+    rows.forEach(row => {
+      row.classList.remove('hidden')
+    })
+
+    setColumnVisibility(prevState => {
+      const updatedVisibility = {}
+      Object.keys(prevState).forEach(column => {
+        updatedVisibility[column] = true
+      })
+      return updatedVisibility
+    })
+  }
+
+  const [filteredData, setFilteredData] = useState(editable)
+  const toggleColumnVisibility = columnName => {
+    const columns = document.querySelectorAll('th[data-column-name]')
+    const rows = document.querySelectorAll(
+      `td[data-column-name="${columnName}"]`
+    )
+
+    columns.forEach(column => {
+      if (column.dataset.columnName === columnName) {
+        column.classList.toggle('hidden')
+      }
+    })
+
+    rows.forEach(row => {
+      row.classList.toggle('hidden')
+    })
+
+    setColumnVisibility(prevVisibility => ({
+      ...prevVisibility,
+      [columnName]: !prevVisibility[columnName]
+    }))
+  }
+
+  const handleFilterChange = (e, columnName) => {
+    const { value } = e.target
+    setFilterValues({ ...filterValues, [columnName]: value })
+
+    const updatedFilteredData = editable.filter(row =>
+      row[columnName].toLowerCase().includes(value.toLowerCase())
+    )
+
+    setFilteredData(updatedFilteredData)
+  }
+
+  const toggleExportMenu = () => {
+    setExportMenuVisible(prevState => !prevState)
+  }
+
+  const exportToCSV = () => {
+    // Ensure props.results is not null or undefined
+    if (!props.results) return;
   
-    {
-      field: 'variantInternalId',
-      headerName: 'Variant ID',
-      width: 350,
-      headerClassName: 'super-app-theme--header'
-      // renderCell: params => (
-      //   <Link to={`/g_variants/cross-queries/${params.row.variantInternalId}`}>
-      //     {params.row.variantInternalId}
-      //   </Link>
-      // )
-    },
-    {
-      field: 'variation',
-      headerName: 'Variation',
-      width: 340,
-      headerClassName: 'super-app-theme--header'
-    },
-    {
-      field: 'identifiers',
-      headerName: 'identifiers',
-      width: 240,
-      headerClassName: 'super-app-theme--header'
-    },
-    {
-      field: 'molecularAttributes',
-      headerName: 'Molecular Attributes',
-      width: 250,
-      headerClassName: 'super-app-theme--header'
-    },
-    // {
-    //   field: 'molecularEffects',
-    //   headerName: 'Molecular Effects',
-    //   width: 250,
-    //   headerClassName: 'super-app-theme--header'
-    // },
-    {
-      field: 'caseLevelData',
-      headerName: 'Case Level Data',
-      width: 350,
-      headerClassName: 'super-app-theme--header'
-    },
-    // {
-    //   field: 'variantLevelData',
-    //   headerName: 'Variant Level Data',
-    //   width: 350,
-    //   headerClassName: 'super-app-theme--header',
-    //   cellClass: 'pre'
-    // },
-    {
-      field: 'frequencyInPopulations',
-      headerName: 'Frequency in populations',
-      width: 350,
-      headerClassName: 'super-app-theme--header'
-    }
-    // { field: 'pedigrees', headerName: 'pedigrees', width: 150 },
-    // { field: 'treatments', headerName: 'treatments', width: 150 },
-    // {
-    // field: 'interventionsOrProcedures',
-    // headerName: 'interventionsOrProcedures',
-    // width: 150
-    //},
-    //{ field: 'exposures', headerName: 'exposures', width: 150 },
-    //{ field: 'karyotypicSex', headerName: 'karyotypicSex', width: 150 }
-  ]
+    // Get all keys from the first row of props.results
+    const header = Object.keys(props.results[0]);
+  
+    // Convert each row to CSV format
+    const csv = [
+      header.join(','), // Header row
+      ...props.results.map(row =>
+        header.map(fieldName => {
+          const value = row[fieldName];
+          // Check if the value is an object
+          if (typeof value === 'object') {
+            // Stringify the object
+            return JSON.stringify(value);
+          } else {
+            // Otherwise, return the value as is
+            return value;
+          }
+        }).join(',')
+      )
+    ].join('\n');
+  
+    // Create a blob object from the CSV content
+    const blob = new Blob([csv], { type: 'text/csv' });
+  
+    // Create a URL for the blob object
+    const url = window.URL.createObjectURL(blob);
+  
+    // Create a temporary <a> element to trigger the download
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'exported_data.csv');
+  
+    // Programmatically click the link to start the download
+    document.body.appendChild(link);
+    link.click();
+  
+    // Clean up by revoking the URL and removing the temporary <a> element
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+  };
+  
+
+  const exportToJSON = () => {
+    // Ensure props.results is not null or undefined
+    if (!props.results) return;
+  
+    // Convert the results to JSON
+    const jsonString = JSON.stringify(props.results, null, 2);
+  
+    // Create a blob object from the JSON content
+    const blob = new Blob([jsonString], { type: 'application/json' });
+  
+    // Create a URL for the blob object
+    const url = URL.createObjectURL(blob);
+  
+    // Create a temporary <a> element to trigger the download
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'exported_data.json');
+  
+    // Programmatically click the link to start the download
+    document.body.appendChild(link);
+    link.click();
+  
+    // Clean up by revoking the URL and removing the temporary <a> element
+    URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+  };
+  
+
 
   const showNote = e => {
     setNote(e)
     setIsOpenModal2(true)
   }
 
-  const handleCloseModal2 = () => {
-    setIsOpenModal2(false)
+  const handleShowCrossQuery = e => {
+    setShowCrossQuery(true)
+    console.log(e.target.innerText)
+    setParamCrossQuery(e.target.innerText)
   }
 
   useEffect(() => {
-    // props.results.forEach((element, index) => {
-    //   resultsJSON.push([
-    //     JSON.stringify(element[1], null, 2).replace('[', '').replace(']', '')
-    //   ])
-
-    //   arrayBeaconsIds.push(element[0])
-    // })
-    // setTrigger2(true)
-    // setStringDataToCopy(resultsJSON)
     if (props.show === 'full') {
       setResultsSelectedFinal(resultsSelected)
       setShowResults(true)
@@ -152,14 +215,13 @@ function TableResultsVariant (props) {
       setTrigger(true)
     }
 
-    setRows([])
-    setIds([])
     if (resultsSelected.length === 0) {
       setErrorMessage('NO RESULTS')
     }
     resultsSelected.forEach((element, index) => {
       arrayBeaconsIds.push(element[0])
     })
+
     resultsSelectedFinal.forEach((element, index) => {
       if (element[1] !== undefined) {
         let variationJson = []
@@ -332,10 +394,11 @@ function TableResultsVariant (props) {
           )
         }
 
-        rows.push({
+        editable.push({
           id: index,
           variantInternalId: element[1].variantInternalId,
           variation: variationJson,
+          Beacon: element[0],
           identifiers: identifiersJson,
           molecularAttributes: molecularAttributesJson,
           molecularEffects: molecularEffectsJson,
@@ -345,7 +408,6 @@ function TableResultsVariant (props) {
         })
 
         if (index === resultsSelectedFinal.length - 1) {
-          setEditable(rows.map(o => ({ ...o })))
           setTrigger2(true)
         }
       }
@@ -353,28 +415,6 @@ function TableResultsVariant (props) {
   }, [trigger, resultsSelectedFinal])
 
   useEffect(() => {
-    // console.log(props.resultsPerDataset)
-    // let count = 0
-    // props.beaconsList.forEach((element2, index2) => {
-    //   count = getOccurrence(arrayBeaconsIds, element2.meta.beaconId)
-    //   if (count > 0) {
-    //     beaconsArrayResults.push([element2, count, true])
-    //   } else {
-    //     beaconsArrayResults.push([element2, count, false])
-    //   }
-    // })
-    // beaconsArrayResults.forEach(element => {
-    //   if (element[2] === true) {
-    //     beaconsArrayResultsOrdered.push(element)
-    //   }
-    // })
-    // beaconsArrayResults.forEach(element => {
-    //   if (element[2] === false) {
-    //     beaconsArrayResultsOrdered.push(element)
-    //   }
-    // })
-    // console.log(beaconsArrayResults)
-
     setShowDatasets(true)
   }, [])
 
@@ -420,24 +460,343 @@ function TableResultsVariant (props) {
           )
         })}
 
-      {!showCrossQuery && showDatsets === false && showResults === true && trigger2 === true && (
-        <DataGrid
-          getRowHeight={() => 'auto'}
-          checkboxSelection
-          columns={columns}
-          rows={editable}
-          slots={{ toolbar: CustomToolbar }}
-          slotProps={{
-            toolbar: {
-              printOptions: { getRowsToExport: getSelectedRowsToExport }
-            }
-          }}
+      {!showCrossQuery &&
+        showDatsets === false &&
+        showResults === true &&
+        trigger2 === true && (
+          <div className='table-container'>
+            <div className='menu-icon-container'>
+              <div className='export-menu'>
+                <button className='exportButton' onClick={toggleExportMenu}>
+                  <FiDownload />
+                </button>
+                {exportMenuVisible && (
+                  <>
+                    <ul className='column-list'>
+                      <li onClick={exportToJSON}>Export to JSON</li>
+                      <li onClick={exportToCSV}>Export to CSV</li>
+                    </ul>
+                  </>
+                )}
+              </div>
+              <div className='menu-container'>
+                <FaBars onClick={toggleMenu} />
+                {menuVisible && (
+                  <>
+                    <ul className='column-list'>
+                      <li onClick={showAllColumns}>
+                        Show All Columns
+                        <FiLayers />
+                      </li>
+                      {Object.keys(columnVisibility).map(column => (
+                        <li
+                          key={column}
+                          onClick={() => toggleColumnVisibility(column)}
+                        >
+                          {column}
+                          {columnVisibility[column] ? (
+                            <FaEye />
+                          ) : (
+                            <FaEyeSlash />
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </div>
+            </div>
+            <div className='header-container'>
+              <table className='tableResults'>
+                <thead className='theadResults'>
+                  <tr>
+                    <th
+                      className={`sticky-header ${
+                        columnVisibility.variantInternalId ? 'visible' : 'hidden'
+                      }`}
+                    >
+                      <span>Variant ID</span>
+                      <button
+                        onClick={() => toggleColumnVisibility('variantInternalId')}
+                      >
+                        {columnVisibility.variantInternalId ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter Variant ID'
+                        onChange={e => handleFilterChange(e, 'variantInternalId')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
+                        columnVisibility.variation ? 'visible' : 'hidden'
+                      }`}
+                    >
+                      <span>Variation</span>
+                      <button
+                        onClick={() => toggleColumnVisibility('variation')}
+                      >
+                        {columnVisibility.variation ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter variation'
+                        onChange={e => handleFilterChange(e, 'variation')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
+                        columnVisibility.Beacon ? 'visible' : 'hidden'
+                      }`}
+                    >
+                      <span>Beacon</span>
+                      <button onClick={() => toggleColumnVisibility('Beacon')}>
+                        {columnVisibility.Beacon ? <FaEye /> : <FaEyeSlash />}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter Beacon'
+                        onChange={e => handleFilterChange(e, 'Beacon')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
+                        columnVisibility.identifiers
+                          ? 'visible'
+                          : 'hidden'
+                      }`}
+                    >
+                      <span>Identifiers</span>
+                      <button
+                        onClick={() =>
+                          toggleColumnVisibility('identifiers')
+                        }
+                      >
+                        {columnVisibility.identifiers ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter identifiers'
+                        onChange={e =>
+                          handleFilterChange(e, 'identifiers')
+                        }
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
+                        columnVisibility.molecularAttributes ? 'visible' : 'hidden'
+                      }`}
+                    >
+                      <span>Molecular Attributes</span>
+                      <button onClick={() => toggleColumnVisibility('molecularAttributes')}>
+                        {columnVisibility.molecularAttributes ? <FaEye /> : <FaEyeSlash />}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter molecular attributes'
+                        onChange={e => handleFilterChange(e, 'molecularAttributes')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
+                        columnVisibility.molecularEffects ? 'visible' : 'hidden'
+                      }`}
+                    >
+                      <span>Molecular Effects</span>
+                      <button
+                        onClick={() => toggleColumnVisibility('molecularEffects')}
+                      >
+                        {columnVisibility.molecularEffects ? <FaEye /> : <FaEyeSlash />}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter molecular effects'
+                        onChange={e => handleFilterChange(e, 'molecularEffects')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
+                        columnVisibility.caseLevelData ? 'visible' : 'hidden'
+                      }`}
+                    >
+                      <span>Case Level Data</span>
+                      <button
+                        onClick={() => toggleColumnVisibility('caseLevelData')}
+                      >
+                        {columnVisibility.caseLevelData ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter case level data'
+                        onChange={e => handleFilterChange(e, 'caseLevelData')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
+                        columnVisibility.variantLevelData
+                          ? 'visible'
+                          : 'hidden'
+                      }`}
+                    >
+                      <span>Variant Level Data</span>
+                      <button
+                        onClick={() =>
+                          toggleColumnVisibility('variantLevelData')
+                        }
+                      >
+                        {columnVisibility.variantLevelData ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter variant level data'
+                        onChange={e =>
+                          handleFilterChange(e, 'variantLevelData')
+                        }
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
+                        columnVisibility.frequencyInPopulations
+                          ? 'visible'
+                          : 'hidden'
+                      }`}
+                    >
+                      <span>Frequency In Populations</span>
+                      <button
+                        onClick={() =>
+                          toggleColumnVisibility('frequencyInPopulations')
+                        }
+                      >
+                        {columnVisibility.frequencyInPopulations ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter frequency in populations'
+                        onChange={e =>
+                          handleFilterChange(e, 'frequencyInPopulations')
+                        }
+                      />
+                    </th>
+
+                    {/* Add more column headers here */}
+                  </tr>
+                </thead>
+              </table>
+            </div>
+            <div className='body-container'>
+              <table className='tableResults'>
+                <tbody>
+                  {filteredData.map((row, index) => (
+                    <tr key={index}>
+                      <td
+                        className={
+                          columnVisibility.variantInternalId ? 'visible' : 'hidden'
+                        }
+                      >
+                        {row.variantInternalId}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.variation ? 'visible' : 'hidden'
+                        }
+                      >
+                        {row.variation}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.Beacon ? 'visible' : 'hidden'
+                        }
+                      >
+                        {row.Beacon}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.identifiers
+                            ? 'visible'
+                            : 'hidden'
+                        }
+                      >
+                        {row.identifiers}
+                      </td>
+                      <td
+                        className={columnVisibility.molecularAttributes ? 'visible' : 'hidden'}
+                      >
+                        {row.molecularAttributes}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.molecularEffects ? 'visible' : 'hidden'
+                        }
+                      >
+                        {row.molecularEffects}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.caseLevelData ? 'visible' : 'hidden'
+                        }
+                      >
+                        {row.caseLevelData}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.variantLevelData
+                            ? 'visible'
+                            : 'hidden'
+                        }
+                      >
+                        {row.variantLevelData}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.frequencyInPopulations
+                            ? 'visible'
+                            : 'hidden'
+                        }
+                      >
+                        {row.frequencyInPopulations}
+                      </td>
+
+                      {/* Render other row cells here */}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      {showCrossQuery && (
+        <CrossQueries
+          parameter={parameterCrossQuery}
+          collection={'individuals'}
+          setShowCrossQuery={setShowCrossQuery}
         />
       )}
-      {showCrossQuery &&
-      <CrossQueries parameter={parameterCrossQuery} beaconsList= {props.beaconsList} collection={'individuals'} setShowCrossQuery={setShowCrossQuery}/>}
     </div>
   )
 }
 
-export default TableResultsVariant
+export default TableResultsVariants
