@@ -440,7 +440,6 @@ function Layout (props) {
     setInputValues(initialInputValues)
   }, [filters])
 
-  
   return (
     <div className='container1'>
       <div className='sectionModules'>
@@ -641,8 +640,10 @@ function Layout (props) {
                                       </div>
                                     )}
                                   </React.Fragment>
+                                  
                                 ))}
                               </div>
+                              
                             </div>
                           )
                         : optionsArray.length > 0 &&
@@ -736,11 +737,11 @@ function Layout (props) {
                 </ul>
               </div>
             ))}
-            <div class='nav-dots'>
-              <span class='dot' onclick='showColumn(0)'></span>
-              <span class='dot' onclick='showColumn(1)'></span>
-            </div>
           </div>
+          <button className='buttonAllFilters' onClick={handleSeeFilteringTerms}>
+            <img className='filterIcon' src='../../filter.png'></img>
+            <h4>All filtering terms</h4>
+          </button>
         </div>
       )}
 

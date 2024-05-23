@@ -19,6 +19,17 @@ function TableResultsIndividuals (props) {
   const [showCrossQuery, setShowCrossQuery] = useState(false)
   const [parameterCrossQuery, setParamCrossQuery] = useState('')
 
+  const [currentPage, setCurrentPage] = useState(1)
+  const [rowsPerPage] = useState(10) // You can make this dynamic if needed
+
+  const [filteredData, setFilteredData] = useState(editable)
+
+  const indexOfLastRow = currentPage * rowsPerPage
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage
+  const currentRows = filteredData.slice(indexOfFirstRow, indexOfLastRow)
+
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage)
+
   const [note, setNote] = useState('')
   const [isOpenModal2, setIsOpenModal2] = useState(false)
 
@@ -51,6 +62,18 @@ function TableResultsIndividuals (props) {
     phenotypicFeatures: true
     // Add more columns as needed
   })
+  const handleNextPage = () => {
+    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages))
+  }
+
+  const handlePreviousPage = () => {
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1))
+  }
+
+  const handlePageClick = pageNumber => {
+    setCurrentPage(pageNumber)
+  }
+
   const showAllColumns = () => {
     const columns = document.querySelectorAll('th')
     const rows = document.querySelectorAll('td')
@@ -79,7 +102,6 @@ function TableResultsIndividuals (props) {
     })
   }
 
-  const [filteredData, setFilteredData] = useState(editable)
   const toggleColumnVisibility = columnName => {
     const columns = document.querySelectorAll('th[data-column-name]')
     const rows = document.querySelectorAll(
@@ -695,7 +717,7 @@ function TableResultsIndividuals (props) {
             <div className='body-container'>
               <table className='tableResults'>
                 <tbody>
-                  {filteredData.map((row, index) => (
+                  {currentRows.map((row, index) => (
                     <tr key={index}>
                       <td
                         className={
@@ -756,7 +778,7 @@ function TableResultsIndividuals (props) {
                         {row.phenotypicFeatures}
                       </td>
 
-                      {/* Render other row cells here */}
+          
                     </tr>
                   ))}
                 </tbody>
@@ -764,6 +786,23 @@ function TableResultsIndividuals (props) {
             </div>
           </div>
         )}
+      <div className='pagination-controls'>
+        <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+          Previous
+        </button>
+        {[...Array(totalPages)].map((_, index) => (
+          <button
+            key={index}
+            onClick={() => handlePageClick(index + 1)}
+            className={currentPage === index + 1 ? 'active' : ''}
+          >
+            {index + 1}
+          </button>
+        ))}
+        <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+          Next
+        </button>
+      </div>
       {showCrossQuery && (
         <CrossQueries
           parameter={parameterCrossQuery}
