@@ -304,7 +304,7 @@ function Layout (props) {
   }, [collection])
 
   const onSubmit = async event => {
-    console.log('gola')
+   
     setShowFilters(false)
     console.log(query)
     console.log(value)

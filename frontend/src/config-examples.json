@@ -282,6 +282,39 @@
         [
           {
             "subTitle": "Mutations in:",
+            "subTitle2": "alternateBases:",
+            "label": "A",
+            "value": "A",
+            "schemaField": "alternateBases"
+          },
+          {
+            "subTitle2": "referenceBases:",
+            "label": "T",
+            "value": "T",
+            "schemaField": "referenceBases"
+          },
+          {
+            "subTitle2": "start:",
+            "label": "1334544",
+            "value": "1334544",
+            "schemaField": "start"
+          },
+          {
+            "subTitle2": "end:",
+            "label": "1334545",
+            "value": "1334545",
+            "schemaField": "end"
+          },
+          {
+            "subTitle2": "type:",
+            "label": "SNP",
+            "value": "SNP",
+            "schemaField": "variantType"
+          }
+        ],
+        [
+          {
+            "subTitle": "Mutations in:",
             "subTitle2": "gene:",
             "label": "TP53",
             "value": "molecularAttributes.geneIds=TP53",

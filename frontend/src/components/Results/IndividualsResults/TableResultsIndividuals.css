@@ -198,6 +198,7 @@ td {
   font-size: 16px;
   border-radius: 6px;
   color: #fcfcfc;
+  width: fit-content;
   font-weight: 600;
   background: #0db474;
 }
@@ -210,6 +211,7 @@ td {
   color: #fce8e8;
   font-weight: 600;
   background: #e93e3e;
+  width: fit-content; 
 }
 
 .foundResult:hover {
@@ -341,11 +343,11 @@ h1 {
 
 .containerBeaconResults {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
-  /* width: 98vw; */
   /* margin-right: 26px; */
-  align-content: flex-start;
+  width: 100vw;
+  align-content: center;
   flex-wrap: wrap;
   margin-left: 10px;
   margin-right: 10px;
@@ -371,15 +373,15 @@ h1 {
     display: flex;
     flex-direction: column;
     justify-content: center;
-
     /* margin-right: 26px; */
-    align-content: flex-start;
+    align-content: center;
     flex-wrap: wrap;
     margin-left: 10px;
     margin-right: 10px;
     margin-top: 12px;
     align-items: center;
     overflow: scroll;
+    width: 100vw;
   }
 
   .containerResultsVariants {

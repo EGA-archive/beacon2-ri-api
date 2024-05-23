@@ -357,11 +357,13 @@ h14 {
 
 .selectedOperator {
   background: white;
-  border: 2px solid rgba(12, 16, 64, 0.606);
+  border: 1px solid rgb(143 147 196 / 61%);
+  /* border: 1px solid rgba(12, 16, 64, 0.606); */
   font-size: medium;
   border-radius: 4px;
   width: 43px;
-  height: 28px;
+  height: 27px;
+  margin-right: 20px;
   box-shadow: 1px 2px 2px #cecece;
 }
 
@@ -1251,25 +1253,26 @@ h5 {
 
 .IdForm {
   background: white;
-  border: 2px solid rgba(12, 16, 64, 0.606);
+  border: 1px solid rgb(143 147 196 / 61%);
   margin: 4px;
   padding: 6px;
   box-shadow: 1px 1px 2px #a3a0a0;
   width: 168px;
-  height: 27px;
+  height: 13px;
   border-radius: 4px;
   overflow: auto;
 }
 
 .ValueForm {
   background: white;
-  border: 2px solid rgba(12, 16, 64, 0.606);
+  /* border: 1px solid rgba(12, 16, 64, 0.606); */
   margin-left: 5px;
   padding: 6px;
   box-shadow: 1px 1px 2px #a3a0a0;
   width: 30%;
-  height: 27px;
+  height: 15px;
   border-radius: 4px;
+  border: 1px solid rgb(143 147 196 / 61%);
 }
 
 #operator {

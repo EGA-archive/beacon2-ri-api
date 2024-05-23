@@ -14,7 +14,6 @@ const root = ReactDOM.createRoot(document.getElementById('root'))
 const oidcConfig = {
   onSignIn: async user => {
     alert('You just signed in!')
-    console.log(user)
     window.location.hash = ''
   },
   authority: 'https://login.elixir-czech.org/oidc',
