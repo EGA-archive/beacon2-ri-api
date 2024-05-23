@@ -448,7 +448,8 @@ function TableResultsIndividuals (props) {
   }, [trigger, resultsSelectedFinal])
 
   useEffect(() => {
-    console.log(props.beaconsList)
+    console.log(props.resultsPerDataset)
+
     setShowDatasets(true)
   }, [])
 
@@ -459,37 +460,39 @@ function TableResultsIndividuals (props) {
           return (
             <>
               {props.show !== 'full' &&
-                props.resultsPerDataset.map((element, index) => {
-                  return (
-                    <>
-                      {element[1][index] === true &&
-                        props.show === 'boolean' && (
-                          <h6 className='foundResult'>YES</h6>
-                        )}
-                      {element[1][index] === false &&
-                        props.show === 'boolean' && (
-                          <h5 className='NotFoundResult'>No, sorry</h5>
-                        )}
-                      {props.show === 'count' &&
-                        element[2][index] !== 0 &&
-                        element[2][index] !== 1 && (
-                          <h6 className='foundResult'>
-                            {element[2][index]} RESULTS
+                props.resultsPerDataset.map((element, index) => (
+                  <div key={index}>
+                    {props.show === 'boolean' &&
+                      element[1].map(booleanElement => {
+                        return (
+                          <h6
+                            className={
+                              booleanElement ? 'foundResult' : 'NotFoundResult'
+                            }
+                          >
+                            {booleanElement ? 'YES' : 'No, sorry'}
                           </h6>
-                        )}
-                      {props.show === 'count' && element[2][index] === 0 && (
-                        <h5 className='NotFoundResult'>
-                          {element[2][index]} RESULTS
-                        </h5>
-                      )}
-                      {props.show === 'count' && element[2][index] === 1 && (
-                        <h6 className='foundResult'>
-                          {element[2][index]} RESULT
-                        </h6>
-                      )}
-                    </>
-                  )
-                })}
+                        )
+                      })}
+                    {props.show === 'count' &&
+                      element[2].map(countElement => {
+                        return (
+                          <h6
+                            className={
+                              countElement !== undefined &&
+                              countElement !== null &&
+                              countElement !== 0
+                                ? 'foundResult'
+                                : 'NotFoundResult'
+                            }
+                          >
+                            {countElement}{' '}
+                            {countElement === 1 ? 'RESULT' : 'RESULTS'}
+                          </h6>
+                        )
+                      })}
+                  </div>
+                ))}
             </>
           )
         })}
@@ -777,8 +780,6 @@ function TableResultsIndividuals (props) {
                       >
                         {row.phenotypicFeatures}
                       </td>
-
-          
                     </tr>
                   ))}
                 </tbody>
@@ -786,23 +787,28 @@ function TableResultsIndividuals (props) {
             </div>
           </div>
         )}
-      <div className='pagination-controls'>
-        <button onClick={handlePreviousPage} disabled={currentPage === 1}>
-          Previous
-        </button>
-        {[...Array(totalPages)].map((_, index) => (
-          <button
-            key={index}
-            onClick={() => handlePageClick(index + 1)}
-            className={currentPage === index + 1 ? 'active' : ''}
-          >
-            {index + 1}
+      {props.show === 'full' && (
+        <div className='pagination-controls'>
+          <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+            Previous
           </button>
-        ))}
-        <button onClick={handleNextPage} disabled={currentPage === totalPages}>
-          Next
-        </button>
-      </div>
+          {[...Array(totalPages)].map((_, index) => (
+            <button
+              key={index}
+              onClick={() => handlePageClick(index + 1)}
+              className={currentPage === index + 1 ? 'active' : ''}
+            >
+              {index + 1}
+            </button>
+          ))}
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      )}
       {showCrossQuery && (
         <CrossQueries
           parameter={parameterCrossQuery}

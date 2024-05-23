@@ -18,7 +18,7 @@
   width: 70%;
   height: 28px;
   margin-left: 34px;
-  border: 1px solid rgb(204, 205, 206);
+  border: 1px solid #3176b1;
   border-radius: 2px;
   box-shadow: rgba(216, 207, 207, 0.25) 0px 1px 1px, rgba(197, 150, 150, 0.13) 0px 0px 1px 1px;
 }
@@ -56,16 +56,15 @@ tbody {
 
 .thead2 {
   position: sticky;
-  top: 61.4px;
   z-index: 2;
   width: 100%;
 }
 
 #table {
   display: flex;
-
   font-size: 15px;
   /* width: 90%; */
+  height: -moz-fit-content;
   height: fit-content;
   flex-direction: column;
   margin-left: 1vw;
@@ -199,12 +198,11 @@ tbody {
 .th4 {
   display: flex;
   width: 57%;
-
   /* height: 100%; */
   /* justify-content: center; */
-  margin-top: 12px;
-  margin-bottom: 12px;
-  padding-left: 32px;
+
+  margin-bottom: -23px;
+  padding-left: 30px;
   padding-top: 10px;
   padding-bottom: 10px;
   font-size: 13px;
@@ -215,8 +213,8 @@ tbody {
   width: 62%;
   /* height: 100%; */
   /* justify-content: center; */
-  margin-top: 12px;
-  margin-bottom: 12px;
+
+  margin-bottom: -23px;
   padding-left: 32px;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -238,12 +236,11 @@ tbody {
 
 .th7 {
   display: flex;
-  width: 50%;
+  width: 62%;
   /* height: 100%; */
   /* justify-content: center; */
-  margin-top: 12px;
-  margin-bottom: 12px;
-  padding-left: 29px;
+  margin-bottom: -23px;
+  padding-left: 32px;
   padding-top: 10px;
   padding-bottom: 10px;
   font-size: 13px;
@@ -258,7 +255,7 @@ tbody {
   width: 60%;
   height: 28px;
   margin-left: 23px;
-  border: 1px solid rgb(204, 205, 206);
+  border: 1px solid #3176b1;
   border-radius: 2px;
   box-shadow: rgba(216, 207, 207, 0.25) 0px 1px 1px, rgba(197, 150, 150, 0.13) 0px 0px 1px 1px;
 }

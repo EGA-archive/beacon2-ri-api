@@ -826,23 +826,28 @@ function TableResultsVariants (props) {
             </div>
           </div>
         )}
-      <div className='pagination-controls'>
-        <button onClick={handlePreviousPage} disabled={currentPage === 1}>
-          Previous
-        </button>
-        {[...Array(totalPages)].map((_, index) => (
-          <button
-            key={index}
-            onClick={() => handlePageClick(index + 1)}
-            className={currentPage === index + 1 ? 'active' : ''}
-          >
-            {index + 1}
+      {props.show === 'full' && (
+        <div className='pagination-controls'>
+          <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+            Previous
           </button>
-        ))}
-        <button onClick={handleNextPage} disabled={currentPage === totalPages}>
-          Next
-        </button>
-      </div>
+          {[...Array(totalPages)].map((_, index) => (
+            <button
+              key={index}
+              onClick={() => handlePageClick(index + 1)}
+              className={currentPage === index + 1 ? 'active' : ''}
+            >
+              {index + 1}
+            </button>
+          ))}
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      )}Ï
       {showCrossQuery && (
         <CrossQueries
           parameter={parameterCrossQuery}

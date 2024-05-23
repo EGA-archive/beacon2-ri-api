@@ -338,6 +338,14 @@ function FilteringTerms (props) {
       {!error && (
         <div className='tableWrapper'>
           <table id='table'>
+            <thead className='thead2'>
+              <tr>
+                <th className='th4'>term</th>
+                <th className='th5'>label</th>
+                {hide === false && <th className='th6'>type</th>}
+                <th className='th7'>scopes</th>
+              </tr>
+            </thead>
             <thead className='thead1'>
               <tr className='search-tr1'>
                 <th
@@ -425,14 +433,7 @@ function FilteringTerms (props) {
                 </tr>
               }
             </thead>
-            <thead className='thead2'>
-              <tr>
-                <th className='th4'>term</th>
-                <th className='th5'>label</th>
-                {hide === false && <th className='th6'>type</th>}
-                <th className='th7'>scopes</th>
-              </tr>
-            </thead>
+
             {props.filteringTerms !== undefined &&
               state.list !== 'error' &&
               state.list.map((term, index) => {
