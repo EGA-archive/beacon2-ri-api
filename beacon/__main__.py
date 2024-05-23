@@ -17,6 +17,9 @@ from cryptography import fernet
 from aiohttp_middlewares import cors_middleware
 from aiohttp_middlewares.cors import DEFAULT_ALLOW_HEADERS
 
+import asyncio
+import socket
+
 from beacon import conf, load_logger
 from beacon.request import ontologies
 from beacon.response import middlewares
@@ -160,10 +163,11 @@ def main(path=None):
         if os.path.exists(path):
             os.unlink(path)
         # will create the UDS socket and bind to it
-        web.run_app(beacon, path=path, shutdown_timeout=0, ssl_context=ssl_context)
+        #web.run_app(beacon, path=path, shutdown_timeout=0, ssl_context=ssl_context)
     else:
         static_files = Path(__file__).parent.parent.resolve() / "ui" / "static"
         beacon.add_routes([web.static("/static", str(static_files))])
+        '''
         web.run_app(
             beacon,
             host=getattr(conf, "beacon_host", "0.0.0.0"),
@@ -171,13 +175,28 @@ def main(path=None):
             shutdown_timeout=0,
             ssl_context=ssl_context,
         )
+        '''
+    return beacon
 
+def mk_socket(host="0.0.0.0", port=5050, reuseport=False):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    if reuseport:
+        SO_REUSEPORT = 15
+        sock.setsockopt(socket.SOL_SOCKET, SO_REUSEPORT, 1)
+    sock.bind((host, port))
+    return sock
 
 if __name__ == "__main__":
-    # Unix socket
-    if len(sys.argv) > 1:
-        main(path=sys.argv[1])
-    # host:port
-    else:
-        main()
+    host = "0.0.0.0"
+    port=5050
+    reuseport = True
+    beacon = main()
+    sock = mk_socket(host, port, reuseport=reuseport)
+    loop = asyncio.get_event_loop()
+    coro = loop.create_server(
+        protocol_factory=beacon.make_handler(),
+        sock=sock,
+        )
+    srv = loop.run_until_complete(coro)
+    loop.run_forever()
 
