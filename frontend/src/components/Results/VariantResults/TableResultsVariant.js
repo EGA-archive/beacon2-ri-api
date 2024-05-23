@@ -20,9 +20,14 @@ function TableResultsVariants (props) {
   const [exportMenuVisible, setExportMenuVisible] = useState(false)
   const [showCrossQuery, setShowCrossQuery] = useState(false)
   const [parameterCrossQuery, setParamCrossQuery] = useState('')
+  const [filteredData, setFilteredData] = useState(editable)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [rowsPerPage] = useState(10) // You can make this dynamic if needed
 
   const [note, setNote] = useState('')
   const [isOpenModal2, setIsOpenModal2] = useState(false)
+
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage)
 
   const [filterValues, setFilterValues] = useState({
     variantInternalId: '',
@@ -83,7 +88,17 @@ function TableResultsVariants (props) {
     })
   }
 
-  const [filteredData, setFilteredData] = useState(editable)
+  const handleNextPage = () => {
+    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages))
+  }
+
+  const handlePreviousPage = () => {
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1))
+  }
+
+  const handlePageClick = pageNumber => {
+    setCurrentPage(pageNumber)
+  }
   const toggleColumnVisibility = columnName => {
     const columns = document.querySelectorAll('th[data-column-name]')
     const rows = document.querySelectorAll(
@@ -123,78 +138,77 @@ function TableResultsVariants (props) {
 
   const exportToCSV = () => {
     // Ensure props.results is not null or undefined
-    if (!props.results) return;
-  
+    if (!props.results) return
+
     // Get all keys from the first row of props.results
-    const header = Object.keys(props.results[0]);
-  
+    const header = Object.keys(props.results[0])
+
     // Convert each row to CSV format
     const csv = [
       header.join(','), // Header row
       ...props.results.map(row =>
-        header.map(fieldName => {
-          const value = row[fieldName];
-          // Check if the value is an object
-          if (typeof value === 'object') {
-            // Stringify the object
-            return JSON.stringify(value);
-          } else {
-            // Otherwise, return the value as is
-            return value;
-          }
-        }).join(',')
+        header
+          .map(fieldName => {
+            const value = row[fieldName]
+            // Check if the value is an object
+            if (typeof value === 'object') {
+              // Stringify the object
+              return JSON.stringify(value)
+            } else {
+              // Otherwise, return the value as is
+              return value
+            }
+          })
+          .join(',')
       )
-    ].join('\n');
-  
+    ].join('\n')
+
     // Create a blob object from the CSV content
-    const blob = new Blob([csv], { type: 'text/csv' });
-  
+    const blob = new Blob([csv], { type: 'text/csv' })
+
     // Create a URL for the blob object
-    const url = window.URL.createObjectURL(blob);
-  
+    const url = window.URL.createObjectURL(blob)
+
     // Create a temporary <a> element to trigger the download
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'exported_data.csv');
-  
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', 'exported_data.csv')
+
     // Programmatically click the link to start the download
-    document.body.appendChild(link);
-    link.click();
-  
+    document.body.appendChild(link)
+    link.click()
+
     // Clean up by revoking the URL and removing the temporary <a> element
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(link);
-  };
-  
+    window.URL.revokeObjectURL(url)
+    document.body.removeChild(link)
+  }
 
   const exportToJSON = () => {
     // Ensure props.results is not null or undefined
-    if (!props.results) return;
-  
-    // Convert the results to JSON
-    const jsonString = JSON.stringify(props.results, null, 2);
-  
-    // Create a blob object from the JSON content
-    const blob = new Blob([jsonString], { type: 'application/json' });
-  
-    // Create a URL for the blob object
-    const url = URL.createObjectURL(blob);
-  
-    // Create a temporary <a> element to trigger the download
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'exported_data.json');
-  
-    // Programmatically click the link to start the download
-    document.body.appendChild(link);
-    link.click();
-  
-    // Clean up by revoking the URL and removing the temporary <a> element
-    URL.revokeObjectURL(url);
-    document.body.removeChild(link);
-  };
-  
+    if (!props.results) return
 
+    // Convert the results to JSON
+    const jsonString = JSON.stringify(props.results, null, 2)
+
+    // Create a blob object from the JSON content
+    const blob = new Blob([jsonString], { type: 'application/json' })
+
+    // Create a URL for the blob object
+    const url = URL.createObjectURL(blob)
+
+    // Create a temporary <a> element to trigger the download
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', 'exported_data.json')
+
+    // Programmatically click the link to start the download
+    document.body.appendChild(link)
+    link.click()
+
+    // Clean up by revoking the URL and removing the temporary <a> element
+    URL.revokeObjectURL(url)
+    document.body.removeChild(link)
+  }
 
   const showNote = e => {
     setNote(e)
@@ -512,12 +526,16 @@ function TableResultsVariants (props) {
                   <tr>
                     <th
                       className={`sticky-header ${
-                        columnVisibility.variantInternalId ? 'visible' : 'hidden'
+                        columnVisibility.variantInternalId
+                          ? 'visible'
+                          : 'hidden'
                       }`}
                     >
                       <span>Variant ID</span>
                       <button
-                        onClick={() => toggleColumnVisibility('variantInternalId')}
+                        onClick={() =>
+                          toggleColumnVisibility('variantInternalId')
+                        }
                       >
                         {columnVisibility.variantInternalId ? (
                           <FaEye />
@@ -528,7 +546,9 @@ function TableResultsVariants (props) {
                       <input
                         type='text'
                         placeholder='Filter Variant ID'
-                        onChange={e => handleFilterChange(e, 'variantInternalId')}
+                        onChange={e =>
+                          handleFilterChange(e, 'variantInternalId')
+                        }
                       />
                     </th>
                     <th
@@ -569,16 +589,12 @@ function TableResultsVariants (props) {
                     </th>
                     <th
                       className={`sticky-header ${
-                        columnVisibility.identifiers
-                          ? 'visible'
-                          : 'hidden'
+                        columnVisibility.identifiers ? 'visible' : 'hidden'
                       }`}
                     >
                       <span>Identifiers</span>
                       <button
-                        onClick={() =>
-                          toggleColumnVisibility('identifiers')
-                        }
+                        onClick={() => toggleColumnVisibility('identifiers')}
                       >
                         {columnVisibility.identifiers ? (
                           <FaEye />
@@ -589,24 +605,34 @@ function TableResultsVariants (props) {
                       <input
                         type='text'
                         placeholder='Filter identifiers'
-                        onChange={e =>
-                          handleFilterChange(e, 'identifiers')
-                        }
+                        onChange={e => handleFilterChange(e, 'identifiers')}
                       />
                     </th>
                     <th
                       className={`sticky-header ${
-                        columnVisibility.molecularAttributes ? 'visible' : 'hidden'
+                        columnVisibility.molecularAttributes
+                          ? 'visible'
+                          : 'hidden'
                       }`}
                     >
                       <span>Molecular Attributes</span>
-                      <button onClick={() => toggleColumnVisibility('molecularAttributes')}>
-                        {columnVisibility.molecularAttributes ? <FaEye /> : <FaEyeSlash />}
+                      <button
+                        onClick={() =>
+                          toggleColumnVisibility('molecularAttributes')
+                        }
+                      >
+                        {columnVisibility.molecularAttributes ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
                       </button>
                       <input
                         type='text'
                         placeholder='Filter molecular attributes'
-                        onChange={e => handleFilterChange(e, 'molecularAttributes')}
+                        onChange={e =>
+                          handleFilterChange(e, 'molecularAttributes')
+                        }
                       />
                     </th>
                     <th
@@ -616,14 +642,22 @@ function TableResultsVariants (props) {
                     >
                       <span>Molecular Effects</span>
                       <button
-                        onClick={() => toggleColumnVisibility('molecularEffects')}
+                        onClick={() =>
+                          toggleColumnVisibility('molecularEffects')
+                        }
                       >
-                        {columnVisibility.molecularEffects ? <FaEye /> : <FaEyeSlash />}
+                        {columnVisibility.molecularEffects ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
                       </button>
                       <input
                         type='text'
                         placeholder='Filter molecular effects'
-                        onChange={e => handleFilterChange(e, 'molecularEffects')}
+                        onChange={e =>
+                          handleFilterChange(e, 'molecularEffects')
+                        }
                       />
                     </th>
                     <th
@@ -649,9 +683,7 @@ function TableResultsVariants (props) {
                     </th>
                     <th
                       className={`sticky-header ${
-                        columnVisibility.variantLevelData
-                          ? 'visible'
-                          : 'hidden'
+                        columnVisibility.variantLevelData ? 'visible' : 'hidden'
                       }`}
                     >
                       <span>Variant Level Data</span>
@@ -714,7 +746,9 @@ function TableResultsVariants (props) {
                     <tr key={index}>
                       <td
                         className={
-                          columnVisibility.variantInternalId ? 'visible' : 'hidden'
+                          columnVisibility.variantInternalId
+                            ? 'visible'
+                            : 'hidden'
                         }
                       >
                         {row.variantInternalId}
@@ -735,21 +769,25 @@ function TableResultsVariants (props) {
                       </td>
                       <td
                         className={
-                          columnVisibility.identifiers
-                            ? 'visible'
-                            : 'hidden'
+                          columnVisibility.identifiers ? 'visible' : 'hidden'
                         }
                       >
                         {row.identifiers}
                       </td>
                       <td
-                        className={columnVisibility.molecularAttributes ? 'visible' : 'hidden'}
+                        className={
+                          columnVisibility.molecularAttributes
+                            ? 'visible'
+                            : 'hidden'
+                        }
                       >
                         {row.molecularAttributes}
                       </td>
                       <td
                         className={
-                          columnVisibility.molecularEffects ? 'visible' : 'hidden'
+                          columnVisibility.molecularEffects
+                            ? 'visible'
+                            : 'hidden'
                         }
                       >
                         {row.molecularEffects}
@@ -788,6 +826,23 @@ function TableResultsVariants (props) {
             </div>
           </div>
         )}
+      <div className='pagination-controls'>
+        <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+          Previous
+        </button>
+        {[...Array(totalPages)].map((_, index) => (
+          <button
+            key={index}
+            onClick={() => handlePageClick(index + 1)}
+            className={currentPage === index + 1 ? 'active' : ''}
+          >
+            {index + 1}
+          </button>
+        ))}
+        <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+          Next
+        </button>
+      </div>
       {showCrossQuery && (
         <CrossQueries
           parameter={parameterCrossQuery}

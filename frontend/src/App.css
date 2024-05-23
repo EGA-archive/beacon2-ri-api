@@ -1268,9 +1268,9 @@ h5 {
   border: 1px solid rgb(121 123 163 / 61%);
   margin: 4px;
   padding: 6px;
-  box-shadow: 1px 1px 2px #a3a0a0;
+  box-shadow: 1px 1px 2px #eee9e9;
   width: 168px;
-  height: 13px;
+  height: 12px;
   border-radius: 4px;
   overflow: auto;
 }
@@ -1280,9 +1280,9 @@ h5 {
   /* border: 1px solid rgba(12, 16, 64, 0.606); */
   margin-left: 5px;
   padding: 6px;
-  box-shadow: 1px 1px 2px #a3a0a0;
+  box-shadow: 1px 1px 2px #eee9e9;
   width: 30%;
-  height: 15px;
+  height: 13px;
   border-radius: 4px;
   border: 1px solid rgb(143 147 196 / 61%);
 }

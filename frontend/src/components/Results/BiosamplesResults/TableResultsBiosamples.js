@@ -19,9 +19,14 @@ function TableResultsBiosamples (props) {
   const [exportMenuVisible, setExportMenuVisible] = useState(false)
   const [showCrossQuery, setShowCrossQuery] = useState(false)
   const [parameterCrossQuery, setParamCrossQuery] = useState('')
+  const [filteredData, setFilteredData] = useState(editable)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [rowsPerPage] = useState(10) // You can make this dynamic if needed
 
   const [note, setNote] = useState('')
   const [isOpenModal2, setIsOpenModal2] = useState(false)
+
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage)
 
   const [filterValues, setFilterValues] = useState({
     BiosampleId: '',
@@ -74,6 +79,17 @@ function TableResultsBiosamples (props) {
     sampleStorage: true
     // Add more columns as needed
   })
+  const handleNextPage = () => {
+    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages))
+  }
+
+  const handlePreviousPage = () => {
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1))
+  }
+
+  const handlePageClick = pageNumber => {
+    setCurrentPage(pageNumber)
+  }
   const showAllColumns = () => {
     const columns = document.querySelectorAll('th')
     const rows = document.querySelectorAll('td')
@@ -102,7 +118,7 @@ function TableResultsBiosamples (props) {
     })
   }
 
-  const [filteredData, setFilteredData] = useState(editable)
+
   const toggleColumnVisibility = columnName => {
     const columns = document.querySelectorAll('th[data-column-name]')
     const rows = document.querySelectorAll(
@@ -142,78 +158,77 @@ function TableResultsBiosamples (props) {
 
   const exportToCSV = () => {
     // Ensure props.results is not null or undefined
-    if (!props.results) return;
-  
+    if (!props.results) return
+
     // Get all keys from the first row of props.results
-    const header = Object.keys(props.results[0]);
-  
+    const header = Object.keys(props.results[0])
+
     // Convert each row to CSV format
     const csv = [
       header.join(','), // Header row
       ...props.results.map(row =>
-        header.map(fieldName => {
-          const value = row[fieldName];
-          // Check if the value is an object
-          if (typeof value === 'object') {
-            // Stringify the object
-            return JSON.stringify(value);
-          } else {
-            // Otherwise, return the value as is
-            return value;
-          }
-        }).join(',')
+        header
+          .map(fieldName => {
+            const value = row[fieldName]
+            // Check if the value is an object
+            if (typeof value === 'object') {
+              // Stringify the object
+              return JSON.stringify(value)
+            } else {
+              // Otherwise, return the value as is
+              return value
+            }
+          })
+          .join(',')
       )
-    ].join('\n');
-  
+    ].join('\n')
+
     // Create a blob object from the CSV content
-    const blob = new Blob([csv], { type: 'text/csv' });
-  
+    const blob = new Blob([csv], { type: 'text/csv' })
+
     // Create a URL for the blob object
-    const url = window.URL.createObjectURL(blob);
-  
+    const url = window.URL.createObjectURL(blob)
+
     // Create a temporary <a> element to trigger the download
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'exported_data.csv');
-  
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', 'exported_data.csv')
+
     // Programmatically click the link to start the download
-    document.body.appendChild(link);
-    link.click();
-  
+    document.body.appendChild(link)
+    link.click()
+
     // Clean up by revoking the URL and removing the temporary <a> element
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(link);
-  };
-  
+    window.URL.revokeObjectURL(url)
+    document.body.removeChild(link)
+  }
 
   const exportToJSON = () => {
     // Ensure props.results is not null or undefined
-    if (!props.results) return;
-  
-    // Convert the results to JSON
-    const jsonString = JSON.stringify(props.results, null, 2);
-  
-    // Create a blob object from the JSON content
-    const blob = new Blob([jsonString], { type: 'application/json' });
-  
-    // Create a URL for the blob object
-    const url = URL.createObjectURL(blob);
-  
-    // Create a temporary <a> element to trigger the download
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'exported_data.json');
-  
-    // Programmatically click the link to start the download
-    document.body.appendChild(link);
-    link.click();
-  
-    // Clean up by revoking the URL and removing the temporary <a> element
-    URL.revokeObjectURL(url);
-    document.body.removeChild(link);
-  };
-  
+    if (!props.results) return
 
+    // Convert the results to JSON
+    const jsonString = JSON.stringify(props.results, null, 2)
+
+    // Create a blob object from the JSON content
+    const blob = new Blob([jsonString], { type: 'application/json' })
+
+    // Create a URL for the blob object
+    const url = URL.createObjectURL(blob)
+
+    // Create a temporary <a> element to trigger the download
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', 'exported_data.json')
+
+    // Programmatically click the link to start the download
+    document.body.appendChild(link)
+    link.click()
+
+    // Clean up by revoking the URL and removing the temporary <a> element
+    URL.revokeObjectURL(url)
+    document.body.removeChild(link)
+  }
 
   const showNote = e => {
     setNote(e)
@@ -452,14 +467,13 @@ function TableResultsBiosamples (props) {
           }
         }
 
-
         let patho_id = ''
         let patho_label = ''
         let stringPatho = ''
 
         if (element[1].pathologicalStage) {
-          patho_id= element[1].pathologicalStage.id
-          patho_label= element[1].pathologicalStage.label
+          patho_id = element[1].pathologicalStage.id
+          patho_label = element[1].pathologicalStage.label
           stringPatho = `${element[1].pathologicalStage.label} / ${element[1].pathologicalStage.id}`
         } else {
           stringPatho = ''
@@ -732,7 +746,6 @@ function TableResultsBiosamples (props) {
           stringSampleStorage = ''
         }
 
-     
         editable.push({
           id: index,
           Beacon: element[0],
@@ -757,8 +770,6 @@ function TableResultsBiosamples (props) {
         })
 
         if (index === resultsSelectedFinal.length - 1) {
-     
-
           setTrigger2(true)
         }
       }
@@ -920,9 +931,7 @@ function TableResultsBiosamples (props) {
                     </th>
                     <th
                       className={`sticky-header ${
-                        columnVisibility.biosampleStatus
-                          ? 'visible'
-                          : 'hidden'
+                        columnVisibility.biosampleStatus ? 'visible' : 'hidden'
                       }`}
                     >
                       <span>Biosample Status</span>
@@ -940,9 +949,7 @@ function TableResultsBiosamples (props) {
                       <input
                         type='text'
                         placeholder='Filter biosample status'
-                        onChange={e =>
-                          handleFilterChange(e, 'biosampleStatus')
-                        }
+                        onChange={e => handleFilterChange(e, 'biosampleStatus')}
                       />
                     </th>
                     <th
@@ -951,30 +958,50 @@ function TableResultsBiosamples (props) {
                       }`}
                     >
                       <span>Sample Origin Type</span>
-                      <button onClick={() => toggleColumnVisibility('sampleOriginType')}>
-                        {columnVisibility.sampleOriginType ? <FaEye /> : <FaEyeSlash />}
+                      <button
+                        onClick={() =>
+                          toggleColumnVisibility('sampleOriginType')
+                        }
+                      >
+                        {columnVisibility.sampleOriginType ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
                       </button>
                       <input
                         type='text'
                         placeholder='Filter sample origin type'
-                        onChange={e => handleFilterChange(e, 'sampleOriginType')}
+                        onChange={e =>
+                          handleFilterChange(e, 'sampleOriginType')
+                        }
                       />
                     </th>
                     <th
                       className={`sticky-header ${
-                        columnVisibility.sampleOriginDetail ? 'visible' : 'hidden'
+                        columnVisibility.sampleOriginDetail
+                          ? 'visible'
+                          : 'hidden'
                       }`}
                     >
                       <span>Sample Origin Detail</span>
                       <button
-                        onClick={() => toggleColumnVisibility('sampleOriginDetail')}
+                        onClick={() =>
+                          toggleColumnVisibility('sampleOriginDetail')
+                        }
                       >
-                        {columnVisibility.sampleOriginDetail ? <FaEye /> : <FaEyeSlash />}
+                        {columnVisibility.sampleOriginDetail ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
                       </button>
                       <input
                         type='text'
                         placeholder='Filter sample origin detail'
-                        onChange={e => handleFilterChange(e, 'sampleOriginDetail')}
+                        onChange={e =>
+                          handleFilterChange(e, 'sampleOriginDetail')
+                        }
                       />
                     </th>
                     <th
@@ -1000,9 +1027,7 @@ function TableResultsBiosamples (props) {
                     </th>
                     <th
                       className={`sticky-header ${
-                        columnVisibility.collectionMoment
-                          ? 'visible'
-                          : 'hidden'
+                        columnVisibility.collectionMoment ? 'visible' : 'hidden'
                       }`}
                     >
                       <span>Collection Moment</span>
@@ -1054,9 +1079,7 @@ function TableResultsBiosamples (props) {
                     </th>
                     <th
                       className={`sticky-header ${
-                        columnVisibility.tumorProgression
-                          ? 'visible'
-                          : 'hidden'
+                        columnVisibility.tumorProgression ? 'visible' : 'hidden'
                       }`}
                     >
                       <span>Tumor Progression</span>
@@ -1081,16 +1104,12 @@ function TableResultsBiosamples (props) {
                     </th>
                     <th
                       className={`sticky-header ${
-                        columnVisibility.tumorGrade
-                          ? 'visible'
-                          : 'hidden'
+                        columnVisibility.tumorGrade ? 'visible' : 'hidden'
                       }`}
                     >
                       <span>Tumor Grade</span>
                       <button
-                        onClick={() =>
-                          toggleColumnVisibility('tumorGrade')
-                        }
+                        onClick={() => toggleColumnVisibility('tumorGrade')}
                       >
                         {columnVisibility.tumorGrade ? (
                           <FaEye />
@@ -1101,9 +1120,7 @@ function TableResultsBiosamples (props) {
                       <input
                         type='text'
                         placeholder='Filter tumor grade'
-                        onChange={e =>
-                          handleFilterChange(e, 'tumorGrade')
-                        }
+                        onChange={e => handleFilterChange(e, 'tumorGrade')}
                       />
                     </th>
                     <th
@@ -1243,16 +1260,12 @@ function TableResultsBiosamples (props) {
                     </th>
                     <th
                       className={`sticky-header ${
-                        columnVisibility.measurements
-                          ? 'visible'
-                          : 'hidden'
+                        columnVisibility.measurements ? 'visible' : 'hidden'
                       }`}
                     >
                       <span>Measurements</span>
                       <button
-                        onClick={() =>
-                          toggleColumnVisibility('measurements')
-                        }
+                        onClick={() => toggleColumnVisibility('measurements')}
                       >
                         {columnVisibility.measurements ? (
                           <FaEye />
@@ -1263,16 +1276,12 @@ function TableResultsBiosamples (props) {
                       <input
                         type='text'
                         placeholder='Filter measurements'
-                        onChange={e =>
-                          handleFilterChange(e, 'measurements')
-                        }
+                        onChange={e => handleFilterChange(e, 'measurements')}
                       />
                     </th>
                     <th
                       className={`sticky-header ${
-                        columnVisibility.sampleProcessing
-                          ? 'visible'
-                          : 'hidden'
+                        columnVisibility.sampleProcessing ? 'visible' : 'hidden'
                       }`}
                     >
                       <span>Sample Processing</span>
@@ -1297,16 +1306,12 @@ function TableResultsBiosamples (props) {
                     </th>
                     <th
                       className={`sticky-header ${
-                        columnVisibility.sampleStorage
-                          ? 'visible'
-                          : 'hidden'
+                        columnVisibility.sampleStorage ? 'visible' : 'hidden'
                       }`}
                     >
                       <span>Sample Storage</span>
                       <button
-                        onClick={() =>
-                          toggleColumnVisibility('sampleStorage')
-                        }
+                        onClick={() => toggleColumnVisibility('sampleStorage')}
                       >
                         {columnVisibility.sampleStorage ? (
                           <FaEye />
@@ -1317,12 +1322,9 @@ function TableResultsBiosamples (props) {
                       <input
                         type='text'
                         placeholder='Filter sample storage'
-                        onChange={e =>
-                          handleFilterChange(e, 'sampleStorage')
-                        }
+                        onChange={e => handleFilterChange(e, 'sampleStorage')}
                       />
                     </th>
-
 
                     {/* Add more column headers here */}
                   </tr>
@@ -1365,13 +1367,19 @@ function TableResultsBiosamples (props) {
                         {row.biosampleStatus}
                       </td>
                       <td
-                        className={columnVisibility.sampleOriginType ? 'visible' : 'hidden'}
+                        className={
+                          columnVisibility.sampleOriginType
+                            ? 'visible'
+                            : 'hidden'
+                        }
                       >
                         {row.sampleOriginType}
                       </td>
                       <td
                         className={
-                          columnVisibility.sampleOriginDetail ? 'visible' : 'hidden'
+                          columnVisibility.sampleOriginDetail
+                            ? 'visible'
+                            : 'hidden'
                         }
                       >
                         {row.sampleOriginDetail}
@@ -1412,9 +1420,7 @@ function TableResultsBiosamples (props) {
                       </td>
                       <td
                         className={
-                          columnVisibility.tumorGrade
-                            ? 'visible'
-                            : 'hidden'
+                          columnVisibility.tumorGrade ? 'visible' : 'hidden'
                         }
                       >
                         {row.tumorGrade}
@@ -1466,9 +1472,7 @@ function TableResultsBiosamples (props) {
                       </td>
                       <td
                         className={
-                          columnVisibility.measurements
-                            ? 'visible'
-                            : 'hidden'
+                          columnVisibility.measurements ? 'visible' : 'hidden'
                         }
                       >
                         {row.measurements}
@@ -1484,14 +1488,11 @@ function TableResultsBiosamples (props) {
                       </td>
                       <td
                         className={
-                          columnVisibility.sampleStorage
-                            ? 'visible'
-                            : 'hidden'
+                          columnVisibility.sampleStorage ? 'visible' : 'hidden'
                         }
                       >
                         {row.sampleStorage}
                       </td>
-
 
                       {/* Render other row cells here */}
                     </tr>
@@ -1501,6 +1502,23 @@ function TableResultsBiosamples (props) {
             </div>
           </div>
         )}
+      <div className='pagination-controls'>
+        <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+          Previous
+        </button>
+        {[...Array(totalPages)].map((_, index) => (
+          <button
+            key={index}
+            onClick={() => handlePageClick(index + 1)}
+            className={currentPage === index + 1 ? 'active' : ''}
+          >
+            {index + 1}
+          </button>
+        ))}
+        <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+          Next
+        </button>
+      </div>
       {showCrossQuery && (
         <CrossQueries
           parameter={parameterCrossQuery}

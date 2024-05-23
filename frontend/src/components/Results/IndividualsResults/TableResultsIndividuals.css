@@ -171,6 +171,7 @@ input[type='checkbox'] {
   outline: none;
   content: none;
 }
+
 input[type='checkbox']:checked:before {
   display: flex;
   color: rgb(36, 43, 106) !important;
@@ -188,7 +189,6 @@ input[type='checkbox']:before {
   height: 11px;
   border: 1.8px solid #3176b1;
   margin-right: 1px;
-  margin-bottom: 7px;
 }
 
 .divFilter p {
