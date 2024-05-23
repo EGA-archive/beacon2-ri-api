@@ -304,7 +304,6 @@ function Layout (props) {
   }, [collection])
 
   const onSubmit = async event => {
-   
     setShowFilters(false)
     console.log(query)
     console.log(value)
@@ -441,6 +440,7 @@ function Layout (props) {
     setInputValues(initialInputValues)
   }, [filters])
 
+  
   return (
     <div className='container1'>
       <div className='sectionModules'>
@@ -448,19 +448,19 @@ function Layout (props) {
           <div className='logosVersionContainer'>
             <div className='logos'>
               <a
-                href='https://eosc4cancer.eu/'
+                href='https://by-covid.org/'
                 className='logoInstitution'
                 target='_blank'
                 rel='noreferrer'
               >
                 <img
-                  className='eosc4cancer'
-                  src='../eosc4cancer.png'
-                  alt='eosc4cancer'
+                  className='by-covid-logo'
+                  src='../by-covid-logo.png'
+                  alt='byCovid'
                 ></img>
               </a>
             </div>
-            <h1 className='version'>v0.5.3</h1>
+            <h1 className='version'>v0.5.4</h1>
           </div>
         </div>
         <div className='containerSelection'>
@@ -736,6 +736,10 @@ function Layout (props) {
                 </ul>
               </div>
             ))}
+            <div class='nav-dots'>
+              <span class='dot' onclick='showColumn(0)'></span>
+              <span class='dot' onclick='showColumn(1)'></span>
+            </div>
           </div>
         </div>
       )}

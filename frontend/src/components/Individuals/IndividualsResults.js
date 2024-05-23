@@ -537,18 +537,19 @@ function IndividualsResults (props) {
             console.log(res)
           } else {
             const headers = { Authorization: `Bearer ${token}` }
-
+            console.log("querying with token")
             res = await axios.post(
               configData.API_URL + '/individuals',
               jsonData1,
               { headers: headers }
             )
+            console.log(res)
           }
           setTimeOut(true)
 
           if (
-            (res.data.responseSummary.numTotalResults < 1 ||
-              res.data.responseSummary.numTotalResults === undefined) &&
+            (res.data.responseSummary.numTotalResults === 0 ||
+              res.data.responseSummary.exists === false || !res.data.responseSummary) &&
             props.resultSets !== 'MISS'
           ) {
             setNumberResults(0)
@@ -743,8 +744,8 @@ function IndividualsResults (props) {
             setTimeOut(true)
             setPause(false)
             if (
-              (res.data.responseSummary.numTotalResults < 1 ||
-                res.data.responseSummary.numTotalResults === undefined) &&
+              (res.data.responseSummary.exists === false ||
+                res.data.responseSummary.numTotalResults === 0 || !res.data.responseSummary) &&
               props.resultSets !== 'MISS'
             ) {
               setError('No results')

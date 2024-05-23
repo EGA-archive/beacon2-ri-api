@@ -771,10 +771,22 @@ h14 {
   transition: 0.2s ease-in-out;
 }
 
-.eosc4cancer:hover {
+.by-covid-logo{
+  height: 16px;
+  margin-top: 30px;
+  margin-bottom: 5px;
+  margin-right: 35px;
+  -webkit-filter: grayscale(20%);
+  filter: grayscale(60%);
+  -webkit-transition: 0.2s ease-in-out;
+  transition: 0.2s ease-in-out;
+}
+
+.eosc4cancer,.by-covid-logo:hover {
   -webkit-filter: grayscale(0%);
   filter: grayscale(0%);
 }
+
 
 .federLogo {
   height: 33px;
@@ -1253,7 +1265,7 @@ h5 {
 
 .IdForm {
   background: white;
-  border: 1px solid rgb(143 147 196 / 61%);
+  border: 1px solid rgb(121 123 163 / 61%);
   margin: 4px;
   padding: 6px;
   box-shadow: 1px 1px 2px #a3a0a0;
@@ -1448,6 +1460,15 @@ h5 {
     margin-right: 33px;
     -webkit-filter: grayscale(20%);
     filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+  .by-covid-logo{
+    height: 14px;
+    margin-top: 20px;
+    margin-right: 30px;
+    -webkit-filter: grayscale(20%);
+    filter: grayscale(60%);
     -webkit-transition: 0.2s ease-in-out;
     transition: 0.2s ease-in-out;
   }
@@ -1770,6 +1791,15 @@ h5 {
     margin-right: 33px;
     -webkit-filter: grayscale(20%);
     filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+  .by-covid-logo{
+    height: 14px;
+    margin-top: 20px;
+    margin-right: 30px;
+    -webkit-filter: grayscale(20%);
+    filter: grayscale(60%);
     -webkit-transition: 0.2s ease-in-out;
     transition: 0.2s ease-in-out;
   }
