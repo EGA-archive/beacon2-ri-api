@@ -55,7 +55,7 @@ async def destroy(app):
     client.close()
 
 
-def main(path=None):
+async def main(path=None):
     # Configure the logging
     load_logger()
 
@@ -164,9 +164,14 @@ def main(path=None):
             os.unlink(path)
         # will create the UDS socket and bind to it
         #web.run_app(beacon, path=path, shutdown_timeout=0, ssl_context=ssl_context)
+        runner = web.AppRunner(beacon)
+        await runner.setup()
+        site = web.TCPSite(runner, '0.0.0.0', 5050)
+        await site.start()
     else:
         static_files = Path(__file__).parent.parent.resolve() / "ui" / "static"
         beacon.add_routes([web.static("/static", str(static_files))])
+        
         '''
         web.run_app(
             beacon,
@@ -176,27 +181,12 @@ def main(path=None):
             ssl_context=ssl_context,
         )
         '''
-    return beacon
-
-def mk_socket(host="0.0.0.0", port=5050, reuseport=False):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    if reuseport:
-        SO_REUSEPORT = 15
-        sock.setsockopt(socket.SOL_SOCKET, SO_REUSEPORT, 1)
-    sock.bind((host, port))
-    return sock
+        runner = web.AppRunner(beacon)
+        await runner.setup()
+        site = web.TCPSite(runner, '0.0.0.0', 5050)
+        await site.start()
+        while True:
+            await asyncio.sleep(3600)
 
 if __name__ == "__main__":
-    host = "0.0.0.0"
-    port=5050
-    reuseport = True
-    beacon = main()
-    sock = mk_socket(host, port, reuseport=reuseport)
-    loop = asyncio.get_event_loop()
-    coro = loop.create_server(
-        protocol_factory=beacon.make_handler(),
-        sock=sock,
-        )
-    srv = loop.run_until_complete(coro)
-    loop.run_forever()
-
+    asyncio.run(main())
