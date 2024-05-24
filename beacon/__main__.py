@@ -166,7 +166,7 @@ async def main(path=None):
         #web.run_app(beacon, path=path, shutdown_timeout=0, ssl_context=ssl_context)
         runner = web.AppRunner(beacon)
         await runner.setup()
-        site = web.TCPSite(runner, '0.0.0.0', 5050)
+        site = web.TCPSite(runner, conf.beacon_host, conf.beacon_port)
         await site.start()
         while True:
             await asyncio.sleep(3600)
@@ -185,7 +185,7 @@ async def main(path=None):
         '''
         runner = web.AppRunner(beacon)
         await runner.setup()
-        site = web.TCPSite(runner, '0.0.0.0', 5050)
+        site = web.TCPSite(runner, conf.beacon_host, conf.beacon_port)
         await site.start()
         while True:
             await asyncio.sleep(3600)
