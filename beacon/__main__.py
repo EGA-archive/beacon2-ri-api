@@ -168,6 +168,8 @@ async def main(path=None):
         await runner.setup()
         site = web.TCPSite(runner, '0.0.0.0', 5050)
         await site.start()
+        while True:
+            await asyncio.sleep(3600)
     else:
         static_files = Path(__file__).parent.parent.resolve() / "ui" / "static"
         beacon.add_routes([web.static("/static", str(static_files))])
