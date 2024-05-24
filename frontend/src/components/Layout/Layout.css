@@ -97,6 +97,7 @@ p {
 .label-ontology-div {
   display: flex;
   flex-direction: column;
+  min-width: 112px;
 }
 
 .label-ontology-div label {

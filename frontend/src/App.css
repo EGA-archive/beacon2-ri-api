@@ -903,12 +903,7 @@ select {
 }
 
 .results {
-  display: flex;
-  flex-direction: column;
-  /* justify-content: center; */
-  align-content: center;
-  align-items: center;
-  padding-bottom: 55px;
+
   min-height: 280px;
 }
 

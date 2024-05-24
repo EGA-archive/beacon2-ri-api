@@ -25,6 +25,7 @@ function IndividualsResults (props) {
   const [updatedArrayFilterVar, setUpdatedArrayFilterVar] = useState([])
   const [queryArray, setQueryArray] = useState([])
   const [beaconsList, setBeaconsList] = useState([])
+  const [datasetList, setDatasetList] = useState([])
 
   const [limit, setLimit] = useState(0)
   const [skip, setSkip] = useState(0)
@@ -469,6 +470,12 @@ function IndividualsResults (props) {
 
       try {
         let res = await axios.get(configData.API_URL + '/info')
+        let res2 = await axios.get(configData.API_URL + '/datasets')
+        console.log(res2)
+        if (res2) {
+          datasetList.push(res2.data.response.collections)
+        }
+        console.log(datasetList)
 
         if (updatedArrayFilterVar.length === 0) {
           beaconsList.push(res.data.response)
@@ -537,7 +544,7 @@ function IndividualsResults (props) {
             console.log(res)
           } else {
             const headers = { Authorization: `Bearer ${token}` }
-            console.log("querying with token")
+            console.log('querying with token')
             res = await axios.post(
               configData.API_URL + '/individuals',
               jsonData1,
@@ -549,7 +556,8 @@ function IndividualsResults (props) {
 
           if (
             (res.data.responseSummary.numTotalResults === 0 ||
-              res.data.responseSummary.exists === false || !res.data.responseSummary) &&
+              res.data.responseSummary.exists === false ||
+              !res.data.responseSummary) &&
             props.resultSets !== 'MISS'
           ) {
             setNumberResults(0)
@@ -745,7 +753,8 @@ function IndividualsResults (props) {
             setPause(false)
             if (
               (res.data.responseSummary.exists === false ||
-                res.data.responseSummary.numTotalResults === 0 || !res.data.responseSummary) &&
+                res.data.responseSummary.numTotalResults === 0 ||
+                !res.data.responseSummary) &&
               props.resultSets !== 'MISS'
             ) {
               setError('No results')
@@ -811,6 +820,7 @@ function IndividualsResults (props) {
         console.log(error)
         setError('No, sorry')
         setTimeOut(true)
+        setTriggerSubmit(true)
       }
     }
     apiCall()
@@ -865,9 +875,7 @@ function IndividualsResults (props) {
       {timeOut && error !== '' && props.granularity === 'boolean' && (
         <h6 className='NotfoundResult'>&nbsp; No, sorry </h6>
       )}
-      {timeOut && error !== '' && props.granularity === 'count' && (
-        <h6 className='NotfoundResult'>&nbsp; None, sorry </h6>
-      )}
+
       {timeOut && error !== '' && props.granularity === 'record' && (
         <h6 className='NotfoundResult'>&nbsp; No results, sorry </h6>
       )}
@@ -917,38 +925,44 @@ function IndividualsResults (props) {
               </div>
             )} */}
 
-            {show3 && logInRequired === false && !error && (
+            {show3 && logInRequired === false && (
               <div className='containerTableResults'>
                 <TableResultsIndividuals
+                  error={'error'}
                   show={'full'}
                   results={results}
                   resultsPerDataset={resultsPerDataset}
                   beaconsList={beaconsList}
+                  datasetList={datasetList}
                   resultSets={props.resultSets}
                 ></TableResultsIndividuals>
               </div>
             )}
 
-            {show2 && !error && (
+            {show2 && (
               <div className='containerTableResults'>
                 <TableResultsIndividuals
+                  error={'error'}
                   show={'count'}
                   resultsPerDataset={resultsPerDataset}
                   resultsNotPerDataset={resultsNotPerDataset}
                   results={results}
                   beaconsList={beaconsList}
+                  datasetList={datasetList}
                   resultSets={props.resultSets}
                 ></TableResultsIndividuals>
               </div>
             )}
-            {show1 && !error && (
+            {show1 && (
               <div className='containerTableResults'>
                 <TableResultsIndividuals
+                  error={'error'}
                   show={'boolean'}
                   resultsPerDataset={resultsPerDataset}
                   resultsNotPerDataset={resultsNotPerDataset}
                   results={results}
                   beaconsList={beaconsList}
+                  datasetList={datasetList}
                   resultSets={props.resultSets}
                 ></TableResultsIndividuals>
               </div>

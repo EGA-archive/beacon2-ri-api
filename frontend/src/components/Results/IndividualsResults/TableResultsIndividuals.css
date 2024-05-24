@@ -17,6 +17,19 @@
   scrollbar-color: rgb(188 208 223 / 50%) rgba(0, 0, 0, 0);
 }
 
+.tdGranu ion-icon{
+  width: 15px;
+  color: black;
+  margin: 0px;
+  margin-left: 11px;
+  cursor: pointer;
+}
+
+.tdGranu ion-icon:hover{
+  font-weight:700;
+  color: black;
+}
+
 .table-container th.hidden,
 .table-container td.hidden {
   display: none;
@@ -198,6 +211,64 @@ input[type='checkbox']:before {
   background-color: #3d72a6;
   color: white;
   border-radius: 2px;
+}
+
+.tableGranularity {
+  width: 800px;
+  /* border: 1px solid white; */
+  border-collapse: collapse;
+  margin-bottom: 64px;
+}
+
+
+.theadGranularity {
+  background-color: #f0f0f0;
+}
+
+.trGranu {
+  height: 8vh;
+  border-bottom: 1px solid #e9ebee;
+}
+.trGranuBeacon {
+  background-color: #d7e7f5;
+  height: 55px;
+  border-bottom: 1px solid #8fadc1;
+}
+.thGranularity,
+.tdGranu, .thGranularityTitle{
+  font-size: 14px;
+  width: 33.33%;
+  font-family: sans-serif;
+  /* padding: 8px; */
+  padding-left: 24px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: flex-start;
+}
+
+.tdNotFoundDataset{
+  color: rgb(134, 145, 164);
+}
+.thGranularityTitle{
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.tdFound{
+  font-weight: 600;
+}
+
+.tdNotFound{
+  color: rgb(134, 145, 164);
+  font-weight: 600;
+}
+#trGranuHeader {
+  background-color: #3176b1;
+  font-weight: bold;
+  height: 50px;
 }
 
 .pagination-controls button:disabled {
@@ -408,7 +479,7 @@ h1 {
   flex-wrap: wrap;
   margin-left: 10px;
   margin-right: 10px;
-  margin-top: 12px;
+  margin-top: 24px;
   align-items: center;
   overflow: scroll;
 }
@@ -431,14 +502,14 @@ h1 {
     flex-direction: column;
     justify-content: center;
     /* margin-right: 26px; */
+    width: 100vw;
     align-content: center;
     flex-wrap: wrap;
     margin-left: 10px;
     margin-right: 10px;
-    margin-top: 12px;
+    margin-top: 24px;
     align-items: center;
     overflow: scroll;
-    width: 100vw;
   }
 
   .containerResultsVariants {
