@@ -17,6 +17,9 @@ from cryptography import fernet
 from aiohttp_middlewares import cors_middleware
 from aiohttp_middlewares.cors import DEFAULT_ALLOW_HEADERS
 
+import asyncio
+import socket
+
 from beacon import conf, load_logger
 from beacon.request import ontologies
 from beacon.response import middlewares
@@ -52,7 +55,7 @@ async def destroy(app):
     client.close()
 
 
-def main(path=None):
+async def main(path=None):
     # Configure the logging
     load_logger()
 
@@ -160,10 +163,18 @@ def main(path=None):
         if os.path.exists(path):
             os.unlink(path)
         # will create the UDS socket and bind to it
-        web.run_app(beacon, path=path, shutdown_timeout=0, ssl_context=ssl_context)
+        #web.run_app(beacon, path=path, shutdown_timeout=0, ssl_context=ssl_context)
+        runner = web.AppRunner(beacon)
+        await runner.setup()
+        site = web.TCPSite(runner, conf.beacon_host, conf.beacon_port)
+        await site.start()
+        while True:
+            await asyncio.sleep(3600)
     else:
         static_files = Path(__file__).parent.parent.resolve() / "ui" / "static"
         beacon.add_routes([web.static("/static", str(static_files))])
+        
+        '''
         web.run_app(
             beacon,
             host=getattr(conf, "beacon_host", "0.0.0.0"),
@@ -171,13 +182,13 @@ def main(path=None):
             shutdown_timeout=0,
             ssl_context=ssl_context,
         )
-
+        '''
+        runner = web.AppRunner(beacon)
+        await runner.setup()
+        site = web.TCPSite(runner, conf.beacon_host, conf.beacon_port)
+        await site.start()
+        while True:
+            await asyncio.sleep(3600)
 
 if __name__ == "__main__":
-    # Unix socket
-    if len(sys.argv) > 1:
-        main(path=sys.argv[1])
-    # host:port
-    else:
-        main()
-
+    asyncio.run(main())
