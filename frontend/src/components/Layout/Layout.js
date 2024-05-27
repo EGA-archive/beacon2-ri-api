@@ -183,10 +183,14 @@ function Layout (props) {
       start && end && variantType && referenceBases && alternateBases
         ? `${start}-${end}:${variantType}:${referenceBases}>${alternateBases}`
         : null
-
-    const arrayQuery = title
-      .map((titleQuery, indexQuery) => `${titleQuery}=${value[indexQuery]}`)
-      .join('&')
+        
+        const arrayQuery = title
+        .map((titleQuery, indexQuery) =>
+          titleQuery === 'geneId' 
+            ? `${titleQuery}:${value[indexQuery]}` 
+            : `${titleQuery}=${value[indexQuery]}`
+        )
+        .join('&');
 
     if (e.target.checked) {
       setQuery(prevQuery => {

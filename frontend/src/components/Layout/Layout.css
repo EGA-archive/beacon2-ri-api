@@ -30,6 +30,7 @@
   padding: 12px;
   border-radius: 27px;
   margin-left: 6vw;
+  margin-top: -53px;
   margin-bottom: 10px;
   align-items: center;
 }
@@ -239,13 +240,17 @@ ul {
   /* column-width: 213px; */
   column-count: 2;
   /* max-width: 3013px; */
-  /* display: flex; */
+  display: flex;
   list-style: none;
   max-height: -3vh;
   /* max-height: 238px; */
-  /* flex-direction: column; */
+  flex-direction: column;
   /* width: 330px; */
-  max-width: 400px;
+  /* max-width: 400px; */
+  max-height: 203px;
+  align-content: center;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 ul div {

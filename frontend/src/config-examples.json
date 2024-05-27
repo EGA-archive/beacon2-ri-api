@@ -204,6 +204,54 @@
           }
         ]
       ]
+    },
+      {
+      "title": "Variant",
+      "type": "input",
+      "options": [
+        [
+          {
+            "subTitle": "Mutations in:",
+            "subTitle2": "gene:",
+            "label": "ACE2",
+            "value": "ACE2",
+            "schemaField": "geneId"
+          }
+        ],
+        [
+          {
+            "subTitle": "Mutations in:",
+            "subTitle2": "alternateBases:",
+            "label": "T",
+            "value": "T",
+            "schemaField": "alternateBases"
+          },
+          {
+            "subTitle2": "referenceBases:",
+            "label": "C",
+            "value": "C",
+            "schemaField": "referenceBases"
+          },
+          {
+            "subTitle2": "start:",
+            "label": "110173330",
+            "value": "110173330",
+            "schemaField": "start"
+          },
+          {
+            "subTitle2": "end:",
+            "label": "110173331",
+            "value": "110173331",
+            "schemaField": "end"
+          },
+          {
+            "subTitle2": "type:",
+            "label": "SNP",
+            "value": "SNP",
+            "schemaField": "variantType"
+          }
+        ]
+      ]
     }
   ]
 }
