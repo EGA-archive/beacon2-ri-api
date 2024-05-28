@@ -782,7 +782,18 @@ h14 {
   transition: 0.2s ease-in-out;
 }
 
-.eosc4cancer,.by-covid-logo:hover {
+.ega-logo{
+  height: 46px;
+  margin-top: 30px;
+  margin-bottom: 5px;
+  margin-right: 35px;
+  -webkit-filter: grayscale(20%);
+  filter: grayscale(60%);
+  -webkit-transition: 0.2s ease-in-out;
+  transition: 0.2s ease-in-out; 
+}
+
+.eosc4cancer,.by-covid-logo,.ega-logo:hover {
   -webkit-filter: grayscale(0%);
   filter: grayscale(0%);
 }
@@ -1467,6 +1478,16 @@ h5 {
     -webkit-transition: 0.2s ease-in-out;
     transition: 0.2s ease-in-out;
   }
+  .ega-logo{
+    height: 14px;
+    margin-top: 20px;
+    margin-right: 30px;
+    -webkit-filter: grayscale(20%);
+    filter: grayscale(60%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+  
 
   .federLogo {
     height: 31px;
@@ -1799,6 +1820,15 @@ h5 {
     transition: 0.2s ease-in-out;
   }
 
+  .ega-logo{
+    height: 14px;
+    margin-top: 20px;
+    margin-right: 30px;
+    -webkit-filter: grayscale(20%);
+    filter: grayscale(60%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
   .federLogo {
     height: 31px;
     margin-top: 31px;

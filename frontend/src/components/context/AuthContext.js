@@ -85,15 +85,15 @@ function AuthProviderWrapper (props) {
         setExpirationMessage('')
         var details = {
           grant_type: 'refresh_token',
-          client_id: 'beacon',
+          client_id: process.env.REACT_APP_KEYCLOAK_CLIENT_ID,
           client_secret: process.env.REACT_APP_KEYCLOAK_CLIENT_SECRET,
-          realm: 'Beacon',
+          realm: process.env.REACT_APP_KEYCLOAK_CLIENT_REALM,
           scope: 'openid',
           requested_token_type:
             'urn:ietf:params:oauth:token-type:refresh_token',
           refresh_token: `${refreshToken}`
         }
-
+       
         var formBody = []
         for (var property in details) {
           var encodedKey = encodeURIComponent(property)

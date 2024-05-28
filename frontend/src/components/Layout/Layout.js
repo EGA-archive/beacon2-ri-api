@@ -451,15 +451,15 @@ function Layout (props) {
           <div className='logosVersionContainer'>
             <div className='logos'>
               <a
-                href='https://by-covid.org/'
+                href='https://ega-archive.org/'
                 className='logoInstitution'
                 target='_blank'
                 rel='noreferrer'
               >
                 <img
-                  className='by-covid-logo'
-                  src='../by-covid-logo.png'
-                  alt='byCovid'
+                  className='ega-logo'
+                  src='../ega-archive.png'
+                  alt='EGAarchive'
                 ></img>
               </a>
             </div>
