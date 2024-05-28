@@ -14,8 +14,9 @@ services:
   ###########################################
 
   beacon-ri-tools:
-    image: beacon2ri/beacon_reference_implementation:v2.0.0
+    image: ghcr.io/ega-archive/beacon2-ri-tools-v2:main
     hostname: beacon-ri-tools
+    container_name: ri-tools
     networks:
       - beacon-priv 
     tty: true
