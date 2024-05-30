@@ -27,4 +27,4 @@ jobs:
           git config --global user.name "API version update"
           git add .
           git commit -m "api version automatically generated"
-          git push
+          git push origin develop
