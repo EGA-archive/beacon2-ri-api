@@ -1,0 +1,30 @@
+
+
+
+name: update api version
+
+on:
+  push:
+    branches: ['develop']
+
+jobs:
+  updateapiversion:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v3 # checkout the repository content to github runner.
+      - name: setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8 #install the python needed
+      - name: Install dependencies
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: execute py script
+        run: |
+          python beacon/api_version.py
+          git config --global user.email "you@example.com"
+          git config --global user.name "API version update"
+          git add .
+          git commit -m "api version automatically generated"
+          git push

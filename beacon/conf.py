@@ -1,18 +1,18 @@
-from datetime import date
-import datetime
-import glob
-import os
+import yaml
 
+with open("beacon/api_version.yml") as api_version_file:
+    api_version = yaml.safe_load(api_version_file)
 
 """Beacon Configuration."""
+
 
 #
 # Beacon general info
 #
-beacon_id = 'org.ega-archive.beacon-ri-demo'  # ID of the Beacon
-beacon_name = 'Beacon Reference Implementation demo'  # Name of the Beacon service
-api_version = 'v2.0.0'  # Version of the Beacon implementation
-uri = 'https://beacon-apis-demo.ega-archive.org/api/'
+beacon_id = 'org.ega-archive.gdi-spanish-beacon'  # ID of the Beacon
+beacon_name = 'GDI Spanish Beacon'  # Name of the Beacon service
+api_version = api_version['api_version'] # Version of the Beacon implementation
+uri = 'https://beacon-spain.ega-archive.org/api/'
 
 #
 # Beacon granularity
