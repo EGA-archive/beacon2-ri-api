@@ -14,7 +14,7 @@ output_lines = subprocess.check_output(
     ],
     encoding="utf-8",
 ).splitlines()
-last_line_ref = output_lines[-1].rpartition("/")[-1]
+last_line_ref = output_lines[-2].rpartition("/")[-1]
 
 with open("beacon/api_version.yml") as api_version_file:
     api_version = yaml.safe_load(api_version_file)
