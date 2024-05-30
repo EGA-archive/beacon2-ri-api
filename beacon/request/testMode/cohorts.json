@@ -1,0 +1,115 @@
+[
+    {
+        "cohortType": "study-defined",
+        "collectionEvents": [
+            {
+                "eventDiseases": {
+                    "availability": true,
+                    "availabilityCount": 1705,
+                    "distribution": {
+                        "diseases": {
+                            "acutebronchitis": 121,
+                            "agranulocytosis": 111,
+                            "asthma": 134,
+                            "bipolaraffectivedisorder": 134,
+                            "cardiomyopathy": 133,
+                            "dentalcaries": 139,
+                            "eatingdisorders": 134,
+                            "fibrosisandcirrhosisofliver": 132,
+                            "gastro-oesophagealrefluxdisease": 140,
+                            "haemorrhoids": 127,
+                            "influenzaduetocertainidentifiedinfluenzavirus": 135,
+                            "insulin-dependentdiabetesmellitus": 165,
+                            "irondeficiencyanaemia": 142,
+                            "multiplesclerosis": 125,
+                            "obesity": 136,
+                            "sarcoidosis": 136,
+                            "schizophrenia": 138,
+                            "thyroiditis": 141,
+                            "varicoseveinsoflowerextremities": 139
+                        }
+                    }
+                },
+                "eventEthnicities": {
+                    "availability": true,
+                    "availabilityCount": 2287,
+                    "distribution": {
+                        "ethnicities": {
+                            "African": 119,
+                            "AnyotherAsianbackground": 120,
+                            "AnyotherBlackbackground": 104,
+                            "Anyothermixedbackground": 92,
+                            "Anyotherwhitebackground": 114,
+                            "AsianorAsianBritish": 125,
+                            "Bangladeshi": 96,
+                            "BlackorBlackBritish": 131,
+                            "British": 114,
+                            "Caribbean": 127,
+                            "Chinese": 100,
+                            "Indian": 110,
+                            "Irish": 111,
+                            "Mixed": 127,
+                            "Otherethnicgroup": 116,
+                            "Pakistani": 115,
+                            "White": 105,
+                            "WhiteandAsian": 114,
+                            "WhiteandBlackAfrican": 115,
+                            "WhiteandBlackCaribbean": 132
+                        }
+                    }
+                },
+                "eventGenders": {
+                    "availability": true,
+                    "availabilityCount": 1597,
+                    "distribution": {
+                        "genders": {
+                            "female": 1271,
+                            "male": 1233
+                        }
+                    }
+                },
+                "eventLocations": {
+                    "availability": true,
+                    "availabilityCount": 1597,
+                    "distribution": {
+                        "locations": {
+                            "England": 322,
+                            "NorthernIreland": 317,
+                            "RepublicofIreland": 311,
+                            "Scotland": 308,
+                            "Wales": 339
+                        }
+                    }
+                }
+            }
+        ],
+        "id": "testMode",
+        "inclusionCriteria": {
+            "ageRange": {
+                "end": {
+                    "iso8601duration": "P65Y"
+                },
+                "start": {
+                    "iso8601duration": "P18Y"
+                }
+            },
+            "genders": [
+                {
+                    "id": "NCIT:C16576",
+                    "label": "female"
+                },
+                {
+                    "id": "NCIT:C20197",
+                    "label": "male"
+                }
+            ],
+            "locations": [
+                {
+                    "id": "GAZ:00150372",
+                    "label": "UK"
+                }
+            ]
+        },
+        "name": "CINECA synthetic cohort UK1"
+    }
+]

@@ -23,6 +23,7 @@ from beacon.response.build_response import (
 from beacon.utils.stream import json_stream
 from beacon.db.datasets import get_datasets
 from beacon.utils.auth import resolve_token
+from beacon.db.schemas import DefaultSchemas
 
 LOG = logging.getLogger(__name__)
 
@@ -33,15 +34,36 @@ def collection_handler(db_fn, request=None):
             # Get params
             json_body = await request.json() if request.method == "POST" and request.has_body and request.can_read_body else {}
             qparams = RequestParams(**json_body).from_request(request)
+            LOG.debug(qparams)
             entry_id = request.match_info["id"] if "id" in request.match_info else None
             # Get response
             entity_schema, count, records = db_fn(entry_id, qparams)
-            response_converted = (
-                [r for r in records] if records else []
-            )
-            response = build_beacon_collection_response(
-                response_converted, count, qparams, lambda x, y: x, entity_schema
-            )
+            if qparams.query.test_mode:
+                if entity_schema==DefaultSchemas.COHORTS:
+                    with open("/beacon/beacon/request/testMode/cohorts.json", 'r') as json_file:
+                        data = json.load(json_file)
+                    response_converted=data
+                    count=1
+                    entity_schema=DefaultSchemas.COHORTS
+                elif entity_schema==DefaultSchemas.DATASETS:
+                    with open("/beacon/beacon/request/testMode/datasets.json", 'r') as json_file:
+                        data = json.load(json_file)
+                    response_converted=data
+                    count=1
+                    entity_schema=DefaultSchemas.DATASETS
+                response = build_beacon_collection_response(
+                    response_converted, count, qparams, lambda x, y: x, entity_schema
+                )
+            else:
+                response_converted = (
+                    [r for r in records] if records else []
+                )
+                LOG.debug(entity_schema)
+                LOG.debug(response_converted)
+                LOG.debug(type(response_converted))
+                response = build_beacon_collection_response(
+                    response_converted, count, qparams, lambda x, y: x, entity_schema
+                )
         except Exception as err:
             qparams=''
             if str(err) == 'Not Found':
