@@ -78,7 +78,7 @@ def build_response_by_dataset(data, dict_counts, qparams, func):
             }
             
             list_of_responses.append(response)
-            #LOG.debug(list_of_responses)
+            LOG.debug(list_of_responses)
             
 
     #LOG.debug(list_of_responses)
