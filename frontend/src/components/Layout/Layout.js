@@ -1,7 +1,7 @@
 import '../../App.css'
 import './Layout.css'
 import FilteringTerms from '../FilteringTerms/FilteringTerms'
-import filtersConfig from '../../config-examples.json'
+import filtersConfig from '../../config-examples-covid.json'
 import VariantsResults from '../GenomicVariations/VariantsResults'
 
 import BiosamplesResults from '../Biosamples/BiosamplesResults'
