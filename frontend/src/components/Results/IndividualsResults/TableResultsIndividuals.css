@@ -82,6 +82,12 @@ thead {
   font-size: 16px;
 }
 
+.noResultsFullResponse{
+  margin-top: 10px;
+  color: rgb(198, 59, 12);
+  font-family: sans-serif;
+}
+
 li svg {
   margin-left: 7px;
 }

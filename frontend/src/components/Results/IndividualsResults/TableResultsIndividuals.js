@@ -845,10 +845,12 @@ function TableResultsIndividuals (props) {
                     <tr key={index}>
                       <td
                         className={
-                          columnVisibility.IndividualId ? 'visible-id' : 'hidden'
+                          columnVisibility.IndividualId
+                            ? 'visible-id'
+                            : 'hidden'
                         }
                       >
-                             <img
+                        <img
                           src='../arrows-cross.png'
                           className='crossQsymbol'
                         ></img>
@@ -858,7 +860,6 @@ function TableResultsIndividuals (props) {
                         >
                           {row.IndividualId}
                         </button>
-                   
                       </td>
                       <td
                         className={
@@ -918,7 +919,7 @@ function TableResultsIndividuals (props) {
             </div>
           </div>
         )}
-      {props.show === 'full' && !showCrossQuery && (
+      {props.show === 'full' && props.results.length > 0 && !showCrossQuery && (
         <div className='pagination-controls'>
           <button onClick={handlePreviousPage} disabled={currentPage === 1}>
             Previous
@@ -945,6 +946,9 @@ function TableResultsIndividuals (props) {
             Next
           </button>
         </div>
+      )}
+      {props.show === 'full' && props.results.length === 0 && !showCrossQuery && (
+        <h5 className='noResultsFullResponse'>No detailed results, sorry.</h5>
       )}
       {showCrossQuery && (
         <CrossQueries
