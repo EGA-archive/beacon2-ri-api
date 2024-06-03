@@ -840,12 +840,12 @@ function TableResultsIndividuals (props) {
             </div>
             <div className='body-container'>
               <table className='tableResults'>
-                <tbody>
+                <tbody className='tbodyResults'>
                   {currentRows.map((row, index) => (
                     <tr key={index}>
                       <td
                         className={
-                          columnVisibility.IndividualId ? 'visible' : 'hidden'
+                          columnVisibility.IndividualId ? 'visible-id' : 'hidden'
                         }
                       >
                              <img

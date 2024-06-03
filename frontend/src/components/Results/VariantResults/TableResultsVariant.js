@@ -870,7 +870,7 @@ function TableResultsVariants (props) {
             </div>
             <div className='body-container'>
               <table className='tableResults'>
-                <tbody>
+                <tbody className='tbodyResults'>
                   {filteredData.map((row, index) => (
                     <tr key={index}>
                       <td

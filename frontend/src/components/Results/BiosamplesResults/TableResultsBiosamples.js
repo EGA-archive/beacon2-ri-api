@@ -1441,12 +1441,12 @@ function TableResultsBiosamples (props) {
             </div>
             <div className='body-container'>
               <table className='tableResults'>
-                <tbody>
+                <tbody className='tbodyResults'>
                   {filteredData.map((row, index) => (
                     <tr key={index}>
                       <td
                         className={
-                          columnVisibility.BiosampleId ? 'visible' : 'hidden'
+                          columnVisibility.BiosampleId ? 'visible-id' : 'hidden'
                         }
                       >
                         <img
