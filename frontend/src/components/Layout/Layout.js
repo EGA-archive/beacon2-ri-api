@@ -5,7 +5,7 @@ import filtersConfig from '../../config-examples-covid.json'
 import VariantsResults from '../GenomicVariations/VariantsResults'
 
 import BiosamplesResults from '../Biosamples/BiosamplesResults'
-import BeaconInfo from '../Dataset/BeaconInfo'
+
 import React, { useState, useEffect } from 'react'
 
 import configData from '../../config.json'
@@ -29,6 +29,7 @@ function Layout (props) {
   const [filters, setFilters] = useState(filtersConfig.filters)
   const [exampleQ, setExampleQ] = useState([])
 
+  const [isNetwork, setIsNetwork] = useState(false)
   const [showFilters, setShowFilters] = useState(true)
   const [expansionSection, setExpansionSection] = useState(false)
   const [arrayFilteringTermsQE, setArrayFilteringTermsQE] = useState([])
@@ -83,6 +84,7 @@ function Layout (props) {
   const [alphanumSchemaField, setAlphanumSchemaField] = useState('')
   const [alphanumValue, setAlphanumValue] = useState('')
   const [timeOut, setTimeOut] = useState(true)
+
 
   const [isSubmitted, setIsSub] = useState(false)
 
@@ -253,6 +255,12 @@ function Layout (props) {
         let res = await axios.get(
           configData.API_URL + '/filtering_terms?limit=0'
         )
+        let res2 = await axios.get(configData.API_URL + '/info')
+        console.log(res2)
+        if (res2.data.meta.isAggregated) {
+          setIsNetwork(true)
+       
+        }
         setTimeOut(true)
         console.log(res)
 
@@ -472,7 +480,6 @@ function Layout (props) {
             className='selectModule1'
             onChange={handleChangeSelection1}
           >
-        
             <option value='boolean' className='optionClass'>
               Do you have?...{' '}
             </option>
@@ -758,7 +765,7 @@ function Layout (props) {
           Show examples
         </button>
       )}
-      <hr></hr>
+ 
       <div className='results'>
         {timeOut === false && (
           <div className='loaderLogo'>
@@ -771,9 +778,7 @@ function Layout (props) {
             </div>
           </div>
         )}
-        {results === null && !showFilteringTerms && (
-          <BeaconInfo trigger={trigger} />
-        )}
+      
         {isSubmitted && results === 'Individuals' && triggerQuery && (
           <div>
             <IndividualsResults
@@ -791,12 +796,14 @@ function Layout (props) {
               geneModuleArray={geneModuleArray}
               granularity={granularity}
               collection={collection}
+              isNetwork={isNetwork}
             />
           </div>
         )}
         {isSubmitted && results === 'Individuals' && !triggerQuery && (
           <div>
             <IndividualsResults
+              isNetwork={isNetwork}
               filteringTerms={filteringTerms}
               query={query}
               resultSets={resultSetAux}
@@ -817,6 +824,7 @@ function Layout (props) {
         {isSubmitted && results === 'Analyses' && triggerQuery && (
           <div>
             <AnalysesResults
+              isNetwork={isNetwork}
               filteringTerms={filteringTerms}
               query={query}
               resultSets={resultSetAux}
@@ -832,6 +840,7 @@ function Layout (props) {
         {isSubmitted && results === 'Analyses' && !triggerQuery && (
           <div>
             <AnalysesResults
+              isNetwork={isNetwork}
               filteringTerms={filteringTerms}
               query={query}
               resultSets={resultSetAux}
@@ -847,6 +856,7 @@ function Layout (props) {
         {isSubmitted && results === 'Runs' && triggerQuery && (
           <div>
             <RunsResults
+              isNetwork={isNetwork}
               filteringTerms={filteringTerms}
               query={query}
               resultSets={resultSetAux}
@@ -865,6 +875,7 @@ function Layout (props) {
         {isSubmitted && results === 'Runs' && !triggerQuery && (
           <div>
             <RunsResults
+              isNetwork={isNetwork}
               filteringTerms={filteringTerms}
               query={query}
               resultSets={resultSetAux}
@@ -883,6 +894,7 @@ function Layout (props) {
         {isSubmitted && results === 'Variant' && triggerQuery && (
           <div>
             <VariantsResults
+              isNetwork={isNetwork}
               filteringTerms={filteringTerms}
               query={query}
               resultSets={resultSetAux}
@@ -903,6 +915,7 @@ function Layout (props) {
         {isSubmitted && results === 'Variant' && !triggerQuery && (
           <div>
             <VariantsResults
+              isNetwork={isNetwork}
               filteringTerms={filteringTerms}
               query={query}
               resultSets={resultSetAux}
@@ -923,6 +936,7 @@ function Layout (props) {
         {!isSubmitted && results === 'Variant' && !triggerQuery && (
           <div>
             <VariantsResults
+              isNetwork={isNetwork}
               filteringTerms={filteringTerms}
               query={query}
               resultSets={resultSetAux}
@@ -943,6 +957,7 @@ function Layout (props) {
         {isSubmitted && results === 'Biosamples' && triggerQuery && (
           <div>
             <BiosamplesResults
+              isNetwork={isNetwork}
               filteringTerms={filteringTerms}
               query={query}
               resultSets={resultSetAux}
@@ -963,6 +978,7 @@ function Layout (props) {
         {isSubmitted && results === 'Biosamples' && !triggerQuery && (
           <div>
             <BiosamplesResults
+              isNetwork={isNetwork}
               filteringTerms={filteringTerms}
               query={query}
               resultSets={resultSetAux}

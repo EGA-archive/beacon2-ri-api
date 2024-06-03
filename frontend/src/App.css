@@ -403,7 +403,7 @@ h14 {
 }
 
 .searchIcon {
-  width: 34px;
+  width: 31px;
   margin-top: -1px;
 }
 .searchIcon:hover {
@@ -915,7 +915,7 @@ select {
 
 .results {
 
-  min-height: 280px;
+  min-height: 80px;
 }
 
 .resultSet2 {
