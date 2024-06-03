@@ -6,9 +6,9 @@ import { AuthContext } from '../context/AuthContext'
 import { useAuth } from 'oidc-react'
 import configData from '../../config.json'
 import { useContext } from 'react'
-import TableResultsVariant from '../Results/VariantResults/TableResultsVariant'
+import TableResultsVariants from '../Results/VariantResults/TableResultsVariant'
 
-function VariantResults (props) {
+function VariantsResults (props) {
   const [error, setError] = useState('')
   const [timeOut, setTimeOut] = useState(false)
   const [logInRequired, setLoginRequired] = useState(false)
@@ -22,8 +22,10 @@ function VariantResults (props) {
   const [numberResults, setNumberResults] = useState(0)
   const [boolean, setBoolean] = useState(false)
   const [arrayFilter, setArrayFilter] = useState([])
+  const [updatedArrayFilterVar, setUpdatedArrayFilterVar] = useState([])
   const [queryArray, setQueryArray] = useState([])
   const [beaconsList, setBeaconsList] = useState([])
+  const [datasetList, setDatasetList] = useState([])
 
   const [limit, setLimit] = useState(0)
   const [skip, setSkip] = useState(0)
@@ -40,18 +42,13 @@ function VariantResults (props) {
   const [isActive3, setIsActive3] = useState(false)
 
   const [pause, setPause] = useState(false)
-  const [ontologyMultipleScope, setOntologyMultipleScope] = useState([])
-  const [triggerQueryScope, setTriggerQScope] = useState(false)
 
   const [optionsScope, setOptionsScope] = useState([])
-  const [chosenScope, setChosenScope] = useState('')
-  const [ontologyChosenScope, setOntologyScope] = useState([])
+  const [selectedScopes, setSelectedScopes] = useState({})
+  const [ontologyMultipleScope, setOntologyMultipleScope] = useState([])
+  const [triggerQueryScope, setTriggerQScope] = useState(false)
+  const [triggerSubmit, setTriggerSubmit] = useState(false)
 
-  const [triggerSubmit, settriggerSubmit] = useState(false)
-  const handleChangeScope = event => {
-    console.log(event.target.value)
-    setChosenScope(event.target.value)
-  }
   let queryStringTerm = []
 
   const handleTypeResults1 = () => {
@@ -81,12 +78,30 @@ function VariantResults (props) {
     setIsActive2(false)
   }
 
-  const submitScopeChosen = e => {
-    console.log(chosenScope)
-    arrayFilter.length = 0
-    beaconsList.length = 0
-    console.log(arrayFilter)
+  const handleChangeScope = (event, idx) => {
+    const value = event.target.value
+    setSelectedScopes(prevState => ({
+      ...prevState,
+      [idx]: value
+    }))
+  }
+
+  const submitScopeChosen = () => {
+    // Implement the logic to update element.scope based on selectedScopes
+    let updatedArrayFilter = [...arrayFilter]
+    updatedArrayFilter.forEach((element, index) => {
+      if (selectedScopes[index]) {
+        element.scope = [selectedScopes[index]]
+      }
+    })
+    console.log(updatedArrayFilter)
+    setArrayFilter(updatedArrayFilter)
+
+    setUpdatedArrayFilterVar(updatedArrayFilter)
+    setPause(false)
     setTriggerQScope(!triggerQueryScope)
+    setOptionsScope([])
+    setOntologyMultipleScope([])
   }
 
   const auth = useAuth()
@@ -224,6 +239,9 @@ function VariantResults (props) {
 
       var requestParameters = {}
 
+      console.log(updatedArrayFilterVar)
+      console.log(selectedScopes)
+
       if (props.query !== null) {
         if (props.query.includes(',')) {
           let queryStringTerm2 = props.query.split(',')
@@ -278,219 +296,216 @@ function VariantResults (props) {
 
         console.log(queryStringTerm)
         let filter = {}
+        if (updatedArrayFilterVar.length === 0) {
+          queryStringTerm.forEach((term, index) => {
+            console.log(term)
+            requestParameters = {}
+            if (
+              (term.includes('=') ||
+                term.includes('>') ||
+                term.includes('<') ||
+                term.includes('!') ||
+                term.includes('%')) &&
+              !term.includes(':')
+            ) {
+              if (term.includes('=')) {
+                queryArray[index] = term.split('=')
+                queryArray[index].push('=')
+                console.log(queryArray)
+              } else if (term.includes('>')) {
+                queryArray[index] = term.split('>')
+                queryArray[index].push('>')
+              } else if (term.includes('<')) {
+                queryArray[index] = term.split('<')
+                queryArray[index].push('<')
+              } else if (term.includes('!')) {
+                queryArray[index] = term.split('!')
+                queryArray[index].push('!')
+              } else {
+                queryArray[index] = term.split('%')
+                queryArray[index].push('%')
+              }
+              console.log(queryArray[index][1].toLowerCase())
+              let alphanumericFilter = {}
+              props.filteringTerms.forEach(element => {
+                if (element.label) {
+                  if (
+                    queryArray[index][1].toLowerCase() ===
+                    element.label.toLowerCase()
+                  ) {
+                    if (queryArray[index][0].toLowerCase() === 'individual') {
+                      alphanumericFilter = {
+                        id: element.id,
+                        scope: ['individual']
+                      }
+                    } else if (
+                      queryArray[index][0].toLowerCase() === 'genomicvariation'
+                    ) {
+                      alphanumericFilter = {
+                        id: element.id,
+                        scope: ['genomicVariation']
+                      }
+                    } else if (
+                      queryArray[index][0].toLowerCase() === 'biosample'
+                    ) {
+                      alphanumericFilter = {
+                        id: element.id,
+                        scope: ['biosample']
+                      }
+                    } else if (
+                      queryArray[index][0].toLowerCase() === 'cohort'
+                    ) {
+                      alphanumericFilter = {
+                        id: element.id,
+                        scope: ['cohort']
+                      }
+                    } else if (queryArray[index][0].toLowerCase() === 'run') {
+                      alphanumericFilter = {
+                        id: element.id,
+                        scope: ['run']
+                      }
+                    } else {
+                      alphanumericFilter = {
+                        id: element.id,
+                        scope: element.scopes
+                      }
+                    }
+                  }
+                }
+              })
 
-        queryStringTerm.forEach((term, index) => {
-          console.log(term)
-          requestParameters = {}
-          if (
-            (term.includes('=') ||
-              term.includes('>') ||
-              term.includes('<') ||
-              term.includes('!') ||
-              term.includes('%')) &&
-            !term.includes(':')
-          ) {
-            if (term.includes('=')) {
-              queryArray[index] = term.split('=')
-              queryArray[index].push('=')
-              console.log(queryArray)
-            } else if (term.includes('>')) {
-              queryArray[index] = term.split('>')
-              queryArray[index].push('>')
-            } else if (term.includes('<')) {
-              queryArray[index] = term.split('<')
-              queryArray[index].push('<')
-            } else if (term.includes('!')) {
-              queryArray[index] = term.split('!')
-              queryArray[index].push('!')
+              if (Object.keys(alphanumericFilter).length === 0) {
+                console.log(queryArray[index][0])
+                props.filteringTerms.forEach(element => {
+                  if (
+                    queryArray[index][0].toLowerCase() ===
+                    element.id.toLowerCase()
+                  ) {
+                    queryArray[index][3] = element.scopes
+                  }
+                })
+
+                if (queryArray[index][3] === undefined) {
+                  queryArray[index][3] = [collection]
+                }
+                console.log(queryArray)
+                alphanumericFilter = {
+                  id: queryArray[index][0],
+                  operator: queryArray[index][2],
+                  value: queryArray[index][1],
+                  scope: queryArray[index][3]
+                }
+                console.log(alphanumericFilter)
+              }
+
+              arrayFilter.push(alphanumericFilter)
+            } else if (term.includes(':') && !term.includes('>')) {
+              let arrayParameters = []
+              let reqParameters = []
+              if (term.includes('&')) {
+                arrayParameters = term.split('&')
+                console.log(arrayParameters)
+                arrayParameters.forEach(element => {
+                  reqParameters.length = 0
+                  reqParameters = element.split(':')
+                  console.log(reqParameters)
+                  requestParameters[reqParameters[0]] = reqParameters[1]
+                })
+                arrayRequestParameters.push(requestParameters)
+              } else {
+                let reqParameters = term.split(':')
+                console.log(reqParameters)
+                requestParameters[reqParameters[0]] = reqParameters[1]
+                arrayRequestParameters.push(requestParameters)
+              }
+            } else if (term.includes(':') && term.includes('>')) {
+              let reqParameters = term.split(':')
+              console.log(reqParameters)
+              let position = []
+              if (term.includes('-')) {
+                position = reqParameters[0].split('-')
+              } else {
+                position = reqParameters[0]
+              }
+
+              let bases = reqParameters[2].split('>')
+              console.log(bases)
+              requestParameters['start'] = position[0]
+              if (position[1]) {
+                requestParameters['end'] = position[1]
+              }
+              requestParameters['variantType'] = reqParameters[1]
+              requestParameters['alternateBases'] = bases[1]
+              requestParameters['referenceBases'] = bases[0]
+              arrayRequestParameters.push(requestParameters)
             } else {
-              queryArray[index] = term.split('%')
-              queryArray[index].push('%')
-            }
-            console.log(queryArray[index][1].toLowerCase())
-            let alphanumericFilter = {}
-            props.filteringTerms.forEach(element => {
-              if (element.label) {
-                if (
-                  queryArray[index][1].toLowerCase() ===
-                  element.label.toLowerCase()
-                ) {
-                  if (queryArray[index][0].toLowerCase() === 'individual') {
-                    alphanumericFilter = {
-                      id: element.id,
-                      scope: ['individual']
-                    }
-                  } else if (
-                    queryArray[index][0].toLowerCase() === 'genomicvariation'
+              props.filteringTerms.forEach(element => {
+                if (element.label) {
+                  if (
+                    term.toLowerCase() === element.label.toLowerCase() ||
+                    term.toLowerCase() === element.id.toLowerCase()
                   ) {
-                    alphanumericFilter = {
+                    filter = {
                       id: element.id,
-                      scope: ['genomicVariation']
+                      scope: element.scopes
                     }
-                  } else if (
-                    queryArray[index][0].toLowerCase() === 'biosample'
-                  ) {
-                    alphanumericFilter = {
-                      id: element.id,
-                      scope: ['biosample']
-                    }
-                  } else if (queryArray[index][0].toLowerCase() === 'cohort') {
-                    alphanumericFilter = {
-                      id: element.id,
-                      scope: ['cohort']
-                    }
-                  } else if (queryArray[index][0].toLowerCase() === 'run') {
-                    alphanumericFilter = {
-                      id: element.id,
-                      scope: ['run']
-                    }
-                  } else {
-                    alphanumericFilter = {
+                  }
+                } else {
+                  if (element.id.toLowerCase() === term.toLowerCase()) {
+                    filter = {
                       id: element.id,
                       scope: element.scopes
                     }
                   }
                 }
-              }
-            })
-
-            if (Object.keys(alphanumericFilter).length === 0) {
-              console.log(queryArray[index][0])
-              props.filteringTerms.forEach(element => {
-                if (
-                  queryArray[index][0].toLowerCase() ===
-                  element.id.toLowerCase()
-                ) {
-                  queryArray[index][3] = element.scopes
-                }
               })
 
-              if (queryArray[index][3] === undefined) {
-                queryArray[index][3] = [collection]
-              }
-              console.log(queryArray)
-              alphanumericFilter = {
-                id: queryArray[index][0],
-                operator: queryArray[index][2],
-                value: queryArray[index][1],
-                scope: queryArray[index][3]
-              }
-              console.log(alphanumericFilter)
+              arrayFilter.push(filter)
             }
-
-            arrayFilter.push(alphanumericFilter)
-          } else if (term.includes(':') && !term.includes('>')) {
-            let arrayParameters = []
-            let reqParameters = []
-            if (term.includes('&')) {
-              arrayParameters = term.split('&')
-              console.log(arrayParameters)
-              arrayParameters.forEach(element => {
-                reqParameters.length = 0
-                reqParameters = element.split(':')
-                console.log(reqParameters)
-                requestParameters[reqParameters[0]] = reqParameters[1]
-              })
-              arrayRequestParameters.push(requestParameters)
-            } else {
-              let reqParameters = term.split(':')
-              console.log(reqParameters)
-              requestParameters[reqParameters[0]] = reqParameters[1]
-              arrayRequestParameters.push(requestParameters)
-            }
-          } else if (term.includes(':') && term.includes('>')) {
-            let reqParameters = term.split(':')
-            console.log(reqParameters)
-            let position = []
-            if (term.includes('-')) {
-              position = reqParameters[0].split('-')
-            } else {
-              position = reqParameters[0]
-            }
-
-            let bases = reqParameters[2].split('>')
-            console.log(bases)
-            requestParameters['start'] = position[0]
-            if (position[1]) {
-              requestParameters['end'] = position[1]
-            }
-            requestParameters['variantType'] = reqParameters[1]
-            requestParameters['alternateBases'] = bases[1]
-            requestParameters['referenceBases'] = bases[0]
-            arrayRequestParameters.push(requestParameters)
-          } else {
-            props.filteringTerms.forEach(element => {
-              if (element.label) {
-                if (
-                  term.toLowerCase() === element.label.toLowerCase() ||
-                  term.toLowerCase() === element.id.toLowerCase()
-                ) {
-                  filter = {
-                    id: element.id,
-                    scope: element.scopes
-                  }
-                }
-              } else {
-                if (element.id.toLowerCase() === term.toLowerCase()) {
-                  filter = {
-                    id: element.id,
-                    scope: element.scopes
-                  }
-                }
-              }
-            })
-
-            arrayFilter.push(filter)
-          }
-        })
+          })
+        }
       }
 
       console.log(arrayFilter)
 
       try {
         let res = await axios.get(configData.API_URL + '/info')
-        beaconsList.push(res.data.response)
+        let res2 = await axios.get(configData.API_URL + '/datasets')
+        console.log(res2)
+        if (res2) {
+          datasetList.push(res2.data.response.collections)
+        }
+        console.log(datasetList)
 
+        if (updatedArrayFilterVar.length === 0) {
+          beaconsList.push(res.data.response)
+        }
+
+        let variablePause = false
         console.log(ontologyMultipleScope)
-        if (props.query === null) {
+        if (props.query === null || props.query === '') {
           // show all individuals
 
-          var jsonData1 = {}
+          let jsonData1 = {}
 
           if (arrayRequestParameters.length > 0) {
-            if (arrayRequestParameters.length === 1) {
-              jsonData1 = {
-                meta: {
-                  apiVersion: '2.0'
+            jsonData1 = {
+              meta: {
+                apiVersion: '2.0'
+              },
+              query: {
+                requestParameters:
+                  arrayRequestParameters.length === 1
+                    ? arrayRequestParameters[0]
+                    : arrayRequestParameters,
+                filters: arrayFilter,
+                includeResultsetResponses: `${props.resultSets}`,
+                pagination: {
+                  skip: skip,
+                  limit: limit
                 },
-                query: {
-                  requestParameters: arrayRequestParameters[0],
-                  filters: arrayFilter,
-                  includeResultsetResponses: `${props.resultSets}`,
-                  pagination: {
-                    skip: skip,
-                    limit: limit
-                  },
-                  testMode: false,
-                  requestedGranularity: 'record'
-                }
-              }
-            } else {
-              jsonData1 = {
-                meta: {
-                  apiVersion: '2.0'
-                },
-                query: {
-                  requestParameters: arrayRequestParameters,
-                  filters: arrayFilter,
-                  includeResultsetResponses: `${props.resultSets}`,
-                  pagination: {
-                    skip: skip,
-                    limit: limit
-                  },
-                  testMode: false,
-                  requestedGranularity: 'record'
-                }
+                testMode: false,
+                requestedGranularity: 'record'
               }
             }
           } else {
@@ -529,18 +544,20 @@ function VariantResults (props) {
             console.log(res)
           } else {
             const headers = { Authorization: `Bearer ${token}` }
-
+            console.log('querying with token')
             res = await axios.post(
               configData.API_URL + '/g_variants',
               jsonData1,
               { headers: headers }
             )
+            console.log(res)
           }
           setTimeOut(true)
 
           if (
-            (res.data.responseSummary.numTotalResults < 1 ||
-              res.data.responseSummary.numTotalResults === undefined) &&
+            (res.data.responseSummary.numTotalResults === 0 ||
+              res.data.responseSummary.exists === false ||
+              !res.data.responseSummary) &&
             props.resultSets !== 'MISS'
           ) {
             setNumberResults(0)
@@ -557,7 +574,6 @@ function VariantResults (props) {
                   })
                 } else {
                   let arrayResultsPerDataset = [
-                    //element.beaconId,
                     [element.id],
                     [element.exists],
                     [element.resultsCount],
@@ -585,36 +601,81 @@ function VariantResults (props) {
               }
             })
           }
-          settriggerSubmit(true)
+          setTriggerSubmit(true)
         } else {
-          var jsonData2 = {}
-          let variablePause = false
-          arrayFilter.forEach(element => {
-            if (element.scope.length > 1 && chosenScope === '') {
-              setPause(true)
-              variablePause = true
-              element.scope.forEach(element => {
-                optionsScope.push(element)
-              })
-              console.log(element)
+          
+          let jsonData2 = {}
+          variablePause = false
 
-              props.filteringTerms.forEach(element2 => {
-                if (element2.label) {
-                  if (element2.id === element.id) {
-                    console.log(element2.label)
-                    ontologyMultipleScope.push(element2.label)
+          if (updatedArrayFilterVar.length > 0) {
+            updatedArrayFilterVar.forEach((element, index) => {
+              
+              if (Array.isArray(element.scope) && !selectedScopes[index]) {
+                console.log(element.scope)
+                setPause(true)
+                variablePause = true
+
+                let newOptionsScope = [...optionsScope]
+        
+              
+               element.scope.forEach(elementScope => {
+                  newOptionsScope[index] = newOptionsScope[index] || []
+                  newOptionsScope[index].push(elementScope)
+                })
+
+                setOptionsScope(newOptionsScope)
+
+                let newOntologyMultipleScope = [...ontologyMultipleScope]
+                props.filteringTerms.forEach(element2 => {
+                  if (element2.label && element2.id === element.id) {
+                    newOntologyMultipleScope.push(element2.label)
                   }
-                }
-              })
-            } else if (element.scope.length > 1 && chosenScope !== '') {
-              element.scope = chosenScope
-            } else {
-              element.scope = element.scope[0]
-            }
-          })
+                })
+                setOntologyMultipleScope(newOntologyMultipleScope)
+              } else if (Array.isArray(element.scope) && selectedScopes[index]) {
+                element.scope = selectedScopes[index]
+              } else {
+                element.scope = element.scope
+            
+              }
+            })
+          } else {
+            let newOptionsScope = [...optionsScope]
+            arrayFilter.forEach((element, index) => {
+              console.log(element.scope)
+              if (Array.isArray(element.scope) && element.scope.length > 1 && !selectedScopes[index]) {
+                setPause(true)
+                variablePause = true
 
-          if (variablePause === false) {
+                element.scope.forEach(elementScope => {
+                  newOptionsScope[index] = newOptionsScope[index] || []
+                  newOptionsScope[index].push(elementScope)
+                })
+                setOptionsScope(newOptionsScope)
+                console.log(newOptionsScope)
+                let newOntologyMultipleScope = [...ontologyMultipleScope]
+
+                props.filteringTerms.forEach(element2 => {
+                  if (element2.label && element2.id === element.id) {
+                    newOntologyMultipleScope[index] =
+                      newOntologyMultipleScope[index] || []
+                    newOntologyMultipleScope[index].push(element2.label)
+                  }
+                })
+                console.log(newOntologyMultipleScope)
+                setOntologyMultipleScope(newOntologyMultipleScope)
+              } else if (Array.isArray(element.scope) && element.scope.length > 1 && selectedScopes[index]) {
+                element.scope = selectedScopes[index]
+              } else {
+                console.log(element)
+                element.scope = element.scope[0]
+              }
+            })
+          }
+
+          if (!variablePause) {
             if (arrayRequestParameters.length > 0) {
+   
               if (arrayRequestParameters.length === 1) {
                 jsonData2 = {
                   meta: {
@@ -651,6 +712,7 @@ function VariantResults (props) {
                 }
               }
             } else {
+        
               jsonData2 = {
                 meta: {
                   apiVersion: '2.0'
@@ -698,8 +760,9 @@ function VariantResults (props) {
             setTimeOut(true)
             setPause(false)
             if (
-              (res.data.responseSummary.numTotalResults < 1 ||
-                res.data.responseSummary.numTotalResults === undefined) &&
+              (res.data.responseSummary.exists === false ||
+                res.data.responseSummary.numTotalResults === 0 ||
+                !res.data.responseSummary) &&
               props.resultSets !== 'MISS'
             ) {
               setError('No results')
@@ -754,7 +817,9 @@ function VariantResults (props) {
               })
             }
 
-            settriggerSubmit(true)
+            setTriggerSubmit(true)
+            updatedArrayFilterVar.length = 0
+            setUpdatedArrayFilterVar([])
           } else {
             setTimeOut(true)
           }
@@ -763,6 +828,7 @@ function VariantResults (props) {
         console.log(error)
         setError('No, sorry')
         setTimeOut(true)
+        setTriggerSubmit(true)
       }
     }
     apiCall()
@@ -790,38 +856,35 @@ function VariantResults (props) {
           </div>
         </div>
       )}
-
       {pause && (
         <div className='scopeDiv'>
-          {ontologyMultipleScope.map(element => {
-            return (
-              <div className='scopeSelection'>
-                <h10>Please choose a scope for {element} :</h10>
-
-                <select id='miSelect' onChange={handleChangeScope}>
-                  <option value={''}>{''}</option>
-                  {optionsScope.map((element, index) => {
-                    return <option value={element}>{element}</option>
-                  })}
-                </select>
-                <button onClick={submitScopeChosen} className='doneButton'>
-                  <ion-icon name='checkmark-circle-outline'></ion-icon>
-                </button>
-              </div>
-            )
-          })}
+          {ontologyMultipleScope.map((element, idx) => (
+            <div className='scopeSelection' key={idx}>
+              <h10>Please choose a scope for {element}:</h10>
+              <select id='miSelect' onChange={e => handleChangeScope(e, idx)}>
+                <option value={''}>{''}</option>
+                {(optionsScope[idx] || []).map((scopeOption, index) => (
+                  <option value={scopeOption} key={index}>
+                    {scopeOption}
+                  </option>
+                ))}
+              </select>
+              <button
+                onClick={() => submitScopeChosen(idx)}
+                className='doneButton'
+              >
+                <ion-icon name='checkmark-circle-outline'></ion-icon>
+              </button>
+            </div>
+          ))}
         </div>
       )}
 
       {timeOut && error !== '' && props.granularity === 'boolean' && (
         <h6 className='NotfoundResult'>&nbsp; No, sorry </h6>
       )}
-      {timeOut && error !== '' && props.granularity === 'count' && (
-        <h6 className='NotfoundResult'>&nbsp; None, sorry </h6>
-      )}
-      {timeOut && error !== '' && props.granularity === 'record' && (
-        <h6 className='NotfoundResult'>&nbsp; No results, sorry </h6>
-      )}
+
+   
       {triggerSubmit && (
         <div>
           <div>
@@ -868,40 +931,46 @@ function VariantResults (props) {
               </div>
             )} */}
 
-            {show3 && logInRequired === false && !error && (
+            {show3 && logInRequired === false && (
               <div className='containerTableResults'>
-                <TableResultsVariant
+                <TableResultsVariants
+                  error={'error'}
                   show={'full'}
                   results={results}
                   resultsPerDataset={resultsPerDataset}
                   beaconsList={beaconsList}
+                  datasetList={datasetList}
                   resultSets={props.resultSets}
-                ></TableResultsVariant>
+                ></TableResultsVariants>
               </div>
             )}
 
-            {show2 && !error && (
+            {show2 && (
               <div className='containerTableResults'>
-                <TableResultsVariant
+                <TableResultsVariants
+                  error={'error'}
                   show={'count'}
                   resultsPerDataset={resultsPerDataset}
                   resultsNotPerDataset={resultsNotPerDataset}
                   results={results}
                   beaconsList={beaconsList}
+                  datasetList={datasetList}
                   resultSets={props.resultSets}
-                ></TableResultsVariant>
+                ></TableResultsVariants>
               </div>
             )}
-            {show1 && !error && (
+            {show1 && (
               <div className='containerTableResults'>
-                <TableResultsVariant
+                <TableResultsVariants
+                  error={'error'}
                   show={'boolean'}
                   resultsPerDataset={resultsPerDataset}
                   resultsNotPerDataset={resultsNotPerDataset}
                   results={results}
                   beaconsList={beaconsList}
+                  datasetList={datasetList}
                   resultSets={props.resultSets}
-                ></TableResultsVariant>
+                ></TableResultsVariants>
               </div>
             )}
           </div>
@@ -911,4 +980,4 @@ function VariantResults (props) {
   )
 }
 
-export default VariantResults
+export default VariantsResults

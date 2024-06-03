@@ -603,18 +603,22 @@ function IndividualsResults (props) {
           }
           setTriggerSubmit(true)
         } else {
+          
           let jsonData2 = {}
           variablePause = false
 
           if (updatedArrayFilterVar.length > 0) {
             updatedArrayFilterVar.forEach((element, index) => {
-              console.log(element.scope)
-              if (element.scope.length > 1 && !selectedScopes[index]) {
+              
+              if (Array.isArray(element.scope) && !selectedScopes[index]) {
+                console.log(element.scope)
                 setPause(true)
                 variablePause = true
 
                 let newOptionsScope = [...optionsScope]
-                element.scope.forEach(elementScope => {
+        
+              
+               element.scope.forEach(elementScope => {
                   newOptionsScope[index] = newOptionsScope[index] || []
                   newOptionsScope[index].push(elementScope)
                 })
@@ -628,17 +632,18 @@ function IndividualsResults (props) {
                   }
                 })
                 setOntologyMultipleScope(newOntologyMultipleScope)
-              } else if (element.scope.length > 1 && selectedScopes[index]) {
-                element.scope = [selectedScopes[index]]
+              } else if (Array.isArray(element.scope) && selectedScopes[index]) {
+                element.scope = selectedScopes[index]
               } else {
-                element.scope = element.scope[0]
+                element.scope = element.scope
+            
               }
             })
           } else {
             let newOptionsScope = [...optionsScope]
             arrayFilter.forEach((element, index) => {
               console.log(element.scope)
-              if (element.scope.length > 1 && !selectedScopes[index]) {
+              if (Array.isArray(element.scope) && element.scope.length > 1 && !selectedScopes[index]) {
                 setPause(true)
                 variablePause = true
 
@@ -659,9 +664,10 @@ function IndividualsResults (props) {
                 })
                 console.log(newOntologyMultipleScope)
                 setOntologyMultipleScope(newOntologyMultipleScope)
-              } else if (element.scope.length > 1 && selectedScopes[index]) {
-                element.scope = [selectedScopes[index]]
+              } else if (Array.isArray(element.scope) && element.scope.length > 1 && selectedScopes[index]) {
+                element.scope = selectedScopes[index]
               } else {
+                console.log(element)
                 element.scope = element.scope[0]
               }
             })
@@ -669,6 +675,7 @@ function IndividualsResults (props) {
 
           if (!variablePause) {
             if (arrayRequestParameters.length > 0) {
+   
               if (arrayRequestParameters.length === 1) {
                 jsonData2 = {
                   meta: {
@@ -705,6 +712,7 @@ function IndividualsResults (props) {
                 }
               }
             } else {
+        
               jsonData2 = {
                 meta: {
                   apiVersion: '2.0'
@@ -876,9 +884,7 @@ function IndividualsResults (props) {
         <h6 className='NotfoundResult'>&nbsp; No, sorry </h6>
       )}
 
-      {timeOut && error !== '' && props.granularity === 'record' && (
-        <h6 className='NotfoundResult'>&nbsp; No results, sorry </h6>
-      )}
+
       {triggerSubmit && (
         <div>
           <div>

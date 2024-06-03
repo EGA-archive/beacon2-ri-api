@@ -19,35 +19,32 @@ function TableResultsBiosamples (props) {
   const [exportMenuVisible, setExportMenuVisible] = useState(false)
   const [showCrossQuery, setShowCrossQuery] = useState(false)
   const [parameterCrossQuery, setParamCrossQuery] = useState('')
-  const [filteredData, setFilteredData] = useState(editable)
+  const [expandedRows, setExpandedRows] = useState(
+    new Array(props.beaconsList.length).fill(false)
+  )
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage] = useState(10) // You can make this dynamic if needed
+
+  const [filteredData, setFilteredData] = useState(editable)
+
+  const indexOfLastRow = currentPage * rowsPerPage
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage
+  const currentRows = filteredData.slice(indexOfFirstRow, indexOfLastRow)
+
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage)
 
   const [note, setNote] = useState('')
   const [isOpenModal2, setIsOpenModal2] = useState(false)
 
-  const totalPages = Math.ceil(filteredData.length / rowsPerPage)
-
   const [filterValues, setFilterValues] = useState({
-    BiosampleId: '',
+    IndividualId: '',
+    ethnicity: '',
     Beacon: '',
-    individualId: '',
-    biosampleStatus: '',
-    sampleOriginType: '',
-    sampleOriginDetail: '',
-    collectionDate: '',
-    collectionMoment: '',
-    obtentionProcedure: '',
-    tumorProgression: '',
-    tumorGrade: '',
-    pathologicalStage: '',
-    pathologicalTnmFinding: '',
-    histologicalDiagnosis: '',
-    diagnosticMarkers: '',
-    phenotypicFeatures: '',
-    measurements: '',
-    sampleProcessing: '',
-    sampleStorage: ''
+    interventionsOrProcedures: '',
+    sex: '',
+    diseases: '',
+    treatments: '',
+    phenotypicFeatures: ''
     // Add other column names here
   })
 
@@ -58,25 +55,14 @@ function TableResultsBiosamples (props) {
   }
 
   const [columnVisibility, setColumnVisibility] = useState({
-    BiosampleId: true,
+    IndividualId: true,
+    ethnicity: true,
     Beacon: true,
-    individualId: true,
-    biosampleStatus: true,
-    sampleOriginType: false,
-    sampleOriginDetail: false,
-    collectionDate: true,
-    collectionMoment: true,
-    obtentionProcedure: false,
-    tumorProgression: false,
-    tumorGrade: false,
-    pathologicalStage: true,
-    pathologicalTnmFinding: true,
-    histologicalDiagnosis: true,
-    diagnosticMarkers: false,
-    phenotypicFeatures: false,
-    measurements: true,
-    sampleProcessing: false,
-    sampleStorage: true
+    interventionsOrProcedures: true,
+    sex: true,
+    diseases: true,
+    treatments: true,
+    phenotypicFeatures: true
     // Add more columns as needed
   })
   const handleNextPage = () => {
@@ -90,6 +76,32 @@ function TableResultsBiosamples (props) {
   const handlePageClick = pageNumber => {
     setCurrentPage(pageNumber)
   }
+
+  const getPages = () => {
+    const pages = []
+    const maxDisplayedPages = 5
+    const totalVisiblePages = maxDisplayedPages + 4 // Total number of buttons (first, last, current range, and ellipses)
+
+    if (totalPages <= totalVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i)
+      }
+    } else {
+      const startRange = Math.max(2, currentPage - 2)
+      const endRange = Math.min(totalPages - 1, currentPage + 2)
+
+      pages.push(1)
+      if (startRange > 2) pages.push('...')
+      for (let i = startRange; i <= endRange; i++) {
+        pages.push(i)
+      }
+      if (endRange < totalPages - 1) pages.push('...')
+      pages.push(totalPages)
+    }
+
+    return pages
+  }
+
   const showAllColumns = () => {
     const columns = document.querySelectorAll('th')
     const rows = document.querySelectorAll('td')
@@ -117,7 +129,6 @@ function TableResultsBiosamples (props) {
       return updatedVisibility
     })
   }
-
 
   const toggleColumnVisibility = columnName => {
     const columns = document.querySelectorAll('th[data-column-name]')
@@ -237,8 +248,20 @@ function TableResultsBiosamples (props) {
 
   const handleShowCrossQuery = e => {
     setShowCrossQuery(true)
-    console.log(e.target.innerText)
+    console.log(e.target.innerText.trim())
     setParamCrossQuery(e.target.innerText)
+  }
+  const toggleRow = index => {
+    setExpandedRows(prevState => {
+      const currentIndex = prevState.indexOf(index)
+      if (currentIndex === -1) {
+        return [...prevState, index]
+      } else {
+        const updatedRows = [...prevState]
+        updatedRows.splice(currentIndex, 1)
+        return updatedRows
+      }
+    })
   }
 
   useEffect(() => {
@@ -785,40 +808,125 @@ function TableResultsBiosamples (props) {
       {showDatsets === true &&
         props.beaconsList.map(result => {
           return (
-            <>
-              {props.show !== 'full' &&
-                props.resultsPerDataset.map((element, index) => {
-                  return (
-                    <>
-                      {element[1][index] === true &&
-                        props.show === 'boolean' && (
-                          <h6 className='foundResult'>YES</h6>
+            <table className='tableGranularity'>
+              <thead className='theadGranularity'>
+                <tr id='trGranuHeader'>
+                  <th className='thGranularityTitle'>Beacon</th>
+                  <th className='thGranularityTitle'>Dataset</th>
+                  <th className='thGranularityTitle'>Result</th>
+                </tr>
+              </thead>
+              <tbody className='tbodyGranu'>
+                {props.beaconsList.map((beacon, beaconIndex) => (
+                  <React.Fragment key={beaconIndex}>
+                    <tr
+                      className='trGranuBeacon'
+                      onClick={() => toggleRow(beaconIndex)}
+                    >
+                      <td className='tdGranu'>
+                        {beacon.id}
+
+                        {expandedRows.includes(beaconIndex) ? (
+                          <ion-icon name='chevron-down-outline'></ion-icon>
+                        ) : (
+                          <ion-icon name='chevron-up-outline'></ion-icon>
                         )}
-                      {element[1][index] === false &&
-                        props.show === 'boolean' && (
-                          <h5 className='NotFoundResult'>No, sorry</h5>
-                        )}
-                      {props.show === 'count' &&
-                        element[2][index] !== 0 &&
-                        element[2][index] !== 1 && (
-                          <h6 className='foundResult'>
-                            {element[2][index]} RESULTS
-                          </h6>
-                        )}
-                      {props.show === 'count' && element[2][index] === 0 && (
-                        <h5 className='NotFoundResult'>
-                          {element[2][index]} RESULTS
-                        </h5>
-                      )}
-                      {props.show === 'count' && element[2][index] === 1 && (
-                        <h6 className='foundResult'>
-                          {element[2][index]} RESULT
-                        </h6>
-                      )}
-                    </>
-                  )
-                })}
-            </>
+                      </td>
+                    </tr>
+                    {expandedRows.includes(beaconIndex) &&
+                      props.resultsPerDataset &&
+                      props.resultsPerDataset.map((element, index) => (
+                        <React.Fragment key={`${beaconIndex}-${index}`}>
+                          {index === beaconIndex &&
+                            props.show === 'boolean' &&
+                            element[1].map((booleanElement, booleanIndex) => (
+                              <tr key={`boolean-${booleanIndex}`}>
+                                <td className='tdGranu'></td>
+                                <td
+                                  className={`tdGranu ${
+                                    booleanElement ? 'tdFound' : 'tdNotFound'
+                                  }`}
+                                >
+                                  {element[0][booleanIndex]}
+                                </td>
+                                <td
+                                  className={`tdGranu ${
+                                    booleanElement
+                                      ? 'tdFoundDataset'
+                                      : 'tdNotFoundDataset'
+                                  }`}
+                                >
+                                  {booleanElement ? 'YES' : 'No, sorry'}
+                                </td>
+                              </tr>
+                            ))}
+                          {index === beaconIndex &&
+                            props.show === 'count' &&
+                            element[2].map((countElement, countIndex) => (
+                              <tr
+                                className='trGranu'
+                                key={`count-${countIndex}`}
+                              >
+                                <td className='tdGranu'></td>
+                                <td
+                                  className={`tdGranu ${
+                                    countElement !== undefined &&
+                                    countElement !== null &&
+                                    countElement !== 0
+                                      ? 'tdFoundDataset'
+                                      : 'tdNotFoundDataset'
+                                  }`}
+                                >
+                                  {element[0][countIndex]}
+                                </td>
+                                <td
+                                  className={`tdGranu ${
+                                    countElement !== undefined &&
+                                    countElement !== null &&
+                                    countElement !== 0
+                                      ? 'tdFound'
+                                      : 'tdNotFound'
+                                  }`}
+                                >
+                                  {countElement}
+                                </td>
+                              </tr>
+                            ))}
+                        </React.Fragment>
+                      ))}
+                    {expandedRows.includes(beaconIndex) &&
+                      props.resultsPerDataset.length === 0 &&
+                      props.datasetList &&
+                      props.datasetList.map((element, index) => {
+                        if (index === beaconIndex) {
+                          if (props.show === 'boolean') {
+                            return (
+                              <React.Fragment key={`boolean-${index}`}>
+                                <tr key={`boolean-${index}`}>
+                                  <td className='tdGranu'></td>
+                                  <td className='tdGranu'>{element.name}</td>
+                                  <td className='tdGranu'>No, sorry</td>
+                                </tr>
+                              </React.Fragment>
+                            )
+                          } else if (props.show === 'count') {
+                            return (
+                              <React.Fragment key={`count-${index}`}>
+                                <tr className='trGranu' key={`count-${index}`}>
+                                  <td className='tdGranu'></td>
+                                  <td className='tdGranu'>{element.name}</td>
+                                  <td className='tdGranu'>None</td>
+                                </tr>
+                              </React.Fragment>
+                            )
+                          }
+                        }
+                        return null
+                      })}
+                  </React.Fragment>
+                ))}
+              </tbody>
+            </table>
           )
         })}
 
@@ -1341,14 +1449,23 @@ function TableResultsBiosamples (props) {
                           columnVisibility.BiosampleId ? 'visible' : 'hidden'
                         }
                       >
-                        {row.BiosampleId}
+                        <img
+                          src='../arrows-cross.png'
+                          className='crossQsymbol'
+                        ></img>
+                        <button
+                          onClick={handleShowCrossQuery}
+                          className='crossQButtonTable'
+                        >
+                          {row.BiosampleId}
+                        </button>
                       </td>
                       <td
                         className={
-                          columnVisibility.individualId ? 'visible' : 'hidden'
+                          columnVisibility.IndividualId ? 'visible' : 'hidden'
                         }
                       >
-                        {row.individualId}
+                        {row.IndividualId}
                       </td>
                       <td
                         className={
@@ -1502,20 +1619,26 @@ function TableResultsBiosamples (props) {
             </div>
           </div>
         )}
-      {props.show === 'full' && (
+      {props.show === 'full' && !showCrossQuery && (
         <div className='pagination-controls'>
           <button onClick={handlePreviousPage} disabled={currentPage === 1}>
             Previous
           </button>
-          {[...Array(totalPages)].map((_, index) => (
-            <button
-              key={index}
-              onClick={() => handlePageClick(index + 1)}
-              className={currentPage === index + 1 ? 'active' : ''}
-            >
-              {index + 1}
-            </button>
-          ))}
+          {getPages().map((page, index) =>
+            typeof page === 'number' ? (
+              <button
+                key={index}
+                onClick={() => handlePageClick(page)}
+                className={currentPage === page ? 'active' : ''}
+              >
+                {page}
+              </button>
+            ) : (
+              <span key={index} className='ellipsis'>
+                {page}
+              </span>
+            )
+          )}
           <button
             onClick={handleNextPage}
             disabled={currentPage === totalPages}
@@ -1527,7 +1650,7 @@ function TableResultsBiosamples (props) {
       {showCrossQuery && (
         <CrossQueries
           parameter={parameterCrossQuery}
-          collection={'individuals'}
+          collection={'biosamples'}
           setShowCrossQuery={setShowCrossQuery}
         />
       )}

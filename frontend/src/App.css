@@ -788,7 +788,7 @@ h14 {
   margin-bottom: 5px;
   margin-right: 35px;
   -webkit-filter: grayscale(20%);
-  filter: grayscale(60%);
+  filter: grayscale(35%);
   -webkit-transition: 0.2s ease-in-out;
   transition: 0.2s ease-in-out; 
 }
@@ -1483,7 +1483,7 @@ h5 {
     margin-top: 20px;
     margin-right: 30px;
     -webkit-filter: grayscale(20%);
-    filter: grayscale(60%);
+    filter: grayscale(35%);
     -webkit-transition: 0.2s ease-in-out;
     transition: 0.2s ease-in-out;
   }
@@ -1825,7 +1825,7 @@ h5 {
     margin-top: 20px;
     margin-right: 30px;
     -webkit-filter: grayscale(20%);
-    filter: grayscale(60%);
+    filter: grayscale(35%);
     -webkit-transition: 0.2s ease-in-out;
     transition: 0.2s ease-in-out;
   }

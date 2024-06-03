@@ -35,7 +35,7 @@
   align-items: center;
 }
 
-.buttonAllFilters:hover{
+.buttonAllFilters:hover {
   border: 2.4px solid #4883b8;
   margin-bottom: 8px;
 }
@@ -102,7 +102,6 @@ p {
 }
 
 .label-ontology-div label {
-  min-width: 100px;
   margin-left: 0px;
 }
 .inputSearch {
@@ -258,10 +257,11 @@ ul div {
   display: flex;
   align-items: flex-start;
   margin-left: 4px;
+  margin-right: 4px;
 }
 
 .label-ontology-div2 input {
-  width: 80%;
+  width: 36%;
   margin-left: 3px;
   border: 1px solid #a39fc5;
   padding: 2px;
@@ -315,6 +315,8 @@ label {
   display: flex;
   justify-content: center;
   flex-direction: column;
+  max-width: 181px;
+  width: fit-content;
 }
 .onHover {
   display: none;
@@ -329,8 +331,8 @@ label {
   background: #6e9ef0;
   padding-top: 4px;
   padding-bottom: 4px;
-  padding-right: 2px;
-  padding-left: 2px;
+  padding-right: 4px;
+  padding-left: 4px;
   display: flex;
   border-radius: 2px;
   font-size: 11.5px;

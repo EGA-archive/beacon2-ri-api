@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import CrossQueries from '../../CrossQueries/CrossQueries'
 import { FaBars, FaEye, FaEyeSlash } from 'react-icons/fa' // Import icons from react-icons library
 import { FiLayers, FiDownload } from 'react-icons/fi'
+import { Link } from 'react-router-dom'
 
 function TableResultsIndividuals (props) {
   const [showDatsets, setShowDatasets] = useState(false)
@@ -74,6 +75,31 @@ function TableResultsIndividuals (props) {
 
   const handlePageClick = pageNumber => {
     setCurrentPage(pageNumber)
+  }
+
+  const getPages = () => {
+    const pages = []
+    const maxDisplayedPages = 5
+    const totalVisiblePages = maxDisplayedPages + 4 // Total number of buttons (first, last, current range, and ellipses)
+
+    if (totalPages <= totalVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i)
+      }
+    } else {
+      const startRange = Math.max(2, currentPage - 2)
+      const endRange = Math.min(totalPages - 1, currentPage + 2)
+
+      pages.push(1)
+      if (startRange > 2) pages.push('...')
+      for (let i = startRange; i <= endRange; i++) {
+        pages.push(i)
+      }
+      if (endRange < totalPages - 1) pages.push('...')
+      pages.push(totalPages)
+    }
+
+    return pages
   }
 
   const showAllColumns = () => {
@@ -222,7 +248,7 @@ function TableResultsIndividuals (props) {
 
   const handleShowCrossQuery = e => {
     setShowCrossQuery(true)
-    console.log(e.target.innerText)
+    console.log(e.target.innerText.trim())
     setParamCrossQuery(e.target.innerText)
   }
   const toggleRow = index => {
@@ -462,9 +488,6 @@ function TableResultsIndividuals (props) {
   }, [trigger, resultsSelectedFinal])
 
   useEffect(() => {
-    console.log(props.resultsPerDataset)
-    console.log(props.beaconsList)
-    console.log(props.datasetList)
     setShowDatasets(true)
   }, [])
 
@@ -573,7 +596,7 @@ function TableResultsIndividuals (props) {
                                   <td className='tdGranu'>No, sorry</td>
                                 </tr>
                               </React.Fragment>
-                            );
+                            )
                           } else if (props.show === 'count') {
                             return (
                               <React.Fragment key={`count-${index}`}>
@@ -583,10 +606,10 @@ function TableResultsIndividuals (props) {
                                   <td className='tdGranu'>None</td>
                                 </tr>
                               </React.Fragment>
-                            );
+                            )
                           }
                         }
-                        return null;
+                        return null
                       })}
                   </React.Fragment>
                 ))}
@@ -825,7 +848,17 @@ function TableResultsIndividuals (props) {
                           columnVisibility.IndividualId ? 'visible' : 'hidden'
                         }
                       >
-                        {row.IndividualId}
+                             <img
+                          src='../arrows-cross.png'
+                          className='crossQsymbol'
+                        ></img>
+                        <button
+                          onClick={handleShowCrossQuery}
+                          className='crossQButtonTable'
+                        >
+                          {row.IndividualId}
+                        </button>
+                   
                       </td>
                       <td
                         className={
@@ -885,20 +918,26 @@ function TableResultsIndividuals (props) {
             </div>
           </div>
         )}
-      {props.show === 'full' && (
+      {props.show === 'full' && !showCrossQuery && (
         <div className='pagination-controls'>
           <button onClick={handlePreviousPage} disabled={currentPage === 1}>
             Previous
           </button>
-          {[...Array(totalPages)].map((_, index) => (
-            <button
-              key={index}
-              onClick={() => handlePageClick(index + 1)}
-              className={currentPage === index + 1 ? 'active' : ''}
-            >
-              {index + 1}
-            </button>
-          ))}
+          {getPages().map((page, index) =>
+            typeof page === 'number' ? (
+              <button
+                key={index}
+                onClick={() => handlePageClick(page)}
+                className={currentPage === page ? 'active' : ''}
+              >
+                {page}
+              </button>
+            ) : (
+              <span key={index} className='ellipsis'>
+                {page}
+              </span>
+            )
+          )}
           <button
             onClick={handleNextPage}
             disabled={currentPage === totalPages}

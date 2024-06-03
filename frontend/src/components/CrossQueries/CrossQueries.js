@@ -57,7 +57,9 @@ function CrossQueries (props) {
   }
 
   const handleSubmit = async e => {
-    console.log('ASd')
+    console.log(valueInitial)
+    console.log(IdValue)
+    console.log(valueFinal)
     e.preventDefault()
     setShowSubmit(false)
     try {
@@ -135,79 +137,84 @@ function CrossQueries (props) {
     <>
       {results.length < 1 && (
         <div className='divCrossQueries'>
-          <form className='crossQueriesForm' onSubmit={handleSubmit}>
-            <label className='originCollection'>
-              Pick the "origin" collection:
-              <select value={valueInitial} onChange={handleChangeInitial}>
-                {scope2 === 'allScopes' && (
+          {!error && (
+            <form className='crossQueriesForm' onSubmit={handleSubmit}>
+              <label className='originCollection'>
+                Pick the "origin" collection:
+                <select value={valueInitial} onChange={handleChangeInitial}>
+                  {scope2 === 'allScopes' && (
+                    <option value='select'>Select</option>
+                  )}
+                  {scope2 === 'allScopes' && (
+                    <option value='g_variants'>Variant</option>
+                  )}
+                  {scope2 === 'allScopes' && (
+                    <option value='individuals'>Individuals</option>
+                  )}
+                  {scope2 === 'allScopes' && (
+                    <option value='biosamples'>Biosamples</option>
+                  )}
+                  {scope2 === 'allScopes' && <option value='runs'>Runs</option>}
+                  {scope2 === 'allScopes' && (
+                    <option value='analyses'>Analyses</option>
+                  )}
+
+                  {scope2 === 'variants' && (
+                    <option value='g_variants' selected>
+                      Variant
+                    </option>
+                  )}
+                  {scope2 === 'individuals' && (
+                    <option value='individuals' selected>
+                      Individuals
+                    </option>
+                  )}
+                  {scope2 === 'biosamples' && (
+                    <option value='biosamples' selected>
+                      Biosamples
+                    </option>
+                  )}
+                  {scope2 === 'runs' && (
+                    <option value='runs' selected>
+                      Runs
+                    </option>
+                  )}
+                  {scope2 === 'analyses' && (
+                    <option value='analyses' selected>
+                      Analyses
+                    </option>
+                  )}
+                </select>
+              </label>
+              <label>
+                ID:
+                <input
+                  className='inputId'
+                  type='text'
+                  value={IdValue}
+                  onChange={handleChangeID}
+                />
+              </label>
+              <label>
+                Pick the collection you want to see for the written ID:
+                <select value={valueFinal} onChange={handleChangeFinal}>
                   <option value='select'>Select</option>
-                )}
-                {scope2 === 'allScopes' && (
                   <option value='g_variants'>Variant</option>
-                )}
-                {scope2 === 'allScopes' && (
                   <option value='individuals'>Individuals</option>
-                )}
-                {scope2 === 'allScopes' && (
                   <option value='biosamples'>Biosamples</option>
-                )}
-                {scope2 === 'allScopes' && <option value='runs'>Runs</option>}
-                {scope2 === 'allScopes' && (
-                  <option value='analyses'>Analyses</option>
-                )}
-
-                {scope2 === 'variants' && (
-                  <option value='g_variants' selected>
-                    Variant
-                  </option>
-                )}
-                {scope2 === 'individuals' && (
-                  <option value='individuals' selected>
-                    Individuals
-                  </option>
-                )}
-                {scope2 === 'biosamples' && (
-                  <option value='biosamples' selected>
-                    Biosamples
-                  </option>
-                )}
-                {scope2 === 'runs' && (
-                  <option value='runs' selected>
-                    Runs
-                  </option>
-                )}
-                {scope2 === 'analyses' && (
-                  <option value='analyses' selected>
-                    Analyses
-                  </option>
-                )}
-              </select>
-            </label>
-            <label>
-              ID:
-              <input
-                className='inputId'
-                type='text'
-                value={IdValue}
-                onChange={handleChangeID}
-              />
-            </label>
-            <label>
-              Pick the collection you want to see for the written ID:
-              <select value={valueFinal} onChange={handleChangeFinal}>
-                <option value='select'>Select</option>
-                <option value='g_variants'>Variant</option>
-                <option value='individuals'>Individuals</option>
-                <option value='biosamples'>Biosamples</option>
-                {/* <option value='runs'>Runs</option>
+                  {/* <option value='runs'>Runs</option>
               <option value='analyses'>Analyses</option> */}
-              </select>
-            </label>
+                </select>
+              </label>
 
-            {showSubmit && <button className='formButton'>Submit</button>}
-            {error !== '' && results === '' && <h5>Not found. Please retry</h5>}
-            {results === null && <h5>Not found. Please retry</h5>}
-          </form>
+              {showSubmit && <button className='formButton'>Submit</button>}
+              {error !== '' && results === '' && (
+                <h5>Not found. Please retry</h5>
+              )}
+              {results === null && <h5>Not found. Please retry</h5>}
+            </form>
+          )}
+          {error && <h5>{error}</h5>}
           <div>
             <button
               className='goBackCrossQ'
@@ -251,7 +258,7 @@ function CrossQueries (props) {
             ></TableResultsIndividuals>
           </div>
         )}
-          {results !== null &&
+      {results !== null &&
         results !== '' &&
         triggerResults &&
         valueFinal === 'biosamples' && (
