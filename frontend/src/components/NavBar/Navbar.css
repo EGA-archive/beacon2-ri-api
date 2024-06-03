@@ -4,6 +4,17 @@
     display: none;
   }
 
+  .Sign-in3 {
+    display: flex !important;
+    align-items: center;
+  }
+
+  .containerUserName:hover ~ .animation  {
+    background-color: rgb(80, 133, 225);
+    right: 0px;
+    width: 250px;
+  }
+
   #copydata h1 {
     text-transform: uppercase;
     font-size: 10px;
@@ -221,14 +232,6 @@
     background-color: #0c7a7a;
   }
 
-  .nav3 .Sign-in3 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    align-content: center;
-    width: fit-content;
-    width: 96px;
-  }
 
   .nav3 .Sign-in4 {
     display: flex;
@@ -404,6 +407,7 @@
     display: none;
   }
 
+ 
   #copydata h1 {
     text-transform: uppercase;
     font-size: 10px;
@@ -709,6 +713,12 @@
     background-color: #d4c223;
   }
 
+  .Sign-in3:hover ~ .animation {
+    width: 96px;
+    border-radius: 2px;
+    background-color: #7a9f9f;
+  }
+
   button {
     background: none;
     box-shadow: none;
@@ -727,6 +737,13 @@
     width: 17px;
     margin-right: -11px;
     margin-top: 21px !important;
+  }
+
+  .Sign-in3:hover ~ .animation {
+    width: 96px;
+    border-radius: 2px;
+    background-color: #7a9f9f;
+    left: 0px !important;
   }
 
   .userNameSmallScreen {
