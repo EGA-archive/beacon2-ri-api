@@ -183,14 +183,14 @@ function Layout (props) {
       start && end && variantType && referenceBases && alternateBases
         ? `${start}-${end}:${variantType}:${referenceBases}>${alternateBases}`
         : null
-        
-        const arrayQuery = title
-        .map((titleQuery, indexQuery) =>
-          titleQuery === 'geneId' 
-            ? `${titleQuery}:${value[indexQuery]}` 
-            : `${titleQuery}=${value[indexQuery]}`
-        )
-        .join('&');
+
+    const arrayQuery = title
+      .map((titleQuery, indexQuery) =>
+        titleQuery === 'geneId'
+          ? `${titleQuery}:${value[indexQuery]}`
+          : `${titleQuery}=${value[indexQuery]}`
+      )
+      .join('&')
 
     if (e.target.checked) {
       setQuery(prevQuery => {
@@ -472,6 +472,7 @@ function Layout (props) {
             className='selectModule1'
             onChange={handleChangeSelection1}
           >
+        
             <option value='boolean' className='optionClass'>
               Do you have?...{' '}
             </option>
@@ -480,6 +481,7 @@ function Layout (props) {
             </option>
             <option value='record'>Can you give me details on?...</option>
           </select>
+
           <select
             name='select2'
             className='selectModule2'
@@ -573,7 +575,8 @@ function Layout (props) {
       )}
       {showFilters && (
         <div className='layout-container'>
-          <div className='filterTermsContainer'>
+          <fieldset className='filterTermsContainer'>
+            <legend>Query examples</legend>
             {filters.map((filter, index) => (
               <div key={index} className='divFilter'>
                 <p>{filter.title}</p>
@@ -644,10 +647,8 @@ function Layout (props) {
                                       </div>
                                     )}
                                   </React.Fragment>
-                                  
                                 ))}
                               </div>
-                              
                             </div>
                           )
                         : optionsArray.length > 0 &&
@@ -736,17 +737,19 @@ function Layout (props) {
                               </div>
                             </div>
                           ))}
-                          
                     </div>
                   ))}
                 </ul>
               </div>
             ))}
-          </div>
-          <button className='buttonAllFilters' onClick={handleSeeFilteringTerms}>
-            <img className='filterIcon' src='../../filter.png'></img>
-            <h4>All filtering terms</h4>
-          </button>
+            <button
+              className='buttonAllFilters'
+              onClick={handleSeeFilteringTerms}
+            >
+              <img className='filterIcon' src='../../filter.png'></img>
+              <h4>All filtering terms</h4>
+            </button>
+          </fieldset>
         </div>
       )}
 
