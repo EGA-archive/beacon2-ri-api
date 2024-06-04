@@ -1,7 +1,7 @@
 import '../../App.css'
 import './Layout.css'
 import FilteringTerms from '../FilteringTerms/FilteringTerms'
-import filtersConfig from '../../config-examples-covid.json'
+import filtersConfig from '../../config-examples-cancer.json'
 import VariantsResults from '../GenomicVariations/VariantsResults'
 
 import BiosamplesResults from '../Biosamples/BiosamplesResults'
@@ -398,40 +398,6 @@ function Layout (props) {
     })
   }
 
-  const handleVariantOption = optionsArray => {
-    const schemaFields = optionsArray.map(option => option.schemaField)
-    const values = optionsArray.map(option => option.value)
-
-    let query = ''
-
-    if (schemaFields.length === 1 && schemaFields[0] === 'geneId') {
-      query = `${schemaFields[0]}:${values[0]}`
-    } else if (
-      schemaFields.length > 1 &&
-      !schemaFields.includes('alternateBases') &&
-      !schemaFields.includes('referenceBases')
-    ) {
-      query = `${schemaFields[0]}:${values[0]}&${schemaFields[1]}:${values[1]}`
-    } else if (
-      schemaFields.includes('alternateBases') ||
-      schemaFields.includes('referenceBases')
-    ) {
-      query = 'hola'
-    }
-
-    console.log(query)
-    // You can send the query to the backend or handle it as needed
-  }
-
-  const handleSubmit = async e => {
-    setShowVariants(true)
-    e.preventDefault()
-    setPlaceholder('filtering term comma-separated, ID><=value')
-    setIsSub(!isSubmitted)
-    setExampleQ([])
-    setTimeOut(true)
-    setResults('Variant')
-  }
 
   const handleShowFilterEx = () => {
     setShowFilters(true)

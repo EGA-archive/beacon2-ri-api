@@ -8,7 +8,7 @@ import configData from '../../config.json'
 import { useContext } from 'react'
 import TableResultsVariants from '../Results/VariantResults/TableResultsVariant'
 
-function VariantsResults (props) {
+function VariantResults (props) {
   const [error, setError] = useState('')
   const [timeOut, setTimeOut] = useState(false)
   const [logInRequired, setLoginRequired] = useState(false)
@@ -563,62 +563,193 @@ function VariantsResults (props) {
             setNumberResults(0)
             setBoolean(false)
           } else {
-            res.data.response.resultSets.forEach((element, index) => {
-              if (element.id && element.id !== '') {
-                if (resultsPerDataset.length > 0) {
-                  resultsPerDataset.forEach(element2 => {
-                    element2[0].push(element.id)
-                    element2[1].push(element.exists)
-                    element2[2].push(element.resultsCount)
-                    element2[3].push(element.resultsHandover)
-                  })
-                } else {
-                  let arrayResultsPerDataset = [
-                    [element.id],
-                    [element.exists],
-                    [element.resultsCount],
-                    [element.resultsHandover]
-                  ]
-                  resultsPerDataset.push(arrayResultsPerDataset)
-                }
-              }
-
-              if (element.id === undefined || element.id === '') {
-                let arrayResultsNoDatasets = [element.beaconId]
-                resultsNotPerDataset.push(arrayResultsNoDatasets)
-              }
-
-              if (res.data.response.resultSets[index].results) {
-                res.data.response.resultSets[index].results.forEach(
-                  (element2, index2) => {
-                    let arrayResult = [
-                      res.data.meta.beaconId,
-                      res.data.response.resultSets[index].results[index2]
+            if (props.isNetwork) {
+              res.data.response.resultSets.forEach((element, index) => {
+                if (element.id && element.id !== '') {
+                  if (resultsPerDataset.length > 0) {
+                    resultsPerDataset.forEach(element2 => {
+                      if (element2[0] === element.beaconId) {
+                        element2[1].push(element.id)
+                        element2[2].push(element.exists)
+                        element2[3].push(element.resultsCount)
+                      } else {
+                        let arrayResultsPerDataset = [
+                          element.beaconId,
+                          [element.id],
+                          [element.exists],
+                          [element.resultsCount]
+                        ]
+                        let found = false
+                        resultsPerDataset.forEach(element => {
+                          if (element[0] === arrayResultsPerDataset[0]) {
+                            found = true
+                          }
+                        })
+                        if (found === false) {
+                          resultsPerDataset.push(arrayResultsPerDataset)
+                        }
+                      }
+                    })
+                  } else {
+                    let arrayResultsPerDataset = [
+                      element.beaconId,
+                      [element.id],
+                      [element.exists],
+                      [element.resultsCount]
                     ]
-                    results.push(arrayResult)
+                    resultsPerDataset.push(arrayResultsPerDataset)
                   }
-                )
+                }
+
+                if (element.id === undefined || element.id === '') {
+                  let arrayResultsNoDatasets = [element.beaconId]
+                  resultsNotPerDataset.push(arrayResultsNoDatasets)
+                  console.log(arrayResultsNoDatasets)
+                }
+
+                if (res.data.response.resultSets[index].results) {
+                  res.data.response.resultSets[index].results.forEach(
+                    (element2, index2) => {
+                      let arrayResult = [
+                        res.data.response.resultSets[index].beaconId,
+                        res.data.response.resultSets[index].results[index2]
+                      ]
+                      results.push(arrayResult)
+                    }
+                  )
+                }
+              })
+            } else {
+              if (props.isNetwork) {
+                res.data.response.resultSets.forEach((element, index) => {
+                  if (element.id && element.id !== '') {
+                    if (resultsPerDataset.length > 0) {
+                      resultsPerDataset.forEach(element2 => {
+                        if (element2[0] === element.beaconId) {
+                          element2[1].push(element.id)
+                          element2[2].push(element.exists)
+                          element2[3].push(element.resultsCount)
+                        } else {
+                          let arrayResultsPerDataset = [
+                            element.beaconId,
+                            [element.id],
+                            [element.exists],
+                            [element.resultsCount]
+                          ]
+                          let found = false
+                          resultsPerDataset.forEach(element => {
+                            if (element[0] === arrayResultsPerDataset[0]) {
+                              found = true
+                            }
+                          })
+                          if (found === false) {
+                            resultsPerDataset.push(arrayResultsPerDataset)
+                          }
+                        }
+                      })
+                    } else {
+                      let arrayResultsPerDataset = [
+                        element.beaconId,
+                        [element.id],
+                        [element.exists],
+                        [element.resultsCount]
+                      ]
+                      resultsPerDataset.push(arrayResultsPerDataset)
+                    }
+                  }
+
+                  if (element.id === undefined || element.id === '') {
+                    let arrayResultsNoDatasets = [element.beaconId]
+                    resultsNotPerDataset.push(arrayResultsNoDatasets)
+                    console.log(arrayResultsNoDatasets)
+                  }
+
+                  if (res.data.response.resultSets[index].results) {
+                    res.data.response.resultSets[index].results.forEach(
+                      (element2, index2) => {
+                        let arrayResult = [
+                          res.data.response.resultSets[index].beaconId,
+                          res.data.response.resultSets[index].results[index2]
+                        ]
+                        results.push(arrayResult)
+                      }
+                    )
+                  }
+                })
+              } else {
+                res.data.response.resultSets.forEach((element, index) => {
+                  if (element.id && element.id !== '') {
+                    if (resultsPerDataset.length > 0) {
+                      resultsPerDataset.forEach(element2 => {
+                        if (element2[0] === res.data.meta.beaconId) {
+                          element2[1].push(element.id)
+                          element2[2].push(element.exists)
+                          element2[3].push(element.resultsCount)
+                        } else {
+                          let arrayResultsPerDataset = [
+                            res.data.meta.beaconId,
+                            [element.id],
+                            [element.exists],
+                            [element.resultsCount]
+                          ]
+                          let found = false
+                          resultsPerDataset.forEach(element => {
+                            if (element[0] === arrayResultsPerDataset[0]) {
+                              found = true
+                            }
+                          })
+                          if (found === false) {
+                            resultsPerDataset.push(arrayResultsPerDataset)
+                          }
+                        }
+                      })
+                    } else {
+                      let arrayResultsPerDataset = [
+                        res.data.meta.beaconId,
+                        [element.id],
+                        [element.exists],
+                        [element.resultsCount]
+                      ]
+                      resultsPerDataset.push(arrayResultsPerDataset)
+                    }
+                  }
+
+                  if (element.id === undefined || element.id === '') {
+                    let arrayResultsNoDatasets = [res.data.meta.beaconId]
+                    resultsNotPerDataset.push(arrayResultsNoDatasets)
+                    console.log(arrayResultsNoDatasets)
+                  }
+
+                  if (res.data.response.resultSets[index].results) {
+                    res.data.response.resultSets[index].results.forEach(
+                      (element2, index2) => {
+                        let arrayResult = [
+                          res.data.meta.beaconId,
+                          res.data.response.resultSets[index].results[index2]
+                        ]
+                        results.push(arrayResult)
+                      }
+                    )
+                  }
+                })
               }
-            })
+            }
           }
           setTriggerSubmit(true)
         } else {
-          
           let jsonData2 = {}
           variablePause = false
 
           if (updatedArrayFilterVar.length > 0) {
             updatedArrayFilterVar.forEach((element, index) => {
-              
               if (Array.isArray(element.scope) && !selectedScopes[index]) {
                 console.log(element.scope)
                 setPause(true)
                 variablePause = true
 
                 let newOptionsScope = [...optionsScope]
-        
-              
-               element.scope.forEach(elementScope => {
+
+                element.scope.forEach(elementScope => {
                   newOptionsScope[index] = newOptionsScope[index] || []
                   newOptionsScope[index].push(elementScope)
                 })
@@ -632,18 +763,24 @@ function VariantsResults (props) {
                   }
                 })
                 setOntologyMultipleScope(newOntologyMultipleScope)
-              } else if (Array.isArray(element.scope) && selectedScopes[index]) {
+              } else if (
+                Array.isArray(element.scope) &&
+                selectedScopes[index]
+              ) {
                 element.scope = selectedScopes[index]
               } else {
                 element.scope = element.scope
-            
               }
             })
           } else {
             let newOptionsScope = [...optionsScope]
             arrayFilter.forEach((element, index) => {
               console.log(element.scope)
-              if (Array.isArray(element.scope) && element.scope.length > 1 && !selectedScopes[index]) {
+              if (
+                Array.isArray(element.scope) &&
+                element.scope.length > 1 &&
+                !selectedScopes[index]
+              ) {
                 setPause(true)
                 variablePause = true
 
@@ -664,7 +801,11 @@ function VariantsResults (props) {
                 })
                 console.log(newOntologyMultipleScope)
                 setOntologyMultipleScope(newOntologyMultipleScope)
-              } else if (Array.isArray(element.scope) && element.scope.length > 1 && selectedScopes[index]) {
+              } else if (
+                Array.isArray(element.scope) &&
+                element.scope.length > 1 &&
+                selectedScopes[index]
+              ) {
                 element.scope = selectedScopes[index]
               } else {
                 console.log(element)
@@ -675,7 +816,6 @@ function VariantsResults (props) {
 
           if (!variablePause) {
             if (arrayRequestParameters.length > 0) {
-   
               if (arrayRequestParameters.length === 1) {
                 jsonData2 = {
                   meta: {
@@ -712,7 +852,6 @@ function VariantsResults (props) {
                 }
               }
             } else {
-        
               jsonData2 = {
                 meta: {
                   apiVersion: '2.0'
@@ -769,52 +908,121 @@ function VariantsResults (props) {
               setNumberResults(0)
               setBoolean(false)
             } else {
-              res.data.response.resultSets.forEach((element, index) => {
-                if (element.id && element.id !== '') {
-                  if (resultsPerDataset.length > 0) {
-                    resultsPerDataset.forEach(element2 => {
-                      element2[0].push(element.id)
-                      element2[1].push(element.exists)
-                      element2[2].push(element.resultsCount)
-                      element2[3].push(element.resultsHandover)
-                    })
-                  } else {
-                    let arrayResultsPerDataset = [
-                      //element.beaconId,
-                      [element.id],
-                      [element.exists],
-                      [element.resultsCount],
-                      [element.resultsHandover]
-                    ]
-                    let found = false
-                    resultsPerDataset.forEach(element => {
-                      if (element[0] === arrayResultsPerDataset[0]) {
-                        found = true
-                      }
-                    })
-                    if (found === false) {
+              if (props.isNetwork) {
+                console.log(res.data.response.resultSets)
+                console.log(resultsPerDataset)
+                res.data.response.resultSets.forEach((element, index) => {
+                  if (element.id && element.id !== '') {
+                    if (resultsPerDataset.length > 0) {
+                      resultsPerDataset.forEach(element2 => {
+                        if (element2[0] === element.beaconId) {
+                          element2[1].push(element.id)
+                          element2[2].push(element.exists)
+                          element2[3].push(element.resultsCount)
+                        } else {
+                          let arrayResultsPerDataset = [
+                            element.beaconId,
+                            [element.id],
+                            [element.exists],
+                            [element.resultsCount]
+                          ]
+                          let found = false
+                          resultsPerDataset.forEach(element => {
+                            if (element[0] === arrayResultsPerDataset[0]) {
+                              found = true
+                            }
+                          })
+                          if (found === false) {
+                            resultsPerDataset.push(arrayResultsPerDataset)
+                          }
+                        }
+                      })
+                    } else {
+                      let arrayResultsPerDataset = [
+                        element.beaconId,
+                        [element.id],
+                        [element.exists],
+                        [element.resultsCount]
+                      ]
                       resultsPerDataset.push(arrayResultsPerDataset)
                     }
                   }
-                }
 
-                if (element.id === undefined || element.id === '') {
-                  let arrayResultsNoDatasets = [element.beaconId]
-                  resultsNotPerDataset.push(arrayResultsNoDatasets)
-                }
+                  if (element.id === undefined || element.id === '') {
+                    let arrayResultsNoDatasets = [element.beaconId]
+                    resultsNotPerDataset.push(arrayResultsNoDatasets)
+                    console.log(arrayResultsNoDatasets)
+                  }
 
-                if (res.data.response.resultSets[index].results) {
-                  res.data.response.resultSets[index].results.forEach(
-                    (element2, index2) => {
-                      let arrayResult = [
+                  if (res.data.response.resultSets[index].results) {
+                    res.data.response.resultSets[index].results.forEach(
+                      (element2, index2) => {
+                        let arrayResult = [
+                          res.data.response.resultSets[index].beaconId,
+                          res.data.response.resultSets[index].results[index2]
+                        ]
+                        results.push(arrayResult)
+                      }
+                    )
+                  }
+                })
+              } else {
+                res.data.response.resultSets.forEach((element, index) => {
+                  if (element.id && element.id !== '') {
+                    if (resultsPerDataset.length > 0) {
+                      resultsPerDataset.forEach(element2 => {
+                        if (element2[0] === res.data.meta.beaconId) {
+                          element2[1].push(element.id)
+                          element2[2].push(element.exists)
+                          element2[3].push(element.resultsCount)
+                        } else {
+                          let arrayResultsPerDataset = [
+                            res.data.meta.beaconId,
+                            [element.id],
+                            [element.exists],
+                            [element.resultsCount]
+                          ]
+                          let found = false
+                          resultsPerDataset.forEach(element => {
+                            if (element[0] === arrayResultsPerDataset[0]) {
+                              found = true
+                            }
+                          })
+                          if (found === false) {
+                            resultsPerDataset.push(arrayResultsPerDataset)
+                          }
+                        }
+                      })
+                    } else {
+                      let arrayResultsPerDataset = [
                         res.data.meta.beaconId,
-                        res.data.response.resultSets[index].results[index2]
+                        [element.id],
+                        [element.exists],
+                        [element.resultsCount]
                       ]
-                      results.push(arrayResult)
+                      resultsPerDataset.push(arrayResultsPerDataset)
                     }
-                  )
-                }
-              })
+                  }
+
+                  if (element.id === undefined || element.id === '') {
+                    let arrayResultsNoDatasets = [res.data.meta.beaconId]
+                    resultsNotPerDataset.push(arrayResultsNoDatasets)
+                    console.log(arrayResultsNoDatasets)
+                  }
+
+                  if (res.data.response.resultSets[index].results) {
+                    res.data.response.resultSets[index].results.forEach(
+                      (element2, index2) => {
+                        let arrayResult = [
+                          res.data.meta.beaconId,
+                          res.data.response.resultSets[index].results[index2]
+                        ]
+                        results.push(arrayResult)
+                      }
+                    )
+                  }
+                })
+              }
             }
 
             setTriggerSubmit(true)
@@ -884,7 +1092,6 @@ function VariantsResults (props) {
         <h6 className='NotfoundResult'>&nbsp; No, sorry </h6>
       )}
 
-   
       {triggerSubmit && (
         <div>
           <div>
@@ -980,4 +1187,4 @@ function VariantsResults (props) {
   )
 }
 
-export default VariantsResults
+export default VariantResults

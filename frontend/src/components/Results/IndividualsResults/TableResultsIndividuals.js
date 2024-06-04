@@ -280,7 +280,7 @@ function TableResultsIndividuals (props) {
     })
 
     resultsSelectedFinal.forEach((element, index) => {
-      if (element[1] !== undefined) {
+      if (element[1] !== undefined && element[1]._id) {
         let eth_id = ''
         let eth_label = ''
         let stringEth = ''
@@ -494,123 +494,90 @@ function TableResultsIndividuals (props) {
   return (
     <div className='containerBeaconResults'>
       {showDatsets === true &&
-        props.beaconsList.map(result => {
+        props.results.length > 0 &&
+        props.beaconsList.map((result, beaconIndex) => {
           return (
             <table className='tableGranularity'>
               <thead className='theadGranularity'>
                 <tr id='trGranuHeader'>
-                  <th className='thGranularityTitle'>Beacon</th>
+                  <th className='thGranularityTitleBeacon'>Beacon</th>
                   <th className='thGranularityTitle'>Dataset</th>
                   <th className='thGranularityTitle'>Result</th>
                 </tr>
               </thead>
               <tbody className='tbodyGranu'>
-                {props.beaconsList.map((beacon, beaconIndex) => (
-                  <React.Fragment key={beaconIndex}>
+                {props.resultsPerDataset.map((dataset, index2) => (
+                  <React.Fragment key={index2}>
                     <tr
                       className='trGranuBeacon'
-                      onClick={() => toggleRow(beaconIndex)}
+                      onClick={() => toggleRow(index2)}
                     >
                       <td className='tdGranu'>
-                        {beacon.id}
-
-                        {expandedRows.includes(beaconIndex) ? (
+                        {dataset[0]}
+                        {expandedRows.includes(index2) ? (
                           <ion-icon name='chevron-down-outline'></ion-icon>
                         ) : (
                           <ion-icon name='chevron-up-outline'></ion-icon>
                         )}
                       </td>
                     </tr>
-                    {expandedRows.includes(beaconIndex) &&
-                      props.resultsPerDataset &&
-                      props.resultsPerDataset.map((element, index) => (
-                        <React.Fragment key={`${beaconIndex}-${index}`}>
-                          {index === beaconIndex &&
-                            props.show === 'boolean' &&
-                            element[1].map((booleanElement, booleanIndex) => (
-                              <tr key={`boolean-${booleanIndex}`}>
-                                <td className='tdGranu'></td>
-                                <td
-                                  className={`tdGranu ${
-                                    booleanElement ? 'tdFound' : 'tdNotFound'
-                                  }`}
-                                >
-                                  {element[0][booleanIndex]}
-                                </td>
-                                <td
-                                  className={`tdGranu ${
-                                    booleanElement
-                                      ? 'tdFoundDataset'
-                                      : 'tdNotFoundDataset'
-                                  }`}
-                                >
-                                  {booleanElement ? 'YES' : 'No, sorry'}
-                                </td>
-                              </tr>
-                            ))}
-                          {index === beaconIndex &&
-                            props.show === 'count' &&
-                            element[2].map((countElement, countIndex) => (
-                              <tr
-                                className='trGranu'
-                                key={`count-${countIndex}`}
+                    {expandedRows.includes(index2) && (
+                      <React.Fragment key={`expanded-${index2}`}>
+                        {props.show === 'boolean' &&
+                          dataset[2].map((booleanElement, booleanIndex) => (
+                            <tr
+                              className='trGranu'
+                              key={`boolean-${booleanIndex}`}
+                            >
+                              <td className='tdGranu'></td>
+                              <td
+                                className={`tdGranu ${
+                                  booleanElement ? 'tdFound' : 'tdNotFound'
+                                }`}
                               >
-                                <td className='tdGranu'></td>
-                                <td
-                                  className={`tdGranu ${
-                                    countElement !== undefined &&
-                                    countElement !== null &&
-                                    countElement !== 0
-                                      ? 'tdFoundDataset'
-                                      : 'tdNotFoundDataset'
-                                  }`}
-                                >
-                                  {element[0][countIndex]}
-                                </td>
-                                <td
-                                  className={`tdGranu ${
-                                    countElement !== undefined &&
-                                    countElement !== null &&
-                                    countElement !== 0
-                                      ? 'tdFound'
-                                      : 'tdNotFound'
-                                  }`}
-                                >
-                                  {countElement}
-                                </td>
-                              </tr>
-                            ))}
-                        </React.Fragment>
-                      ))}
-                    {expandedRows.includes(beaconIndex) &&
-                      props.resultsPerDataset.length === 0 &&
-                      props.datasetList &&
-                      props.datasetList.map((element, index) => {
-                        if (index === beaconIndex) {
-                          if (props.show === 'boolean') {
-                            return (
-                              <React.Fragment key={`boolean-${index}`}>
-                                <tr key={`boolean-${index}`}>
-                                  <td className='tdGranu'></td>
-                                  <td className='tdGranu'>{element.name}</td>
-                                  <td className='tdGranu'>No, sorry</td>
-                                </tr>
-                              </React.Fragment>
-                            )
-                          } else if (props.show === 'count') {
-                            return (
-                              <React.Fragment key={`count-${index}`}>
-                                <tr className='trGranu' key={`count-${index}`}>
-                                  <td className='tdGranu'></td>
-                                  <td className='tdGranu'>{element.name}</td>
-                                  <td className='tdGranu'>None</td>
-                                </tr>
-                              </React.Fragment>
-                            )
-                          }
-                        }
-                        return null
-                      })}
+                                {dataset[1][booleanIndex]}
+                              </td>
+                              <td
+                                className={`tdGranu ${
+                                  booleanElement
+                                    ? 'tdFoundDataset'
+                                    : 'tdNotFoundDataset'
+                                }`}
+                              >
+                                {booleanElement ? 'YES' : 'No, sorry'}
+                              </td>
+                            </tr>
+                          ))}
+                        {props.show === 'count' &&
+                          dataset[3].map((countElement, countIndex) => (
+                            <tr className='trGranu' key={`count-${countIndex}`}>
+                              <td className='tdGranu'></td>
+                              <td
+                                className={`tdGranu ${
+                                  countElement !== undefined &&
+                                  countElement !== null &&
+                                  countElement !== 0
+                                    ? 'tdFoundDataset'
+                                    : 'tdNotFoundDataset'
+                                }`}
+                              >
+                                {dataset[1][countIndex]}
+                              </td>
+                              <td
+                                className={`tdGranu ${
+                                  countElement !== undefined &&
+                                  countElement !== null &&
+                                  countElement !== 0
+                                    ? 'tdFound'
+                                    : 'tdNotFound'
+                                }`}
+                              >
+                                {countElement}
+                              </td>
+                            </tr>
+                          ))}
+                      </React.Fragment>
+                    )}
                   </React.Fragment>
                 ))}
               </tbody>
@@ -618,307 +585,287 @@ function TableResultsIndividuals (props) {
           )
         })}
 
-      {!showCrossQuery &&
-        showDatsets === false &&
-        showResults === true &&
-        trigger2 === true && (
-          <div className='table-container'>
-            <div className='menu-icon-container'>
-              <div className='export-menu'>
-                <button className='exportButton' onClick={toggleExportMenu}>
-                  <FiDownload />
-                </button>
-                {exportMenuVisible && (
-                  <>
-                    <ul className='column-list'>
-                      <li onClick={exportToJSON}>Export to JSON</li>
-                      <li onClick={exportToCSV}>Export to CSV</li>
-                    </ul>
-                  </>
-                )}
-              </div>
-              <div className='menu-container'>
-                <FaBars onClick={toggleMenu} />
-                {menuVisible && (
-                  <>
-                    <ul className='column-list'>
-                      <li onClick={showAllColumns}>
-                        Show All Columns
-                        <FiLayers />
-                      </li>
-                      {Object.keys(columnVisibility).map(column => (
-                        <li
-                          key={column}
-                          onClick={() => toggleColumnVisibility(column)}
-                        >
-                          {column}
-                          {columnVisibility[column] ? (
-                            <FaEye />
-                          ) : (
-                            <FaEyeSlash />
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-              </div>
+      {showDatsets === true && props.results.length === 0 && (
+        <h5 className='errorConnection'>
+          No results, sorry. Please check the connection and retry
+        </h5>
+      )}
+
+      {!showCrossQuery && showDatsets === false && showResults === true && (
+        <div className='table-container'>
+          <div className='menu-icon-container'>
+            <div className='export-menu'>
+              <button className='exportButton' onClick={toggleExportMenu}>
+                <FiDownload />
+              </button>
+              {exportMenuVisible && (
+                <>
+                  <ul className='column-list'>
+                    <li onClick={exportToJSON}>Export to JSON</li>
+                    <li onClick={exportToCSV}>Export to CSV</li>
+                  </ul>
+                </>
+              )}
             </div>
-            <div className='header-container'>
-              <table className='tableResults'>
-                <thead className='theadResults'>
-                  <tr>
-                    <th
-                      className={`sticky-header ${
-                        columnVisibility.IndividualId ? 'visible' : 'hidden'
-                      }`}
-                    >
-                      <span>Individual ID</span>
-                      <button
-                        onClick={() => toggleColumnVisibility('IndividualId')}
+            <div className='menu-container'>
+              <FaBars onClick={toggleMenu} />
+              {menuVisible && (
+                <>
+                  <ul className='column-list'>
+                    <li onClick={showAllColumns}>
+                      Show All Columns
+                      <FiLayers />
+                    </li>
+                    {Object.keys(columnVisibility).map(column => (
+                      <li
+                        key={column}
+                        onClick={() => toggleColumnVisibility(column)}
                       >
-                        {columnVisibility.IndividualId ? (
-                          <FaEye />
-                        ) : (
-                          <FaEyeSlash />
-                        )}
+                        {column}
+                        {columnVisibility[column] ? <FaEye /> : <FaEyeSlash />}
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </div>
+          </div>
+          <div className='header-container'>
+            <table className='tableResults'>
+              <thead className='theadResults'>
+                <tr>
+                  <th
+                    className={`sticky-header ${
+                      columnVisibility.IndividualId ? 'visible' : 'hidden'
+                    }`}
+                  >
+                    <span>Individual ID</span>
+                    <button
+                      onClick={() => toggleColumnVisibility('IndividualId')}
+                    >
+                      {columnVisibility.IndividualId ? (
+                        <FaEye />
+                      ) : (
+                        <FaEyeSlash />
+                      )}
+                    </button>
+                    <input
+                      type='text'
+                      placeholder='Filter Individual ID'
+                      onChange={e => handleFilterChange(e, 'IndividualId')}
+                    />
+                  </th>
+                  <th
+                    className={`sticky-header ${
+                      columnVisibility.ethnicity ? 'visible' : 'hidden'
+                    }`}
+                  >
+                    <span>Ethnicity</span>
+                    <button onClick={() => toggleColumnVisibility('ethnicity')}>
+                      {columnVisibility.ethnicity ? <FaEye /> : <FaEyeSlash />}
+                    </button>
+                    <input
+                      type='text'
+                      placeholder='Filter Ethnicity'
+                      onChange={e => handleFilterChange(e, 'ethnicity')}
+                    />
+                  </th>
+                  <th
+                    className={`sticky-header ${
+                      columnVisibility.Beacon ? 'visible' : 'hidden'
+                    }`}
+                  >
+                    <span>Beacon</span>
+                    <button onClick={() => toggleColumnVisibility('Beacon')}>
+                      {columnVisibility.Beacon ? <FaEye /> : <FaEyeSlash />}
+                    </button>
+                    <input
+                      type='text'
+                      placeholder='Filter Beacon'
+                      onChange={e => handleFilterChange(e, 'Beacon')}
+                    />
+                  </th>
+                  <th
+                    className={`sticky-header ${
+                      columnVisibility.interventionsOrProcedures
+                        ? 'visible'
+                        : 'hidden'
+                    }`}
+                  >
+                    <span>Procedures</span>
+                    <button
+                      onClick={() =>
+                        toggleColumnVisibility('interventionsOrProcedures')
+                      }
+                    >
+                      {columnVisibility.interventionsOrProcedures ? (
+                        <FaEye />
+                      ) : (
+                        <FaEyeSlash />
+                      )}
+                    </button>
+                    <input
+                      type='text'
+                      placeholder='Filter Procedures'
+                      onChange={e =>
+                        handleFilterChange(e, 'interventionsOrProcedures')
+                      }
+                    />
+                  </th>
+                  <th
+                    className={`sticky-header ${
+                      columnVisibility.sex ? 'visible' : 'hidden'
+                    }`}
+                  >
+                    <span>Sex</span>
+                    <button onClick={() => toggleColumnVisibility('sex')}>
+                      {columnVisibility.sex ? <FaEye /> : <FaEyeSlash />}
+                    </button>
+                    <input
+                      type='text'
+                      placeholder='Filter Sex'
+                      onChange={e => handleFilterChange(e, 'sex')}
+                    />
+                  </th>
+                  <th
+                    className={`sticky-header ${
+                      columnVisibility.diseases ? 'visible' : 'hidden'
+                    }`}
+                  >
+                    <span>Diseases</span>
+                    <button onClick={() => toggleColumnVisibility('diseases')}>
+                      {columnVisibility.diseases ? <FaEye /> : <FaEyeSlash />}
+                    </button>
+                    <input
+                      type='text'
+                      placeholder='Filter Diseases'
+                      onChange={e => handleFilterChange(e, 'diseases')}
+                    />
+                  </th>
+                  <th
+                    className={`sticky-header ${
+                      columnVisibility.treatments ? 'visible' : 'hidden'
+                    }`}
+                  >
+                    <span>Treatments</span>
+                    <button
+                      onClick={() => toggleColumnVisibility('treatments')}
+                    >
+                      {columnVisibility.treatments ? <FaEye /> : <FaEyeSlash />}
+                    </button>
+                    <input
+                      type='text'
+                      placeholder='Filter Treatments'
+                      onChange={e => handleFilterChange(e, 'treatments')}
+                    />
+                  </th>
+                  <th
+                    className={`sticky-header ${
+                      columnVisibility.phenotypicFeatures ? 'visible' : 'hidden'
+                    }`}
+                  >
+                    <span>Phenotypic Features</span>
+                    <button
+                      onClick={() =>
+                        toggleColumnVisibility('phenotypicFeatures')
+                      }
+                    >
+                      {columnVisibility.phenotypicFeatures ? (
+                        <FaEye />
+                      ) : (
+                        <FaEyeSlash />
+                      )}
+                    </button>
+                    <input
+                      type='text'
+                      placeholder='Filter Phenotypic Features'
+                      onChange={e =>
+                        handleFilterChange(e, 'phenotypicFeatures')
+                      }
+                    />
+                  </th>
+
+                  {/* Add more column headers here */}
+                </tr>
+              </thead>
+            </table>
+          </div>
+          <div className='body-container'>
+            <table className='tableResults'>
+              <tbody className='tbodyResults'>
+                {currentRows.map((row, index) => (
+                  <tr key={index}>
+                    <td
+                      className={
+                        columnVisibility.IndividualId ? 'visible-id' : 'hidden'
+                      }
+                    >
+                      <img
+                        src='../arrows-cross.png'
+                        className='crossQsymbol'
+                      ></img>
+                      <button
+                        onClick={handleShowCrossQuery}
+                        className='crossQButtonTable'
+                      >
+                        {row.IndividualId}
                       </button>
-                      <input
-                        type='text'
-                        placeholder='Filter Individual ID'
-                        onChange={e => handleFilterChange(e, 'IndividualId')}
-                      />
-                    </th>
-                    <th
-                      className={`sticky-header ${
+                    </td>
+                    <td
+                      className={
                         columnVisibility.ethnicity ? 'visible' : 'hidden'
-                      }`}
+                      }
                     >
-                      <span>Ethnicity</span>
-                      <button
-                        onClick={() => toggleColumnVisibility('ethnicity')}
-                      >
-                        {columnVisibility.ethnicity ? (
-                          <FaEye />
-                        ) : (
-                          <FaEyeSlash />
-                        )}
-                      </button>
-                      <input
-                        type='text'
-                        placeholder='Filter Ethnicity'
-                        onChange={e => handleFilterChange(e, 'ethnicity')}
-                      />
-                    </th>
-                    <th
-                      className={`sticky-header ${
-                        columnVisibility.Beacon ? 'visible' : 'hidden'
-                      }`}
+                      {row.ethnicity}
+                    </td>
+                    <td
+                      className={columnVisibility.Beacon ? 'visible' : 'hidden'}
                     >
-                      <span>Beacon</span>
-                      <button onClick={() => toggleColumnVisibility('Beacon')}>
-                        {columnVisibility.Beacon ? <FaEye /> : <FaEyeSlash />}
-                      </button>
-                      <input
-                        type='text'
-                        placeholder='Filter Beacon'
-                        onChange={e => handleFilterChange(e, 'Beacon')}
-                      />
-                    </th>
-                    <th
-                      className={`sticky-header ${
+                      {row.Beacon}
+                    </td>
+                    <td
+                      className={
                         columnVisibility.interventionsOrProcedures
                           ? 'visible'
                           : 'hidden'
-                      }`}
+                      }
                     >
-                      <span>Procedures</span>
-                      <button
-                        onClick={() =>
-                          toggleColumnVisibility('interventionsOrProcedures')
-                        }
-                      >
-                        {columnVisibility.interventionsOrProcedures ? (
-                          <FaEye />
-                        ) : (
-                          <FaEyeSlash />
-                        )}
-                      </button>
-                      <input
-                        type='text'
-                        placeholder='Filter Procedures'
-                        onChange={e =>
-                          handleFilterChange(e, 'interventionsOrProcedures')
-                        }
-                      />
-                    </th>
-                    <th
-                      className={`sticky-header ${
-                        columnVisibility.sex ? 'visible' : 'hidden'
-                      }`}
-                    >
-                      <span>Sex</span>
-                      <button onClick={() => toggleColumnVisibility('sex')}>
-                        {columnVisibility.sex ? <FaEye /> : <FaEyeSlash />}
-                      </button>
-                      <input
-                        type='text'
-                        placeholder='Filter Sex'
-                        onChange={e => handleFilterChange(e, 'sex')}
-                      />
-                    </th>
-                    <th
-                      className={`sticky-header ${
+                      {row.interventionsOrProcedures}
+                    </td>
+                    <td className={columnVisibility.sex ? 'visible' : 'hidden'}>
+                      {row.sex}
+                    </td>
+                    <td
+                      className={
                         columnVisibility.diseases ? 'visible' : 'hidden'
-                      }`}
+                      }
                     >
-                      <span>Diseases</span>
-                      <button
-                        onClick={() => toggleColumnVisibility('diseases')}
-                      >
-                        {columnVisibility.diseases ? <FaEye /> : <FaEyeSlash />}
-                      </button>
-                      <input
-                        type='text'
-                        placeholder='Filter Diseases'
-                        onChange={e => handleFilterChange(e, 'diseases')}
-                      />
-                    </th>
-                    <th
-                      className={`sticky-header ${
+                      {row.diseases}
+                    </td>
+                    <td
+                      className={
                         columnVisibility.treatments ? 'visible' : 'hidden'
-                      }`}
+                      }
                     >
-                      <span>Treatments</span>
-                      <button
-                        onClick={() => toggleColumnVisibility('treatments')}
-                      >
-                        {columnVisibility.treatments ? (
-                          <FaEye />
-                        ) : (
-                          <FaEyeSlash />
-                        )}
-                      </button>
-                      <input
-                        type='text'
-                        placeholder='Filter Treatments'
-                        onChange={e => handleFilterChange(e, 'treatments')}
-                      />
-                    </th>
-                    <th
-                      className={`sticky-header ${
+                      {row.treatments}
+                    </td>
+                    <td
+                      className={
                         columnVisibility.phenotypicFeatures
                           ? 'visible'
                           : 'hidden'
-                      }`}
+                      }
                     >
-                      <span>Phenotypic Features</span>
-                      <button
-                        onClick={() =>
-                          toggleColumnVisibility('phenotypicFeatures')
-                        }
-                      >
-                        {columnVisibility.phenotypicFeatures ? (
-                          <FaEye />
-                        ) : (
-                          <FaEyeSlash />
-                        )}
-                      </button>
-                      <input
-                        type='text'
-                        placeholder='Filter Phenotypic Features'
-                        onChange={e =>
-                          handleFilterChange(e, 'phenotypicFeatures')
-                        }
-                      />
-                    </th>
-
-                    {/* Add more column headers here */}
+                      {row.phenotypicFeatures}
+                    </td>
                   </tr>
-                </thead>
-              </table>
-            </div>
-            <div className='body-container'>
-              <table className='tableResults'>
-                <tbody className='tbodyResults'>
-                  {currentRows.map((row, index) => (
-                    <tr key={index}>
-                      <td
-                        className={
-                          columnVisibility.IndividualId
-                            ? 'visible-id'
-                            : 'hidden'
-                        }
-                      >
-                        <img
-                          src='../arrows-cross.png'
-                          className='crossQsymbol'
-                        ></img>
-                        <button
-                          onClick={handleShowCrossQuery}
-                          className='crossQButtonTable'
-                        >
-                          {row.IndividualId}
-                        </button>
-                      </td>
-                      <td
-                        className={
-                          columnVisibility.ethnicity ? 'visible' : 'hidden'
-                        }
-                      >
-                        {row.ethnicity}
-                      </td>
-                      <td
-                        className={
-                          columnVisibility.Beacon ? 'visible' : 'hidden'
-                        }
-                      >
-                        {row.Beacon}
-                      </td>
-                      <td
-                        className={
-                          columnVisibility.interventionsOrProcedures
-                            ? 'visible'
-                            : 'hidden'
-                        }
-                      >
-                        {row.interventionsOrProcedures}
-                      </td>
-                      <td
-                        className={columnVisibility.sex ? 'visible' : 'hidden'}
-                      >
-                        {row.sex}
-                      </td>
-                      <td
-                        className={
-                          columnVisibility.diseases ? 'visible' : 'hidden'
-                        }
-                      >
-                        {row.diseases}
-                      </td>
-                      <td
-                        className={
-                          columnVisibility.treatments ? 'visible' : 'hidden'
-                        }
-                      >
-                        {row.treatments}
-                      </td>
-                      <td
-                        className={
-                          columnVisibility.phenotypicFeatures
-                            ? 'visible'
-                            : 'hidden'
-                        }
-                      >
-                        {row.phenotypicFeatures}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
-        )}
+        </div>
+      )}
+      
       {props.show === 'full' && props.results.length > 0 && !showCrossQuery && (
         <div className='pagination-controls'>
           <button onClick={handlePreviousPage} disabled={currentPage === 1}>
@@ -947,9 +894,11 @@ function TableResultsIndividuals (props) {
           </button>
         </div>
       )}
-      {props.show === 'full' && props.results.length === 0 && !showCrossQuery && (
-        <h5 className='noResultsFullResponse'>No detailed results, sorry.</h5>
-      )}
+      {props.show === 'full' &&
+        props.results.length === 0 &&
+        !showCrossQuery && (
+          <h5 className='noResultsFullResponse'>No detailed results, sorry.</h5>
+        )}
       {showCrossQuery && (
         <CrossQueries
           parameter={parameterCrossQuery}
