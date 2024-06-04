@@ -7,6 +7,9 @@ import OutsideClickHandler from 'react-outside-click-handler'
 import './Navbar.css'
 import { useNavigate } from 'react-router-dom'
 import LoggedIn from '../SignIn/LoggedIn'
+import axios from 'axios'
+
+import configData from '../../config.json'
 
 function Navbar () {
   const [selected, setIsSelected] = useState('')
@@ -22,6 +25,7 @@ function Navbar () {
     setUserNameToShare
   } = useContext(AuthContext)
 
+  const [isNetwork, setIsNetwork] = useState(false)
   const auth = useAuth()
   const navigate = useNavigate()
 
@@ -46,6 +50,21 @@ function Navbar () {
     }
   }, [userNameToShare])
 
+  useEffect(() => {
+    const apiCall = async () => {
+      try {
+        let res2 = await axios.get(configData.API_URL + '/info')
+        console.log(res2)
+        if (res2.data.meta.isAggregated) {
+          setIsNetwork(true)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    apiCall()
+  }, [])
 
   const handleHelpModal1 = () => {
     setIsOpenModal1(true)
@@ -124,12 +143,20 @@ function Navbar () {
           </NavLink>
         )}
 
-        {!isLoggedIn && (
+        {!isLoggedIn && !isNetwork && (
           <NavLink
             to='/beaconInfo'
             className={({ isActive }) => (isActive ? 'Members2' : 'Members')}
           >
             Beacon Info
+          </NavLink>
+        )}
+        {!isLoggedIn && isNetwork && (
+          <NavLink
+            to='/beaconInfo'
+            className={({ isActive }) => (isActive ? 'Members2' : 'Members')}
+          >
+            Network members
           </NavLink>
         )}
 

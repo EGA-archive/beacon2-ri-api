@@ -2,6 +2,7 @@ import '../../App.css'
 import './Layout.css'
 import FilteringTerms from '../FilteringTerms/FilteringTerms'
 import filtersConfig from '../../config-examples-cancer.json'
+import filtersConfig2 from '../../config-examples-covid.json'
 import VariantsResults from '../GenomicVariations/VariantsResults'
 
 import BiosamplesResults from '../Biosamples/BiosamplesResults'
@@ -15,10 +16,11 @@ import axios from 'axios'
 import IndividualsResults from '../Individuals/IndividualsResults'
 import AnalysesResults from '../Analyses/AnalysesResults'
 import RunsResults from '../Runs/RunsResults'
+import FilterContent from '../FiltersComponent/FiltersComponent'
 
 function Layout (props) {
   const [error, setError] = useState(null)
-
+  const [activeTab, setActiveTab] = useState('tab1')
   const [placeholder, setPlaceholder] = useState(
     'filtering term comma-separated, ID><=value'
   )
@@ -26,7 +28,8 @@ function Layout (props) {
   const [results, setResults] = useState(null)
   const [query, setQuery] = useState('')
   const [queryAux, setQueryAux] = useState(null)
-  const [filters, setFilters] = useState(filtersConfig.filters)
+  const [filtersTab1, setFiltersTab1] = useState(filtersConfig.filters)
+  const [filtersTab2, setFiltersTab2] = useState(filtersConfig2.filters)
   const [exampleQ, setExampleQ] = useState([])
 
   const [isNetwork, setIsNetwork] = useState(false)
@@ -71,8 +74,10 @@ function Layout (props) {
   const [terms, setTerm] = useState([])
 
   const [showExtraIndividuals, setExtraIndividuals] = useState(false)
-  const [inputValues, setInputValues] = useState({})
-
+  const [inputValuesTab1, setInputValuesTab1] = useState({})
+  const [inputValuesTab2, setInputValuesTab2] = useState({})
+  const [checkedOptionsTab1, setCheckedOptionsTab1] = useState({})
+  const [checkedOptionsTab2, setCheckedOptionsTab2] = useState({})
   // Set initial state with the input values obtained from filters
 
   const [state, setstate] = useState({
@@ -84,7 +89,6 @@ function Layout (props) {
   const [alphanumSchemaField, setAlphanumSchemaField] = useState('')
   const [alphanumValue, setAlphanumValue] = useState('')
   const [timeOut, setTimeOut] = useState(true)
-
 
   const [isSubmitted, setIsSub] = useState(false)
 
@@ -109,12 +113,19 @@ function Layout (props) {
   }
 
   // Function to handle input change and update state
-  const handleInputChange = (e, identifier) => {
+  const handleInputChange = (e, identifier, tab) => {
     const { value } = e.target
-    setInputValues(prevState => ({
-      ...prevState,
-      [identifier]: value
-    }))
+    if (tab === 'tab1') {
+      setInputValuesTab1(prevState => ({
+        ...prevState,
+        [identifier]: value
+      }))
+    } else if (tab === 'tab2') {
+      setInputValuesTab2(prevState => ({
+        ...prevState,
+        [identifier]: value
+      }))
+    }
   }
 
   const handleIdChanges = e => {
@@ -140,12 +151,21 @@ function Layout (props) {
     }
   }
 
-  const handleOption = (e, array, optionIndex) => {
-    // Update input values first
+  const handleOption = (e, array, optionIndex, tab) => {
+    const updatedInputValues = tab === 'tab1' ? { ...inputValuesTab1 } : { ...inputValuesTab2 };
+    const updatedCheckedOptions = tab === 'tab1' ? { ...checkedOptionsTab1 } : { ...checkedOptionsTab2 };
+    const filterIndex = e.target.getAttribute('data-filter-index');
+    const elementLabel = e.target.getAttribute('data-element-label'); // Get the element label from the checkbox
+    const optionId = `option-${filterIndex}-${optionIndex}-${elementLabel}`; // Construct the correct key
+  
+    updatedCheckedOptions[optionId] = e.target.checked; // Update the checked state
+  
+    if (tab === 'tab1') {
+      setCheckedOptionsTab1(updatedCheckedOptions)
+    } else {
+      setCheckedOptionsTab2(updatedCheckedOptions)
+    }
 
-    const updatedInputValues = { ...inputValues }
-    console.log(updatedInputValues)
-    // Generate query based on updated input values
     let start, end, variantType, referenceBases, alternateBases
     const title = []
     const value = []
@@ -156,10 +176,8 @@ function Layout (props) {
         updatedInputValues[
           `${optionIndex}-${element.label}-${element.schemaField}`
         ]
-      console.log(inputValue)
       value.push(inputValue || element.value)
 
-      // Update start, end, variantType, referenceBases, alternateBases values if applicable
       switch (element.schemaField) {
         case 'start':
           start = inputValue || element.value
@@ -209,8 +227,11 @@ function Layout (props) {
       })
     }
 
-    // Update the input values state after generating the query
-    setInputValues(updatedInputValues)
+    if (tab === 'tab1') {
+      setInputValuesTab1(updatedInputValues)
+    } else {
+      setInputValuesTab2(updatedInputValues)
+    }
   }
 
   const handleOptionAlphanum = (schemaField, value) => {
@@ -259,7 +280,6 @@ function Layout (props) {
         console.log(res2)
         if (res2.data.meta.isAggregated) {
           setIsNetwork(true)
-       
         }
         setTimeOut(true)
         console.log(res)
@@ -398,25 +418,29 @@ function Layout (props) {
     })
   }
 
-
   const handleShowFilterEx = () => {
     setShowFilters(true)
   }
 
   useEffect(() => {
-    const initialInputValues = {}
-    filters.forEach((filter, index) => {
-      filter.options.forEach((option, indexOption) => {
-        option.forEach(element => {
-          if (filter.type === 'input') {
-            const identifier = `${indexOption}-${element.label}-${element.schemaField}`
-            initialInputValues[identifier] = element.label || ''
-          }
+    const initializeInputValues = filters => {
+      const initialInputValues = {}
+      filters.forEach((filter, index) => {
+        filter.options.forEach((option, indexOption) => {
+          option.forEach(element => {
+            if (filter.type === 'input') {
+              const identifier = `${indexOption}-${element.label}-${element.schemaField}`
+              initialInputValues[identifier] = element.label || ''
+            }
+          })
         })
       })
-    })
-    setInputValues(initialInputValues)
-  }, [filters])
+      return initialInputValues
+    }
+
+    setInputValuesTab1(initializeInputValues(filtersTab1))
+    setInputValuesTab2(initializeInputValues(filtersTab2))
+  }, [filtersTab1, filtersTab2])
 
   return (
     <div className='container1'>
@@ -548,181 +572,59 @@ function Layout (props) {
       )}
       {showFilters && (
         <div className='layout-container'>
-          <fieldset className='filterTermsContainer'>
-            <legend>Query examples</legend>
-            {filters.map((filter, index) => (
-              <div key={index} className='divFilter'>
-                <p>{filter.title}</p>
-                <ul>
-                  {filter.options.map((optionsArray, optionIndex) => (
-                    <div key={optionIndex}>
-                      {filter.title === 'Variant'
-                        ? optionsArray.length > 0 &&
-                          optionsArray[0].type !== 'alphanumeric' && (
-                            <div className='containerExamples1'>
-                              <input
-                                type='checkbox'
-                                onClick={e =>
-                                  handleOption(e, optionsArray, optionIndex)
-                                }
-                                id={`option${index}-${optionIndex}`}
-                                name='subscribe2'
-                                value={JSON.stringify(optionsArray)}
-                                data-filter-index={index} // Add data attribute for filter index
-                                data-option-index={optionIndex} // Add data attribute for option index
-                                className='inputExamples'
-                              />
-                              <div className='containerExamplesDiv2'>
-                                {optionsArray[0].subTitle && (
-                                  <label className='subTitle'>
-                                    {optionsArray[0].subTitle}
-                                  </label>
-                                )}
-                                {optionsArray.map((element, elementIndex) => (
-                                  <React.Fragment key={elementIndex}>
-                                    {!element.subTitle2 ? (
-                                      <div className='label-ontology-div'>
-                                        <label className='label'>
-                                          {element.label}
-                                        </label>
-                                        <label className='onHover'>
-                                          {element.ontology}
-                                        </label>
-                                      </div>
-                                    ) : filter.type === 'input' ? (
-                                      <div className='label-ontology-div2'>
-                                        <label>{element.subTitle2}</label>
-                                        <input
-                                          type='text'
-                                          className='label'
-                                          value={
-                                            inputValues[
-                                              `${optionIndex}-${element.label}-${element.schemaField}`
-                                            ] || ''
-                                          }
-                                          onChange={e =>
-                                            handleInputChange(
-                                              e,
-                                              `${optionIndex}-${element.label}-${element.schemaField}`
-                                            )
-                                          }
-                                        />
-                                      </div>
-                                    ) : (
-                                      <div className='label-ontology-div2'>
-                                        <label>{element.subTitle2}</label>
-                                        <label className='label'>
-                                          {element.label}
-                                        </label>
-                                        <label className='onHover'>
-                                          {element.ontology}
-                                        </label>
-                                      </div>
-                                    )}
-                                  </React.Fragment>
-                                ))}
-                              </div>
-                            </div>
-                          )
-                        : optionsArray.length > 0 &&
-                          (optionsArray[0].type === 'alphanumeric' ? (
-                            <div>
-                              <button
-                                className='alphanumButton'
-                                onClick={() =>
-                                  handleOptionAlphanum(
-                                    optionsArray[0].schemaField,
-                                    optionsArray[0].value
-                                  )
-                                }
-                              >
-                                <img
-                                  className='formula'
-                                  src='/../formula.png'
-                                  alt='formula'
-                                />
-                                {optionsArray[0].label}
-                              </button>
-                            </div>
-                          ) : (
-                            <div className='containerExamples1'>
-                              <input
-                                type='checkbox'
-                                onClick={e =>
-                                  handleOption(e, optionsArray, optionIndex)
-                                }
-                                id={`option${index}-${optionIndex}`}
-                                name='subscribe'
-                                value={optionsArray[0].value}
-                                data-filter-index={index}
-                                data-option-index={optionIndex}
-                              />
-                              <div className='containerExamplesDiv2'>
-                                {optionsArray[0].subTitle && (
-                                  <label>{optionsArray[0].subTitle}</label>
-                                )}
-                                {optionsArray.map((element, elementIndex) => (
-                                  <React.Fragment key={elementIndex}>
-                                    {!element.subTitle2 ? (
-                                      <div className='label-ontology-div'>
-                                        <label className='label'>
-                                          {element.label}
-                                        </label>
-                                        <label className='onHover'>
-                                          {element.ontology}
-                                        </label>
-                                      </div>
-                                    ) : filter.type === 'input' ? (
-                                      <div className='label-ontology-div2'>
-                                        <label>{element.subTitle2}</label>
-                                        <input
-                                          type='text'
-                                          className='label'
-                                          value={
-                                            inputValues[
-                                              `${optionIndex}-${element.label}-${element.schemaField}`
-                                            ] || ''
-                                          }
-                                          onChange={e =>
-                                            handleInputChange(
-                                              e,
-                                              `${optionIndex}-${element.label}-${element.schemaField}`
-                                            )
-                                          }
-                                        />
-                                        <label className='onHover'>
-                                          {element.ontology}
-                                        </label>
-                                      </div>
-                                    ) : (
-                                      <div className='label-ontology-div2'>
-                                        <label>{element.subTitle2}</label>
-                                        <label className='label'>
-                                          {element.label}
-                                        </label>
-                                        <label className='onHover'>
-                                          {element.ontology}
-                                        </label>
-                                      </div>
-                                    )}
-                                  </React.Fragment>
-                                ))}
-                              </div>
-                            </div>
-                          ))}
-                    </div>
-                  ))}
-                </ul>
-              </div>
-            ))}
-            <button
-              className='buttonAllFilters'
-              onClick={handleSeeFilteringTerms}
+          <div className='tabs'>
+            <div
+              className={`tab ${activeTab === 'tab1' ? 'active' : ''}`}
+              onClick={() => setActiveTab('tab1')}
             >
-              <img className='filterIcon' src='../../filter.png'></img>
-              <h4>All filtering terms</h4>
-            </button>
-          </fieldset>
+              COVID
+            </div>
+            <div
+              className={`tab ${activeTab === 'tab2' ? 'active' : ''}`}
+              onClick={() => setActiveTab('tab2')}
+            >
+              CANCER
+            </div>
+          </div>
+          <div className='tab-content'>
+            {activeTab === 'tab1' && (
+              <FilterContent
+                filters={filtersTab1}
+                handleOption={(e, array, optionIndex) =>
+                  handleOption(e, array, optionIndex, 'tab1')
+                }
+                handleOptionAlphanum={handleOptionAlphanum}
+                handleInputChange={(e, key) =>
+                  handleInputChange(e, key, 'tab1')
+                }
+                inputValues={inputValuesTab1}
+                checkedOptions={checkedOptionsTab1}
+                activeTab={activeTab}
+              />
+            )}
+            {activeTab === 'tab2' && (
+              <FilterContent
+                filters={filtersTab2}
+                handleOption={(e, array, optionIndex) =>
+                  handleOption(e, array, optionIndex, 'tab2')
+                }
+                handleOptionAlphanum={handleOptionAlphanum}
+                handleInputChange={(e, key) =>
+                  handleInputChange(e, key, 'tab2')
+                }
+                inputValues={inputValuesTab2}
+                checkedOptions={checkedOptionsTab2}
+                activeTab={activeTab}
+              />
+            )}
+          </div>
+          <button
+            className='buttonAllFilters'
+            onClick={handleSeeFilteringTerms}
+          >
+            <img className='filterIcon' src='../../filter.png'></img>
+            <h4>All filtering terms</h4>
+          </button>
         </div>
       )}
 
@@ -731,7 +633,7 @@ function Layout (props) {
           Show examples
         </button>
       )}
- 
+
       <div className='results'>
         {timeOut === false && (
           <div className='loaderLogo'>
@@ -744,7 +646,7 @@ function Layout (props) {
             </div>
           </div>
         )}
-      
+
         {isSubmitted && results === 'Individuals' && triggerQuery && (
           <div>
             <IndividualsResults

@@ -1,5 +1,5 @@
 {
-  "API_URL": "https://beacon-ri-demo.ega-archive.org/api",
+  "API_URL": "https://impact-beacon-network-backend-demo.ega-archive.org/beacon-network/v2.0.0",
   "REDIRECT_URL": "http://localhost:3000/",
   "KEYCLOAK_URL": "https://beacon-network-demo2.ega-archive.org"
 }

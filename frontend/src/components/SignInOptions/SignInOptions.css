@@ -70,15 +70,15 @@
 }
 
 .Sign-inLS:hover {
-  background-color: #d2dde0;
-  height: 35px;
-  border-radius: 4px;
+  background-color: #92dcff;
+  height: 33px;
+  border-radius: 8px;
   margin: 0px;
 }
 
 .Sign-inNoLs:hover {
-  background-color: #d2dde0;
-  border: solid 1px #87dff0;
+  background-color: #92dcff;
+  /* border: solid 1px #87dff0; */
   padding-top: 0px;
   padding-bottom: 0px;
   padding-left: 6px;
