@@ -886,7 +886,9 @@ function BiosamplesResults (props) {
               console.log(res)
             } else {
               console.log('Querying WITH token')
+              console.log(token)
               const headers = { Authorization: `Bearer ${token}` }
+              console.log(headers)
               console.log(jsonData2)
               res = await axios.post(
                 configData.API_URL + '/biosamples',
@@ -894,6 +896,7 @@ function BiosamplesResults (props) {
                 { headers: headers }
               )
               console.log(res)
+              console.log(token)
             }
 
             setTimeOut(true)
@@ -1087,6 +1090,8 @@ function BiosamplesResults (props) {
           ))}
         </div>
       )}
+
+  
 
       {triggerSubmit && (
         <div>

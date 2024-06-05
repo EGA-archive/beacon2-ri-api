@@ -20,7 +20,7 @@ function TableResultsIndividuals (props) {
   const [showCrossQuery, setShowCrossQuery] = useState(false)
   const [parameterCrossQuery, setParamCrossQuery] = useState('')
   const [expandedRows, setExpandedRows] = useState(
-    new Array(props.beaconsList.length).fill(false)
+    Array.from({ length: props.beaconsList.length }, (_, index) => index)
   )
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage] = useState(10) // You can make this dynamic if needed
@@ -262,6 +262,7 @@ function TableResultsIndividuals (props) {
         return updatedRows
       }
     })
+    console.log(expandedRows)
   }
 
   useEffect(() => {
@@ -488,6 +489,7 @@ function TableResultsIndividuals (props) {
   }, [trigger, resultsSelectedFinal])
 
   useEffect(() => {
+    console.log(props.results)
     setShowDatasets(true)
   }, [])
 
@@ -512,7 +514,7 @@ function TableResultsIndividuals (props) {
                       : 0
                     const allTrue = dataset[2]
                       ? dataset[2].every(booleanElement => booleanElement)
-                      : 'No,'
+                      : 'No, sorry'
 
                     return (
                       <React.Fragment key={index2}>
@@ -528,9 +530,7 @@ function TableResultsIndividuals (props) {
                               <ion-icon name='chevron-up-outline'></ion-icon>
                             )}
                           </td>
-                          <td className='tdGranuBeacon'>
-                         
-                          </td>
+                          <td className='tdGranuBeacon'></td>
                           <td className='tdGranuBeacon'>
                             {props.show === 'boolean'
                               ? allTrue
@@ -550,16 +550,16 @@ function TableResultsIndividuals (props) {
                                   <td className='tdGranu'></td>
                                   <td
                                     className={`tdGranu ${
-                                      booleanElement ? 'tdFoundDataset' : 'tdNotFoundDataset'
+                                      booleanElement
+                                        ? 'tdFoundDataset'
+                                        : 'tdNotFoundDataset'
                                     }`}
                                   >
                                     {dataset[1][booleanIndex]}
                                   </td>
                                   <td
                                     className={`tdGranu ${
-                                      booleanElement
-                                        ? 'tdFound'
-                                        : 'tdNotFound'
+                                      booleanElement ? 'tdFound' : 'tdNotFound'
                                     }`}
                                   >
                                     {booleanElement ? 'YES' : 'No, sorry'}

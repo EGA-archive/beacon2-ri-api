@@ -8,7 +8,7 @@ import configData from '../../config.json'
 import { useContext } from 'react'
 import TableResultsVariants from '../Results/VariantResults/TableResultsVariant'
 
-function VariantResults (props) {
+function VariantsResults (props) {
   const [error, setError] = useState('')
   const [timeOut, setTimeOut] = useState(false)
   const [logInRequired, setLoginRequired] = useState(false)
@@ -886,7 +886,9 @@ function VariantResults (props) {
               console.log(res)
             } else {
               console.log('Querying WITH token')
+              console.log(token)
               const headers = { Authorization: `Bearer ${token}` }
+              console.log(headers)
               console.log(jsonData2)
               res = await axios.post(
                 configData.API_URL + '/g_variants',
@@ -894,6 +896,7 @@ function VariantResults (props) {
                 { headers: headers }
               )
               console.log(res)
+              console.log(token)
             }
 
             setTimeOut(true)
@@ -1088,6 +1091,8 @@ function VariantResults (props) {
         </div>
       )}
 
+  
+
       {triggerSubmit && (
         <div>
           <div>
@@ -1183,4 +1188,4 @@ function VariantResults (props) {
   )
 }
 
-export default VariantResults
+export default VariantsResults

@@ -8,9 +8,27 @@
   height: 40px;
 }
 
-.logoBeaconNasertic{
+.logoBeaconNasertic {
   height: 23px;
   margin-top: 2px;
+}
+
+p a {
+  margin: 0px !important;
+}
+
+p a:hover {
+  font-weight: 500 !important;
+  font-size: 12px !important;
+}
+
+.datasetCard a {
+  font-size: 11px;
+  color: #0158aa;
+  margin-left: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  display: inline;
 }
 
 #descriptionEGA {
@@ -454,12 +472,12 @@ h5 {
   }
 
   .datasetCard a {
-    margin-right: 14px;
     font-size: 11px;
     color: #0158aa;
     margin-left: 0px;
     margin-top: 0px;
     margin-bottom: 0px;
+    display: inline;
   }
 
   .datasetCard a:hover {
