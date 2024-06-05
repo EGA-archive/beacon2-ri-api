@@ -17,6 +17,7 @@ import IndividualsResults from '../Individuals/IndividualsResults'
 import AnalysesResults from '../Analyses/AnalysesResults'
 import RunsResults from '../Runs/RunsResults'
 import FilterContent from '../FiltersComponent/FiltersComponent'
+import BeaconInfo from '../Dataset/BeaconInfo'
 
 function Layout (props) {
   const [error, setError] = useState(null)
@@ -152,14 +153,16 @@ function Layout (props) {
   }
 
   const handleOption = (e, array, optionIndex, tab) => {
-    const updatedInputValues = tab === 'tab1' ? { ...inputValuesTab1 } : { ...inputValuesTab2 };
-    const updatedCheckedOptions = tab === 'tab1' ? { ...checkedOptionsTab1 } : { ...checkedOptionsTab2 };
-    const filterIndex = e.target.getAttribute('data-filter-index');
-    const elementLabel = e.target.getAttribute('data-element-label'); // Get the element label from the checkbox
-    const optionId = `option-${filterIndex}-${optionIndex}-${elementLabel}`; // Construct the correct key
-  
-    updatedCheckedOptions[optionId] = e.target.checked; // Update the checked state
-  
+    const updatedInputValues =
+      tab === 'tab1' ? { ...inputValuesTab1 } : { ...inputValuesTab2 }
+    const updatedCheckedOptions =
+      tab === 'tab1' ? { ...checkedOptionsTab1 } : { ...checkedOptionsTab2 }
+    const filterIndex = e.target.getAttribute('data-filter-index')
+    const elementLabel = e.target.getAttribute('data-element-label') // Get the element label from the checkbox
+    const optionId = `option-${filterIndex}-${optionIndex}-${elementLabel}` // Construct the correct key
+
+    updatedCheckedOptions[optionId] = e.target.checked // Update the checked state
+
     if (tab === 'tab1') {
       setCheckedOptionsTab1(updatedCheckedOptions)
     } else {
@@ -461,7 +464,7 @@ function Layout (props) {
                 ></img>
               </a>
             </div>
-            <h1 className='version'>v0.5.4</h1>
+            <h1 className='version'>v0.5.5</h1>
           </div>
         </div>
         <div className='containerSelection'>
@@ -873,6 +876,10 @@ function Layout (props) {
             query={query}
             setQuery={setQuery}
           />
+        )}
+
+        {results === null && !showFilteringTerms && isNetwork && (
+          <BeaconInfo trigger={trigger} />
         )}
 
         {timeOut === true && error && showFilteringTerms && <h5>{error}</h5>}

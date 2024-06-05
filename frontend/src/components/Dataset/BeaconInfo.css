@@ -6,7 +6,11 @@
 }
 .logoBeacon {
   height: 40px;
-  margin-top: 7px;
+}
+
+.logoBeaconNasertic{
+  height: 23px;
+  margin-top: 2px;
 }
 
 #descriptionEGA {
@@ -98,6 +102,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  margin-bottom: 7px;
 }
 
 .descriptionBeacon a {
@@ -135,9 +140,6 @@
 }
 .logoBeacon {
   height: 30px;
-  margin-top: 7px;
-
-  padding-left: 10px;
 }
 
 #descriptionEGA {
@@ -322,9 +324,10 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
   width: 100%;
   background: #c8d4e6;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .tittle4 {
@@ -448,7 +451,6 @@ h5 {
 
   .logoBeacon {
     margin-left: 13px;
-    margin-right: -10px;
   }
 
   .datasetCard a {
@@ -507,7 +509,6 @@ h5 {
     justify-content: center;
     align-content: center;
     width: 100vw;
-    height: 68vh;
   }
 
   .tittle4 {
@@ -547,7 +548,7 @@ h5 {
     width: 54vw;
     background: #c8d4e6;
     border-radius: 2px;
-    /* height: 80px; */
+    height: fit-content;
     display: flex;
     padding: 2px;
     flex-direction: column;
@@ -566,6 +567,7 @@ h5 {
 
   .logoBeacon {
     margin-left: 10px;
+    margin-top: 5px;
   }
 
   .datasetCard a {

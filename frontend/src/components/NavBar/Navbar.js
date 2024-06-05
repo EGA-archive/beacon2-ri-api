@@ -131,7 +131,7 @@ function Navbar () {
         >
           Cohorts
         </NavLink> */}
-       
+
         <div class='animation nav2'></div>
       </nav>
       <nav className='nav3'>
@@ -161,7 +161,6 @@ function Navbar () {
           </NavLink>
         )}
 
-
         {!isLoggedIn && (
           <NavLink
             exact
@@ -180,13 +179,23 @@ function Navbar () {
           </NavLink>
         )}
 
-        {isLoggedIn && (
+        {isLoggedIn && !isNetwork && (
           <NavLink
             exact
             to='/beaconInfo'
             className={({ isActive }) => (isActive ? 'Members4' : 'Members3')}
           >
             Beacon Info
+          </NavLink>
+        )}
+
+        {isLoggedIn && isNetwork && (
+          <NavLink
+            exact
+            to='/beaconInfo'
+            className={({ isActive }) => (isActive ? 'Members4' : 'Members3')}
+          >
+            Network Members
           </NavLink>
         )}
 
@@ -238,7 +247,7 @@ function Navbar () {
                     ></img>
                   </div>
                   <div className='menuNav'>
-                  {
+                    {
                       <NavLink
                         exact
                         to='/'
@@ -248,7 +257,7 @@ function Navbar () {
                         <ion-icon name='home-outline'></ion-icon>
                       </NavLink>
                     }
-                    <NavLink
+                    {!isNetwork && <NavLink
                       to='/beaconInfo'
                       onClick={handleMenu}
                       className={({ isActive }) =>
@@ -257,7 +266,17 @@ function Navbar () {
                     >
                       {' '}
                       <h1>Beacon Info</h1>
-                    </NavLink>
+                    </NavLink>}
+                    {isNetwork && <NavLink
+                      to='/beaconInfo'
+                      onClick={handleMenu}
+                      className={({ isActive }) =>
+                        isActive ? 'Members2' : 'Members'
+                      }
+                    >
+                      {' '}
+                      <h1>Network members</h1>
+                    </NavLink>}
 
                     {!isLoggedIn && (
                       <NavLink
@@ -271,8 +290,6 @@ function Navbar () {
                         <h1>Log in</h1>
                       </NavLink>
                     )}
-
-                  
 
                     {isLoggedIn && (
                       <>
@@ -357,7 +374,7 @@ function Navbar () {
                     >
                       <h1>Cohorts</h1>
                     </NavLink> */}
-                      (
+                    (
                     <NavLink
                       exact
                       to='/'
@@ -367,7 +384,7 @@ function Navbar () {
                       <ion-icon name='home-outline'></ion-icon>
                     </NavLink>
                     )
-                    <NavLink
+                    {!isNetwork && <NavLink
                       to='/beaconInfo'
                       onClick={handleMenu}
                       className={({ isActive }) =>
@@ -376,7 +393,17 @@ function Navbar () {
                     >
                       {' '}
                       <h1>Beacon Info</h1>
-                    </NavLink>
+                    </NavLink>}
+                    {isNetwork && <NavLink
+                      to='/beaconInfo'
+                      onClick={handleMenu}
+                      className={({ isActive }) =>
+                        isActive ? 'Members2' : 'Members'
+                      }
+                    >
+                      {' '}
+                      <h1>Network members</h1>
+                    </NavLink>}
                     {!isLoggedIn && (
                       <NavLink
                         exact
@@ -389,7 +416,6 @@ function Navbar () {
                         <h1>Log in</h1>
                       </NavLink>
                     )}
-                  
                     {isLoggedIn && (
                       <>
                         <NavLink

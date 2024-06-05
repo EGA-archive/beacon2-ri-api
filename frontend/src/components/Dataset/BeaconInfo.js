@@ -153,11 +153,21 @@ function BeaconInfo (props) {
               <div className='datasetCard'>
                 <div className='tittle'>
                   <div className='tittle2'>
-                    <img
-                      className='logoBeacon'
-                      src={result.response.organization.logoUrl}
-                      alt={result.meta.beaconId}
-                    />
+                    {result.response.organization.logoUrl !== '' &&
+                      result.response.name !== 'NAGENpediatrics Beacon' && (
+                        <img
+                          className='logoBeacon'
+                          src={result.response.organization.logoUrl}
+                          alt={result.meta.beaconId}
+                        />
+                      )}
+                    {result.response.name === 'NAGENpediatrics Beacon' && (
+                      <img
+                        className='logoBeaconNasertic'
+                        src={result.response.organization.logoUrl}
+                        alt={result.meta.beaconId}
+                      />
+                    )}
                     <h1>{result.response.name}</h1>
                   </div>
                   <h2>{result.response.organization.name}</h2>
