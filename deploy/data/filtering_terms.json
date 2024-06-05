@@ -1,0 +1,23 @@
+[
+    {
+        "type": "alphanumeric",
+        "id": "libraryStrategy",
+        "scopes": [
+            "run"
+        ]
+    },
+    {
+        "type": "alphanumeric",
+        "id": "molecularAttributes.geneIds",
+        "scopes": [
+            "genomicVariation"
+        ]
+    },
+    {
+        "type": "alphanumeric",
+        "id": "diseases.ageOfOnset.iso8601duration",
+        "scopes": [
+            "individual"
+        ]
+    }
+]
