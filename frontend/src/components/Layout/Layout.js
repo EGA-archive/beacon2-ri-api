@@ -261,10 +261,17 @@ function Layout (props) {
     }
   }
 
-  const handleReset = e => {
+  const handleReset = () => {
+    // Clear the query state
     setQuery('')
 
-    // Uncheck all checkboxes
+    // Clear the state for input values and checked options
+    setInputValuesTab1({})
+    setInputValuesTab2({})
+    setCheckedOptionsTab1({})
+    setCheckedOptionsTab2({})
+
+    // Uncheck all checkboxes manually
     const checkboxes = document.querySelectorAll('input[type="checkbox"]')
     checkboxes.forEach(checkbox => {
       checkbox.checked = false
@@ -378,49 +385,31 @@ function Layout (props) {
     }
   }
 
-  function search (e) {
-    const newQuery = e.target.value
-    setQuery(newQuery)
-
-    const queryTerms = newQuery.split(',')
-    const queryTermsVariants = queryTerms
-      .filter(term => term.includes(':'))
-      .map(term => term.split(':'))
-    const queryTermsVariants2 = queryTerms
-      .filter(term => term.includes('&'))
-      .map(term => term.split('&'))
-
-    const checkboxes = document.querySelectorAll('input[name="subscribe"]')
-    const checkboxes2 = document.querySelectorAll('input[name="subscribe2"]')
-
-    // Update the status of checkboxes for "subscribe"
-    checkboxes.forEach(checkbox => {
-      const optionValue = checkbox.value
-      checkbox.checked = queryTerms.some(term => term.includes(optionValue))
-    })
-
-    // Update the status of checkboxes for "subscribe2"
-    checkboxes2.forEach(checkbox2 => {
-      const optionValue = checkbox2.value
-
-      // Check against variants with ':'
-      const isChecked = queryTermsVariants.some(
-        ([prefix, value]) =>
-          optionValue.includes(prefix) && optionValue.includes(value)
-      )
-
-      // Check against variants with '&'
-      const isChecked2 = queryTermsVariants2.some(termsArray =>
-        termsArray.every(term => {
-          const [key, value] = term.split('=')
-          return optionValue.includes(key) && optionValue.includes(value)
-        })
-      )
-
-      checkbox2.checked = isChecked || isChecked2
-    })
-  }
-
+  const search = (e) => {
+    const newQuery = e.target.value;
+  
+    // Update the query state
+    setQuery(newQuery);
+  
+    const queryTerms = newQuery.split(',').map(term => term.trim());
+  
+    // Update the checked state for "tab1" checkboxes
+    const updatedCheckedOptionsTab1 = { ...checkedOptionsTab1 };
+    Object.keys(updatedCheckedOptionsTab1).forEach(key => {
+      const optionValue = key.split('-').slice(3).join('-');
+      updatedCheckedOptionsTab1[key] = queryTerms.some(term => term.includes(optionValue));
+    });
+    setCheckedOptionsTab1(updatedCheckedOptionsTab1);
+  
+    // Update the checked state for "tab2" checkboxes
+    const updatedCheckedOptionsTab2 = { ...checkedOptionsTab2 };
+    Object.keys(updatedCheckedOptionsTab2).forEach(key => {
+      const optionValue = key.split('-').slice(3).join('-');
+      updatedCheckedOptionsTab2[key] = queryTerms.some(term => term.includes(optionValue));
+    });
+    setCheckedOptionsTab2(updatedCheckedOptionsTab2);
+  };
+  
   const handleShowFilterEx = () => {
     setShowFilters(true)
   }
