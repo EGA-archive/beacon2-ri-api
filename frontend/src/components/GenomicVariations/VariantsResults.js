@@ -1034,7 +1034,7 @@ function VariantResults (props) {
         }
       } catch (error) {
         console.log(error)
-        setError('No, sorry')
+        setError(error.message)
         setTimeOut(true)
         setTriggerSubmit(true)
       }
@@ -1088,10 +1088,6 @@ function VariantResults (props) {
         </div>
       )}
 
-      {timeOut && error !== '' && props.granularity === 'boolean' && (
-        <h6 className='NotfoundResult'>&nbsp; No, sorry </h6>
-      )}
-
       {triggerSubmit && (
         <div>
           <div>
@@ -1141,7 +1137,7 @@ function VariantResults (props) {
             {show3 && logInRequired === false && (
               <div className='containerTableResults'>
                 <TableResultsVariants
-                  error={'error'}
+                  error={error}
                   show={'full'}
                   results={results}
                   resultsPerDataset={resultsPerDataset}
@@ -1155,7 +1151,7 @@ function VariantResults (props) {
             {show2 && (
               <div className='containerTableResults'>
                 <TableResultsVariants
-                  error={'error'}
+                  error={error}
                   show={'count'}
                   resultsPerDataset={resultsPerDataset}
                   resultsNotPerDataset={resultsNotPerDataset}
@@ -1169,7 +1165,7 @@ function VariantResults (props) {
             {show1 && (
               <div className='containerTableResults'>
                 <TableResultsVariants
-                  error={'error'}
+                  error={error}
                   show={'boolean'}
                   resultsPerDataset={resultsPerDataset}
                   resultsNotPerDataset={resultsNotPerDataset}

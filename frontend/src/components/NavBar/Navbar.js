@@ -131,6 +131,7 @@ function Navbar () {
         >
           Cohorts
         </NavLink> */}
+       
         <div class='animation nav2'></div>
       </nav>
       <nav className='nav3'>
@@ -159,6 +160,7 @@ function Navbar () {
             Network members
           </NavLink>
         )}
+
 
         {!isLoggedIn && (
           <NavLink
@@ -236,6 +238,16 @@ function Navbar () {
                     ></img>
                   </div>
                   <div className='menuNav'>
+                  {
+                      <NavLink
+                        exact
+                        to='/'
+                        onClick={handleMenu}
+                        className='Home3'
+                      >
+                        <ion-icon name='home-outline'></ion-icon>
+                      </NavLink>
+                    }
                     <NavLink
                       to='/beaconInfo'
                       onClick={handleMenu}
@@ -260,16 +272,7 @@ function Navbar () {
                       </NavLink>
                     )}
 
-                    {
-                      <NavLink
-                        exact
-                        to='/'
-                        onClick={handleMenu}
-                        className='Home3'
-                      >
-                        <ion-icon name='home-outline'></ion-icon>
-                      </NavLink>
-                    }
+                  
 
                     {isLoggedIn && (
                       <>
@@ -354,6 +357,16 @@ function Navbar () {
                     >
                       <h1>Cohorts</h1>
                     </NavLink> */}
+                      (
+                    <NavLink
+                      exact
+                      to='/'
+                      onClick={handleMenu}
+                      className='Home3'
+                    >
+                      <ion-icon name='home-outline'></ion-icon>
+                    </NavLink>
+                    )
                     <NavLink
                       to='/beaconInfo'
                       onClick={handleMenu}
@@ -376,16 +389,7 @@ function Navbar () {
                         <h1>Log in</h1>
                       </NavLink>
                     )}
-                    (
-                    <NavLink
-                      exact
-                      to='/'
-                      onClick={handleMenu}
-                      className='Home3'
-                    >
-                      <ion-icon name='home-outline'></ion-icon>
-                    </NavLink>
-                    )
+                  
                     {isLoggedIn && (
                       <>
                         <NavLink

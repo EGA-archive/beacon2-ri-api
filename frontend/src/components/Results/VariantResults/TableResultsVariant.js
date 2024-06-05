@@ -576,7 +576,7 @@ function TableResultsVariants (props) {
         </h5>
       )}
 
-      {!showCrossQuery && showDatsets === false && showResults === true && (
+      {!showCrossQuery && showDatsets === false &&  props.results.length > 0 && showResults === true && (
         <div className='table-container'>
           <div className='menu-icon-container'>
             <div className='export-menu'>
@@ -928,7 +928,7 @@ function TableResultsVariants (props) {
       {props.show === 'full' &&
         props.results.length === 0 &&
         !showCrossQuery && (
-          <h5 className='noResultsFullResponse'>No detailed results, sorry.</h5>
+          <h5 className='noResultsFullResponse'>No results, sorry.</h5>
         )}
       {showCrossQuery && (
         <CrossQueries

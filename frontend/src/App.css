@@ -103,6 +103,8 @@ html {
   padding-left: 0px;
   cursor: pointer;
   margin-left: 12px;
+  border: none;
+  background: white;
 }
 
 .scopeDiv {
@@ -296,10 +298,7 @@ p a {
   width: 100%;
   flex-wrap: wrap;
 }
-h14 {
-  color: #64646a;
-  font-size: 11px;
-}
+
 .searchButton2 {
   cursor: pointer;
   /* margin-left: 26px; */
@@ -1479,7 +1478,7 @@ h5 {
     transition: 0.2s ease-in-out;
   }
   .ega-logo{
-    height: 14px;
+    height: 36px;
     margin-top: 20px;
     margin-right: 30px;
     -webkit-filter: grayscale(20%);
@@ -1821,7 +1820,7 @@ h5 {
   }
 
   .ega-logo{
-    height: 14px;
+    height: 36px;
     margin-top: 20px;
     margin-right: 30px;
     -webkit-filter: grayscale(20%);

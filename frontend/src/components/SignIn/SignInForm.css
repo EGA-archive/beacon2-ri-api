@@ -208,6 +208,10 @@ body {
   right: 0;
   border-radius: 32px;
 }
+h6 {
+  margin-left: 5px;
+  font-size: 12px !important;
+}
 
 .screen__background__shape3 {
   height: 540px;
@@ -454,11 +458,7 @@ body {
   margin-left: -19px;
 }
 
-h6 {
-  margin-left: 5px;
-  font-size: 12px !important;
-  width: 82vw !important;
-}
+
   .screen__background__shape5 {
     /* height: 551px; */
     /* width: 469px; */

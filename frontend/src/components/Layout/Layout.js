@@ -577,13 +577,13 @@ function Layout (props) {
               className={`tab ${activeTab === 'tab1' ? 'active' : ''}`}
               onClick={() => setActiveTab('tab1')}
             >
-              COVID
+              CANCER
             </div>
             <div
               className={`tab ${activeTab === 'tab2' ? 'active' : ''}`}
               onClick={() => setActiveTab('tab2')}
             >
-              CANCER
+              COVID
             </div>
           </div>
           <div className='tab-content'>

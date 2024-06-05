@@ -24,16 +24,14 @@
   height: 20px;
 }
 
-.containerExamplesVariant{
+.containerExamplesVariant {
   margin-bottom: 4px;
   /* display: flex; */
   align-items: flex-start;
   /* margin-left: 4px; */
-  width: 254px;
   display: flex;
   flex-direction: column;
 }
-
 
 .buttonAllFilters {
   display: flex;
@@ -64,12 +62,6 @@
 .formInput {
   display: flex;
   align-items: center;
-}
-h14 {
-  color: #64646a;
-  font-size: 16px;
-  margin-left: 20px;
-  margin-right: 20px;
 }
 
 .moduleAddedVariant h4 {
@@ -144,14 +136,19 @@ p {
 }
 .inputSearch {
   width: 36vw;
+  height: -moz-fit-content;
   height: fit-content;
-  padding: 10px;
-  font-size: 14 px;
+  padding-top: -10px;
+  padding-left: 10px;
+  font-size: 16px;
   border-radius: 3px;
   border: 1px solid #3176b1;
   text-overflow: clip;
-  line-height: 1.8;
+  line-height: 3.1;
   max-width: 50vw;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
 }
 
 .filterTermsContainer {
@@ -167,11 +164,6 @@ p {
   padding-top: 30px;
   padding-left: 26px;
   border-radius: 8px;
-}
-
-fieldset {
-  padding: 0px;
-  border: 1px solid #3176b1;
 }
 
 .filterTermsContainer legend {
@@ -320,7 +312,6 @@ ul div {
 }
 
 .subTitle {
-  margin-bottom: 10px;
   font-weight: 500;
 }
 
@@ -330,6 +321,8 @@ label {
 
 .alphanumButton {
   display: flex;
+  border: none;
+  background: none;
   padding-left: 0px;
   font-size: 14px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -370,6 +363,16 @@ label {
 }
 .onHover {
   display: none;
+}
+
+h14 {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  font-size: 16px;
+  color: #64646a;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .label:hover + .onHover {
@@ -525,15 +528,25 @@ label {
     border: 1px solid #3176b1;
     border-radius: 3px;
     text-overflow: clip;
-    max-width: 30vw;
+    max-width: 38vw;
   }
   .containerSelection {
     display: flex;
-    width: 90vw;
     align-items: center;
     justify-content: center;
     margin-bottom: 40px;
     margin-top: -60px;
+  }
+}
+@media (max-width: 900) {
+  ul div {
+    display: flex;
+    margin: 0px;
+    margin-right: 0px;
+    align-items: center;
+    /* align-items: flex-start; */
+    /* margin-left: 4px; */
+    /* margin-right: 4px; */
   }
 }
 
@@ -561,7 +574,7 @@ label {
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 950px) {
   .inputSearch {
     width: 28vw;
     height: fit-content;
@@ -582,18 +595,35 @@ label {
     flex-wrap: wrap;
   }
 
-  .filterTermsContainer {
+  ul {
+    padding-left: 0;
+    /* column-width: 213px; */
+    /* max-width: 3013px; */
     display: flex;
-    width: 76vw;
-    justify-content: space-evenly;
-    /* margin-bottom: 18px; */
+    list-style: none;
+    /* max-height: 250px; */
+    /* max-height: 238px; */
+    /* flex-direction: column; */
+    /* width: 330px; */
+    /* max-width: 400px; */
+    align-content: center;
+    justify-content: center;
     flex-wrap: wrap;
-    height: -moz-fit-content;
-    height: fit-content;
-    border: 1px solid #3176b1;
-    margin-left: -10px;
-    padding-top: 20px;
-    padding-left: 26px;
+    max-height: 275px;
+  }
+
+  .divKey {
+    display: flex;
+    align-items: center;
+  }
+
+  ul div {
+    margin-bottom: 0px;
+    display: flex;
+    margin-top: 1.5px;
+    align-content: flex-end;
+    align-items: flex-start;
+    justify-content: flex-start;
   }
 
   .selectModule1 {
@@ -601,13 +631,95 @@ label {
   }
 }
 
-@media (max-width: 350px) {
+@media (max-width: 500px) {
+  ul {
+    padding-left: 0;
+
+    display: flex;
+    list-style: none;
+    max-height: none;
+
+    flex-direction: column;
+
+    justify-content: center;
+  }
+  .scopeSelection h10 {
+    font-size: 12px;
+  }
+  .scopeSelection {
+    position: absolute;
+    top: 286px;
+    z-index: 5;
+    background-color: #e2f4ff;
+    /* height: 80px; */
+    display: flex;
+    align-items: center;
+    padding: 7px;
+    /* padding-left: 19px; */
+    /* padding-right: 19px; */
+    height: 123px;
+    border-radius: 13px;
+    color: #1a4b1a;
+    /* font-size: 17px; */
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
+      rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+  }
+  #miSelect {
+    font-size: 12px;
+  }
+  select {
+    height: 21px;
+  }
+}
+
+@media (max-width: 300px) {
   h14 {
     color: #64646a;
-    font-size: 15px;
+    font-size: 13px;
     margin-left: 20px;
     margin-right: 20px;
-    margin-top: 30px;
-    margin-bottom: -17px;
+    margin-top: 24px;
+    margin-bottom: -22px;
+  }
+
+  .containerExamplesVariant {
+    margin-bottom: 14px;
+    /* display: flex; */
+    align-items: flex-start;
+    /* margin-left: 4px; */
+    display: flex;
+    flex-direction: column;
+  }
+
+  .filterTermsContainer {
+    display: flex;
+    width: 74vw;
+    justify-content: flex-start;
+    /* margin-bottom: 18px; */
+    flex-wrap: wrap;
+    height: -moz-fit-content;
+    height: fit-content;
+    border: none;
+    /* margin-left: -1px; */
+    padding-top: 30px;
+    padding-left: 50px;
+    border-radius: 8px;
+  }
+  .resetButton {
+    background-color: rgb(249, 249, 249);
+    border: 1px solid rgb(169, 169, 216);
+    border-radius: 2px;
+    margin-bottom: 3px;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
+    font-size: 13px;
+  }
+  .inputSearch {
+    font-size: 13px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+      'Helvetica Neue', sans-serif;
   }
 }

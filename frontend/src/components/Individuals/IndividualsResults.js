@@ -1037,7 +1037,7 @@ function IndividualsResults (props) {
         }
       } catch (error) {
         console.log(error)
-        setError('No, sorry')
+        setError(error.message)
         setTimeOut(true)
         setTriggerSubmit(true)
       }
@@ -1091,9 +1091,7 @@ function IndividualsResults (props) {
         </div>
       )}
 
-      {timeOut && error !== '' && props.granularity === 'boolean' && (
-        <h6 className='NotfoundResult'>&nbsp; No, sorry </h6>
-      )}
+  
 
       {triggerSubmit && (
         <div>
@@ -1144,7 +1142,7 @@ function IndividualsResults (props) {
             {show3 && logInRequired === false && (
               <div className='containerTableResults'>
                 <TableResultsIndividuals
-                  error={'error'}
+                  error={error}
                   show={'full'}
                   results={results}
                   resultsPerDataset={resultsPerDataset}
@@ -1158,7 +1156,7 @@ function IndividualsResults (props) {
             {show2 && (
               <div className='containerTableResults'>
                 <TableResultsIndividuals
-                  error={'error'}
+                  error={error}
                   show={'count'}
                   resultsPerDataset={resultsPerDataset}
                   resultsNotPerDataset={resultsNotPerDataset}
@@ -1172,7 +1170,7 @@ function IndividualsResults (props) {
             {show1 && (
               <div className='containerTableResults'>
                 <TableResultsIndividuals
-                  error={'error'}
+                  error={error}
                   show={'boolean'}
                   resultsPerDataset={resultsPerDataset}
                   resultsNotPerDataset={resultsNotPerDataset}

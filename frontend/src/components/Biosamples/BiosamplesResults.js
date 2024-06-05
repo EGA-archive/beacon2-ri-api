@@ -1034,7 +1034,7 @@ function BiosamplesResults (props) {
         }
       } catch (error) {
         console.log(error)
-        setError('No, sorry')
+        setError(error.message)
         setTimeOut(true)
         setTriggerSubmit(true)
       }
@@ -1088,10 +1088,6 @@ function BiosamplesResults (props) {
         </div>
       )}
 
-      {timeOut && error !== '' && props.granularity === 'boolean' && (
-        <h6 className='NotfoundResult'>&nbsp; No, sorry </h6>
-      )}
-
       {triggerSubmit && (
         <div>
           <div>
@@ -1141,7 +1137,7 @@ function BiosamplesResults (props) {
             {show3 && logInRequired === false && (
               <div className='containerTableResults'>
                 <TableResultsBiosamples
-                  error={'error'}
+                  error={error}
                   show={'full'}
                   results={results}
                   resultsPerDataset={resultsPerDataset}
@@ -1155,7 +1151,7 @@ function BiosamplesResults (props) {
             {show2 && (
               <div className='containerTableResults'>
                 <TableResultsBiosamples
-                  error={'error'}
+                  error={error}
                   show={'count'}
                   resultsPerDataset={resultsPerDataset}
                   resultsNotPerDataset={resultsNotPerDataset}
@@ -1169,7 +1165,7 @@ function BiosamplesResults (props) {
             {show1 && (
               <div className='containerTableResults'>
                 <TableResultsBiosamples
-                  error={'error'}
+                  error={error}
                   show={'boolean'}
                   resultsPerDataset={resultsPerDataset}
                   resultsNotPerDataset={resultsNotPerDataset}

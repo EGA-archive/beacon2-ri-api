@@ -4,17 +4,6 @@
     display: none;
   }
 
-  .Sign-in3 {
-    display: flex !important;
-    align-items: center;
-  }
-
-  .containerUserName:hover ~ .animation  {
-    background-color: rgb(80, 133, 225);
-    right: 0px;
-    width: 250px;
-  }
-
   #copydata h1 {
     text-transform: uppercase;
     font-size: 10px;
@@ -186,11 +175,11 @@
   }
 
   .Members {
-    width: 146px;
+    width: 125px;
   }
 
   .Members2 {
-    width: 140px;
+    width: 125px;
     background-color: #4961b8;
   }
 
@@ -218,7 +207,7 @@
   }
 
   .Sign-in6 {
-    width: 140px;
+    width: 136px;
   }
 
   .Sign-in5 {
@@ -232,6 +221,14 @@
     background-color: #0c7a7a;
   }
 
+  .nav3 .Sign-in3 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    width: fit-content;
+    width: 96px;
+  }
 
   .nav3 .Sign-in4 {
     display: flex;
@@ -269,14 +266,8 @@
   }
 
   .Members:hover ~ .animation {
-    width: 125px;
-    right: 151px;
-    background-color: #4961b8;
-  }
-
-  .Members3:hover ~ .animation {
-    width: 110px;
-    right: 19%;
+    width: 120px;
+    right: 138px;
     background-color: #4961b8;
   }
 
@@ -303,7 +294,7 @@
 
   .Home:hover ~ .animation {
     background-color: #acc2c1;
-    right: 290px;
+    right: 270px;
     width: 100px;
   }
 
@@ -407,7 +398,6 @@
     display: none;
   }
 
- 
   #copydata h1 {
     text-transform: uppercase;
     font-size: 10px;
@@ -713,12 +703,6 @@
     background-color: #d4c223;
   }
 
-  .Sign-in3:hover ~ .animation {
-    width: 96px;
-    border-radius: 2px;
-    background-color: #7a9f9f;
-  }
-
   button {
     background: none;
     box-shadow: none;
@@ -739,11 +723,8 @@
     margin-top: 21px !important;
   }
 
-  .Sign-in3:hover ~ .animation {
-    width: 96px;
-    border-radius: 2px;
-    background-color: #7a9f9f;
-    left: 0px !important;
+  ion-icon {
+    font-size: 26px !important;
   }
 
   .userNameSmallScreen {
@@ -807,7 +788,7 @@
   .arrowUpIcon {
     width: 24px;
     margin-bottom: -33px;
-    margin-left: 66px;
+    margin-left: 51px;
   }
 
   h1:hover {
@@ -858,8 +839,8 @@
   }
 
   .Members2 {
-    width: 160px;
-    height: 21px;
+    width: 123px;
+    height: 25px;
     border-radius: 4px;
     background-color: #4961b8;
     display: flex;
@@ -868,10 +849,10 @@
   }
 
   .Sign-in5 {
-    width: 157px;
-    height: 27px;
+    width: 124px;
+    height: 25px;
     margin-top: 2px;
-    margin-left: 2px;
+    /* margin-left: 2px; */
     border-radius: 4px;
     display: flex;
     background-color: #7a9f9f;
@@ -992,8 +973,8 @@
   }
   .menuNav2 {
     background-color: #235c94;
-    height: 135px;
-    width: 161px;
+    height: 119px;
+    width: 126px;
     margin-top: 22px;
     border-radius: 9px;
     box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;

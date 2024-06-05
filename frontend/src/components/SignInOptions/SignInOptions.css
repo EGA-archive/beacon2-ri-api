@@ -54,36 +54,31 @@
   margin-bottom: 12px;
 }
 
-
-.login__field2 h6:hover {
-  font-weight: 700;
-}
-
 .Sign-inNoLs {
   border: solid 2.8px #00c4f7;
   padding-top: 0px;
   padding-bottom: 0px;
   padding-left: 6px;
-  padding-right: 6px;
+  padding-right: 14px;
   border-radius: 6px;
   background: #fbfbfb;
 }
 
 .Sign-inLS:hover {
-  background-color: #92dcff;
-  height: 33px;
+  background-color: #f2f8ff;
+
   border-radius: 8px;
   margin: 0px;
 }
 
 .Sign-inNoLs:hover {
-  background-color: #92dcff;
-  /* border: solid 1px #87dff0; */
+  background-color: #f2f8ff;
   padding-top: 0px;
   padding-bottom: 0px;
   padding-left: 6px;
-  padding-right: 6px;
+  padding-right:  14px;
   border-radius: 6px;
+  /* border: solid 1px #87dff0; */
 }
 
 @media (max-width: 860px) {
@@ -105,7 +100,5 @@
   .login__field2 h6 {
     font-size: 14px !important;
   }
-  .login__field2 h6:hover {
-    font-weight: 700;
-  }
+ 
 }
