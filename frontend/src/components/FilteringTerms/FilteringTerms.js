@@ -92,7 +92,6 @@ function FilteringTerms (props) {
   const [ID, setId] = useState('')
 
   useEffect(() => {
-    console.log(props.filteringTerms)
     if (state.list === 'error') {
       setError(true)
     } else {
@@ -100,17 +99,12 @@ function FilteringTerms (props) {
     }
 
     state.list.forEach((element, index) => {
-      console.log(element.scopes.length)
-
       if (element.scopes.length > 1) {
-        console.log(element.scopes)
-
         element.scopes.forEach(element2 => {
           let arrayNew = {}
           arrayNew = { ...element }
-          console.log(element2)
+
           arrayNew['scopes'] = [element2]
-          console.log(arrayNew)
 
           state.list.push(arrayNew)
         })
@@ -121,8 +115,6 @@ function FilteringTerms (props) {
       query: '',
       list: props.filteringTerms !== false ? state.list : 'error'
     })
-
-    console.log(state.list)
 
     if (state.list !== 'error') {
       const sampleTags = state.list.map(t => ({
@@ -208,8 +200,6 @@ function FilteringTerms (props) {
         if (post.scopes !== undefined) {
           var returnedPosts = []
           post.scopes.forEach(element => {
-            console.log(element.toLowerCase())
-            console.log(e.target.value.toLowerCase())
             if (element.toLowerCase().includes(e.target.value.toLowerCase())) {
               returnedPosts.push(post)
             }
@@ -226,7 +216,6 @@ function FilteringTerms (props) {
   }
 
   const handleCheck = e => {
-    console.log(e.target)
     let infoValue = e.target.value.split(',')
 
     if (infoValue[2].toLowerCase() !== 'alphanumeric') {

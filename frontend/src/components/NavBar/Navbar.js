@@ -54,12 +54,12 @@ function Navbar () {
     const apiCall = async () => {
       try {
         let res2 = await axios.get(configData.API_URL + '/info')
-        console.log(res2)
+
         if (res2.data.meta.isAggregated) {
           setIsNetwork(true)
         }
       } catch (error) {
-        console.log(error)
+       
       }
     }
 
@@ -257,26 +257,30 @@ function Navbar () {
                         <ion-icon name='home-outline'></ion-icon>
                       </NavLink>
                     }
-                    {!isNetwork && <NavLink
-                      to='/beaconInfo'
-                      onClick={handleMenu}
-                      className={({ isActive }) =>
-                        isActive ? 'Members2' : 'Members'
-                      }
-                    >
-                      {' '}
-                      <h1>Beacon Info</h1>
-                    </NavLink>}
-                    {isNetwork && <NavLink
-                      to='/beaconInfo'
-                      onClick={handleMenu}
-                      className={({ isActive }) =>
-                        isActive ? 'Members2' : 'Members'
-                      }
-                    >
-                      {' '}
-                      <h1>Network members</h1>
-                    </NavLink>}
+                    {!isNetwork && (
+                      <NavLink
+                        to='/beaconInfo'
+                        onClick={handleMenu}
+                        className={({ isActive }) =>
+                          isActive ? 'Members2' : 'Members'
+                        }
+                      >
+                        {' '}
+                        <h1>Beacon Info</h1>
+                      </NavLink>
+                    )}
+                    {isNetwork && (
+                      <NavLink
+                        to='/beaconInfo'
+                        onClick={handleMenu}
+                        className={({ isActive }) =>
+                          isActive ? 'Members2' : 'Members'
+                        }
+                      >
+                        {' '}
+                        <h1>Network members</h1>
+                      </NavLink>
+                    )}
 
                     {!isLoggedIn && (
                       <NavLink
@@ -384,26 +388,30 @@ function Navbar () {
                       <ion-icon name='home-outline'></ion-icon>
                     </NavLink>
                     )
-                    {!isNetwork && <NavLink
-                      to='/beaconInfo'
-                      onClick={handleMenu}
-                      className={({ isActive }) =>
-                        isActive ? 'Members2' : 'Members'
-                      }
-                    >
-                      {' '}
-                      <h1>Beacon Info</h1>
-                    </NavLink>}
-                    {isNetwork && <NavLink
-                      to='/beaconInfo'
-                      onClick={handleMenu}
-                      className={({ isActive }) =>
-                        isActive ? 'Members2' : 'Members'
-                      }
-                    >
-                      {' '}
-                      <h1>Network members</h1>
-                    </NavLink>}
+                    {!isNetwork && (
+                      <NavLink
+                        to='/beaconInfo'
+                        onClick={handleMenu}
+                        className={({ isActive }) =>
+                          isActive ? 'Members2' : 'Members'
+                        }
+                      >
+                        {' '}
+                        <h1>Beacon Info</h1>
+                      </NavLink>
+                    )}
+                    {isNetwork && (
+                      <NavLink
+                        to='/beaconInfo'
+                        onClick={handleMenu}
+                        className={({ isActive }) =>
+                          isActive ? 'Members2' : 'Members'
+                        }
+                      >
+                        {' '}
+                        <h1>Network members</h1>
+                      </NavLink>
+                    )}
                     {!isLoggedIn && (
                       <NavLink
                         exact

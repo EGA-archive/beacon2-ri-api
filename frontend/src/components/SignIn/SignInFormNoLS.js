@@ -46,7 +46,7 @@ export default function SignInFormNoLS () {
         scope: 'openid',
         requested_token_type: 'urn:ietf:params:oauth:token-type:refresh_token'
       }
-      console.log(process.env.REACT_APP_KEYCLOAK_CLIENT_SECRET)
+     
 
       var formBody = []
       for (var property in details) {

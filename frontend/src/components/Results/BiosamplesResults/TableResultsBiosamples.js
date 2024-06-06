@@ -267,7 +267,7 @@ function TableResultsBiosamples (props) {
 
   const handleShowCrossQuery = e => {
     setShowCrossQuery(true)
-    console.log(e.target.innerText.trim())
+ 
     setParamCrossQuery(e.target.innerText)
   }
   const toggleRow = index => {
@@ -284,7 +284,7 @@ function TableResultsBiosamples (props) {
   }
 
   useEffect(() => {
-    console.log(resultsSelected)
+  
     if (props.show === 'full') {
       setResultsSelectedFinal(resultsSelected)
       setShowResults(true)
@@ -811,7 +811,7 @@ function TableResultsBiosamples (props) {
           //  sampleProcessing: sampleProcessingJson,
           sampleStorage: stringSampleStorage
         })
-        console.log(editable)
+        
 
         if (index === resultsSelectedFinal.length - 1) {
           setTrigger2(true)

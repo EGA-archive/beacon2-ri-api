@@ -32,9 +32,7 @@ function BeaconInfo (props) {
         }
 
         setTrigger(true)
-      } catch (error) {
-        console.log(error)
-      }
+      } catch (error) {}
     }
     apiCall()
   }, [props.trigger])
@@ -43,7 +41,7 @@ function BeaconInfo (props) {
     const fetchData = async () => {
       try {
         let res2 = await axios.get(configData.API_URL + '/info')
-        console.log(res2)
+
         if (res2.data.meta.isAggregated) {
           setIsNetwork(true)
 
@@ -64,7 +62,6 @@ function BeaconInfo (props) {
           resp.push(res2.data.responses)
         }
       } catch (error) {
-        console.log(error)
         setError('No Beacons information available, sorry')
       }
     }

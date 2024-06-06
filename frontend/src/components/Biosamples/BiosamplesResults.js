@@ -94,7 +94,7 @@ function BiosamplesResults (props) {
         element.scope = [selectedScopes[index]]
       }
     })
-    console.log(updatedArrayFilter)
+
     setArrayFilter(updatedArrayFilter)
 
     setUpdatedArrayFilterVar(updatedArrayFilter)
@@ -239,9 +239,6 @@ function BiosamplesResults (props) {
 
       var requestParameters = {}
 
-      console.log(updatedArrayFilterVar)
-      console.log(selectedScopes)
-
       if (props.query !== null) {
         if (props.query.includes(',')) {
           let queryStringTerm2 = props.query.split(',')
@@ -254,23 +251,23 @@ function BiosamplesResults (props) {
             let reqParameters = []
             if (props.query.includes('&')) {
               arrayParameters = props.query.split('&')
-              console.log(arrayParameters)
+
               arrayParameters.forEach(element => {
                 reqParameters.length = 0
                 reqParameters = element.split(':')
-                console.log(reqParameters)
+
                 requestParameters[reqParameters[0]] = reqParameters[1]
               })
               arrayRequestParameters.push(requestParameters)
             } else {
               let reqParameters = props.query.split(':')
-              console.log(reqParameters)
+
               requestParameters[reqParameters[0]] = reqParameters[1]
               arrayRequestParameters.push(requestParameters)
             }
           } else if (props.query.includes(':') && props.query.includes('>')) {
             let reqParameters = props.query.split(':')
-            console.log(reqParameters)
+
             let position = []
             if (props.query.includes('-')) {
               position = reqParameters[0].split('-')
@@ -278,9 +275,8 @@ function BiosamplesResults (props) {
               position = reqParameters[0]
             }
 
-            console.log(position)
             let bases = reqParameters[2].split('>')
-            console.log(bases)
+
             requestParameters['start'] = position[0]
             if (position[1]) {
               requestParameters['end'] = position[1]
@@ -294,11 +290,9 @@ function BiosamplesResults (props) {
           }
         }
 
-        console.log(queryStringTerm)
         let filter = {}
         if (updatedArrayFilterVar.length === 0) {
           queryStringTerm.forEach((term, index) => {
-            console.log(term)
             requestParameters = {}
             if (
               (term.includes('=') ||
@@ -311,7 +305,6 @@ function BiosamplesResults (props) {
               if (term.includes('=')) {
                 queryArray[index] = term.split('=')
                 queryArray[index].push('=')
-                console.log(queryArray)
               } else if (term.includes('>')) {
                 queryArray[index] = term.split('>')
                 queryArray[index].push('>')
@@ -325,7 +318,7 @@ function BiosamplesResults (props) {
                 queryArray[index] = term.split('%')
                 queryArray[index].push('%')
               }
-              console.log(queryArray[index][1].toLowerCase())
+
               let alphanumericFilter = {}
               props.filteringTerms.forEach(element => {
                 if (element.label) {
@@ -375,7 +368,6 @@ function BiosamplesResults (props) {
               })
 
               if (Object.keys(alphanumericFilter).length === 0) {
-                console.log(queryArray[index][0])
                 props.filteringTerms.forEach(element => {
                   if (
                     queryArray[index][0].toLowerCase() ===
@@ -388,14 +380,13 @@ function BiosamplesResults (props) {
                 if (queryArray[index][3] === undefined) {
                   queryArray[index][3] = [collection]
                 }
-                console.log(queryArray)
+
                 alphanumericFilter = {
                   id: queryArray[index][0],
                   operator: queryArray[index][2],
                   value: queryArray[index][1],
                   scope: queryArray[index][3]
                 }
-                console.log(alphanumericFilter)
               }
 
               arrayFilter.push(alphanumericFilter)
@@ -404,23 +395,23 @@ function BiosamplesResults (props) {
               let reqParameters = []
               if (term.includes('&')) {
                 arrayParameters = term.split('&')
-                console.log(arrayParameters)
+
                 arrayParameters.forEach(element => {
                   reqParameters.length = 0
                   reqParameters = element.split(':')
-                  console.log(reqParameters)
+
                   requestParameters[reqParameters[0]] = reqParameters[1]
                 })
                 arrayRequestParameters.push(requestParameters)
               } else {
                 let reqParameters = term.split(':')
-                console.log(reqParameters)
+
                 requestParameters[reqParameters[0]] = reqParameters[1]
                 arrayRequestParameters.push(requestParameters)
               }
             } else if (term.includes(':') && term.includes('>')) {
               let reqParameters = term.split(':')
-              console.log(reqParameters)
+
               let position = []
               if (term.includes('-')) {
                 position = reqParameters[0].split('-')
@@ -429,7 +420,7 @@ function BiosamplesResults (props) {
               }
 
               let bases = reqParameters[2].split('>')
-              console.log(bases)
+
               requestParameters['start'] = position[0]
               if (position[1]) {
                 requestParameters['end'] = position[1]
@@ -466,23 +457,20 @@ function BiosamplesResults (props) {
         }
       }
 
-      console.log(arrayFilter)
-
       try {
         let res = await axios.get(configData.API_URL + '/info')
         let res2 = await axios.get(configData.API_URL + '/datasets')
-        console.log(res2)
+
         if (res2) {
           datasetList.push(res2.data.response.collections)
         }
-        console.log(datasetList)
 
         if (updatedArrayFilterVar.length === 0) {
           beaconsList.push(res.data.response)
         }
 
         let variablePause = false
-        console.log(ontologyMultipleScope)
+
         if (props.query === null || props.query === '') {
           // show all individuals
 
@@ -527,7 +515,7 @@ function BiosamplesResults (props) {
           }
 
           jsonData1 = JSON.stringify(jsonData1)
-          console.log(jsonData1)
+
           let token = null
           if (auth.userData === null) {
             token = getStoredToken()
@@ -540,8 +528,6 @@ function BiosamplesResults (props) {
               configData.API_URL + '/biosamples',
               jsonData1
             )
-            console.log(jsonData1)
-            console.log(res)
           } else {
             const headers = { Authorization: `Bearer ${token}` }
             console.log('querying with token')
@@ -550,7 +536,6 @@ function BiosamplesResults (props) {
               jsonData1,
               { headers: headers }
             )
-            console.log(res)
           }
           setTimeOut(true)
 
@@ -604,7 +589,6 @@ function BiosamplesResults (props) {
                 if (element.id === undefined || element.id === '') {
                   let arrayResultsNoDatasets = [element.beaconId]
                   resultsNotPerDataset.push(arrayResultsNoDatasets)
-                  console.log(arrayResultsNoDatasets)
                 }
 
                 if (res.data.response.resultSets[index].results) {
@@ -661,7 +645,6 @@ function BiosamplesResults (props) {
                   if (element.id === undefined || element.id === '') {
                     let arrayResultsNoDatasets = [element.beaconId]
                     resultsNotPerDataset.push(arrayResultsNoDatasets)
-                    console.log(arrayResultsNoDatasets)
                   }
 
                   if (res.data.response.resultSets[index].results) {
@@ -717,7 +700,6 @@ function BiosamplesResults (props) {
                   if (element.id === undefined || element.id === '') {
                     let arrayResultsNoDatasets = [res.data.meta.beaconId]
                     resultsNotPerDataset.push(arrayResultsNoDatasets)
-                    console.log(arrayResultsNoDatasets)
                   }
 
                   if (res.data.response.resultSets[index].results) {
@@ -743,7 +725,6 @@ function BiosamplesResults (props) {
           if (updatedArrayFilterVar.length > 0) {
             updatedArrayFilterVar.forEach((element, index) => {
               if (Array.isArray(element.scope) && !selectedScopes[index]) {
-                console.log(element.scope)
                 setPause(true)
                 variablePause = true
 
@@ -775,7 +756,6 @@ function BiosamplesResults (props) {
           } else {
             let newOptionsScope = [...optionsScope]
             arrayFilter.forEach((element, index) => {
-              console.log(element.scope)
               if (
                 Array.isArray(element.scope) &&
                 element.scope.length > 1 &&
@@ -789,7 +769,7 @@ function BiosamplesResults (props) {
                   newOptionsScope[index].push(elementScope)
                 })
                 setOptionsScope(newOptionsScope)
-                console.log(newOptionsScope)
+
                 let newOntologyMultipleScope = [...ontologyMultipleScope]
 
                 props.filteringTerms.forEach(element2 => {
@@ -799,7 +779,7 @@ function BiosamplesResults (props) {
                     newOntologyMultipleScope[index].push(element2.label)
                   }
                 })
-                console.log(newOntologyMultipleScope)
+
                 setOntologyMultipleScope(newOntologyMultipleScope)
               } else if (
                 Array.isArray(element.scope) &&
@@ -808,7 +788,6 @@ function BiosamplesResults (props) {
               ) {
                 element.scope = selectedScopes[index]
               } else {
-                console.log(element)
                 element.scope = element.scope[0]
               }
             })
@@ -877,26 +856,21 @@ function BiosamplesResults (props) {
               token = auth.userData.access_token
             }
             if (token === null) {
-              console.log(jsonData2)
               console.log('Querying without token')
               res = await axios.post(
                 configData.API_URL + '/biosamples',
                 jsonData2
               )
-              console.log(res)
             } else {
               console.log('Querying WITH token')
-              console.log(token)
+
               const headers = { Authorization: `Bearer ${token}` }
-              console.log(headers)
-              console.log(jsonData2)
+
               res = await axios.post(
                 configData.API_URL + '/biosamples',
                 jsonData2,
                 { headers: headers }
               )
-              console.log(res)
-              console.log(token)
             }
 
             setTimeOut(true)
@@ -912,8 +886,6 @@ function BiosamplesResults (props) {
               setBoolean(false)
             } else {
               if (props.isNetwork) {
-                console.log(res.data.response.resultSets)
-                console.log(resultsPerDataset)
                 res.data.response.resultSets.forEach((element, index) => {
                   if (element.id && element.id !== '') {
                     if (resultsPerDataset.length > 0) {
@@ -954,7 +926,6 @@ function BiosamplesResults (props) {
                   if (element.id === undefined || element.id === '') {
                     let arrayResultsNoDatasets = [element.beaconId]
                     resultsNotPerDataset.push(arrayResultsNoDatasets)
-                    console.log(arrayResultsNoDatasets)
                   }
 
                   if (res.data.response.resultSets[index].results) {
@@ -1010,7 +981,6 @@ function BiosamplesResults (props) {
                   if (element.id === undefined || element.id === '') {
                     let arrayResultsNoDatasets = [res.data.meta.beaconId]
                     resultsNotPerDataset.push(arrayResultsNoDatasets)
-                    console.log(arrayResultsNoDatasets)
                   }
 
                   if (res.data.response.resultSets[index].results) {
@@ -1036,7 +1006,6 @@ function BiosamplesResults (props) {
           }
         }
       } catch (error) {
-        console.log(error)
         setError(error.message)
         setTimeOut(true)
         setTriggerSubmit(true)
@@ -1090,8 +1059,6 @@ function BiosamplesResults (props) {
           ))}
         </div>
       )}
-
-  
 
       {triggerSubmit && (
         <div>

@@ -10,9 +10,14 @@ const FilterContent = ({
   activeTab
 }) => {
   return (
-    <fieldset className='filterTermsContainer'>
+    <div className='filterTermsContainer'>
       {filters.map((filter, filterIndex) => (
-        <div key={filterIndex} className='divFilter'>
+        <div
+          key={filterIndex}
+          className={`divFilter ${
+            filter.title === 'Variant' ? 'divFilterVariant' : ''
+          }`}
+        >
           <p>{filter.title}</p>
           <ul>
             {filter.options.map((optionsArray, optionIndex) => (
@@ -22,8 +27,8 @@ const FilterContent = ({
                 optionsArray[0].type !== 'alphanumeric' ? (
                   <div className='containerExamplesVariant'>
                     {optionsArray.map((element, elementIndex) => (
-                      <>
-                        <div className='divKey' key={elementIndex}>
+                      <React.Fragment key={elementIndex}>
+                        <div className='divKey'>
                           {elementIndex === 0 && (
                             <input
                               type='checkbox'
@@ -93,7 +98,7 @@ const FilterContent = ({
                             </div>
                           )}
                         </div>
-                      </>
+                      </React.Fragment>
                     ))}
                   </div>
                 ) : optionsArray.length > 0 &&
@@ -195,7 +200,7 @@ const FilterContent = ({
           </ul>
         </div>
       ))}
-    </fieldset>
+    </div>
   )
 }
 

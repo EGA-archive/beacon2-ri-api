@@ -57,16 +57,13 @@ function CrossQueries (props) {
   }
 
   const handleSubmit = async e => {
-    console.log(valueInitial)
-    console.log(IdValue)
-    console.log(valueFinal)
     e.preventDefault()
     setShowSubmit(false)
     try {
       let res = await axios.get(
         configData.API_URL + `/${valueInitial}/${IdValue}/${valueFinal}`
       )
-      console.log(res)
+
       res.data.response.resultSets.forEach((element, index) => {
         if (element.id && element.id !== '') {
           if (resultsPerDataset.length > 0) {
@@ -105,7 +102,6 @@ function CrossQueries (props) {
           )
         }
       })
-      console.log(results)
 
       let res2 = await axios.get(configData.API_URL + '/info')
       beaconsList.push(res2.data.response)
@@ -124,7 +120,6 @@ function CrossQueries (props) {
       //   }
       // })
     } catch (error) {
-      console.log(error)
       setError('Not found. Please retry')
     }
   }

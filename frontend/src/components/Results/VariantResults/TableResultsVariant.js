@@ -250,7 +250,7 @@ function TableResultsVariants (props) {
 
   const handleShowCrossQuery = e => {
     setShowCrossQuery(true)
-    console.log(e.target.innerText.trim())
+
     setParamCrossQuery(e.target.innerText)
   }
 

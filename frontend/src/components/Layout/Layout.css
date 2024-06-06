@@ -519,6 +519,58 @@ h14 {
   width: 250px !important;
 }
 
+@media (min-width: 1300px) {
+  .label-ontology-div2 input {
+    width: 65px;
+    /* width: 36%; */
+    margin-left: 3px;
+    border: 1px solid #a39fc5;
+    padding: 2px;
+    font-size: 12px;
+    border-radius: 4px;
+  }
+
+  .divFilterVariant {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .divFilterVariant ul {
+    padding-left: 0;
+    max-height: -moz-fit-content;
+    max-height: fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+  .divFilter {
+    /* margin-right: 10px; */
+    /* margin-left: 10px; */
+    margin-bottom: 4px;
+    width: -moz-fit-content;
+    /* width: fit-content; */
+    /* min-width: 130px; */
+  }
+
+  .filterTermsContainer {
+    display: flex;
+    /* width: 84vw; */
+    /* justify-content: space-evenly; */
+    /* margin-bottom: 18px; */
+    /* flex-wrap: wrap; */
+    height: -moz-fit-content;
+    padding-left: 0px;
+    /* height: fit-content; */
+    /* border: none; */
+    /* margin-left: -10px; */
+    /* padding-top: 30px; */
+    /* padding-left: 26px; */
+ 
+  }
+}
 @media (max-width: 1200px) {
   .inputSearch {
     width: 28vw;
