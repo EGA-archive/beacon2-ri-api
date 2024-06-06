@@ -264,7 +264,7 @@ function Layout (props) {
   const handleReset = () => {
     // Clear the query state
     setQuery('')
-
+    setShowAlphanum(false)
     // Clear the state for input values and checked options
     setInputValuesTab1({})
     setInputValuesTab2({})
