@@ -17,7 +17,7 @@ btnAdd2.onclick = (e) => {
   
 
     for (let i = 0; i < selected.length; i++) {
-      console.log(selected[i])
+   
       if (!selected[i] == false){
       const option = new Option(selected[i], selected[i]);
       option.setAttribute('selected', 'selected');

@@ -10,7 +10,7 @@ btnAdd.onclick = (e) => {
     return;
   }
   // create a new option
-  console.log(framework.value)
+
   const option = new Option(framework.value, framework.value);
   option.setAttribute('selected', 'selected');
   // add it to the list
