@@ -160,6 +160,7 @@ def generic_handler(db_fn, request=None):
             datasets_docs={}
             datasets_count={}
             #LOG.debug(response_datasets)
+            new_count=0
             loop = asyncio.get_running_loop()
             for dataset in response_datasets:
                 with ThreadPoolExecutor() as pool:
