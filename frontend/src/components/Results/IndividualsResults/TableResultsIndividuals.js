@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import CrossQueries from '../../CrossQueries/CrossQueries'
 import { FaBars, FaEye, FaEyeSlash } from 'react-icons/fa' // Import icons from react-icons library
 import { FiLayers, FiDownload } from 'react-icons/fi'
-import { Link } from 'react-router-dom'
 
 function TableResultsIndividuals (props) {
   const [showDatsets, setShowDatasets] = useState(false)
@@ -251,6 +250,7 @@ function TableResultsIndividuals (props) {
     console.log(e.target.innerText.trim())
     setParamCrossQuery(e.target.innerText)
   }
+
   const toggleRow = index => {
     setExpandedRows(prevState => {
       const currentIndex = prevState.indexOf(index)
@@ -262,7 +262,6 @@ function TableResultsIndividuals (props) {
         return updatedRows
       }
     })
-    console.log(expandedRows)
   }
 
   useEffect(() => {
@@ -489,7 +488,6 @@ function TableResultsIndividuals (props) {
   }, [trigger, resultsSelectedFinal])
 
   useEffect(() => {
-    console.log(props.results)
     setShowDatasets(true)
   }, [])
 

@@ -20,7 +20,7 @@ function TableResultsVariants (props) {
   const [showCrossQuery, setShowCrossQuery] = useState(false)
   const [parameterCrossQuery, setParamCrossQuery] = useState('')
   const [expandedRows, setExpandedRows] = useState(
-    new Array(props.beaconsList.length).fill(false)
+    Array.from({ length: props.beaconsList.length }, (_, index) => index)
   )
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage] = useState(10) // You can make this dynamic if needed
@@ -253,6 +253,7 @@ function TableResultsVariants (props) {
     console.log(e.target.innerText.trim())
     setParamCrossQuery(e.target.innerText)
   }
+
   const toggleRow = index => {
     setExpandedRows(prevState => {
       const currentIndex = prevState.indexOf(index)
@@ -480,10 +481,9 @@ function TableResultsVariants (props) {
   return (
     <div className='containerBeaconResults'>
       {showDatsets === true &&
-        props.results.length > 0 &&
-        props.beaconsList.map((result, beaconIndex) => {
+         props.beaconsList.map((result, beaconIndex) => {
           return (
-            <table className='tableGranularity'>
+            <table className='tableGranularity' key={beaconIndex}>
               <thead className='theadGranularity'>
                 <tr id='trGranuHeader'>
                   <th className='thGranularityTitleBeacon'>Beacon</th>
@@ -492,411 +492,481 @@ function TableResultsVariants (props) {
                 </tr>
               </thead>
               <tbody className='tbodyGranu'>
-                {props.resultsPerDataset.map((dataset, index2) => (
-                  <React.Fragment key={index2}>
+                {props.results.length > 0 &&
+                  props.resultsPerDataset.map((dataset, index2) => {
+                    const totalCount = dataset[3]
+                      ? dataset[3].reduce((acc, count) => acc + count, 0)
+                      : 0
+                    const allTrue = dataset[2]
+                      ? dataset[2].every(booleanElement => booleanElement)
+                      : 'No, sorry'
+
+                    return (
+                      <React.Fragment key={index2}>
+                        <tr
+                          className='trGranuBeacon'
+                          onClick={() => toggleRow(index2)}
+                        >
+                          <td className='tdGranuBeacon'>
+                            {dataset[0]}
+                            {expandedRows.includes(index2) ? (
+                              <ion-icon name='chevron-down-outline'></ion-icon>
+                            ) : (
+                              <ion-icon name='chevron-up-outline'></ion-icon>
+                            )}
+                          </td>
+                          <td className='tdGranuBeacon'></td>
+                          <td className='tdGranuBeacon'>
+                            {props.show === 'boolean'
+                              ? allTrue
+                                ? 'YES'
+                                : 'No, sorry'
+                              : totalCount}
+                          </td>
+                        </tr>
+                        {expandedRows.includes(index2) && (
+                          <React.Fragment key={`expanded-${index2}`}>
+                            {props.show === 'boolean' &&
+                              dataset[2].map((booleanElement, booleanIndex) => (
+                                <tr
+                                  className='trGranu'
+                                  key={`boolean-${booleanIndex}`}
+                                >
+                                  <td className='tdGranu'></td>
+                                  <td
+                                    className={`tdGranu ${
+                                      booleanElement
+                                        ? 'tdFoundDataset'
+                                        : 'tdNotFoundDataset'
+                                    }`}
+                                  >
+                                    {dataset[1][booleanIndex]}
+                                  </td>
+                                  <td
+                                    className={`tdGranu ${
+                                      booleanElement ? 'tdFound' : 'tdNotFound'
+                                    }`}
+                                  >
+                                    {booleanElement ? 'YES' : 'No, sorry'}
+                                  </td>
+                                </tr>
+                              ))}
+                            {props.show === 'count' &&
+                              dataset[3].map((countElement, countIndex) => (
+                                <tr
+                                  className='trGranu'
+                                  key={`count-${countIndex}`}
+                                >
+                                  <td className='tdGranu'></td>
+                                  <td
+                                    className={`tdGranu ${
+                                      countElement !== undefined &&
+                                      countElement !== null &&
+                                      countElement !== 0
+                                        ? 'tdFoundDataset'
+                                        : 'tdNotFoundDataset'
+                                    }`}
+                                  >
+                                    {dataset[1][countIndex]}
+                                  </td>
+                                  <td
+                                    className={`tdGranu ${
+                                      countElement !== undefined &&
+                                      countElement !== null &&
+                                      countElement !== 0
+                                        ? 'tdFound'
+                                        : 'tdNotFound'
+                                    }`}
+                                  >
+                                    {countElement}
+                                  </td>
+                                </tr>
+                              ))}
+                          </React.Fragment>
+                        )}
+                      </React.Fragment>
+                    )
+                  })}
+                {props.results.length === 0 && (
+                  <React.Fragment key={beaconIndex}>
                     <tr
                       className='trGranuBeacon'
-                      onClick={() => toggleRow(index2)}
+                      onClick={() => toggleRow(beaconIndex)}
                     >
-                      <td className='tdGranu'>
-                        {dataset[0]}
-                        {expandedRows.includes(index2) ? (
-                          <ion-icon name='chevron-down-outline'></ion-icon>
-                        ) : (
-                          <ion-icon name='chevron-up-outline'></ion-icon>
-                        )}
-                      </td>
+                      <td className='tdGranuBeaconNoResults'>{result.id}</td>
+                      <td className='tdGranuNoResults'></td>
+                      {props.show === 'boolean' && (
+                        <td
+                          className={`tdGranuNoResults ${'tdNotFoundDataset'}`}
+                        >
+                          No, sorry
+                        </td>
+                      )}
+                      {props.show === 'count' && (
+                        <td className={`tdGranu ${'tdNotFound'}`}>0 results</td>
+                      )}
                     </tr>
-                    {expandedRows.includes(index2) && (
-                      <React.Fragment key={`expanded-${index2}`}>
-                        {props.show === 'boolean' &&
-                          dataset[2].map((booleanElement, booleanIndex) => (
-                            <tr
-                              className='trGranu'
-                              key={`boolean-${booleanIndex}`}
-                            >
-                              <td className='tdGranu'></td>
-                              <td
-                                className={`tdGranu ${
-                                  booleanElement ? 'tdFound' : 'tdNotFound'
-                                }`}
-                              >
-                                {dataset[1][booleanIndex]}
-                              </td>
-                              <td
-                                className={`tdGranu ${
-                                  booleanElement
-                                    ? 'tdFoundDataset'
-                                    : 'tdNotFoundDataset'
-                                }`}
-                              >
-                                {booleanElement ? 'YES' : 'No, sorry'}
-                              </td>
-                            </tr>
-                          ))}
-                        {props.show === 'count' &&
-                          dataset[3].map((countElement, countIndex) => (
-                            <tr className='trGranu' key={`count-${countIndex}`}>
-                              <td className='tdGranu'></td>
-                              <td
-                                className={`tdGranu ${
-                                  countElement !== undefined &&
-                                  countElement !== null &&
-                                  countElement !== 0
-                                    ? 'tdFoundDataset'
-                                    : 'tdNotFoundDataset'
-                                }`}
-                              >
-                                {dataset[1][countIndex]}
-                              </td>
-                              <td
-                                className={`tdGranu ${
-                                  countElement !== undefined &&
-                                  countElement !== null &&
-                                  countElement !== 0
-                                    ? 'tdFound'
-                                    : 'tdNotFound'
-                                }`}
-                              >
-                                {countElement}
-                              </td>
-                            </tr>
-                          ))}
-                      </React.Fragment>
-                    )}
                   </React.Fragment>
-                ))}
+                )}
               </tbody>
             </table>
           )
         })}
-      {showDatsets === true && props.results.length === 0 && (
-        <h5 className='errorConnection'>
-          No results, sorry. Please check the connection and retry
-        </h5>
-      )}
 
-      {!showCrossQuery && showDatsets === false &&  props.results.length > 0 && showResults === true && (
-        <div className='table-container'>
-          <div className='menu-icon-container'>
-            <div className='export-menu'>
-              <button className='exportButton' onClick={toggleExportMenu}>
-                <FiDownload />
-              </button>
-              {exportMenuVisible && (
-                <>
-                  <ul className='column-list'>
-                    <li onClick={exportToJSON}>Export to JSON</li>
-                    <li onClick={exportToCSV}>Export to CSV</li>
-                  </ul>
-                </>
-              )}
-            </div>
-            <div className='menu-container'>
-              <FaBars onClick={toggleMenu} />
-              {menuVisible && (
-                <>
-                  <ul className='column-list'>
-                    <li onClick={showAllColumns}>
-                      Show All Columns
-                      <FiLayers />
-                    </li>
-                    {Object.keys(columnVisibility).map(column => (
-                      <li
-                        key={column}
-                        onClick={() => toggleColumnVisibility(column)}
-                      >
-                        {column}
-                        {columnVisibility[column] ? <FaEye /> : <FaEyeSlash />}
+
+      {!showCrossQuery &&
+        showDatsets === false &&
+        props.results.length > 0 &&
+        showResults === true && (
+          <div className='table-container'>
+            <div className='menu-icon-container'>
+              <div className='export-menu'>
+                <button className='exportButton' onClick={toggleExportMenu}>
+                  <FiDownload />
+                </button>
+                {exportMenuVisible && (
+                  <>
+                    <ul className='column-list'>
+                      <li onClick={exportToJSON}>Export to JSON</li>
+                      <li onClick={exportToCSV}>Export to CSV</li>
+                    </ul>
+                  </>
+                )}
+              </div>
+              <div className='menu-container'>
+                <FaBars onClick={toggleMenu} />
+                {menuVisible && (
+                  <>
+                    <ul className='column-list'>
+                      <li onClick={showAllColumns}>
+                        Show All Columns
+                        <FiLayers />
                       </li>
-                    ))}
-                  </ul>
-                </>
-              )}
+                      {Object.keys(columnVisibility).map(column => (
+                        <li
+                          key={column}
+                          onClick={() => toggleColumnVisibility(column)}
+                        >
+                          {column}
+                          {columnVisibility[column] ? (
+                            <FaEye />
+                          ) : (
+                            <FaEyeSlash />
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-          <div className='header-container'>
-            <table className='tableResults'>
-              <thead className='theadResults'>
-                <tr>
-                  <th
-                    className={`sticky-header ${
-                      columnVisibility.variantInternalId ? 'visible' : 'hidden'
-                    }`}
-                  >
-                    <span>Variant ID</span>
-                    <button
-                      onClick={() =>
-                        toggleColumnVisibility('variantInternalId')
-                      }
-                    >
-                      {columnVisibility.variantInternalId ? (
-                        <FaEye />
-                      ) : (
-                        <FaEyeSlash />
-                      )}
-                    </button>
-                    <input
-                      type='text'
-                      placeholder='Filter Variant ID'
-                      onChange={e => handleFilterChange(e, 'variantInternalId')}
-                    />
-                  </th>
-                  <th
-                    className={`sticky-header ${
-                      columnVisibility.variation ? 'visible' : 'hidden'
-                    }`}
-                  >
-                    <span>Variation</span>
-                    <button onClick={() => toggleColumnVisibility('variation')}>
-                      {columnVisibility.variation ? <FaEye /> : <FaEyeSlash />}
-                    </button>
-                    <input
-                      type='text'
-                      placeholder='Filter variation'
-                      onChange={e => handleFilterChange(e, 'variation')}
-                    />
-                  </th>
-                  <th
-                    className={`sticky-header ${
-                      columnVisibility.Beacon ? 'visible' : 'hidden'
-                    }`}
-                  >
-                    <span>Beacon</span>
-                    <button onClick={() => toggleColumnVisibility('Beacon')}>
-                      {columnVisibility.Beacon ? <FaEye /> : <FaEyeSlash />}
-                    </button>
-                    <input
-                      type='text'
-                      placeholder='Filter Beacon'
-                      onChange={e => handleFilterChange(e, 'Beacon')}
-                    />
-                  </th>
-                  <th
-                    className={`sticky-header ${
-                      columnVisibility.identifiers ? 'visible' : 'hidden'
-                    }`}
-                  >
-                    <span>Identifiers</span>
-                    <button
-                      onClick={() => toggleColumnVisibility('identifiers')}
-                    >
-                      {columnVisibility.identifiers ? (
-                        <FaEye />
-                      ) : (
-                        <FaEyeSlash />
-                      )}
-                    </button>
-                    <input
-                      type='text'
-                      placeholder='Filter identifiers'
-                      onChange={e => handleFilterChange(e, 'identifiers')}
-                    />
-                  </th>
-                  <th
-                    className={`sticky-header ${
-                      columnVisibility.molecularAttributes
-                        ? 'visible'
-                        : 'hidden'
-                    }`}
-                  >
-                    <span>Molecular Attributes</span>
-                    <button
-                      onClick={() =>
-                        toggleColumnVisibility('molecularAttributes')
-                      }
-                    >
-                      {columnVisibility.molecularAttributes ? (
-                        <FaEye />
-                      ) : (
-                        <FaEyeSlash />
-                      )}
-                    </button>
-                    <input
-                      type='text'
-                      placeholder='Filter molecular attributes'
-                      onChange={e =>
-                        handleFilterChange(e, 'molecularAttributes')
-                      }
-                    />
-                  </th>
-                  <th
-                    className={`sticky-header ${
-                      columnVisibility.molecularEffects ? 'visible' : 'hidden'
-                    }`}
-                  >
-                    <span>Molecular Effects</span>
-                    <button
-                      onClick={() => toggleColumnVisibility('molecularEffects')}
-                    >
-                      {columnVisibility.molecularEffects ? (
-                        <FaEye />
-                      ) : (
-                        <FaEyeSlash />
-                      )}
-                    </button>
-                    <input
-                      type='text'
-                      placeholder='Filter molecular effects'
-                      onChange={e => handleFilterChange(e, 'molecularEffects')}
-                    />
-                  </th>
-                  <th
-                    className={`sticky-header ${
-                      columnVisibility.caseLevelData ? 'visible' : 'hidden'
-                    }`}
-                  >
-                    <span>Case Level Data</span>
-                    <button
-                      onClick={() => toggleColumnVisibility('caseLevelData')}
-                    >
-                      {columnVisibility.caseLevelData ? (
-                        <FaEye />
-                      ) : (
-                        <FaEyeSlash />
-                      )}
-                    </button>
-                    <input
-                      type='text'
-                      placeholder='Filter case level data'
-                      onChange={e => handleFilterChange(e, 'caseLevelData')}
-                    />
-                  </th>
-                  <th
-                    className={`sticky-header ${
-                      columnVisibility.variantLevelData ? 'visible' : 'hidden'
-                    }`}
-                  >
-                    <span>Variant Level Data</span>
-                    <button
-                      onClick={() => toggleColumnVisibility('variantLevelData')}
-                    >
-                      {columnVisibility.variantLevelData ? (
-                        <FaEye />
-                      ) : (
-                        <FaEyeSlash />
-                      )}
-                    </button>
-                    <input
-                      type='text'
-                      placeholder='Filter variant level data'
-                      onChange={e => handleFilterChange(e, 'variantLevelData')}
-                    />
-                  </th>
-                  <th
-                    className={`sticky-header ${
-                      columnVisibility.frequencyInPopulations
-                        ? 'visible'
-                        : 'hidden'
-                    }`}
-                  >
-                    <span>Frequency In Populations</span>
-                    <button
-                      onClick={() =>
-                        toggleColumnVisibility('frequencyInPopulations')
-                      }
-                    >
-                      {columnVisibility.frequencyInPopulations ? (
-                        <FaEye />
-                      ) : (
-                        <FaEyeSlash />
-                      )}
-                    </button>
-                    <input
-                      type='text'
-                      placeholder='Filter frequency in populations'
-                      onChange={e =>
-                        handleFilterChange(e, 'frequencyInPopulations')
-                      }
-                    />
-                  </th>
-
-                  {/* Add more column headers here */}
-                </tr>
-              </thead>
-            </table>
-          </div>
-          <div className='body-container'>
-            <table className='tableResults'>
-              <tbody className='tbodyResults'>
-                {currentRows.map((row, index) => (
-                  <tr key={index}>
-                    <td
-                      className={
+            <div className='header-container'>
+              <table className='tableResults'>
+                <thead className='theadResults'>
+                  <tr>
+                    <th
+                      className={`sticky-header ${
                         columnVisibility.variantInternalId
                           ? 'visible'
                           : 'hidden'
-                      }
+                      }`}
                     >
-                      {row.variantInternalId}
-                    </td>
-                    <td
-                      className={
+                      <span>Variant ID</span>
+                      <button
+                        onClick={() =>
+                          toggleColumnVisibility('variantInternalId')
+                        }
+                      >
+                        {columnVisibility.variantInternalId ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter Variant ID'
+                        onChange={e =>
+                          handleFilterChange(e, 'variantInternalId')
+                        }
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
                         columnVisibility.variation ? 'visible' : 'hidden'
-                      }
+                      }`}
                     >
-                      {row.variation}
-                    </td>
-                    <td
-                      className={columnVisibility.Beacon ? 'visible' : 'hidden'}
+                      <span>Variation</span>
+                      <button
+                        onClick={() => toggleColumnVisibility('variation')}
+                      >
+                        {columnVisibility.variation ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter variation'
+                        onChange={e => handleFilterChange(e, 'variation')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
+                        columnVisibility.Beacon ? 'visible' : 'hidden'
+                      }`}
                     >
-                      {row.Beacon}
-                    </td>
-                    <td
-                      className={
+                      <span>Beacon</span>
+                      <button onClick={() => toggleColumnVisibility('Beacon')}>
+                        {columnVisibility.Beacon ? <FaEye /> : <FaEyeSlash />}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter Beacon'
+                        onChange={e => handleFilterChange(e, 'Beacon')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
                         columnVisibility.identifiers ? 'visible' : 'hidden'
-                      }
+                      }`}
                     >
-                      {row.identifiers}
-                    </td>
-                    <td
-                      className={
+                      <span>Identifiers</span>
+                      <button
+                        onClick={() => toggleColumnVisibility('identifiers')}
+                      >
+                        {columnVisibility.identifiers ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter identifiers'
+                        onChange={e => handleFilterChange(e, 'identifiers')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
                         columnVisibility.molecularAttributes
                           ? 'visible'
                           : 'hidden'
-                      }
+                      }`}
                     >
-                      {row.molecularAttributes}
-                    </td>
-                    <td
-                      className={
+                      <span>Molecular Attributes</span>
+                      <button
+                        onClick={() =>
+                          toggleColumnVisibility('molecularAttributes')
+                        }
+                      >
+                        {columnVisibility.molecularAttributes ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter molecular attributes'
+                        onChange={e =>
+                          handleFilterChange(e, 'molecularAttributes')
+                        }
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
                         columnVisibility.molecularEffects ? 'visible' : 'hidden'
-                      }
+                      }`}
                     >
-                      {row.molecularEffects}
-                    </td>
-                    <td
-                      className={
+                      <span>Molecular Effects</span>
+                      <button
+                        onClick={() =>
+                          toggleColumnVisibility('molecularEffects')
+                        }
+                      >
+                        {columnVisibility.molecularEffects ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter molecular effects'
+                        onChange={e =>
+                          handleFilterChange(e, 'molecularEffects')
+                        }
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
                         columnVisibility.caseLevelData ? 'visible' : 'hidden'
-                      }
+                      }`}
                     >
-                      {row.caseLevelData}
-                    </td>
-                    <td
-                      className={
+                      <span>Case Level Data</span>
+                      <button
+                        onClick={() => toggleColumnVisibility('caseLevelData')}
+                      >
+                        {columnVisibility.caseLevelData ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter case level data'
+                        onChange={e => handleFilterChange(e, 'caseLevelData')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
                         columnVisibility.variantLevelData ? 'visible' : 'hidden'
-                      }
+                      }`}
                     >
-                      {row.variantLevelData}
-                    </td>
-                    <td
-                      className={
+                      <span>Variant Level Data</span>
+                      <button
+                        onClick={() =>
+                          toggleColumnVisibility('variantLevelData')
+                        }
+                      >
+                        {columnVisibility.variantLevelData ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter variant level data'
+                        onChange={e =>
+                          handleFilterChange(e, 'variantLevelData')
+                        }
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
                         columnVisibility.frequencyInPopulations
                           ? 'visible'
                           : 'hidden'
-                      }
+                      }`}
                     >
-                      {row.frequencyInPopulations}
-                    </td>
+                      <span>Frequency In Populations</span>
+                      <button
+                        onClick={() =>
+                          toggleColumnVisibility('frequencyInPopulations')
+                        }
+                      >
+                        {columnVisibility.frequencyInPopulations ? (
+                          <FaEye />
+                        ) : (
+                          <FaEyeSlash />
+                        )}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter frequency in populations'
+                        onChange={e =>
+                          handleFilterChange(e, 'frequencyInPopulations')
+                        }
+                      />
+                    </th>
 
-                    {/* Render other row cells here */}
+                    {/* Add more column headers here */}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+              </table>
+            </div>
+            <div className='body-container'>
+              <table className='tableResults'>
+                <tbody className='tbodyResults'>
+                  {currentRows.map((row, index) => (
+                    <tr key={index}>
+                      <td
+                        className={
+                          columnVisibility.variantInternalId
+                            ? 'visible'
+                            : 'hidden'
+                        }
+                      >
+                        {row.variantInternalId}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.variation ? 'visible' : 'hidden'
+                        }
+                      >
+                        {row.variation}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.Beacon ? 'visible' : 'hidden'
+                        }
+                      >
+                        {row.Beacon}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.identifiers ? 'visible' : 'hidden'
+                        }
+                      >
+                        {row.identifiers}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.molecularAttributes
+                            ? 'visible'
+                            : 'hidden'
+                        }
+                      >
+                        {row.molecularAttributes}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.molecularEffects
+                            ? 'visible'
+                            : 'hidden'
+                        }
+                      >
+                        {row.molecularEffects}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.caseLevelData ? 'visible' : 'hidden'
+                        }
+                      >
+                        {row.caseLevelData}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.variantLevelData
+                            ? 'visible'
+                            : 'hidden'
+                        }
+                      >
+                        {row.variantLevelData}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.frequencyInPopulations
+                            ? 'visible'
+                            : 'hidden'
+                        }
+                      >
+                        {row.frequencyInPopulations}
+                      </td>
+
+                      {/* Render other row cells here */}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+
       {props.show === 'full' && !showCrossQuery && props.results.length > 0 && (
         <div className='pagination-controls'>
           <button onClick={handlePreviousPage} disabled={currentPage === 1}>
@@ -925,11 +995,13 @@ function TableResultsVariants (props) {
           </button>
         </div>
       )}
+
       {props.show === 'full' &&
         props.results.length === 0 &&
         !showCrossQuery && (
           <h5 className='noResultsFullResponse'>No results, sorry.</h5>
         )}
+        
       {showCrossQuery && (
         <CrossQueries
           parameter={parameterCrossQuery}
