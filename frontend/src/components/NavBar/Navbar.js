@@ -18,24 +18,25 @@ function Navbar () {
     logOutUser,
     authenticateUser,
     getStoredToken,
-    userNameToShare
+    userNameToShare,
+    setUserNameToShare
   } = useContext(AuthContext)
 
   const auth = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
-    console.log(auth)
+    let user = localStorage.getItem('userName')
+    if (user !== '') {
+      setUserNameToShare(user)
+    }
     authenticateUser()
     let token = getStoredToken()
     let isAuthenticated = false
     if (token === null) {
       isAuthenticated = auth.userData?.id_token ? true : false
-      console.log(isAuthenticated)
-      console.log(auth.userData)
     } else {
       isAuthenticated = true
-      console.log(isAuthenticated)
     }
 
     if (isAuthenticated || isLoggedIn === true) {
@@ -43,7 +44,8 @@ function Navbar () {
     } else {
       setIsLoggedIn(false)
     }
-  }, [])
+  }, [userNameToShare])
+
 
   const handleHelpModal1 = () => {
     setIsOpenModal1(true)
@@ -64,7 +66,7 @@ function Navbar () {
     <div className='navB'>
       <LoggedIn />
       <nav className='nav2'>
-        <NavLink
+        {/* <NavLink
           exact
           to='/'
           className={({ isActive }) =>
@@ -72,8 +74,8 @@ function Navbar () {
           }
         >
           Individuals
-        </NavLink>
-        <NavLink
+        </NavLink> */}
+        {/* <NavLink
           exact
           to='/biosamples'
           className={({ isActive }) =>
@@ -81,61 +83,53 @@ function Navbar () {
           }
         >
           Biosamples
-        </NavLink>
-        <NavLink
+        </NavLink> */}
+        {/* <NavLink
           exact
           to='/genomicVariations'
           className={({ isActive }) => (isActive ? 'Variants2' : 'Variants')}
         >
           Variant
-        </NavLink>
-        <NavLink
+        </NavLink> */}
+        {/* <NavLink
           exact
           to='/runs'
           className={({ isActive }) => (isActive ? 'Runs2' : 'Runs')}
         >
           Runs
-        </NavLink>
-        <NavLink
+        </NavLink> */}
+        {/* <NavLink
           exact
           to='/analyses'
           className={({ isActive }) => (isActive ? 'Analyses2' : 'Analyses')}
         >
           Analyses
-        </NavLink>
-        <NavLink
+        </NavLink> */}
+        {/* <NavLink
           exact
           to='/cohorts'
           className={({ isActive }) => (isActive ? 'Cohorts2' : 'Cohorts')}
         >
           Cohorts
-        </NavLink>
-        <NavLink
-          exact
-          to='/allScopes/cross-queries/%20/'
-          className={({ isActive }) =>
-            isActive ? 'Cross-queries2' : 'Cross-queries'
-          }
-        >
-          Cross queries
-        </NavLink>
+        </NavLink> */}
         <div class='animation nav2'></div>
       </nav>
       <nav className='nav3'>
         {!isLoggedIn && (
           <NavLink
+            to='/'
+            className={({ isActive }) => (isActive ? 'Home2' : 'Home')}
+          >
+            <ion-icon name='home-outline'></ion-icon>
+          </NavLink>
+        )}
+
+        {!isLoggedIn && (
+          <NavLink
             to='/beaconInfo'
             className={({ isActive }) => (isActive ? 'Members2' : 'Members')}
           >
-            Beacon info
-          </NavLink>
-        )}
-        {!isLoggedIn && (
-          <NavLink
-            to='/about'
-            className={({ isActive }) => (isActive ? 'About2' : 'About')}
-          >
-            About
+            Beacon Info
           </NavLink>
         )}
 
@@ -148,6 +142,14 @@ function Navbar () {
             Log in
           </NavLink>
         )}
+        {isLoggedIn && (
+          <NavLink
+            to='/'
+            className={({ isActive }) => (isActive ? 'Home5' : 'Home6')}
+          >
+            <ion-icon name='home-outline'></ion-icon>
+          </NavLink>
+        )}
 
         {isLoggedIn && (
           <NavLink
@@ -155,16 +157,7 @@ function Navbar () {
             to='/beaconInfo'
             className={({ isActive }) => (isActive ? 'Members4' : 'Members3')}
           >
-            Beacon info
-          </NavLink>
-        )}
-
-        {isLoggedIn && (
-          <NavLink
-            to='/about'
-            className={({ isActive }) => (isActive ? 'About6' : 'About5')}
-          >
-            About
+            Beacon Info
           </NavLink>
         )}
 
@@ -226,16 +219,7 @@ function Navbar () {
                       {' '}
                       <h1>Beacon Info</h1>
                     </NavLink>
-                    <NavLink
-                      to='/about'
-                      onClick={handleMenu}
-                      className={({ isActive }) =>
-                        isActive ? 'About2' : 'About'
-                      }
-                    >
-                      {' '}
-                      <h1>About</h1>
-                    </NavLink>
+
                     {!isLoggedIn && (
                       <NavLink
                         exact
@@ -248,6 +232,17 @@ function Navbar () {
                         <h1>Log in</h1>
                       </NavLink>
                     )}
+
+                    {
+                      <NavLink
+                        exact
+                        to='/'
+                        onClick={handleMenu}
+                        className='Home3'
+                      >
+                        <ion-icon name='home-outline'></ion-icon>
+                      </NavLink>
+                    }
 
                     {isLoggedIn && (
                       <>
@@ -272,7 +267,7 @@ function Navbar () {
                   </div>
 
                   <div className='menuNav2'>
-                    <NavLink
+                    {/* <NavLink
                       exact
                       to='/'
                       onClick={handleMenu}
@@ -281,8 +276,8 @@ function Navbar () {
                       }
                     >
                       <h1>Individuals</h1>
-                    </NavLink>
-                    <NavLink
+                    </NavLink> */}
+                    {/* <NavLink
                       exact
                       to='/biosamples'
                       onClick={handleMenu}
@@ -291,8 +286,8 @@ function Navbar () {
                       }
                     >
                       <h1>Biosamples</h1>
-                    </NavLink>
-                    <NavLink
+                    </NavLink> */}
+                    {/* <NavLink
                       exact
                       to='/genomicVariations'
                       onClick={handleMenu}
@@ -301,8 +296,8 @@ function Navbar () {
                       }
                     >
                       <h1>Variant</h1>
-                    </NavLink>
-                    <NavLink
+                    </NavLink> */}
+                    {/* <NavLink
                       exact
                       to='/runs'
                       onClick={handleMenu}
@@ -311,8 +306,8 @@ function Navbar () {
                       }
                     >
                       <h1>Runs</h1>
-                    </NavLink>
-                    <NavLink
+                    </NavLink> */}
+                    {/* <NavLink
                       exact
                       to='/analyses'
                       onClick={handleMenu}
@@ -321,8 +316,8 @@ function Navbar () {
                       }
                     >
                       <h1>Analyses</h1>
-                    </NavLink>
-                    <NavLink
+                    </NavLink> */}
+                    {/* <NavLink
                       exact
                       to='/cohorts'
                       onClick={handleMenu}
@@ -331,17 +326,7 @@ function Navbar () {
                       }
                     >
                       <h1>Cohorts</h1>
-                    </NavLink>
-                    <NavLink
-                      exact
-                      to='/allScopes/cross-queries/%20/'
-                      onClick={handleMenu}
-                      className={({ isActive }) =>
-                        isActive ? 'Cross-queries2' : 'Cross-queries'
-                      }
-                    >
-                      <h1>Cross queries</h1>
-                    </NavLink>
+                    </NavLink> */}
                     <NavLink
                       to='/beaconInfo'
                       onClick={handleMenu}
@@ -350,17 +335,7 @@ function Navbar () {
                       }
                     >
                       {' '}
-                      <h1>Beacon info</h1>
-                    </NavLink>
-                    <NavLink
-                      to='/about'
-                      onClick={handleMenu}
-                      className={({ isActive }) =>
-                        isActive ? 'About2' : 'About'
-                      }
-                    >
-                      {' '}
-                      <h1>About</h1>
+                      <h1>Beacon Info</h1>
                     </NavLink>
                     {!isLoggedIn && (
                       <NavLink
@@ -374,7 +349,16 @@ function Navbar () {
                         <h1>Log in</h1>
                       </NavLink>
                     )}
-
+                    (
+                    <NavLink
+                      exact
+                      to='/'
+                      onClick={handleMenu}
+                      className='Home3'
+                    >
+                      <ion-icon name='home-outline'></ion-icon>
+                    </NavLink>
+                    )
                     {isLoggedIn && (
                       <>
                         <NavLink

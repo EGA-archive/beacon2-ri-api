@@ -10,7 +10,10 @@ const LoggedIn = () => {
 
   if (auth && auth.userData) {
     setIsLoggedIn(true)
-    setUserNameToShare(auth.userData.profile.name)
+
+    setUserNameToShare(
+      localStorage.setItem('userName', auth.userData.profile.name)
+    )
 
     return (
       <div>
