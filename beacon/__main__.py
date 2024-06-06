@@ -20,6 +20,7 @@ from aiohttp_middlewares.cors import DEFAULT_ALLOW_HEADERS
 import asyncio
 import socket
 
+
 from beacon import conf, load_logger
 from beacon.request import ontologies
 from beacon.response import middlewares

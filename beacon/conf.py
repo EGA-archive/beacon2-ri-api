@@ -9,10 +9,10 @@ with open("beacon/api_version.yml") as api_version_file:
 #
 # Beacon general info
 #
-beacon_id = 'org.ega-archive.gdi-spanish-beacon'  # ID of the Beacon
-beacon_name = 'GDI Spanish Beacon'  # Name of the Beacon service
+beacon_id = 'org.ega-archive.beacon-ri-demo'  # ID of the Beacon
+beacon_name = 'Beacon Reference Implementation demo'  # Name of the Beacon service
 api_version = api_version['api_version'] # Version of the Beacon implementation
-uri = 'https://beacon-spain.ega-archive.org/api/'
+uri = 'https://beacon-ri-demo.ega-archive.org/api/'
 
 #
 # Beacon granularity
