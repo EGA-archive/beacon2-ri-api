@@ -9,11 +9,10 @@ with open("beacon/api_version.yml") as api_version_file:
 #
 # Beacon general info
 #
-#
-beacon_id = 'org.ega-archive.beacon-ri-demo'  # ID of the Beacon
-beacon_name = 'Beacon Reference Implementation demo'  # Name of the Beacon service
+beacon_id = 'org.ega-archive.gdi-spanish-beacon'  # ID of the Beacon
+beacon_name = 'GDI Spanish Beacon'  # Name of the Beacon service
 api_version = api_version['api_version'] # Version of the Beacon implementation
-uri = 'https://beacon-ri-demo.ega-archive.org/api/'
+uri = 'https://beacon-spain.ega-archive.org/api/'
 
 #
 # Beacon granularity
@@ -44,10 +43,10 @@ org_info = ''
 #description = (r"This <a href='https://beacon-project.io/'>Beacon</a> "
 #               r"is based on the GA4GH Beacon "
 #               r"<a href='https://github.com/ga4gh-beacon/specification-v2/blob/master/beacon.yaml'>v2.0</a>")
-description = r"This Beacon is based on synthetic data hosted at the <a href='https://ega-archive.org/datasets/EGAD00001003338'>EGA</a>. The dataset contains 2504 samples including genetic data based on 1K Genomes data, and 76 individual attributes and phenotypic data derived from UKBiobank."
+description = r"This Beacon is based on synthetic data hosted at GDI Spanish Node. It includes three datasets: the B1MG one million genomes, 2504 samples from CINECA UK1 synthetic dataset and the rare diseases dataset from rd-connect."
 version = 'v2.0'
-welcome_url = 'https://beacon.ega-archive.org/'
-alternative_url = 'https://beacon.ega-archive.org/api'
+welcome_url = 'https://beacon-spain.ega-archive.org/'
+alternative_url = 'https://beacon-spain.ega-archive.org/api'
 create_datetime = '2021-11-29T12:00:00.000000'
 update_datetime = ''
 # update_datetime will be created when initializing the beacon, using the ISO 8601 format
@@ -56,7 +55,7 @@ update_datetime = ''
 # Service
 #
 service_type = 'org.ga4gh:beacon:1.0.0'  # service type
-service_url = 'https://beacon.ega-archive.org/api/services'
+service_url = 'https://beacon-spain.ega-archive.org/api/services'
 entry_point = False
 is_open = True
 documentation_url = 'https://github.com/EGA-archive/beacon-2.x/'  # Documentation of the service
@@ -81,7 +80,7 @@ beacon_handovers ={
 # Database connection
 #
 database_host = 'mongo'
-database_port = 27017
+database_port = 27021
 database_user = 'root'
 database_password = 'example'
 database_name = 'beacon'
@@ -104,7 +103,7 @@ CA_cert = '/etc/ega/CA.cert'
 #
 # Permissions server configuration
 #
-permissions_url = 'http://beacon-permissions:5051/'
+permissions_url = 'http://beacon-permissionspanish:5051/'
 
 #
 # IdP endpoints (OpenID Connect/Oauth2)
