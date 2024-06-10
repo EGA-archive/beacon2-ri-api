@@ -1,4 +1,4 @@
 git fetch
-git pull
+git checkout beacon-spain
 cd deploy
 make
