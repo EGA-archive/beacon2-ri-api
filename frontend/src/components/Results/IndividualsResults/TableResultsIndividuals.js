@@ -19,7 +19,7 @@ function TableResultsIndividuals (props) {
   const [showCrossQuery, setShowCrossQuery] = useState(false)
   const [parameterCrossQuery, setParamCrossQuery] = useState('')
   const [expandedRows, setExpandedRows] = useState(
-    Array.from({ length: props.beaconsList.length }, (_, index) => index)
+    new Array(props.beaconsList.length).fill(false)
   )
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage] = useState(10) // You can make this dynamic if needed
@@ -247,7 +247,7 @@ function TableResultsIndividuals (props) {
 
   const handleShowCrossQuery = e => {
     setShowCrossQuery(true)
-   
+
     setParamCrossQuery(e.target.innerText)
   }
 
