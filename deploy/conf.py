@@ -3,17 +3,16 @@ import yaml
 with open("beacon/api_version.yml") as api_version_file:
     api_version = yaml.safe_load(api_version_file)
 
-"""Beacon Configuration."""
 
+"""Beacon Configuration."""
 
 #
 # Beacon general info
 #
-#
-beacon_id = 'org.ega-archive.beacon-ri-demo'  # ID of the Beacon
-beacon_name = 'Beacon Reference Implementation demo'  # Name of the Beacon service
+beacon_id = 'org.ega-archive.ega-beacon'  # ID of the Beacon
+beacon_name = 'EGA Beacon'  # Name of the Beacon service
 api_version = api_version['api_version'] # Version of the Beacon implementation
-uri = 'https://beacon-ri-demo.ega-archive.org/api/'
+uri = 'https://beacon.ega-archive.org/api/'
 
 #
 # Beacon granularity
@@ -44,7 +43,7 @@ org_info = ''
 #description = (r"This <a href='https://beacon-project.io/'>Beacon</a> "
 #               r"is based on the GA4GH Beacon "
 #               r"<a href='https://github.com/ga4gh-beacon/specification-v2/blob/master/beacon.yaml'>v2.0</a>")
-description = r"This Beacon is based on synthetic data hosted at the <a href='https://ega-archive.org/datasets/EGAD00001003338'>EGA</a>. The dataset contains 2504 samples including genetic data based on 1K Genomes data, and 76 individual attributes and phenotypic data derived from UKBiobank."
+description = r"This beacon is based on the European Genome-Phenome Archive datasets. Now it only contains a public dataset coming from tcga coadread, with samples for patients with colorectal adenocarcinoma disease."
 version = 'v2.0'
 welcome_url = 'https://beacon.ega-archive.org/'
 alternative_url = 'https://beacon.ega-archive.org/api'
@@ -81,7 +80,7 @@ beacon_handovers ={
 # Database connection
 #
 database_host = 'mongo'
-database_port = 27017
+database_port = 27020
 database_user = 'root'
 database_password = 'example'
 database_name = 'beacon'
@@ -104,7 +103,7 @@ CA_cert = '/etc/ega/CA.cert'
 #
 # Permissions server configuration
 #
-permissions_url = 'http://beacon-permissions:5051/'
+permissions_url = 'http://beacon-permissions-ega:5051/'
 
 #
 # IdP endpoints (OpenID Connect/Oauth2)
