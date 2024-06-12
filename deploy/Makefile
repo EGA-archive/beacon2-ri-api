@@ -1,14 +1,6 @@
 build:
 	docker-compose up -d --build beaconega permissionsega
 	sleep 10
-	docker exec mongoega /bin/bash -c 'mongo beacon --port 27020 -u root -p example --authenticationDatabase admin --eval "db.filtering_terms.deleteMany({})"'
-	docker exec mongoega /bin/bash -c 'mongo beacon --port 27020  -u root -p example --authenticationDatabase admin --eval "db.analyses.deleteMany({})"'
-	docker exec mongoega /bin/bash -c 'mongo beacon --port 27020  -u root -p example --authenticationDatabase admin --eval "db.biosamples.deleteMany({})"'
-	docker exec mongoega /bin/bash -c 'mongo beacon --port 27020  -u root -p example --authenticationDatabase admin --eval "db.cohorts.deleteMany({})"'
-	docker exec mongoega /bin/bash -c 'mongo beacon --port 27020  -u root -p example --authenticationDatabase admin --eval "db.datasets.deleteMany({})"'
-	docker exec mongoega /bin/bash -c 'mongo beacon --port 27020  -u root -p example --authenticationDatabase admin --eval "db.genomicVariations.deleteMany({})"'
-	docker exec mongoega /bin/bash -c 'mongo beacon --port 27020  -u root -p example --authenticationDatabase admin --eval "db.individuals.deleteMany({})"'
-	docker exec mongoega /bin/bash -c 'mongo beacon --port 27020  -u root -p example --authenticationDatabase admin --eval "db.runs.deleteMany({})"'
 	docker cp /data/vault/bio-scratch/arnau/beacon/beacon2-ri-tools-v2_test_anot/tcga-coad/analyses.json mongoega:tmp/analyses.json
 	docker cp /data/vault/bio-scratch/arnau/beacon/beacon2-ri-tools-v2_test_anot/tcga-coad/biosamples.json mongoega:tmp/biosamples.json
 	docker cp /data/vault/bio-scratch/arnau/beacon/beacon2-ri-tools-v2_test_anot/tcga-coad/cohorts.json mongoega:tmp/cohorts.json
