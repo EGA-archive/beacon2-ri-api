@@ -36,7 +36,7 @@ services:
 
   dbega:
     image: mongo:5
-    command: mongod --port 27020
+    command: mongod --wiredTigerCacheSizeGB 2.5 --port 27020
     hostname: mongo
     container_name: mongoega
     deploy:
