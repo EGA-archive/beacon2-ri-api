@@ -244,7 +244,6 @@ def build_beacon_info_response(data, qparams, func_response_type, authorized_dat
                 'id': conf.org_id,
                 'name': conf.org_name,
                 'description': conf.org_description,
-                'address': conf.org_adress,
                 'welcomeUrl': conf.org_welcome_url,
                 'contactUrl': conf.org_contact_url,
                 'logoUrl': conf.org_logo_url,
