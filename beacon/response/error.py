@@ -1,6 +1,8 @@
 import subprocess
 import logging
 import json
+import aiohttp
+from aiohttp import web
 from aiohttp.web_request import Request
 from beacon.db.datasets import get_datasets
 from beacon.request import RequestParams
@@ -14,8 +16,12 @@ LOG = logging.getLogger(__name__)
 async def handler(request: Request):
     LOG.error('Running an error request')
 
+    LOG.error(request.url)
+
     # Fetch datasets info
     qparams = ''
+
+    error = build_beacon_error_response(404, qparams, str('error'))
+
     
-    response_converted= build_beacon_error_response(404, qparams, 'Not Found')
-    return await json_stream(request, response_converted)
+    raise web.HTTPNotFound(text=json.dumps(error), content_type='application/json')

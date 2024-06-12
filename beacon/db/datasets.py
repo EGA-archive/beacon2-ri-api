@@ -62,7 +62,7 @@ def get_datasets(entry_id: Optional[str], qparams: RequestParams):
     return schema, count, docs
 
 
-def get_dataset_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: str):
+def get_dataset_with_id(entry_id: Optional[str], qparams: RequestParams):
     collection = 'datasets'
     dataset_count=1
     limit = qparams.query.pagination.limit
@@ -70,17 +70,14 @@ def get_dataset_with_id(entry_id: Optional[str], qparams: RequestParams, dataset
     #query = apply_filters({}, qparams.query.filters, collection)
     query = query_id(query, entry_id)
     schema = DefaultSchemas.DATASETS
-    if entry_id == dataset:
-        count = get_count(client.beacon.datasets, query)
-        docs = get_documents(
-            client.beacon.datasets,
-            query,
-            qparams.query.pagination.skip,
-            qparams.query.pagination.skip*limit
-        )
-    else:
-        return schema, 0, -1, None
-    return schema, count, dataset_count, docs
+    count = get_count(client.beacon.datasets, query)
+    docs = get_documents(
+        client.beacon.datasets,
+        query,
+        qparams.query.pagination.skip,
+        qparams.query.pagination.skip*limit
+    )
+    return schema, count, docs
 
 def get_variants_of_biosample(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'g_variants'

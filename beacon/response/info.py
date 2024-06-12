@@ -20,6 +20,7 @@ from beacon.response.build_response import build_beacon_info_response, build_bea
 from beacon.utils.auth import resolve_token
 from beacon.utils.stream import json_stream
 from bson import json_util
+from aiohttp import web
 
 LOG = logging.getLogger(__name__)
 
@@ -70,13 +71,18 @@ async def handler(request: Request):
     except Exception as err:
         qparams = ''
         if str(err) == 'Not Found':
-            response_converted = build_beacon_error_response(404, qparams, str(err))
+            error = build_beacon_error_response(404, qparams, str('error'))
+            raise web.HTTPNotFound(text=json.dumps(error), content_type='application/json')
         elif str(err) == 'Bad Request':
-            response_converted = build_beacon_error_response(400, qparams, str(err)+':'+str(err.text))
+            error = build_beacon_error_response(400, qparams, str('error'))
+            raise web.HTTPBadRequest(text=json.dumps(error), content_type='application/json')
         elif str(err) == 'Bad Gateway':
-            response_converted = build_beacon_error_response(502, qparams, str(err))
+            error = build_beacon_error_response(502, qparams, str('error'))
+            raise web.HTTPBadGateway(text=json.dumps(error), content_type='application/json')
         elif str(err) == 'Method Not Allowed':
-            response_converted = build_beacon_error_response(405, qparams, str(err))
+            error = build_beacon_error_response(405, qparams, str('error'))
+            raise web.HTTPMethodNotAllowed(text=json.dumps(error), content_type='application/json')
         else:
-            response_converted = build_beacon_error_response(500, qparams, str(err))
+            error = build_beacon_error_response(500, qparams, str('error'))
+            raise web.HTTPInternalServerError(text=json.dumps(error), content_type='application/json')
     return await json_stream(request, response_converted)

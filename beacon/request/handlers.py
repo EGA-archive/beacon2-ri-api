@@ -29,31 +29,18 @@ LOG = logging.getLogger(__name__)
 
 def collection_handler(db_fn, request=None):
     async def wrapper(request: Request):
-        try:
-            # Get params
-            json_body = await request.json() if request.method == "POST" and request.has_body and request.can_read_body else {}
-            qparams = RequestParams(**json_body).from_request(request)
-            entry_id = request.match_info["id"] if "id" in request.match_info else None
-            # Get response
-            entity_schema, count, records = db_fn(entry_id, qparams)
-            response_converted = (
-                [r for r in records] if records else []
-            )
-            response = build_beacon_collection_response(
-                response_converted, count, qparams, lambda x, y: x, entity_schema
-            )
-        except Exception as err:
-            qparams=''
-            if str(err) == 'Not Found':
-                response = build_beacon_error_response(404, qparams, str(err))
-            elif str(err) == 'Bad Request':
-                response = build_beacon_error_response(400, qparams, str(err)+':'+str(err.text))
-            elif str(err) == 'Bad Gateway':
-                response = build_beacon_error_response(502, qparams, str(err))
-            elif str(err) == 'Method Not Allowed':
-                response = build_beacon_error_response(405, qparams, str(err))
-            else:
-                response = build_beacon_error_response(500, qparams, str(err))
+        # Get params
+        json_body = await request.json() if request.method == "POST" and request.has_body and request.can_read_body else {}
+        qparams = RequestParams(**json_body).from_request(request)
+        entry_id = request.match_info["id"] if "id" in request.match_info else None
+        LOG.debug(entry_id)
+        # Get response
+        entity_schema, count, records = db_fn(entry_id, qparams)
+        response_converted = (
+            [r for r in records] if records else []
+        )
+        response = build_beacon_collection_response(
+            response_converted, count, qparams, lambda x, y: x, entity_schema)
         return await json_stream(request, response)
 
     return wrapper
@@ -141,17 +128,19 @@ def generic_handler(db_fn, request=None):
                 try:
                     response_type = response_type_dict[username]
                 except Exception:
-                    #LOG.debug(Exception)
-                    response_type = ['boolean']
-                if response_type is not None:
-                    for response_typed in response_type:    
-                        #LOG.debug(response_typed)        
-                        if response_typed == 'boolean':
-                            qparams.query.requested_granularity = Granularity.BOOLEAN
-                        elif response_typed == 'count':
-                            qparams.query.requested_granularity = Granularity.COUNT
-                        elif response_typed == 'record':
-                            qparams.query.requested_granularity = Granularity.RECORD
+                    pass
+                try:
+                    if response_type is not None:
+                        for response_typed in response_type:    
+                            #LOG.debug(response_typed)        
+                            if response_typed == 'boolean':
+                                qparams.query.requested_granularity = Granularity.BOOLEAN
+                            elif response_typed == 'count':
+                                qparams.query.requested_granularity = Granularity.COUNT
+                            elif response_typed == 'record':
+                                qparams.query.requested_granularity = Granularity.RECORD
+                except Exception:
+                    pass
             
 
             entry_id = request.match_info.get('id', None)
@@ -209,15 +198,21 @@ def generic_handler(db_fn, request=None):
         except Exception as err:
             qparams = ''
             if str(err) == 'Not Found':
-                response = build_beacon_error_response(404, qparams, str(err))
+                error = build_beacon_error_response(404, qparams, str(err))
+                raise web.HTTPNotFound(text=json.dumps(error), content_type='application/json')
             elif str(err) == 'Bad Request':
-                response = build_beacon_error_response(400, qparams, str(err)+':'+str(err.text))
+                error = build_beacon_error_response(400, qparams, str(err))
+                raise web.HTTPBadRequest(text=json.dumps(error), content_type='application/json')
             elif str(err) == 'Bad Gateway':
-                response = build_beacon_error_response(502, qparams, str(err))
+                error = build_beacon_error_response(502, qparams, str(err))
+                raise web.HTTPBadGateway(text=json.dumps(error), content_type='application/json')
             elif str(err) == 'Method Not Allowed':
-                response = build_beacon_error_response(405, qparams, str(err))
+                error = build_beacon_error_response(405, qparams, str(err))
+                raise web.HTTPMethodNotAllowed(text=json.dumps(error), content_type='application/json')
             else:
-                response = build_beacon_error_response(500, qparams, str(err))
+                LOG.debug(err)
+                error = build_beacon_error_response(500, qparams, str(err))
+                raise web.HTTPInternalServerError(text=json.dumps(error), content_type='application/json')
                 
         return await json_stream(request, response)
 
@@ -317,15 +312,21 @@ def filtering_terms_handler(db_fn, request=None):
         except Exception as err:
             qparams = ''
             if str(err) == 'Not Found':
-                response = build_beacon_error_response(404, qparams, str(err))
+                error = build_beacon_error_response(404, qparams, str(err))
+                raise web.HTTPNotFound(text=json.dumps(error), content_type='application/json')
             elif str(err) == 'Bad Request':
-                build_beacon_error_response(400, qparams, str(err)+':'+str(err.text))
+                error = build_beacon_error_response(400, qparams, str(err))
+                raise web.HTTPBadRequest(text=json.dumps(error), content_type='application/json')
             elif str(err) == 'Bad Gateway':
-                response = build_beacon_error_response(502, qparams, str(err))
+                error = build_beacon_error_response(502, qparams, str(err))
+                raise web.HTTPBadGateway(text=json.dumps(error), content_type='application/json')
             elif str(err) == 'Method Not Allowed':
-                response = build_beacon_error_response(405, qparams, str(err))
+                error = build_beacon_error_response(405, qparams, str(err))
+                raise web.HTTPMethodNotAllowed(text=json.dumps(error), content_type='application/json')
             else:
-                response = build_beacon_error_response(500, qparams, str(err))
+                LOG.debug(err)
+                error = build_beacon_error_response(500, qparams, str(err))
+                raise web.HTTPInternalServerError(text=json.dumps(error), content_type='application/json')
                 
         return await json_stream(request, response)
 
