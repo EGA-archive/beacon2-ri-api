@@ -1,7 +1,2 @@
 public_datasets:
-- CINECA_synthetic_cohort_EUROPE_UK1
-- CINECA_dataset
-- AV_Dataset
-- rd-connect_dataset
 - coadread_tcga_pan_can_atlas_2018
-- B1MG-COADREAD
