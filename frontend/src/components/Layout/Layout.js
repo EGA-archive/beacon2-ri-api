@@ -2,7 +2,7 @@ import '../../App.css'
 import './Layout.css'
 import FilteringTerms from '../FilteringTerms/FilteringTerms'
 import filtersConfig from '../../config-examples-cancer.json'
-import filtersConfig2 from '../../config-examples-covid.json'
+
 import VariantsResults from '../GenomicVariations/VariantsResults'
 
 import BiosamplesResults from '../Biosamples/BiosamplesResults'
@@ -30,7 +30,7 @@ function Layout (props) {
   const [query, setQuery] = useState('')
   const [queryAux, setQueryAux] = useState(null)
   const [filtersTab1, setFiltersTab1] = useState(filtersConfig.filters)
-  const [filtersTab2, setFiltersTab2] = useState(filtersConfig2.filters)
+  
   const [exampleQ, setExampleQ] = useState([])
 
   const [isNetwork, setIsNetwork] = useState(false)
@@ -428,8 +428,8 @@ function Layout (props) {
     }
 
     setInputValuesTab1(initializeInputValues(filtersTab1))
-    setInputValuesTab2(initializeInputValues(filtersTab2))
-  }, [filtersTab1, filtersTab2])
+   
+  }, [filtersTab1])
 
   return (
     <div className='container1'>
@@ -438,15 +438,15 @@ function Layout (props) {
           <div className='logosVersionContainer'>
             <div className='logos'>
               <a
-                href='https://ega-archive.org/'
+                href='https://eosc4cancer.eu/'
                 className='logoInstitution'
                 target='_blank'
                 rel='noreferrer'
               >
                 <img
-                  className='ega-logo'
-                  src='../ega-archive.png'
-                  alt='EGAarchive'
+                  className='eosc4cancer'
+                  src='../eosc4cancer.png'
+                  alt='EOS4CANCER'
                 ></img>
               </a>
             </div>
@@ -566,13 +566,7 @@ function Layout (props) {
               className={`tab ${activeTab === 'tab1' ? 'active' : ''}`}
               onClick={() => setActiveTab('tab1')}
             >
-              CANCER
-            </div>
-            <div
-              className={`tab ${activeTab === 'tab2' ? 'active' : ''}`}
-              onClick={() => setActiveTab('tab2')}
-            >
-              COVID
+              QUERY EXAMPLES
             </div>
           </div>
           <div className='tab-content'>
@@ -591,21 +585,7 @@ function Layout (props) {
                 activeTab={activeTab}
               />
             )}
-            {activeTab === 'tab2' && (
-              <FilterContent
-                filters={filtersTab2}
-                handleOption={(e, array, optionIndex) =>
-                  handleOption(e, array, optionIndex, 'tab2')
-                }
-                handleOptionAlphanum={handleOptionAlphanum}
-                handleInputChange={(e, key) =>
-                  handleInputChange(e, key, 'tab2')
-                }
-                inputValues={inputValuesTab2}
-                checkedOptions={checkedOptionsTab2}
-                activeTab={activeTab}
-              />
-            )}
+         
           </div>
           <button
             className='buttonAllFilters'

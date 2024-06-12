@@ -20,14 +20,14 @@
   margin-left: 34px;
   border: 1px solid #3176b1;
   border-radius: 2px;
-  box-shadow: rgba(216, 207, 207, 0.25) 0px 1px 1px, rgba(197, 150, 150, 0.13) 0px 0px 1px 1px;
+  box-shadow: rgba(216, 207, 207, 0.25) 0px 1px 1px,
+    rgba(197, 150, 150, 0.13) 0px 0px 1px 1px;
 }
 
 .inputTerm {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  
 }
 
 .inputLabel {
@@ -200,6 +200,8 @@ tbody {
   width: 57%;
   /* height: 100%; */
   /* justify-content: center; */
+  overflow-x: scroll;
+  overflow-y: scroll;
 
   margin-bottom: -23px;
   padding-left: 30px;
@@ -257,7 +259,8 @@ tbody {
   margin-left: 23px;
   border: 1px solid #3176b1;
   border-radius: 2px;
-  box-shadow: rgba(216, 207, 207, 0.25) 0px 1px 1px, rgba(197, 150, 150, 0.13) 0px 0px 1px 1px;
+  box-shadow: rgba(216, 207, 207, 0.25) 0px 1px 1px,
+    rgba(197, 150, 150, 0.13) 0px 0px 1px 1px;
 }
 
 tr {

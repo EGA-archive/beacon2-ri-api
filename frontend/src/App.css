@@ -37,7 +37,7 @@ html {
   margin-left: 10px;
 }
 
-.scopeSelection{
+.scopeSelection {
   position: absolute;
   top: 286px;
   z-index: 5;
@@ -52,7 +52,8 @@ html {
   border-radius: 13px;
   color: #1a4b1a;
   font-size: 17px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
+    rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
 }
 .resultSetsDiv2 .multi-switch-container {
   margin-left: -5px;
@@ -150,7 +151,6 @@ p a {
   font-variant-caps: all-petite-caps;
 }
 
-
 .variantsForm {
   margin-top: 10px;
   display: flex;
@@ -160,9 +160,6 @@ p a {
   align-items: center;
   margin-left: -70px;
 }
-
-
-
 
 .variantsFormVariant {
   margin-top: -14px;
@@ -206,7 +203,6 @@ p a {
   align-items: center;
 }
 
-
 .newSearchButton:hover {
   color: rgb(118, 151, 228);
 }
@@ -227,11 +223,9 @@ p a {
   animation: slide-in-blurred-right 0.4s ease-in both;
 }
 
-.doneButton ion-icon{
+.doneButton ion-icon {
   color: black;
 }
-
-
 
 .removeButton {
   width: 130%;
@@ -770,7 +764,7 @@ p a {
   transition: 0.2s ease-in-out;
 }
 
-.by-covid-logo{
+.by-covid-logo {
   height: 16px;
   margin-top: 30px;
   margin-bottom: 5px;
@@ -781,22 +775,23 @@ p a {
   transition: 0.2s ease-in-out;
 }
 
-.ega-logo{
-  height: 46px;
+.eosc4cancer {
+  height: 86px;
   margin-top: 30px;
   margin-bottom: 5px;
   margin-right: 35px;
   -webkit-filter: grayscale(20%);
   filter: grayscale(35%);
   -webkit-transition: 0.2s ease-in-out;
-  transition: 0.2s ease-in-out; 
+  transition: 0.2s ease-in-out;
 }
 
-.eosc4cancer,.by-covid-logo,.ega-logo:hover {
+.eosc4cancer,
+.by-covid-logo,
+.eosc4cancer:hover {
   -webkit-filter: grayscale(0%);
   filter: grayscale(0%);
 }
-
 
 .federLogo {
   height: 33px;
@@ -913,7 +908,6 @@ select {
 }
 
 .results {
-
   min-height: 80px;
 }
 
@@ -1468,7 +1462,7 @@ h5 {
     -webkit-transition: 0.2s ease-in-out;
     transition: 0.2s ease-in-out;
   }
-  .by-covid-logo{
+  .by-covid-logo {
     height: 14px;
     margin-top: 20px;
     margin-right: 30px;
@@ -1477,7 +1471,7 @@ h5 {
     -webkit-transition: 0.2s ease-in-out;
     transition: 0.2s ease-in-out;
   }
-  .ega-logo{
+  .eosc4cancer {
     height: 36px;
     margin-top: 20px;
     margin-right: 30px;
@@ -1486,7 +1480,6 @@ h5 {
     -webkit-transition: 0.2s ease-in-out;
     transition: 0.2s ease-in-out;
   }
-  
 
   .federLogo {
     height: 31px;
@@ -1809,7 +1802,7 @@ h5 {
     -webkit-transition: 0.2s ease-in-out;
     transition: 0.2s ease-in-out;
   }
-  .by-covid-logo{
+  .by-covid-logo {
     height: 14px;
     margin-top: 20px;
     margin-right: 30px;
@@ -1819,8 +1812,8 @@ h5 {
     transition: 0.2s ease-in-out;
   }
 
-  .ega-logo{
-    height: 36px;
+  .eosc4cancer {
+    height: 68px;
     margin-top: 20px;
     margin-right: 30px;
     -webkit-filter: grayscale(20%);
