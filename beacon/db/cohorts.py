@@ -26,7 +26,7 @@ def get_cohorts(entry_id: Optional[str], qparams: RequestParams):
     return schema, count, docs
 
 
-def get_cohort_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: str):
+def get_cohort_with_id(entry_id: Optional[str], qparams: RequestParams):
     collection = 'cohorts'
     dataset_count=1
     limit = qparams.query.pagination.limit
@@ -43,7 +43,7 @@ def get_cohort_with_id(entry_id: Optional[str], qparams: RequestParams, dataset:
     )
 
 
-    return schema, count, dataset_count, docs
+    return schema, count, docs
 
 
 def get_individuals_of_cohort(entry_id: Optional[str], qparams: RequestParams, dataset: str):
