@@ -6,12 +6,13 @@ with open("beacon/api_version.yml") as api_version_file:
 """Beacon Configuration."""
 
 
+
 #
 # Beacon general info
 #
-beacon_id = 'org.ega-archive.gdi-spanish-beacon'  # ID of the Beacon
-beacon_name = 'GDI Spanish Beacon'  # Name of the Beacon service
-api_version = api_version['api_version'] # Version of the Beacon implementation
+beacon_id = 'org.ega-archive.gdi-spain-beacon'  # ID of the Beacon
+beacon_name = 'GDI Spain Beacon'  # Name of the Beacon service
+api_version = api_version['api_version']  # Version of the Beacon implementation
 uri = 'https://beacon-spain.ega-archive.org/api/'
 
 #
@@ -23,16 +24,13 @@ max_beacon_granularity = "record"
 #
 #  Organization info
 #
-org_id = 'EGA'  # Id of the organization
-org_name = 'European Genome-Phenome Archive (EGA)'  # Full name
-org_description = ('The European Genome-phenome Archive (EGA) '
+org_id = 'GDI Spain'  # Id of the organization
+org_name = 'GDI and Federated EGA (FEGA) Spain'  # Full name
+org_description = ('The GDI and Federated EGA (FEGA) Spanish node is co-managed by the Barcelona Supercomputing Center (BSC) and the Centre de Regulacio Genomica (CRG). It '
                    'is a service for permanent archiving and sharing '
                    'of all types of personally identifiable genetic '
                    'and phenotypic data resulting from biomedical research projects.')
-org_adress = ('C/ Dr. Aiguader, 88'
-              'PRBB Building'
-              '08003 Barcelona, Spain')
-org_welcome_url = 'https://ega-archive.org/'
+org_welcome_url = ''
 org_contact_url = 'mailto:beacon.ega@crg.eu'
 org_logo_url = 'https://legacy.ega-archive.org/images/logo.png'
 org_info = ''
@@ -40,10 +38,7 @@ org_info = ''
 #
 # Project info
 #
-#description = (r"This <a href='https://beacon-project.io/'>Beacon</a> "
-#               r"is based on the GA4GH Beacon "
-#               r"<a href='https://github.com/ga4gh-beacon/specification-v2/blob/master/beacon.yaml'>v2.0</a>")
-description = r"This Beacon is based on synthetic data hosted at GDI Spanish Node. It includes three datasets: the B1MG one million genomes, 2504 samples from CINECA UK1 synthetic dataset and the rare diseases dataset from rd-connect."
+description = r"This Beacon is based on synthetic data hosted at GDI Spain Node. It includes three datasets: the B1MG one million genomes, 2504 samples from CINECA UK1 synthetic dataset and the rare diseases dataset from rd-connect."
 version = 'v2.0'
 welcome_url = 'https://beacon-spain.ega-archive.org/'
 alternative_url = 'https://beacon-spain.ega-archive.org/api'
@@ -67,7 +62,8 @@ ga4gh_service_type_artifact = 'beacon'
 ga4gh_service_type_version = '1.0'
 
 # Beacon handovers
-beacon_handovers ={
+beacon_handovers = [
+    {
         'handoverType': {
             'id': 'CUSTOM:000001',
             'label': 'Project description'
@@ -75,6 +71,7 @@ beacon_handovers ={
         'note': 'Project description',
         'url': 'https://www.nist.gov/programs-projects/genome-bottle'
     }
+]
 
 #
 # Database connection
@@ -103,7 +100,8 @@ CA_cert = '/etc/ega/CA.cert'
 #
 # Permissions server configuration
 #
-permissions_url = 'http://beacon-permissionspanish:5051/'
+permissions_url = 'http://beacon-permissionSpain:5051/'
+#permissions_url = 'http://localhost:5051/'
 
 #
 # IdP endpoints (OpenID Connect/Oauth2)
@@ -123,6 +121,8 @@ autocomplete_ellipsis = '...'
 #
 # Ontologies
 #
-ontologies_folder = "ontologies"
+ontologies_folder = "deploy/ontologies/"
+
+#json_buffer_size = 10000
 
 alphanumeric_terms = ['libraryStrategy', 'molecularAttributes.geneIds', 'diseases.ageOfOnset.iso8601duration']
