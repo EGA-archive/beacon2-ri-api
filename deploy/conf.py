@@ -100,7 +100,7 @@ CA_cert = '/etc/ega/CA.cert'
 #
 # Permissions server configuration
 #
-permissions_url = 'http://beacon-permissionSpain:5051/'
+permissions_url = 'http://beacon-permissionspanish:5051/'
 #permissions_url = 'http://localhost:5051/'
 
 #
