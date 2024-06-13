@@ -1,5 +1,5 @@
 build:
-	docker-compose up -d --build beaconega permissionsega
+	docker-compose up -d --build beaconega permissionsega dbega
 	sleep 10
 	docker cp /data/vault/bio-scratch/arnau/beacon/data/tools-v2/hgi/hgi_full/bracovid/json/BRACOVID_genomicVariations.json mongoega:tmp/genomicVariations.json
 	docker cp /data/vault/bio-scratch/arnau/beacon/data/tools-v2/hgi/hgi_full/bracovid/json/biosamples.json mongoega:tmp/biosamples.json
