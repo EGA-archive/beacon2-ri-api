@@ -32,7 +32,7 @@ org_description = ('The GDI and Federated EGA (FEGA) Spanish node is co-managed 
                    'and phenotypic data resulting from biomedical research projects.')
 org_welcome_url = ''
 org_contact_url = 'mailto:beacon.ega@crg.eu'
-org_logo_url = 'https://legacy.ega-archive.org/images/logo.png'
+org_logo_url = 'https://raw.githubusercontent.com/EGA-archive/beacon2-ri-api/beacon-spain/deploy/EGA_submarcas_Spain.png'
 org_info = ''
 
 #
