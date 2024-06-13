@@ -191,6 +191,8 @@ def generic_handler(db_fn, request=None):
                     response = build_beacon_boolean_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
                 elif conf.max_beacon_granularity == Granularity.COUNT:
                     response = build_beacon_count_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
+                elif count > 19999:
+                    response = build_beacon_count_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
                 elif include == 'NONE':
                     response = build_beacon_resultset_response(response_converted, count, qparams, lambda x, y: x, entity_schema)
                 else:
