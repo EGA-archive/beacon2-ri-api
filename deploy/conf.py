@@ -62,8 +62,7 @@ ga4gh_service_type_artifact = 'beacon'
 ga4gh_service_type_version = '1.0'
 
 # Beacon handovers
-beacon_handovers = [
-    {
+beacon_handovers = beacon_handovers = {
         'handoverType': {
             'id': 'CUSTOM:000001',
             'label': 'Project description'
@@ -71,7 +70,6 @@ beacon_handovers = [
         'note': 'Project description',
         'url': 'https://www.nist.gov/programs-projects/genome-bottle'
     }
-]
 
 #
 # Database connection
