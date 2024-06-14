@@ -5,7 +5,7 @@ build:
 	docker cp /data/vault/bio-scratch/arnau/beacon/data/tools-v2/hgi/hgi_full/belcovid2/json/biosamples.json mongoega:tmp/biosamples.json
 	docker cp /data/vault/bio-scratch/arnau/beacon/data/tools-v2/hgi/hgi_full/belcovid2/json/cohorts.json mongoega:tmp/cohorts.json
 	docker cp /data/vault/bio-scratch/arnau/beacon/data/tools-v2/hgi/hgi_full/belcovid2/json/datasets.json mongoega:tmp/datasets.json
-	docker cp /data/vault/bio-scratch/arnau/beacon/data/tools-v2/hgi/individuals_modified/bracovid_individuals_modified.json mongoega:tmp/individuals.json
+	docker cp /data/vault/bio-scratch/arnau/beacon/data/tools-v2/hgi/individuals_modified/belcovid2_individuals_modified.json mongoega:tmp/individuals.json
 	docker exec mongoega mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27020/beacon?authSource=admin" --file /tmp/datasets.json --collection datasets
 	docker exec mongoega mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27020/beacon?authSource=admin" --file /tmp/individuals.json --collection individuals
 	docker exec mongoega mongoimport --jsonArray --uri "mongodb://root:example@127.0.0.1:27020/beacon?authSource=admin" --file /tmp/cohorts.json --collection cohorts
