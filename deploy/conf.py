@@ -1,7 +1,7 @@
 import yaml
 
 with open("beacon/api_version.yml") as api_version_file:
-    api_version = yaml.safe_load(api_version_file)
+    api_version_yaml = yaml.safe_load(api_version_file)
 
 """Beacon Configuration."""
 
@@ -45,7 +45,7 @@ org_info = ''
 #               r"is based on the GA4GH Beacon "
 #               r"<a href='https://github.com/ga4gh-beacon/specification-v2/blob/master/beacon.yaml'>v2.0</a>")
 description = r"This Beacon is based on synthetic data hosted at the <a href='https://ega-archive.org/datasets/EGAD00001003338'>EGA</a>. The dataset contains 2504 samples including genetic data based on 1K Genomes data, and 76 individual attributes and phenotypic data derived from UKBiobank."
-version = api_version['api_version']
+version = api_version_yaml['api_version']
 welcome_url = 'https://beacon.ega-archive.org/'
 alternative_url = 'https://beacon.ega-archive.org/api'
 create_datetime = '2021-11-29T12:00:00.000000'

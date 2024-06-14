@@ -1,0 +1,36 @@
+[
+    {
+        "biosampleStatus": {
+            "id": "EFO:0009654",
+            "label": "reference sample"
+        },
+        "collectionDate": "2020-09-11",
+        "collectionMoment": "P40Y1M1D",
+        "id": "testMode",
+        "individualId": "HG00096",
+        "info": {
+            "BioSamples": {
+                "accession": "SAMEA7082831",
+                "externalUrl": "https://www.ebi.ac.uk/biosamples/SAMEA7082831"
+            },
+            "EGAsampleId": "EGAN00002589008",
+            "characteristics": [
+                {
+                    "organism": [
+                        {
+                            "ontologyTerms": [
+                                "http://purl.obolibrary.org/obo/NCBITaxon_9606"
+                            ],
+                            "text": "Homosapiens"
+                        }
+                    ]
+                }
+            ],
+            "sampleName": "synthetic_sample_3",
+            "taxId": 9606
+        },
+        "sampleOriginType": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+        }
+    }]
