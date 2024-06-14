@@ -1,4 +1,6 @@
 build:
+	docker-compose up -d --build beaconega permissionsega
+	sleep 10
 	docker cp /data/vault/bio-scratch/arnau/beacon/data/tools-v2/hgi/hgi_full/belcovid2/json/genomicVariations2.json mongoega:tmp/genomicVariations.json
 	docker cp /data/vault/bio-scratch/arnau/beacon/data/tools-v2/hgi/hgi_full/belcovid2/json/biosamples.json mongoega:tmp/biosamples.json
 	docker cp /data/vault/bio-scratch/arnau/beacon/data/tools-v2/hgi/hgi_full/belcovid2/json/cohorts.json mongoega:tmp/cohorts.json
