@@ -12,6 +12,7 @@ No JWT signature verification.
 import json
 import logging
 import jwt
+import glob
 
 from aiohttp import ClientSession, BasicAuth, FormData
 from aiohttp import web
@@ -19,23 +20,7 @@ from beacon import conf
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
-
-LSAAI_CLIENT_ID = os.getenv('LSAAI_CLIENT_ID')
-LSAAI_CLIENT_SECRET = os.getenv('LSAAI_CLIENT_SECRET')
-KEYCLOAK_CLIENT_ID = os.getenv('KEYCLOAK_CLIENT_ID')
-KEYCLOAK_CLIENT_SECRET = os.getenv('KEYCLOAK_CLIENT_SECRET')
-
 LOG = logging.getLogger(__name__)
-
-keycloak_user_info = conf.idp_url + 'auth/realms/Beacon/protocol/openid-connect/userinfo'
-keycloak_introspection = conf.idp_url + 'auth/realms/Beacon/protocol/openid-connect/token/introspect'
-keycloak_issuer = conf.idp_url + 'auth/realms/Beacon'
-keycloak_jwks_url = conf.idp_url + 'auth/realms/Beacon/protocol/openid-connect/certs'
-lsaai_user_info = 'https://login.elixir-czech.org/oidc/userinfo'
-lsaai_introspection = 'https://login.elixir-czech.org/oidc/introspect'
-lsaai_issuer = 'https://login.elixir-czech.org/oidc/'
-lsaai_jwks_url = "https://login.elixir-czech.org/oidc/jwk"
 
 def validate_access_token(access_token, idp_issuer, jwks_url, algorithm, aud):
     if not jwt.algorithms.has_crypto:
@@ -86,24 +71,30 @@ async def get_user_info(access_token):
         return user
     LOG.error(issuer)
     user_info=''
-    if issuer == lsaai_issuer and aud == LSAAI_CLIENT_ID:
-        user_info = lsaai_user_info
-        idp_issuer = 'https://login.elixir-czech.org/oidc/'
-        idp_introspection = lsaai_introspection
-        idp_client_id = LSAAI_CLIENT_ID
-        idp_client_secret = LSAAI_CLIENT_SECRET
-        idp_jwks_url = lsaai_jwks_url
-    elif issuer == keycloak_issuer and aud == KEYCLOAK_CLIENT_ID:
-        user_info = keycloak_user_info
-        idp_issuer = keycloak_issuer
-        idp_introspection = keycloak_introspection
-        idp_client_id = KEYCLOAK_CLIENT_ID
-        idp_client_secret = KEYCLOAK_CLIENT_SECRET
-        idp_jwks_url = keycloak_jwks_url
-    else:
-        raise web.HTTPUnauthorized('invalid token')
+    idp_issuer=None
+    for env_filename in glob.glob("/beacon/permissions/idp_providers/*.env"):
+        load_dotenv(env_filename)
+        IDP_ISSUER = os.getenv('ISSUER')
+        LOG.error(IDP_ISSUER)
+        if issuer == IDP_ISSUER:
+            IDP_CLIENT_ID = os.getenv('CLIENT_ID')
+            IDP_CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+            IDP_USER_INFO = os.getenv('USER_INFO')
+            IDP_INTROSPECTION = os.getenv('INTROSPECTION')
+            IDP_JWKS_URL = os.getenv('JWKS_URL')
+            idp_issuer = IDP_ISSUER
+            user_info = IDP_USER_INFO
+            idp_client_id = IDP_CLIENT_ID
+            idp_client_secret = IDP_CLIENT_SECRET
+            idp_introspection = IDP_INTROSPECTION
+            idp_jwks_url = IDP_JWKS_URL
+            break
+        else:
+            continue
+    LOG.error(idp_issuer)
     
-
+    if idp_issuer is None:
+        raise web.HTTPUnauthorized('invalid token')
     
     access_token_validation = validate_access_token(access_token, idp_issuer, idp_jwks_url, algorithm, aud)
     if access_token_validation is False:

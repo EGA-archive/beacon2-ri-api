@@ -139,3 +139,4 @@ genomicVariations_id.json
 deploy/cancer_dataset
 
 .env
+permissions/idp_providers/*.env
