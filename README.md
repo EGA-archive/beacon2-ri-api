@@ -31,12 +31,14 @@ To give a user a certain type of response for their queries, please modify this 
 
 Also, you will need to edit the file [conf.py](beacon/conf.py) and introduce the domain where your keycloak is being hosted inside **idp_url**. 
 
-Also, inside the folder permissions, before building your permissions container, you will need to create an .env file and add the CLIENT_ID for your LSAAI or Keycloak or both, with these same variable names:
+Also, inside the folder permissions, before building your permissions container, you will need to create an .env file for each idp provider (e.g. lsaai.env) inside [idp_providers folder](permissions/idp_providers) you want the beacon to allow, and add the next variables (exactly named the same for each idp provider you add, see example.txt for an example):
 ```bash
-LSAAI_CLIENT_ID='your_lsaai_client_id'
-LSAAI_CLIENT_SECRET='your_lsaai_client_secret'
-KEYCLOAK_CLIENT_ID='your_keycloak_client_id'
-KEYCLOAK_CLIENT_SECRET='your_keycloak_client_secret'
+CLIENT_ID=example_id
+CLIENT_SECRET=example_secret
+USER_INFO='https://example.com/userinfo'
+INTROSPECTION='https://example.com/introspect'
+ISSUER='https://example.com/issuer'
+JWKS_URL='https://example.com/certs'
 ```
 When you have your access token, pass it in a header with **Authorization: Bearer** in your POST request to get your answers. This token works coming from either from LS AAI or from keycloak (idp container).
 

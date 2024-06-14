@@ -1,0 +1,6 @@
+CLIENT_ID=example_id
+CLIENT_SECRET=example_secret
+USER_INFO='https://example.com/userinfo'
+INTROSPECTION='https://example.com/introspect'
+ISSUER='https://example.com/issuer'
+JWKS_URL='https://example.com/certs'
