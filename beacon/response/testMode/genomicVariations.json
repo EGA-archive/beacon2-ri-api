@@ -1,0 +1,50 @@
+[{
+    "_id": "664f54aea339b912e5c2f11e",
+    "caseLevelData": [
+    {
+    "biosampleId": "HG03771",
+    "zygosity": {
+    "id": "GENO:GENO_0000458",
+    "label": "0/1"
+    }
+    }
+    ],
+    "identifiers": {
+    "genomicHGVSId": "NC_000022.11:g.16050075A>G"
+    },
+    "molecularAttributes": {
+    "aminoacidChanges": [
+    "."
+    ],
+    "geneIds": [
+    "CHR_START-DUXAP8"
+    ],
+    "molecularEffects": [
+    {
+    "id": "ENSGLOSSARY:0000174",
+    "label": "intergenic_region"
+    }
+    ]
+    },
+    "variantInternalId": "testMode",
+    "variation": {
+    "location": {
+    "type": "SequenceLocation",
+    "sequence_id": "HGVSid:22:g.16050075A>G",
+    "interval": {
+    "type": "SequenceInterval",
+    "start": {
+    "type": "Number",
+    "value": 16050074
+    },
+    "end": {
+    "type": "Number",
+    "value": 16050075
+    }
+    }
+    },
+    "alternateBases": "A",
+    "referenceBases": "G",
+    "variantType": "SNP"
+    }
+    }]
