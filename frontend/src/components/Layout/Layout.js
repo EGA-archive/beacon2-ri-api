@@ -207,7 +207,7 @@ function Layout (props) {
 
     const arrayQuery = title
       .map((titleQuery, indexQuery) =>
-        titleQuery === 'geneId'
+        titleQuery === 'geneId' || titleQuery === 'aminoacidChange'
           ? `${titleQuery}:${value[indexQuery]}`
           : `${titleQuery}=${value[indexQuery]}`
       )
