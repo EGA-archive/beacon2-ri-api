@@ -1,0 +1,152 @@
+version: '3.1'
+
+networks:
+  beacon-priv:
+  idp-priv:
+  mongonetwork:
+
+services:
+  ###########################################
+  # MongoDB Database
+  ###########################################
+
+  db:
+    image: mongo:5
+    hostname: mongo
+    container_name: rimongo
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: beacon
+    volumes:
+      - ./mongo-init/:/docker-entrypoint-initdb.d/:ro
+    networks:
+      - mongonetwork
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+    networks:
+      - mongonetwork
+
+  ###########################################
+  # Beacon
+  ###########################################
+
+  beacon:
+    build: ..
+    image: egarchive/beacon:2.0
+    hostname: beacon
+    container_name: beacon
+    volumes:
+      # - ../beacon:/beacon/beacon  # inject the code, so we see the modifications "live"
+      # - ../ui/static:/beacon/ui/static
+      # - ../ui/templates:/beacon/ui/templates
+      - ./conf.py:/beacon/beacon/conf.py
+      - ./logger.yml:/beacon/beacon/logger.yml
+      - ../beacon/request/datasets.yml:/beacon/beacon/request/datasets.yml
+      - ../beacon/request/cohorts.yml:/beacon/beacon/request/cohorts.yml
+      - ../beacon/request/response_type.yml:/beacon/beacon/request/response_type.yml
+    ports:
+      - "5050:5050"
+    networks:
+      - beacon-priv
+    working_dir: '/beacon'
+    entrypoint: ['python','-m','beacon']
+    # entrypoint: ['/bin/sleep','100000000']
+
+  ###########################################
+  # Dummy Permissions server
+  ###########################################
+  
+  permissions:
+    image: egarchive/beacon:2.0
+    hostname: beacon-permissions
+    container_name: beacon-permissions
+    volumes:
+      - ../permissions/:/beacon/permissions/  # inject the code, so we see the modifications "live"
+      - ./logger.yml:/beacon/logger.yml
+    ports:
+      - "5051:5051"
+      - 8010:8000
+    networks:
+      - beacon-priv
+    #entrypoint: ['/bin/sleep','100000000']
+    working_dir: '/beacon'
+    entrypoint: ['python','-m', 'permissions']
+
+  ###########################################
+  # Local Identity Provider
+  ###########################################
+  # Keycloak is so slow to boot that the DB goes faster
+  # and we don't need a delay in-between. We can rely on the depends_on only.
+
+  idp:
+    #image: quay.io/keycloak/keycloak:12.0.0
+    image: sleighzy/keycloak
+    hostname: idp
+    container_name: idp
+    environment:
+      # - KEYCLOAK_FRONTEND_URL=http://idp:8080/auth
+      # - KEYCLOAK_LOGLEVEL=DEBUG
+      # - ROOT_LOGLEVEL=DEBUG
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=secret
+      - DB_USER=admin
+      - DB_PASSWORD=secret
+      - DB_VENDOR=postgres
+      - DB_ADDR=idp-db
+      - DB_PORT=5432
+      - DB_DATABASE=keycloak
+      #- DB_SCHEMA=public
+      - KEYCLOAK_IMPORT=/tmp/beacon-realm.json -Dkeycloak.profile.feature.upload_scripts=enabled -Dkeycloak.profile.feature.token_exchange=enabled -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled
+      - KEYCLOAK_HOSTNAME=localhost
+      #- KC_HOSTNAME_URL=https://beacon-network-test2.ega-archive.org
+      #- KC_HOSTNAME_ADMIN_URL=https://beacon-network-test2.ega-archive.org
+      #- KEYCLOAK_FRONTEND_URL=https://beacon-network-test2.ega-archive.org/auth/
+      #- PROXY_ADDRESS_FORWARDING=true
+    volumes:
+      - ./beacon-realm.json:/tmp/beacon-realm.json
+    ports:
+      - "8080:8080"
+      - "9991:8443"
+    networks:
+      - idp-priv 
+    depends_on:
+      - idp-db
+
+  idp-db:
+    image: postgres
+    hostname: idp-db
+    container_name: idp-db
+    environment:
+      - POSTGRES_DB=keycloak
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=secret
+    networks:
+      - idp-priv 
+  
+  frontend:
+    build:
+      context: ../frontend
+    command: node /opt/yarn-v1.22.19/bin/yarn.js start
+    container_name: beacon-ui
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - 3000:3000
+    stdin_open: true
+    volumes:
+      - ../frontend/.env:/frontend/.env
+      - ../frontend/src/config.json:/frontend/src/config.json
+
+
+
