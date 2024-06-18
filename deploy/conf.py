@@ -127,3 +127,5 @@ autocomplete_ellipsis = '...'
 ontologies_folder = "ontologies"
 
 alphanumeric_terms = ['libraryStrategy', 'molecularAttributes.geneIds', 'diseases.ageOfOnset.iso8601duration']
+
+ontology_files={"NCIT": "http://purl.obolibrary.org/obo/NCIT.obo"}

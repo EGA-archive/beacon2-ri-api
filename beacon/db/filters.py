@@ -421,24 +421,28 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
     if filter.similarity != Similarity.EXACT:
         is_filter_id_required = False
         ontology_list=filter.id.split(':')
-        if filter.similarity == Similarity.HIGH:
-            similarity_high=[]
-            ontology_dict=client.beacon.similarities.find({"id": filter.id})
-            final_term_list = ontology_dict[0]["similarity_high"]
-        elif filter.similarity == Similarity.MEDIUM:
-            similarity_medium=[]
-            ontology_dict=client.beacon.similarities.find({"id": filter.id})
-            final_term_list = ontology_dict[0]["similarity_medium"]
-        elif filter.similarity == Similarity.LOW:
-            similarity_low=[]
-            ontology_dict=client.beacon.similarities.find({"id": filter.id})
-            final_term_list = ontology_dict[0]["similarity_low"]
+        try:
+            if filter.similarity == Similarity.HIGH:
+                similarity_high=[]
+                ontology_dict=client.beacon.similarities.find({"id": filter.id})
+                final_term_list = ontology_dict[0]["similarity_high"]
+            elif filter.similarity == Similarity.MEDIUM:
+                similarity_medium=[]
+                ontology_dict=client.beacon.similarities.find({"id": filter.id})
+                final_term_list = ontology_dict[0]["similarity_medium"]
+            elif filter.similarity == Similarity.LOW:
+                similarity_low=[]
+                ontology_dict=client.beacon.similarities.find({"id": filter.id})
+                final_term_list = ontology_dict[0]["similarity_low"]
+        except Exception:
+            pass
         
 
 
         final_term_list.append(filter.id)
         query_filtering={}
         query_filtering['$and']=[]
+        dict_scope={}
         dict_scope['scopes']=scope
         query_filtering['$and'].append(dict_scope)
         dict_id={}
@@ -499,6 +503,9 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
         try:
             ontology_dict=client.beacon.similarities.find({"id": ontology})
             list_descendant = ontology_dict[0]["descendants"]
+            LOG.debug(list_descendant)
+            for descendant in list_descendant:
+                final_term_list.append(descendant)
         except Exception:
             pass
 

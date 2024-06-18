@@ -83,6 +83,7 @@ services:
       - ../beacon/request/datasets.yml:/beacon/beacon/request/datasets.yml
       - ../beacon/request/cohorts.yml:/beacon/beacon/request/cohorts.yml
       - ../beacon/request/response_type.yml:/beacon/beacon/request/response_type.yml
+      - ../beacon/db/ontologies:/beacon/beacon/db/ontologies
     ports:
       - "5050:5050"
     networks:

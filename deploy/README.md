@@ -96,7 +96,11 @@ docker exec beacon python beacon/db/extract_filtering_terms.py
 
 #### Get descendant and semantic similarity terms
 
-**If you have the ontologies loaded and the filtering terms extracted**, you can automatically get their descendant and semantic similarity terms running the following script:
+**If you have the ontologies loaded and the filtering terms extracted**, you can automatically get their descendant and semantic similarity terms by following the next two steps:
+
+1. Add your .obo files inside [ontologies](../beacon/db/ontologies) naming them as the ontology prefix in lowercase (e.g. ncit.obo) and rebuild the beacon container with:
+
+2. Run the following script:
 
 ```bash
 docker exec beacon python beacon/db/get_descendants.py
