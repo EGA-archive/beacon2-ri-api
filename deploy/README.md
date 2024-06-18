@@ -29,8 +29,16 @@ docker network create my-app-network
 
 #### Up the containers
 
+If you are using a build with all the services in the same cluster, you can use:
+
 ```bash
 docker-compose up -d --build
+```
+
+If you are willing to deploy every service in a different environment from the other services, you can use:
+
+```bash
+docker-compose -f docker-compose.remote.yml up -d --build
 ```
 
 With `mongo-express` we can see the contents of the database at [http://localhost:8081](http://localhost:8081).
