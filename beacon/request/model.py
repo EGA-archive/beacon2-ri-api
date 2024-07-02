@@ -98,7 +98,7 @@ class RequestParams(CamelModel):
                     self.query.pagination.limit = int(v)
                 elif k == "includeResultsetResponses":
                     self.query.include_resultset_responses = IncludeResultsetResponses(v)
-                elif k == 'filters' or k in ["start", "end", "assemblyId", "referenceName", "referenceBases", "alternateBases", "variantType","variantMinLength","variantMaxLength","geneId","genomicAlleleShortForm","aminoacidChange","clinicalRelevance"]:
+                elif k == 'filters' or k in ["start", "end", "assemblyId", "referenceName", "referenceBases", "alternateBases", "variantType","variantMinLength","variantMaxLength","geneId","genomicAlleleShortForm","aminoacidChange","clinicalRelevance", "mateName"]:
                     self.query.request_parameters[k] = v
                 else:
                     raise web.HTTPBadRequest(text='request parameter introduced is not allowed')

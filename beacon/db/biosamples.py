@@ -8,6 +8,7 @@ from beacon.request.model import AlphanumericFilter, Operator, RequestParams
 from beacon.db.filters import *
 from beacon.db.schemas import DefaultSchemas
 from beacon.db.utils import *
+from beacon.db.g_variants import apply_request_parameters
 from beacon.request.model import RequestParams
 
 LOG = logging.getLogger(__name__)
@@ -16,32 +17,22 @@ def include_resultset_responses(query: Dict[str, List[dict]], qparams: RequestPa
     LOG.debug("Include Resultset Responses = {}".format(qparams.query.include_resultset_responses))
     return query
 
-def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParams):
-    LOG.debug("Request parameters len = {}".format(len(qparams.query.request_parameters)))
-    for k, v in qparams.query.request_parameters.items():
-        query["$text"] = {}
-        if ',' in v:
-            v_list = v.split(',')
-            v_string=''
-            for val in v_list:
-                v_string += f'"{val}"'
-            query["$text"]["$search"]=v_string
-        else:
-            query["$text"]["$search"]=v
-    return query
-
-
 def get_biosamples(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'biosamples'
     mongo_collection = client.beacon.biosamples
-    query = apply_request_parameters({}, qparams)
-    match_list=[]
-    matching = apply_request_parameters({}, qparams)
-    match_list.append(matching)
-    match_big={}
-    match_big["$match"]=match_list[0]
-    LOG.debug(qparams.query.filters)
-    query = apply_filters(query, qparams.query.filters, collection, {})
+    parameters_as_filters=False
+    query_parameters, parameters_as_filters = apply_request_parameters({}, qparams)
+    LOG.debug(query_parameters)
+    LOG.debug(parameters_as_filters)
+    if parameters_as_filters == True and query_parameters != {'$and': []}:
+        query, parameters_as_filters = apply_request_parameters({}, qparams)
+        query_parameters={}
+    elif query_parameters != {'$and': []}:
+        query=query_parameters
+    elif query_parameters == {'$and': []}:
+        query_parameters = {}
+        query={}
+    query = apply_filters(query, qparams.query.filters, collection, query_parameters)
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.BIOSAMPLES
     #with open("beacon/request/datasets.yml", 'r') as datasets_file:
@@ -60,8 +51,7 @@ def get_biosamples(entry_id: Optional[str], qparams: RequestParams, dataset: str
 def get_biosample_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'biosamples'
     mongo_collection = client.beacon.biosamples
-    query = apply_request_parameters({}, qparams)
-    query = apply_filters(query, qparams.query.filters, collection, {})
+    query = apply_filters({}, qparams.query.filters, collection, {})
     query = query_id(query, entry_id)
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.BIOSAMPLES
@@ -80,7 +70,6 @@ def get_variants_of_biosample(entry_id: Optional[str], qparams: RequestParams, d
     collection = 'g_variants'
     mongo_collection = client.beacon.genomicVariations
     query = {"caseLevelData.biosampleId": entry_id}
-    query = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.GENOMICVARIATIONS
@@ -100,7 +89,6 @@ def get_analyses_of_biosample(entry_id: Optional[str], qparams: RequestParams, d
     collection = 'biosamples'
     mongo_collection = client.beacon.analyses
     query = {"biosampleId": entry_id}
-    query = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     LOG.debug(query)
@@ -120,7 +108,6 @@ def get_runs_of_biosample(entry_id: Optional[str], qparams: RequestParams, datas
     collection = 'biosamples'
     mongo_collection = client.beacon.runs
     query = {"individualId": entry_id}
-    query = apply_request_parameters(query, qparams)
     query = apply_filters(query, qparams.query.filters, collection, {})
     query = include_resultset_responses(query, qparams)
     schema = DefaultSchemas.RUNS
