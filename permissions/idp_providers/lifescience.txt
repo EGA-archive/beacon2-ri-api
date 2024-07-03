@@ -1,0 +1,6 @@
+CLIENT_ID=9db950db-31d8-4966-9f35-e8222d2fdcf6
+CLIENT_SECRET='your_client_Secret'
+USER_INFO='https://login.elixir-czech.org/oidc/userinfo'
+INTROSPECTION='https://login.elixir-czech.org/oidc/introspect'
+ISSUER='https://login.elixir-czech.org/oidc/'
+JWKS_URL='https://login.elixir-czech.org/oidc/jwk'
