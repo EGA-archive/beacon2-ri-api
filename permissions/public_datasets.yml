@@ -5,3 +5,12 @@ public_datasets:
 - rd-connect_dataset
 - coadread_tcga_pan_can_atlas_2018
 - B1MG-COADREAD
+- HGI_BelCovid_2
+- HGI_BRACOVID
+- HGI_GEN-COVID
+- HGI_Hostage_1
+- HGI_Hostage_2
+- HGI_Hostage_3
+- HGI_Hostage_4
+- HGI_INMUNGEN_CoV2
+- HGI_SPGRX

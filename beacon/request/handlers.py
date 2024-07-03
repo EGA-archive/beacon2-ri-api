@@ -27,6 +27,7 @@ from beacon.db.schemas import DefaultSchemas
 
 LOG = logging.getLogger(__name__)
 
+
 def collection_handler(db_fn, request=None):
     async def wrapper(request: Request):
         try:
@@ -58,8 +59,6 @@ def collection_handler(db_fn, request=None):
                     [r for r in records] if records else []
                 )
                 LOG.debug(entity_schema)
-                LOG.debug(response_converted)
-                LOG.debug(type(response_converted))
                 response = build_beacon_collection_response(
                     response_converted, count, qparams, lambda x, y: x, entity_schema
                 )
@@ -220,20 +219,16 @@ def generic_handler(db_fn, request=None):
                 #LOG.debug(response_datasets)
                 new_count=0
                 loop = asyncio.get_running_loop()
-                tasks=[]
                 for dataset in response_datasets:
                     with ThreadPoolExecutor() as pool:
-                        tasks.append(await loop.run_in_executor(pool, db_fn, entry_id, qparams, dataset))
-                    #LOG.debug(dataset)
-                asyncio.wait(tasks)
-                for task in tasks:
-                    entity_schema, count, dataset_count, records = task
+                        entity_schema, count, dataset_count, records = await loop.run_in_executor(pool, db_fn, entry_id, qparams, dataset)
                     #LOG.debug(dataset)
                     
                     if dataset_count != -1:
                         new_count+=dataset_count
                         datasets_docs[dataset]=records
                         datasets_count[dataset]=dataset_count
+                
                 if include != 'NONE':
                     count=new_count
                 else:
