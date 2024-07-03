@@ -1,4 +1,4 @@
 git fetch
-git pull
+git checkout egabeacon4
 cd deploy
 make
