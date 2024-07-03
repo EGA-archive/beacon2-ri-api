@@ -168,7 +168,7 @@ function Layout (props) {
       setCheckedOptionsTab2(updatedCheckedOptions);
     }
   
-    let start, end, variantType, referenceBases, alternateBases;
+    let start, end, variantType, referenceBases, alternateBases,assemblyId;
     const title = [];
     const value = [];
   
@@ -196,15 +196,17 @@ function Layout (props) {
         case 'alternateBases':
           alternateBases = inputValue || element.value;
           break;
+        case 'assemblyId':
+          assemblyId = inputValue || element.value;
         default:
           break;
       }
     });
   
-    const specialQuery =
-      start && end && variantType && referenceBases && alternateBases
-        ? `${start}-${end}:${variantType}:${referenceBases}>${alternateBases}`
-        : null;
+const specialQuery =
+  start && end && variantType && referenceBases && alternateBases
+    ? `${start}-${end}:${variantType}:${referenceBases}>${alternateBases}${assemblyId ? `&assemblyId:${assemblyId}` : ''}`
+    : null;
   
     const arrayQuery = title
       .map((titleQuery, indexQuery) =>
@@ -212,7 +214,7 @@ function Layout (props) {
           ? `${titleQuery}:${value[indexQuery]}`
           : `${titleQuery}=${value[indexQuery]}`
       )
-      .join(',');
+      .join('&');
   
     const addQuery = specialQuery || arrayQuery;
   
@@ -232,12 +234,21 @@ function Layout (props) {
             return !title.some((titleQuery, indexQuery) => {
               const valueQuery = `${titleQuery}=${value[indexQuery]}`;
               const colonQuery = `${titleQuery}:${value[indexQuery]}`;
-              return query === valueQuery || query === colonQuery;
+              const mixQuery = `${titleQuery}:${value[indexQuery]}&${titleQuery}:${value[indexQuery]}`
+              return query === valueQuery || query === colonQuery|| query === mixQuery
             });
           }
         });
         return updatedQueries.join(',');
       });
+      const queriesToRemove = title.map((titleQuery, indexQuery) => {
+        if (titleQuery === 'geneId' || titleQuery === 'aminoacidChange') {
+          return `${titleQuery}:${value[indexQuery]}`;
+        } else {
+          return `${titleQuery}=${value[indexQuery]}`;
+        }
+      });
+      
     }
   
     if (tab === 'tab1') {
@@ -276,8 +287,7 @@ function Layout (props) {
     setQuery('')
     setShowAlphanum(false)
     // Clear the state for input values and checked options
-    setInputValuesTab1({})
-    setInputValuesTab2({})
+ 
     setCheckedOptionsTab1({})
     setCheckedOptionsTab2({})
 
@@ -450,43 +460,16 @@ function Layout (props) {
         <div className='container2'>
           <div className='logosVersionContainer'>
             <div className='logos'>
-              <a
-                href='https://elixir-europe.org/'
-                className='logoInstitution'
-                target='_blank'
-                rel='noreferrer'
-                title='The project "Beacon Infrastructure (2021-23)" has been funded by ELIXIR Europe'
-              >
-                <img
-                  className='elixirLogo'
-                  src='./white-orange-logo.png'
-                  alt='elixirLogo'
-                ></img>
-              </a>
-
-              <a
-                href='https://research-and-innovation.ec.europa.eu/funding/funding-opportunities/funding-programmes-and-open-calls/horizon-europe_en'
-                className='logoInstitution'
-                target='_blank'
-                rel='noreferrer'
-                title='Funded by the European Union'
-              >
-                <img
-                  className='horizonEuropeLogo'
-                  src='../horizonEuropeLogo.png'
-                  alt='horizonEuropeLogo'
-                ></img>
-              </a>
-              <a
-                href='https://fundacionlacaixa.org/es/'
+            <a
+                href='https://ega-archive.org/'
                 className='logoInstitution'
                 target='_blank'
                 rel='noreferrer'
               >
                 <img
-                  className='laCaixaLogo'
-                  src='../caixa_logo.png'
-                  alt='laCaixaLogo'
+                  className='ega-logo'
+                  src='../ega-archive.png'
+                  alt='EGAarchive'
                 ></img>
               </a>
             </div>

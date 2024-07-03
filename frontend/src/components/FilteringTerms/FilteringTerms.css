@@ -106,7 +106,6 @@ tbody {
   padding-bottom: 20px !important;
 }
 
-
 .tableWrapper {
   display: flex;
   justify-content: center;
@@ -242,6 +241,12 @@ tbody {
   padding-top: 10px;
   padding-bottom: 10px;
   font-size: 13px;
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none; 
+}
+
+.th4::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
 }
 
 .th5 {
@@ -369,6 +374,13 @@ tr {
     box-shadow: rgba(216, 207, 207, 0.25) 0px 1px 1px,
       rgba(197, 150, 150, 0.13) 0px 0px 1px 1px;
   }
+  .tableWrapper {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+    margin-top: 127px;
+  }
 }
 
 @media (max-width: 500px) {
@@ -388,6 +400,7 @@ tr {
     display: flex;
     justify-content: center;
     width: 100vw;
+    margin-top: 138px;
   }
 
   .th2 {
@@ -416,7 +429,10 @@ tr {
     padding-top: 10px;
     padding-bottom: 10px;
     font-size: 11px;
+    -ms-overflow-style: none; /* for Internet Explorer, Edge */
+    scrollbar-width: none; 
   }
+  
   input[type='checkbox']:before {
     content: '✓';
     font-size: 15px;

@@ -15,6 +15,12 @@
   /* min-width: 950px; */
   flex-direction: column;
   scrollbar-color: rgb(188 208 223 / 50%) rgba(0, 0, 0, 0);
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none;
+}
+
+.table-container::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
 }
 
 .tdGranuBeacon ion-icon {
@@ -204,6 +210,13 @@ thead {
   flex-direction: column;
   justify-content: space-evenly;
   font-family: sans-serif;
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none;
+}
+
+.sticky-header,
+.visible::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
 }
 
 .tdGranuBeacon {
@@ -232,6 +245,12 @@ thead {
   justify-content: center;
   font-family: sans-serif;
   align-items: center;
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none;
+}
+
+.visible-id::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
 }
 
 .tbodyResults {
@@ -615,11 +634,23 @@ h1 {
   margin-top: 24px;
   align-items: center;
   overflow: scroll;
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none;
+}
+
+.containerBeaconResults::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
 }
 
 .containerBeaconResultsVariants {
   overflow-y: scroll;
   height: 100vh;
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none;
+}
+
+.containerBeaconResultsVariants::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
 }
 
 .containerResultsVariants {
@@ -657,6 +688,8 @@ h1 {
     margin-top: 24px;
     align-items: center;
     overflow: scroll;
+    -ms-overflow-style: none; /* for Internet Explorer, Edge */
+    scrollbar-width: none;
   }
 
   .containerResultsVariants {
@@ -672,7 +705,13 @@ h1 {
     overflow-y: scroll;
     height: 100vh;
     width: 70vw;
+    -ms-overflow-style: none; /* for Internet Explorer, Edge */
+    scrollbar-width: none;
   }
+  .containerBeaconResultsVariants::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari, and Opera */
+  }
+
   .tittleResults {
     width: 46vw;
     background: white;
@@ -737,6 +776,12 @@ h1 {
     border-collapse: collapse;
     table-layout: fixed;
     margin-left: 14px;
+    -ms-overflow-style: none; /* for Internet Explorer, Edge */
+    scrollbar-width: none;
+  }
+
+  .tableResults::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari, and Opera */
   }
 
   .containerTableResults {
@@ -761,6 +806,11 @@ h1 {
     margin-top: 24px;
     align-items: flex-start;
     overflow: scroll;
+    -ms-overflow-style: none; /* for Internet Explorer, Edge */
+    scrollbar-width: none;
+  }
+  .containerBeaconResults::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari, and Opera */
   }
 
   .containerTableNoFull {
@@ -820,5 +870,5 @@ h1 {
   }
   .theadGranularity tr {
     width: 90vw;
-}
+  }
 }

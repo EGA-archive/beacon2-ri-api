@@ -59,10 +59,7 @@ function TableResultsVariants (props) {
     if (beaconId === 'org.progenetix') {
       beaconId = 'org.progenetix.beacon'
     }
-    beaconsList.forEach(element => {
-      console.log(element.id)
-    })
-
+  
     const beacon = beaconsList.find(b => (b.response?.id ?? b.id) === beaconId)
 
     if (beacon) {
@@ -264,7 +261,6 @@ function TableResultsVariants (props) {
     URL.revokeObjectURL(url)
     document.body.removeChild(link)
   }
-
 
   const handleShowCrossQuery = e => {
     setShowCrossQuery(true)
@@ -635,7 +631,7 @@ function TableResultsVariants (props) {
                                     {beacon.response.name}
                                   </td>
                                 )}
-                                 {!beacon.response && (
+                                {!beacon.response && (
                                   <td className='tdGranuBeacon tdNotFoundDataset'>
                                     {beacon.name}
                                   </td>
@@ -712,6 +708,21 @@ function TableResultsVariants (props) {
                   <tr>
                     <th
                       className={`sticky-header ${
+                        columnVisibility.Beacon ? 'visible' : 'hidden'
+                      }`}
+                    >
+                      <span>Beacon</span>
+                      <button onClick={() => toggleColumnVisibility('Beacon')}>
+                        {columnVisibility.Beacon ? <FaEye /> : <FaEyeSlash />}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter Beacon'
+                        onChange={e => handleFilterChange(e, 'Beacon')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
                         columnVisibility.variantInternalId
                           ? 'visible'
                           : 'hidden'
@@ -756,21 +767,6 @@ function TableResultsVariants (props) {
                         type='text'
                         placeholder='Filter variation'
                         onChange={e => handleFilterChange(e, 'variation')}
-                      />
-                    </th>
-                    <th
-                      className={`sticky-header ${
-                        columnVisibility.Beacon ? 'visible' : 'hidden'
-                      }`}
-                    >
-                      <span>Beacon</span>
-                      <button onClick={() => toggleColumnVisibility('Beacon')}>
-                        {columnVisibility.Beacon ? <FaEye /> : <FaEyeSlash />}
-                      </button>
-                      <input
-                        type='text'
-                        placeholder='Filter Beacon'
-                        onChange={e => handleFilterChange(e, 'Beacon')}
                       />
                     </th>
                     <th
@@ -932,6 +928,13 @@ function TableResultsVariants (props) {
                     <tr key={index}>
                       <td
                         className={
+                          columnVisibility.Beacon ? 'visible' : 'hidden'
+                        }
+                      >
+                        {row.Beacon}
+                      </td>
+                      <td
+                        className={
                           columnVisibility.variantInternalId
                             ? 'visible'
                             : 'hidden'
@@ -945,13 +948,6 @@ function TableResultsVariants (props) {
                         }
                       >
                         {row.variation}
-                      </td>
-                      <td
-                        className={
-                          columnVisibility.Beacon ? 'visible' : 'hidden'
-                        }
-                      >
-                        {row.Beacon}
                       </td>
                       <td
                         className={

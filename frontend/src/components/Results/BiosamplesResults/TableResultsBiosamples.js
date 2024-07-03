@@ -68,9 +68,7 @@ function TableResultsBiosamples (props) {
     if (beaconId === 'org.progenetix') {
       beaconId = 'org.progenetix.beacon'
     }
-    beaconsList.forEach(element => {
-      console.log(element.id)
-    })
+ 
 
     const beacon = beaconsList.find(b => (b.response?.id ?? b.id) === beaconId)
 
@@ -814,9 +812,9 @@ function TableResultsBiosamples (props) {
 
         editable.push({
           id: index,
+          Beacon: element[0],
           BiosampleId: element[1].id,
           individualId: element[1].individualId,
-          Beacon: element[0],
           biosampleStatus: stringBiosampleStatus,
           sampleOriginType: stringSampleOriginType,
           //  sampleOriginDetail: stringSampleOriginDetail,
@@ -1062,6 +1060,21 @@ function TableResultsBiosamples (props) {
                   <tr>
                     <th
                       className={`sticky-header ${
+                        columnVisibility.Beacon ? 'visible' : 'hidden'
+                      }`}
+                    >
+                      <span>Beacon</span>
+                      <button onClick={() => toggleColumnVisibility('Beacon')}>
+                        {columnVisibility.Beacon ? <FaEye /> : <FaEyeSlash />}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter Beacon'
+                        onChange={e => handleFilterChange(e, 'Beacon')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
                         columnVisibility.BiosampleId ? 'visible' : 'hidden'
                       }`}
                     >
@@ -1102,21 +1115,7 @@ function TableResultsBiosamples (props) {
                         onChange={e => handleFilterChange(e, 'individualId')}
                       />
                     </th>
-                    <th
-                      className={`sticky-header ${
-                        columnVisibility.Beacon ? 'visible' : 'hidden'
-                      }`}
-                    >
-                      <span>Beacon</span>
-                      <button onClick={() => toggleColumnVisibility('Beacon')}>
-                        {columnVisibility.Beacon ? <FaEye /> : <FaEyeSlash />}
-                      </button>
-                      <input
-                        type='text'
-                        placeholder='Filter Beacon'
-                        onChange={e => handleFilterChange(e, 'Beacon')}
-                      />
-                    </th>
+
                     <th
                       className={`sticky-header ${
                         columnVisibility.biosampleStatus ? 'visible' : 'hidden'
@@ -1526,6 +1525,13 @@ function TableResultsBiosamples (props) {
                     <tr key={index}>
                       <td
                         className={
+                          columnVisibility.Beacon ? 'visible' : 'hidden'
+                        }
+                      >
+                        {row.Beacon}
+                      </td>
+                      <td
+                        className={
                           columnVisibility.BiosampleId ? 'visible-id' : 'hidden'
                         }
                       >
@@ -1547,13 +1553,7 @@ function TableResultsBiosamples (props) {
                       >
                         {row.individualId}
                       </td>
-                      <td
-                        className={
-                          columnVisibility.Beacon ? 'visible' : 'hidden'
-                        }
-                      >
-                        {row.Beacon}
-                      </td>
+
                       <td
                         className={
                           columnVisibility.biosampleStatus
@@ -1728,7 +1728,7 @@ function TableResultsBiosamples (props) {
           </button>
         </div>
       )}
-      
+
       {props.show === 'full' &&
         props.results.length === 0 &&
         !showCrossQuery && (

@@ -318,7 +318,7 @@ function BiosamplesResults (props) {
                 queryArray[index] = term.split('%')
 
                 queryArray[index][1] = '%' + queryArray[index][1] + '%'
-                console.log(queryArray[index])
+               
                 queryArray[index].push('=')
               }
 
@@ -534,8 +534,7 @@ function BiosamplesResults (props) {
               configData.API_URL + '/biosamples',
               jsonData1
             )
-            console.log(jsonData1)
-            console.log(res)
+          
           } else {
         
             const headers = { Authorization: `Bearer ${token}` }
@@ -866,14 +865,13 @@ function BiosamplesResults (props) {
               token = auth.userData.access_token
             }
             if (token === null) {
-              console.log(jsonData2)
+          
               console.log('Querying without token')
               res = await axios.post(
                 configData.API_URL + '/biosamples',
                 jsonData2
               )
             
-              console.log(res)
             } else {
               console.log('Querying WITH token')
         
@@ -884,8 +882,7 @@ function BiosamplesResults (props) {
                 jsonData2,
                 { headers: headers }
               )
-              console.log(jsonData2)
-              console.log(res)
+          
             }
 
             setTimeOut(true)

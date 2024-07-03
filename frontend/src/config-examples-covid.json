@@ -83,7 +83,7 @@
             "value": "COVID-19",
             "ontology": "MONDO:0100096",
             "type": "ontology",
-            "schemaField": "diseases"
+            "schemaField": "diseases.diseaseCode"
           }
         ],
         [
@@ -92,7 +92,7 @@
             "value": "Immunocompromised",
             "ontology": "NCIT:C14139",
             "type": "ontology",
-            "schemaField": "diseases"
+            "schemaField": "diseases.diseaseCode"
           }
         ],
         [
@@ -101,7 +101,7 @@
             "value": "Asthma",
             "ontology": "NCIT:C28397",
             "type": "ontology",
-            "schemaField": "diseases"
+            "schemaField": "diseases.diseaseCode"
           }
         ],
         [
@@ -110,7 +110,7 @@
             "value": "Chronic Obstructive Pulmonary Disease",
             "ontology": "NCIT:C3199",
             "type": "ontology",
-            "schemaField": "diseases"
+            "schemaField": "diseases.diseaseCode"
           }
         ],
         [
@@ -119,7 +119,7 @@
             "value": "Chronic Kidney Disease",
             "ontology": "NCIT:C80078",
             "type": "ontology",
-            "schemaField": "diseases"
+            "schemaField": "diseases.diseaseCode"
           }
         ],
         [
@@ -128,7 +128,7 @@
             "value": "Hypertension",
             "ontology": "NCIT:C3117",
             "type": "ontology",
-            "schemaField": "diseases"
+            "schemaField": "diseases.diseaseCode"
           }
         ],
         [
@@ -137,7 +137,7 @@
             "value": "Organ Transplantation",
             "ontology": "NCIT:C15289",
             "type": "ontology",
-            "schemaField": "diseases"
+            "schemaField": "diseases.diseaseCode"
           }
         ],
         [
@@ -146,7 +146,7 @@
             "value": "Congestive Heart Failure",
             "ontology": "NCIT:C3080",
             "type": "ontology",
-            "schemaField": "diseases"
+            "schemaField": "diseases.diseaseCode"
           }
         ],
         [
@@ -155,7 +155,7 @@
             "value": "Myocardial Infarction",
             "ontology": "NCIT:C27996",
             "type": "ontology",
-            "schemaField": "diseases"
+            "schemaField": "diseases.diseaseCode"
           }
         ],
         [
@@ -164,7 +164,7 @@
             "value": "Stroke",
             "ontology": "NCIT:C3390",
             "type": "ontology",
-            "schemaField": "diseases"
+            "schemaField": "diseases.diseaseCode"
           }
         ],
         [
@@ -173,7 +173,7 @@
             "value": "Deep Vein Thrombosis",
             "ontology": "NCIT:C49343",
             "type": "ontology",
-            "schemaField": "diseases"
+            "schemaField": "diseases.diseaseCode"
           }
         ],
         [
@@ -182,7 +182,7 @@
             "value": "Reinfarction During Hospitalization",
             "ontology": "NCIT:C80480",
             "type": "ontology",
-            "schemaField": "diseases"
+            "schemaField": "diseases.diseaseCode"
           }
         ]
       ]

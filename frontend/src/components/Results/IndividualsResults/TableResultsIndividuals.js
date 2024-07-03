@@ -57,10 +57,7 @@ function TableResultsIndividuals (props) {
     if (beaconId === 'org.progenetix') {
       beaconId = 'org.progenetix.beacon'
     }
-    beaconsList.forEach(element => {
-      console.log(element.id)
-    })
-
+ 
     const beacon = beaconsList.find(b => (b.response?.id ?? b.id) === beaconId)
 
     if (beacon) {
@@ -283,6 +280,7 @@ function TableResultsIndividuals (props) {
 
   useEffect(() => {
     if (props.show === 'full') {
+   
       setResultsSelectedFinal(resultsSelected)
       setShowResults(true)
       setShowDatasets(false)
@@ -295,9 +293,10 @@ function TableResultsIndividuals (props) {
     resultsSelected.forEach((element, index) => {
       arrayBeaconsIds.push(element[0])
     })
-
+  
     resultsSelectedFinal.forEach((element, index) => {
-      if (element[1] !== undefined && element[1]._id) {
+     
+      if (element[1] !== undefined && (element[1]._id || element[1].id)) {
         let eth_id = ''
         let eth_label = ''
         let stringEth = ''
@@ -317,7 +316,7 @@ function TableResultsIndividuals (props) {
         let sex_label = ''
         let stringSex = ''
 
-        if (element[1].sex !== '') {
+        if (element[1].sex) {
           sex_id = element[1].sex.id
           sex_label = element[1].sex.label
           stringSex = `${element[1].sex.label} / ${element[1].sex.id}`

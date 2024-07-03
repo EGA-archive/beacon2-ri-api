@@ -79,15 +79,13 @@ function IndividualsResults (props) {
   }
 
   const handleChangeScope = (event, idx) => {
-    
     const value = event.target.value
-    console.log(value)
-    console.log(idx)
+ 
     setSelectedScopes(prevState => ({
       ...prevState,
       [idx]: value
     }))
-    console.log(selectedScopes)
+
   }
 
   const submitScopeChosen = () => {
@@ -161,24 +159,41 @@ function IndividualsResults (props) {
               arrayRequestParameters.push(requestParameters)
             }
           } else if (props.query.includes(':') && props.query.includes('>')) {
-            let reqParameters = props.query.split(':')
+            // Split the query by '&' to separate different parts
+            let parts = props.query.split('&')
 
-            let position = []
-            if (props.query.includes('-')) {
-              position = reqParameters[0].split('-')
-            } else {
-              position = reqParameters[0]
-            }
+            // Initialize an empty object for request parameters
+            let requestParameters = {}
 
-            let bases = reqParameters[2].split('>')
+            // Iterate over each part of the split query
+            parts.forEach(part => {
+              if (part.includes(':') && part.includes('>')) {
+                let reqParameters = part.split(':')
+                let position = []
 
-            requestParameters['start'] = position[0]
-            if (position[1]) {
-              requestParameters['end'] = position[1]
-            }
-            requestParameters['variantType'] = reqParameters[1]
-            requestParameters['alternateBases'] = bases[1]
-            requestParameters['referenceBases'] = bases[0]
+                if (part.includes('-')) {
+                  position = reqParameters[0].split('-')
+                } else {
+                  position = [reqParameters[0]]
+                }
+
+                let bases = reqParameters[2].split('>')
+
+                requestParameters['start'] = position[0]
+                if (position[1]) {
+                  requestParameters['end'] = position[1]
+                }
+                requestParameters['variantType'] = reqParameters[1]
+                requestParameters['alternateBases'] = bases[1]
+                requestParameters['referenceBases'] = bases[0]
+              } else if (part.includes(':')) {
+                // Split part by ':' to get key-value pairs for additional parameters
+                let additionalParam = part.split(':')
+                requestParameters[additionalParam[0]] = additionalParam[1]
+              }
+            })
+
+            // Add the processed requestParameters object to the array
             arrayRequestParameters.push(requestParameters)
           } else {
             queryStringTerm.push(props.query.trim())
@@ -213,19 +228,22 @@ function IndividualsResults (props) {
                 queryArray[index] = term.split('%')
 
                 queryArray[index][1] = '%' + queryArray[index][1] + '%'
-                console.log(queryArray[index])
+             
                 queryArray[index].push('=')
               }
 
               let alphanumericFilter = {}
               props.filteringTerms.forEach(element => {
-                if (element.label && element.id !== 'NCIT:C46113' && element.id !== 'NCIT:C46112') {
+                if (
+                  element.label &&
+                  element.id !== 'NCIT:C46113' &&
+                  element.id !== 'NCIT:C46112'
+                ) {
                   if (
                     queryArray[index][1].toLowerCase() ===
                     element.label.toLowerCase()
                   ) {
                     if (queryArray[index][0].toLowerCase() === 'individual') {
-                   
                       alphanumericFilter = {
                         id: element.id,
                         scope: ['individual']
@@ -257,7 +275,7 @@ function IndividualsResults (props) {
                         scope: ['run']
                       }
                     } else {
-                      console.log("holi")
+                 
                       alphanumericFilter = {
                         id: element.id,
                         scope: element.scopes
@@ -369,7 +387,10 @@ function IndividualsResults (props) {
           res.data.responses.forEach(element => {
             beaconsList.push(element)
           })
-        } else if (updatedArrayFilterVar.length === 0 && props.isNetwork === false){
+        } else if (
+          updatedArrayFilterVar.length === 0 &&
+          props.isNetwork === false
+        ) {
           beaconsList.push(res.data.response)
         }
 
@@ -431,10 +452,8 @@ function IndividualsResults (props) {
               configData.API_URL + '/individuals',
               jsonData1
             )
-            console.log(jsonData1)
-            console.log(res)
+           
           } else {
-        
             const headers = { Authorization: `Bearer ${token}` }
             console.log('querying with token')
             res = await axios.post(
@@ -625,15 +644,13 @@ function IndividualsResults (props) {
           }
           setTriggerSubmit(true)
         } else {
-         
           let jsonData2 = {}
           variablePause = false
 
           if (updatedArrayFilterVar.length > 0) {
-            console.log(updatedArrayFilterVar)
+     
             updatedArrayFilterVar.forEach((element, index) => {
               if (Array.isArray(element.scope) && !selectedScopes[index]) {
-               
                 setPause(true)
                 variablePause = true
 
@@ -641,16 +658,16 @@ function IndividualsResults (props) {
 
                 element.scope.forEach(elementScope => {
                   newOptionsScope[index] = newOptionsScope[index] || []
-                  
+
                   newOptionsScope[index].push(elementScope)
                 })
 
                 setOptionsScope(newOptionsScope)
-                
+
                 let newOntologyMultipleScope = [...ontologyMultipleScope]
                 props.filteringTerms.forEach(element2 => {
                   if (element2.label && element2.id === element.id) {
-                    newOntologyMultipleScope[index] =(element2.label)
+                    newOntologyMultipleScope[index] = element2.label
                   }
                 })
                 setOntologyMultipleScope(newOntologyMultipleScope)
@@ -666,7 +683,7 @@ function IndividualsResults (props) {
           } else {
             let newOptionsScope = [...optionsScope]
             arrayFilter.forEach((element, index) => {
-              console.log(index)
+           
               if (
                 Array.isArray(element.scope) &&
                 element.scope.length > 1 &&
@@ -674,40 +691,37 @@ function IndividualsResults (props) {
               ) {
                 setPause(true)
                 variablePause = true
-                console.log("jeje")
+          
                 element.scope.forEach(elementScope => {
                   newOptionsScope[index] = newOptionsScope[index] || []
                   newOptionsScope[index].push(elementScope)
                 })
                 setOptionsScope(newOptionsScope)
-                let newOntologyMultipleScope =[]
-                if (index !== 0){
-                  console.log (ontologyMultipleScope)
-                  newOntologyMultipleScope =[... ontologyMultipleScope]
-                } 
-              
-          
-               console.log("jejooo")
+                let newOntologyMultipleScope = []
+                if (index !== 0) {
+               
+                  newOntologyMultipleScope = [...ontologyMultipleScope]
+                }
+
                 props.filteringTerms.forEach(element2 => {
-                  if (element2.label && (element2.id === element.id)) {
+                  if (element2.label && element2.id === element.id) {
                     newOntologyMultipleScope[index] =
                       newOntologyMultipleScope[index] || []
-                    newOntologyMultipleScope[index] = (element2.label)
+                    newOntologyMultipleScope[index] = element2.label
                   }
                 })
-                console.log(newOntologyMultipleScope)
+                
                 setOntologyMultipleScope(newOntologyMultipleScope)
               } else if (
                 Array.isArray(element.scope) &&
                 element.scope.length > 1 &&
                 selectedScopes[index]
-                
               ) {
                 element.scope = selectedScopes[index]
-                console.log("ASds")
+          
               } else {
                 element.scope = element.scope[0]
-                console.log("ASdslas")
+             
               }
             })
           }
@@ -775,17 +789,16 @@ function IndividualsResults (props) {
               token = auth.userData.access_token
             }
             if (token === null) {
-              console.log(jsonData2)
+              
               console.log('Querying without token')
               res = await axios.post(
                 configData.API_URL + '/individuals',
                 jsonData2
               )
-            
-              console.log(res)
+
             } else {
               console.log('Querying WITH token')
-        
+
               const headers = { Authorization: `Bearer ${token}` }
 
               res = await axios.post(
@@ -793,8 +806,7 @@ function IndividualsResults (props) {
                 jsonData2,
                 { headers: headers }
               )
-              console.log(jsonData2)
-              console.log(res)
+           
             }
 
             setTimeOut(true)
@@ -947,10 +959,7 @@ function IndividualsResults (props) {
       handleTypeResults3()
     }
   }, [])
-  useEffect(() => {
-    console.log('ontologyMultipleScope:', ontologyMultipleScope);
-    console.log('optionsScope:', optionsScope);
-}, [ontologyMultipleScope, optionsScope]);
+
   return (
     <div>
       {timeOut === false && (
