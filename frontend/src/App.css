@@ -37,7 +37,7 @@ html {
   margin-left: 10px;
 }
 
-.scopeSelection{
+.scopeSelection {
   position: absolute;
   top: 286px;
   z-index: 5;
@@ -52,11 +52,19 @@ html {
   border-radius: 13px;
   color: #1a4b1a;
   font-size: 17px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
+    rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
 }
 .resultSetsDiv2 .multi-switch-container {
   margin-left: -5px;
   margin-top: 8px;
+}
+
+.buttonsDiv {
+  height: 93px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 .containerExtraSections2 {
@@ -83,10 +91,10 @@ html {
 }
 
 .version {
-  margin-right: 37px;
+  margin-right: 28px;
   margin-top: -18px;
-  color: rgb(102 116 152) !important;
-  font-weight: 700 !important;
+  color: #3176b1 !important;
+  font-weight: 600 !important;
 }
 
 .logosVersionContainer {
@@ -99,10 +107,42 @@ html {
 }
 
 .searchButton {
-  padding-right: 4px;
-  padding-left: 0px;
   cursor: pointer;
   margin-left: 12px;
+  border: none;
+  border-radius: 100px;
+  background: #3176b1;
+  padding: 10px, 24px, 10px, 16px;
+  color: white;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  display: flex;
+  font-weight: 500;
+  width: 99px;
+  height: 40px;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.clearButton {
+  cursor: pointer;
+  margin-left: 12px;
+  border: none;
+  border-radius: 100px;
+  background: white;
+  padding: 10px, 24px, 10px, 16px;
+  color: #3176b1;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  display: flex;
+  font-weight: 500;
+  width: 99px;
+  height: 40px;
+  justify-content: space-evenly;
+  align-items: center;
+  border: 1px solid #3176b1;
 }
 
 .scopeDiv {
@@ -148,7 +188,6 @@ p a {
   font-variant-caps: all-petite-caps;
 }
 
-
 .variantsForm {
   margin-top: 10px;
   display: flex;
@@ -158,9 +197,6 @@ p a {
   align-items: center;
   margin-left: -70px;
 }
-
-
-
 
 .variantsFormVariant {
   margin-top: -14px;
@@ -204,7 +240,6 @@ p a {
   align-items: center;
 }
 
-
 .newSearchButton:hover {
   color: rgb(118, 151, 228);
 }
@@ -225,11 +260,9 @@ p a {
   animation: slide-in-blurred-right 0.4s ease-in both;
 }
 
-.doneButton ion-icon{
+.doneButton ion-icon {
   color: black;
 }
-
-
 
 .removeButton {
   width: 130%;
@@ -296,10 +329,7 @@ p a {
   width: 100%;
   flex-wrap: wrap;
 }
-h14 {
-  color: #64646a;
-  font-size: 11px;
-}
+
 .searchButton2 {
   cursor: pointer;
   /* margin-left: 26px; */
@@ -357,11 +387,13 @@ h14 {
 
 .selectedOperator {
   background: white;
-  border: 2px solid rgba(12, 16, 64, 0.606);
+  border: 1px solid rgb(143 147 196 / 61%);
+  /* border: 1px solid rgba(12, 16, 64, 0.606); */
   font-size: medium;
   border-radius: 4px;
   width: 43px;
-  height: 28px;
+  height: 27px;
+  margin-right: 20px;
   box-shadow: 1px 2px 2px #cecece;
 }
 
@@ -401,12 +433,12 @@ h14 {
 }
 
 .searchIcon {
-  width: 34px;
-  margin-top: -1px;
+  width: 13px;
+  margin-right: -2px;
 }
-.searchIcon:hover {
-  width: 37px;
-  margin-top: -3px;
+.clearIcon {
+  width: 15px;
+  margin-right: -2px;
 }
 
 .forwardIcon {
@@ -702,7 +734,8 @@ h14 {
 .container2 {
   width: 100vw;
   display: flex;
-  margin-bottom: 40px;
+  margin-bottom: 18px;
+  margin-top: 10px;
 }
 
 .NavlinkVerifier {
@@ -769,7 +802,31 @@ h14 {
   transition: 0.2s ease-in-out;
 }
 
-.eosc4cancer:hover {
+.by-covid-logo {
+  height: 16px;
+  margin-top: 30px;
+  margin-bottom: 5px;
+  margin-right: 35px;
+  -webkit-filter: grayscale(20%);
+  filter: grayscale(60%);
+  -webkit-transition: 0.2s ease-in-out;
+  transition: 0.2s ease-in-out;
+}
+
+.ega-logo {
+  height: 46px;
+  margin-top: 30px;
+  margin-bottom: 5px;
+  margin-right: 35px;
+  -webkit-filter: grayscale(20%);
+  filter: grayscale(35%);
+  -webkit-transition: 0.2s ease-in-out;
+  transition: 0.2s ease-in-out;
+}
+
+.eosc4cancer,
+.by-covid-logo,
+.ega-logo:hover {
   -webkit-filter: grayscale(0%);
   filter: grayscale(0%);
 }
@@ -820,13 +877,35 @@ h14 {
 }
 
 .laCaixaLogo {
-  height: 33px;
-  margin-top: 42px;
+  height: 35px;
+  margin-top: 34px;
   margin-right: 30px;
-  -webkit-filter: grayscale(20%);
-  filter: grayscale(100%);
-  -webkit-transition: 0.2s ease-in-out;
+  filter: grayscale(40%);
   transition: 0.2s ease-in-out;
+}
+.horizonEuropeLogo {
+  height: 30px;
+  margin-right: 10px;
+  filter: grayscale(40%);
+  transition: 0.2s ease-in-out;
+}
+
+.elixirLogo {
+  margin-bottom: -13px;
+  height: 58px;
+  margin-right: 10px;
+  filter: grayscale(40%);
+  transition: 0.2s ease-in-out;
+}
+
+.elixirLogo:hover {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
+}
+
+.horizonEuropeLogo:hover {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
 }
 
 .laCaixaLogo:hover {
@@ -889,13 +968,7 @@ select {
 }
 
 .results {
-  display: flex;
-  flex-direction: column;
-  /* justify-content: center; */
-  align-content: center;
-  align-items: center;
-  padding-bottom: 55px;
-  min-height: 280px;
+  min-height: 80px;
 }
 
 .resultSet2 {
@@ -1251,25 +1324,26 @@ h5 {
 
 .IdForm {
   background: white;
-  border: 2px solid rgba(12, 16, 64, 0.606);
+  border: 1px solid rgb(121 123 163 / 61%);
   margin: 4px;
   padding: 6px;
-  box-shadow: 1px 1px 2px #a3a0a0;
+  box-shadow: 1px 1px 2px #eee9e9;
   width: 168px;
-  height: 27px;
+  height: 12px;
   border-radius: 4px;
   overflow: auto;
 }
 
 .ValueForm {
   background: white;
-  border: 2px solid rgba(12, 16, 64, 0.606);
+  /* border: 1px solid rgba(12, 16, 64, 0.606); */
   margin-left: 5px;
   padding: 6px;
-  box-shadow: 1px 1px 2px #a3a0a0;
+  box-shadow: 1px 1px 2px #eee9e9;
   width: 30%;
-  height: 27px;
+  height: 13px;
   border-radius: 4px;
+  border: 1px solid rgb(143 147 196 / 61%);
 }
 
 #operator {
@@ -1402,6 +1476,12 @@ h5 {
     text-underline-offset: 1px;
   }
 
+  .buttonsDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+
   .crossQueriesTittle {
     margin-bottom: 12px;
     font-size: 12px;
@@ -1426,7 +1506,7 @@ h5 {
     margin-bottom: 0px;
     margin-right: 37px;
     margin-top: -18px;
-    color: rgb(102 116 152) !important;
+    color: #3176b1 !important;
     font-weight: 700 !important;
   }
 
@@ -1445,6 +1525,24 @@ h5 {
     margin-right: 33px;
     -webkit-filter: grayscale(20%);
     filter: grayscale(100%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+  .by-covid-logo {
+    height: 14px;
+    margin-top: 20px;
+    margin-right: 30px;
+    -webkit-filter: grayscale(20%);
+    filter: grayscale(60%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
+  .ega-logo {
+    height: 36px;
+    margin-top: 20px;
+    margin-right: 30px;
+    -webkit-filter: grayscale(20%);
+    filter: grayscale(35%);
     -webkit-transition: 0.2s ease-in-out;
     transition: 0.2s ease-in-out;
   }
@@ -1480,8 +1578,8 @@ h5 {
   }
 
   .laCaixaLogo {
-    height: 31px;
-    margin-top: 31px;
+    height: 33px;
+    margin-top: 33px;
     margin-right: 30px;
     -webkit-filter: grayscale(100%);
     filter: grayscale(100%);
@@ -1499,10 +1597,6 @@ h5 {
     font-size: 11.5px;
     padding: 3px;
     box-shadow: rgb(234 221 221 / 16%) 0px 1px 4px;
-  }
-
-  .container2 {
-    margin-bottom: 0px;
   }
 
   .exampleQuery {
@@ -1660,28 +1754,6 @@ h5 {
       'Helvetica Neue', sans-serif;
     text-transform: uppercase;
   }
-  .searchIcon {
-    width: 26px;
-    margin-top: -1px;
-    margin-left: -8px;
-  }
-  .searchIcon:hover {
-    width: 26px;
-    margin-top: -1px;
-    margin-left: -8px;
-  }
-
-  .elixirLogo {
-    height: 70px;
-    margin-top: 18px;
-    margin-bottom: 37px;
-    margin-right: 21px;
-  }
-
-  .searchButton {
-    height: 30px;
-    cursor: pointer;
-  }
 
   .examplesQueriesList {
     display: flex;
@@ -1724,6 +1796,40 @@ h5 {
     text-underline-offset: 1px;
   }
 
+  .IdForm{
+    font-size: 12px;
+  }
+  .selectedOperator {
+    background: white;
+    border: 1px solid rgb(143 147 196 / 61%);
+    /* border: 1px solid rgba(12, 16, 64, 0.606); */
+    font-size: 12px;
+    border-radius: 4px;
+    width: 33px;
+    height: 27px;
+    /* margin-right: 20px; */
+    box-shadow: 1px 2px 2px #cecece;
+  }
+  .ValueForm{
+    font-size: 12px;
+  }
+  #operator {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    /* margin-top: -40px; */
+    width: 46px;
+  }
+
+  .buttonsDiv {
+    margin-top: 7px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 151px;
+  }
   .crossQueriesTittle {
     margin-bottom: 12px;
     font-size: 12px;
@@ -1770,7 +1876,25 @@ h5 {
     -webkit-transition: 0.2s ease-in-out;
     transition: 0.2s ease-in-out;
   }
+  .by-covid-logo {
+    height: 14px;
+    margin-top: 20px;
+    margin-right: 30px;
+    -webkit-filter: grayscale(20%);
+    filter: grayscale(60%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
 
+  .ega-logo {
+    height: 36px;
+    margin-top: 20px;
+    margin-right: 30px;
+    -webkit-filter: grayscale(20%);
+    filter: grayscale(35%);
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+  }
   .federLogo {
     height: 31px;
     margin-top: 31px;
@@ -1821,10 +1945,6 @@ h5 {
     font-size: 11.5px;
     padding: 3px;
     box-shadow: rgb(234 221 221 / 16%) 0px 1px 4px;
-  }
-
-  .container2 {
-    margin-bottom: 0px;
   }
 
   .exampleQuery {
@@ -1998,28 +2118,6 @@ h5 {
       'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
       'Helvetica Neue', sans-serif;
     text-transform: uppercase;
-  }
-  .searchIcon {
-    width: 26px;
-    margin-top: -1px;
-    margin-left: -8px;
-  }
-  .searchIcon:hover {
-    width: 26px;
-    margin-top: -1px;
-    margin-left: -8px;
-  }
-
-  .elixirLogo {
-    height: 70px;
-    margin-top: 18px;
-    margin-bottom: 37px;
-    margin-right: 21px;
-  }
-
-  .searchButton {
-    height: 30px;
-    cursor: pointer;
   }
 
   .examplesQueriesList {

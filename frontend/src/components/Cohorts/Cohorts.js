@@ -84,7 +84,6 @@ function Cohorts (props) {
               optionsCohorts.forEach(cohort => {
                 found = 0
                 if (cohort.value === element.id) {
-                  console.log(element.id)
                   found = 1
                 }
               })
@@ -111,7 +110,7 @@ function Cohorts (props) {
               }
               optionsCohorts.push(obj)
             }
-            console.log(optionsCohorts)
+
             arrayCohorts.push(element)
             const timer = setTimeout(() => {
               setTriggerLayout(true)

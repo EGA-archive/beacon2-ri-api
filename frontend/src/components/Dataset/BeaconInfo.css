@@ -6,7 +6,29 @@
 }
 .logoBeacon {
   height: 40px;
-  margin-top: 7px;
+}
+
+.logoBeaconNasertic {
+  height: 23px;
+  margin-top: 2px;
+}
+
+p a {
+  margin: 0px !important;
+}
+
+p a:hover {
+  font-weight: 500 !important;
+  font-size: 12px !important;
+}
+
+.datasetCard a {
+  font-size: 11px;
+  color: #0158aa;
+  margin-left: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  display: inline;
 }
 
 #descriptionEGA {
@@ -47,7 +69,6 @@
 .tittle2 h1 {
   font-size: 14px;
   font-weight: normal;
-  margin: 14px;
   color: #5d5454;
 }
 
@@ -75,7 +96,7 @@
   margin-bottom: -3px;
 }
 .tittle {
-  width: 40vw;
+  width: 36vw;
   background: #c8d4e6;
   border-radius: 2px;
   /* height: 80px; */
@@ -135,9 +156,6 @@
 }
 .logoBeacon {
   height: 30px;
-  margin-top: 7px;
-
-  padding-left: 10px;
 }
 
 #descriptionEGA {
@@ -146,7 +164,7 @@
 }
 
 .datasetCard {
-  width: 40vw;
+  width: 36.7vw;
   margin: 30px;
 
   /* border: 2px solid #3b9ad5; */
@@ -192,12 +210,17 @@
 }
 
 .datasetCard p {
-  font-size: 12px;
   font-weight: normal;
   color: rgb(61 60 60);
   line-height: 20px;
   margin-top: -5px;
+  width: 35vw;
+  text-align: justify;
+  height: 92px;
+  overflow-y: scroll;
+  font-size: 13px;
 }
+
 .datasetCardResults p {
   font-size: 12px;
   font-weight: normal;
@@ -209,7 +232,6 @@
 .tittle2 h1 {
   font-size: 14px;
   font-weight: normal;
-  margin: 14px;
   color: #5d5454;
 }
 
@@ -249,13 +271,15 @@
   margin-bottom: -3px;
 }
 .tittle {
-  width: 38vw;
+  width: 36vw;
   background: #c8d4e6;
   border-radius: 2px;
-  /* height: 80px; */
+  height: fit-content;
   display: flex;
   padding: 2px;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .tittleResults {
@@ -301,6 +325,8 @@
   color: rgba(12, 16, 64, 0.606);
   font-size: 12px;
   font-weight: 600;
+  margin-bottom: 8px;
+  margin-top: 2px;
 }
 
 .tittleResults h2 {
@@ -322,9 +348,11 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
   width: 100%;
   background: #c8d4e6;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 8px;
 }
 
 .tittle4 {
@@ -347,8 +375,21 @@
 }
 
 h5 {
-  margin-top: 0px !important;
   margin-bottom: 0px !important;
+}
+
+h5 {
+  color: rgb(209, 66, 66);
+  font-weight: bold;
+  width: -moz-fit-content;
+  width: fit-content;
+  /* width: 150%; */
+  margin-top: 26px;
+  margin-left: 40vw;
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+  font-size: 14px;
 }
 
 .resultsRecord {
@@ -402,7 +443,7 @@ h5 {
     margin-top: 2px;
   }
   .datasetCard p {
-    font-size: 11px;
+    font-size: 13px !important;
     font-weight: normal;
     color: rgb(61 60 60);
     line-height: 18px;
@@ -410,7 +451,7 @@ h5 {
   }
 
   .datasetCard {
-    width: 58vw;
+    width: 42vw;
     margin: 30px;
     /* border: 2px solid #3b9ad5; */
     padding: 16px;
@@ -424,7 +465,8 @@ h5 {
     justify-content: flex-start;
   }
   .tittle {
-    width: 54vw;
+    height: 82px;
+    width: 40vw;
     background: #c8d4e6;
     border-radius: 2px;
     /* height: 80px; */
@@ -432,6 +474,7 @@ h5 {
     padding: 2px;
     flex-direction: column;
     font-size: 9px !important;
+    justify-content: center;
   }
 
   .tittle h2 {
@@ -445,16 +488,16 @@ h5 {
   }
 
   .logoBeacon {
-    margin-left: 10px;
+    margin-left: 13px;
   }
 
   .datasetCard a {
-    margin-right: 14px;
     font-size: 11px;
     color: #0158aa;
     margin-left: 0px;
     margin-top: 0px;
     margin-bottom: 0px;
+    display: inline;
   }
 
   .datasetCard a:hover {
@@ -470,7 +513,6 @@ h5 {
   .tittle2 h1 {
     font-size: 11px;
     font-weight: normal;
-    margin: 14px;
     color: #5d5454;
   }
 }
@@ -504,7 +546,6 @@ h5 {
     justify-content: center;
     align-content: center;
     width: 100vw;
-    height: 68vh;
   }
 
   .tittle4 {
@@ -518,13 +559,16 @@ h5 {
     margin-top: 2px;
   }
   .datasetCard p {
-    font-size: 11px;
     font-weight: normal;
     color: rgb(61 60 60);
-    line-height: 18px;
+    line-height: 20px;
     margin-top: -5px;
+    width: 52vw;
+    text-align: justify;
+    height: 150px;
+    overflow-y: scroll;
+    font-size: 13px;
   }
-
   .datasetCard {
     width: 58vw;
     margin: 30px;
@@ -543,7 +587,7 @@ h5 {
     width: 54vw;
     background: #c8d4e6;
     border-radius: 2px;
-    /* height: 80px; */
+    height: fit-content;
     display: flex;
     padding: 2px;
     flex-direction: column;
@@ -562,6 +606,7 @@ h5 {
 
   .logoBeacon {
     margin-left: 10px;
+    margin-top: 5px;
   }
 
   .datasetCard a {
@@ -584,9 +629,9 @@ h5 {
   }
 
   .tittle2 h1 {
-    font-size: 11px;
-    font-weight: normal;
-    margin: 14px;
+    font-size: 10px;
+    font-weight: bold;
+    /* margin: 14px; */
     color: #5d5454;
   }
 }

@@ -5,15 +5,30 @@
 /* Apply custom scrollbar styles to the table container */
 .table-container {
   overflow-x: auto;
-  width: 100vw;
-  height: 90vh;
+  width: 100%;
+  min-width: 900px;
+  height: fit-content;
   position: relative;
+  overflow-y: scroll;
+  overflow-x: scroll;
   display: flex;
-  min-width: 950px;
+  /* min-width: 950px; */
   flex-direction: column;
-  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: rgb(188 208 223 / 50%) rgba(0, 0, 0, 0);
+}
 
-  scrollbar-color: rgba(0, 0, 0, 0.5) rgba(0, 0, 0, 0); /* For Firefox */
+.tdGranuBeacon ion-icon {
+  width: 15px;
+  color: black;
+  margin: 0px;
+  margin-left: 11px;
+  cursor: pointer;
+  margin-top: 2px;
+}
+
+.tdGranuBeacon ion-icon:hover {
+  font-weight: 700;
+  color: black;
 }
 
 .table-container th.hidden,
@@ -21,6 +36,12 @@
   display: none;
 }
 
+thead {
+  border-bottom: 0px !important;
+}
+.theadResults {
+  border: 1px solid #3176b1;
+}
 .menu-icon-container {
   display: flex;
   justify-content: flex-end;
@@ -50,6 +71,19 @@
   font-size: 11.5px;
 }
 
+.errorConnection {
+  color: rgb(185 79 79);
+  font-weight: bold;
+  width: -moz-fit-content;
+  width: fit-content;
+  /* width: 150%; */
+  /* display: flex; */
+  /* align-items: center; */
+  /* justify-content: center; */
+  /* font-size: 14px; */
+  margin-top: 46px !important;
+}
+
 .column-list li:hover {
   color: #5c5cb5;
 }
@@ -62,8 +96,14 @@
   font-size: 16px;
 }
 
-li svg {
-  margin-left: 7px;
+.noResultsFullResponse {
+  margin-top: 10px;
+  color: rgb(198, 59, 12);
+  font-family: sans-serif;
+}
+
+.noResultsFullResponse:hover {
+  color: rgb(198, 59, 12);
 }
 .sticky-header input {
   border: 1px solid #e0eaf9;
@@ -95,14 +135,29 @@ li svg {
   padding-right: 2px;
 }
 
+.crossQButtonTable {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  color: #3176b1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.crossQsymbol {
+  width: 14px;
+  /* margin-left: 7px; */
+  align-items: center;
+}
+
 /* Customize the scrollbar track */
 .table-container::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1); /* Lighter background color */
+  scrollbar-color: rgb(188 208 223 / 50%) rgba(0, 0, 0, 0);
 }
 
 /* Customize the scrollbar thumb */
 .table-container::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.5); /* Darker thumb color */
+  scrollbar-color: rgb(188 208 223 / 50%) rgba(0, 0, 0, 0);
   border-radius: 10px; /* Rounded corners */
 }
 
@@ -115,12 +170,15 @@ li svg {
   position: sticky;
   top: 0;
   z-index: 2;
-  width: 100%;
+  /* width: 100vw; */
+
+  /* align-items: center; */
+  /* justify-content: center; */
+  /* align-content: center; */
 }
 
 .body-container {
   overflow-y: auto;
-  max-height: 100vh;
 }
 
 .tableResults {
@@ -130,35 +188,237 @@ li svg {
   margin-left: 14px;
 }
 
-.theadResults {
-  border-bottom: solid 1px #e1e1e1;
-  background-color: #a9c9bb;
-}
-
 .sticky-header input {
   width: 80%;
 }
 .sticky-header,
 .visible {
   padding: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid #3176b1;
   text-align: left;
   white-space: break-spaces;
-  width: 23vw;
+  width: 86vw;
   overflow-x: scroll;
-  height: 104px;
+  height: 60px;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  align-items: center;
   font-family: sans-serif;
+}
+
+.tdGranuBeacon {
+  /* margin-left: 28px; */
+  font-size: 14px;
+  font-family: sans-serif;
+  /* padding: 8px; */
+
+  display: flex;
+  align-items: center;
+  width: 328px;
+  align-content: center;
+  justify-content: flex-start;
+}
+.visible-id {
+  padding: 8px;
+  border: 1px solid #3176b1;
+  text-align: left;
+  white-space: break-spaces;
+  width: 86vw;
+  overflow-x: scroll;
+  flex-direction: row-reverse;
+  height: 60px;
+  display: flex;
+  /* flex-direction: column; */
+  justify-content: center;
+  font-family: sans-serif;
+  align-items: center;
+}
+
+.tbodyResults {
+  border-left: 1px solid #3176b1;
+  border-right: 1px solid #3176b1;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 22px;
+}
+
+.pagination-controls button {
+  background-color: #f2f2f2;
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  margin: 0 2px;
+  cursor: pointer;
+  border-radius: 2px;
+}
+input[type='checkbox'] {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  -o-appearance: none;
+  outline: none;
+  content: none;
+}
+
+input[type='checkbox']:checked:before {
+  display: flex;
+  color: rgb(36, 43, 106) !important;
+  align-items: center;
+  justify-content: center;
+}
+
+input[type='checkbox']:before {
+  content: '✓';
+  font-size: 15px;
+  color: transparent !important;
+  background: #ffffff;
+  display: block;
+  width: 11px;
+  height: 11px;
+  border: 1.8px solid #3176b1;
+  margin-right: 1px;
+}
+
+tr {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.divFilter p {
+  color: #3176b1;
+}
+.pagination-controls button.active {
+  background-color: #3d72a6;
+  color: white;
+  border-radius: 2px;
+}
+
+.tableGranularity {
+  width: 800px;
+  /* border: 1px solid white; */
+  border-collapse: collapse;
+  margin-bottom: 64px;
+}
+
+.tableGranularity {
+  width: fit-content;
+}
+
+.trGranu {
+  height: 8vh;
+  border-bottom: 1px solid #e9ebee;
+}
+.trGranuBeacon {
+  background-color: #d7e7f5;
+  height: 55px;
+  border-bottom: 1px solid #8fadc1;
+}
+
+.thGranularity,
+.tdGranu,
+.thGranularityTitle,
+.thGranularityTitleBeacon {
+  font-size: 14px;
+  width: 328px;
+  font-family: sans-serif;
+  /* padding: 8px; */
+  /* text-align: center; */
+  display: flex;
+  word-break: break-all;
+  /* align-items: center; */
+  align-content: center;
+  /* justify-content: flex-start; */
+}
+
+.tdGranuNoResults,
+.thGranularityTitle,
+.thGranularityTitleBeacon {
+  font-size: 14px;
+  width: 333px;
+  font-family: sans-serif;
+  /* padding: 8px; */
+  text-align: center;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: flex-start;
+}
+
+.tdGranuBeaconNoResults {
+  margin-left: 10px;
+  font-size: 14px;
+  font-family: sans-serif;
+  /* padding: 8px; */
+  text-align: center;
+  display: flex;
+  align-items: center;
+  width: 302px;
+  align-content: center;
+  justify-content: flex-start;
+}
+.thGranularityTitleBeacon {
+  color: white;
+  margin-left: 10px;
+}
+
+.thGranularityTitleBeacon {
+  padding-left: 10px;
+}
+
+.trGranu td {
+  padding-left: 12px;
+
+  max-width: 100%;
+  overflow-y: overlay;
+}
+
+.trGranuBeacon td {
+  padding-left: 12px;
+}
+.tdNotFoundDataset {
+  color: rgb(134, 145, 164);
+}
+.thGranularityTitle {
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.tdFound {
+  font-weight: 600;
+}
+
+.tdNotFound {
+  color: rgb(134, 145, 164);
+  font-weight: 600;
+}
+#trGranuHeader {
+  background-color: #3176b1;
+  font-weight: bold;
+  height: 50px;
+}
+
+.pagination-controls button:disabled {
+  cursor: not-allowed;
+  background-color: #dddddd;
+  border-radius: 2px;
+}
+
+.pagination-controls button:hover:not(.active):not(:disabled) {
+  background-color: #ddd;
 }
 
 th.sticky-header {
   position: sticky;
   top: 0;
-  background-color: white; /* Ensure background color appears */
-  z-index: 3; /* Ensure the sticky header appears above the tbody */
+  background-color: white;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  padding-bottom: 19px;
 }
 
 th {
@@ -197,6 +457,7 @@ td {
   font-size: 16px;
   border-radius: 6px;
   color: #fcfcfc;
+  width: fit-content;
   font-weight: 600;
   background: #0db474;
 }
@@ -209,6 +470,7 @@ td {
   color: #fce8e8;
   font-weight: 600;
   background: #e93e3e;
+  width: fit-content;
 }
 
 .foundResult:hover {
@@ -340,15 +602,17 @@ h1 {
 
 .containerBeaconResults {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
-  /* width: 98vw; */
   /* margin-right: 26px; */
+  width: 100vw;
+  padding-bottom: 50px;
+
   align-content: center;
   flex-wrap: wrap;
   margin-left: 10px;
   margin-right: 10px;
-  margin-top: 12px;
+  margin-top: 24px;
   align-items: center;
   overflow: scroll;
 }
@@ -365,18 +629,32 @@ h1 {
   justify-content: center;
 }
 
-@media (max-width: 860px) {
+.tdGranu .tdFound {
+  margin-left: 0px;
+}
+
+@media (max-width: 1000px) {
+  .tdGranu .tdFound {
+    margin-left: 10px;
+  }
+  tr {
+    display: flex;
+    width: 90vw;
+    align-items: center;
+    justify-content: flex-start;
+  }
   .containerBeaconResults {
     display: flex;
     flex-direction: column;
     justify-content: center;
-
     /* margin-right: 26px; */
+    width: 100vw;
     align-content: center;
     flex-wrap: wrap;
     margin-left: 10px;
+    padding-bottom: 50px;
     margin-right: 10px;
-    margin-top: 12px;
+    margin-top: 24px;
     align-items: center;
     overflow: scroll;
   }
@@ -452,6 +730,76 @@ h1 {
     margin-bottom: 2px;
   }
 }
+@media (max-width: 1000px) {
+  .tableResults {
+    /* width: 96%; */
+    overflow-x: scroll;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-left: 14px;
+  }
+
+  .containerTableResults {
+    width: 100vw;
+    display: flex;
+    align-content: start;
+    justify-content: start;
+    align-items: start;
+  }
+
+  .containerBeaconResults {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* margin-right: 26px; */
+    width: 100vw;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    margin-left: 10px;
+    padding-bottom: 50px;
+    margin-right: 10px;
+    margin-top: 24px;
+    align-items: flex-start;
+    overflow: scroll;
+  }
+
+  .containerTableNoFull {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+  }
+  tr {
+    width: 100%;
+  }
+  .tbodyGranu tr {
+    width: 70vw;
+  }
+  .tbodyGranu {
+    width: 70vw;
+  }
+  .theadGranularity tr {
+    width: 70vw;
+  }
+}
+
+@media (max-width: 800px) {
+  .tdGranuBeacon {
+    font-size: 12px;
+  }
+  .tdGranu {
+    font-size: 12px;
+  }
+  .tbodyGranu tr {
+    width: 80vw;
+  }
+  .tbodyGranu {
+    width: 80vw;
+  }
+  .theadGranularity tr {
+    width: 80vw;
+  }
+}
 
 @media (max-width: 600px) {
   .tittleResults {
@@ -464,4 +812,13 @@ h1 {
     flex-direction: column;
     align-items: center;
   }
+  .tbodyGranu tr {
+    width: 90vw;
+  }
+  .tbodyGranu {
+    width: 90vw;
+  }
+  .theadGranularity tr {
+    width: 90vw;
+}
 }

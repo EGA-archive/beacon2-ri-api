@@ -1,3 +1,6 @@
+.h1Menu{
+  color: white !important;
+}
 @media (min-width: 1410px) {
   /* … */
   .nav4 {
@@ -36,7 +39,9 @@
     justify-content: center;
     font-size: 11px;
     width: 120px;
-    margin-top: 19px;
+    margin-top: 2px !important;
+    margin-right: 0px !important;
+    margin-left: 0px !important;
     align-content: center;
     align-items: center;
   }
@@ -68,12 +73,12 @@
   }
 
   .nav2 {
-    width: 70%;
+    width: 10%;
     display: flex;
     justify-content: flex-start;
   }
   .nav3 {
-    width: 35%;
+    width: 90%;
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -175,11 +180,11 @@
   }
 
   .Members {
-    width: 146px;
+    width: 153px;
   }
 
   .Members2 {
-    width: 140px;
+    width: 153px;
     background-color: #4961b8;
   }
 
@@ -188,7 +193,7 @@
   }
 
   .Members4 {
-    width: 130px;
+    width: 156px;
     background-color: #4961b8;
   }
 
@@ -207,7 +212,7 @@
   }
 
   .Sign-in6 {
-    width: 140px;
+    width: 136px;
   }
 
   .Sign-in5 {
@@ -221,6 +226,11 @@
     background-color: #0c7a7a;
   }
 
+  .Members3:hover ~ .animation {
+    background-color: #4961b8;
+    width: 150px;
+    right: 290px;
+  }
   .nav3 .Sign-in3 {
     display: flex;
     align-items: center;
@@ -266,14 +276,8 @@
   }
 
   .Members:hover ~ .animation {
-    width: 125px;
-    right: 151px;
-    background-color: #4961b8;
-  }
-
-  .Members3:hover ~ .animation {
-    width: 110px;
-    right: 19%;
+    width: 150px;
+    right: 138px;
     background-color: #4961b8;
   }
 
@@ -284,7 +288,7 @@
   }
 
   .Home6 {
-    width: 143px;
+    width: 123px;
   }
 
   .Home5 {
@@ -294,13 +298,19 @@
 
   .Home6:hover ~ .animation {
     background-color: #acc2c1;
-    right: 390px;
+    right: 458px;
     width: 100px;
+  }
+
+  .containerUserName:hover ~ .animation {
+    background-color: #eb9662;
+    right: 0px;
+    width: 260px;
   }
 
   .Home:hover ~ .animation {
     background-color: #acc2c1;
-    right: 290px;
+    right: 298px;
     width: 100px;
   }
 
@@ -506,7 +516,6 @@
     /* margin-bottom: 5px; */
     padding-right: 10px;
     padding-left: 10px;
-    color: white !important;
     text-decoration: none !important;
     font-weight: 500;
   }
@@ -729,6 +738,10 @@
     margin-top: 21px !important;
   }
 
+  ion-icon {
+    font-size: 26px !important;
+  }
+
   .userNameSmallScreen {
     display: flex;
     font-size: 11px;
@@ -790,7 +803,7 @@
   .arrowUpIcon {
     width: 24px;
     margin-bottom: -33px;
-    margin-left: 66px;
+    margin-left: 51px;
   }
 
   h1:hover {
@@ -801,7 +814,6 @@
   h1 {
     text-transform: uppercase;
     font-size: 10px;
-    margin-left: 7px;
     margin-top: 5px;
     width: -moz-fit-content;
     width: fit-content;
@@ -841,20 +853,27 @@
   }
 
   .Members2 {
-    width: 160px;
-    height: 21px;
+    width: 126px;
+    height: 25px;
     border-radius: 4px;
     background-color: #4961b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .Sign-in5 {
-    width: 157px;
-    height: 27px;
-    margin-top: 2px;
-    margin-left: 2px;
-    border-radius: 4px;
-    background-color: #7a9f9f;
-  }
+      .Sign-in5 {
+        margin-bottom: 10px;
+        width: 123px;
+        height: 21px;
+        margin-top: 2px;
+        /* margin-left: 2px; */
+        border-radius: 4px;
+        display: flex;
+        background-color: #7a9f9f;
+        align-items: center;
+        justify-content: center;
+    }
 
   .Runs2 {
     width: 157px;
@@ -969,8 +988,8 @@
   }
   .menuNav2 {
     background-color: #235c94;
-    height: 135px;
-    width: 161px;
+    height: fit-content;
+    width: 126px;
     margin-top: 22px;
     border-radius: 9px;
     box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;

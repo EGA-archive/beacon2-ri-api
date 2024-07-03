@@ -18,14 +18,27 @@ function TableResultsIndividuals (props) {
   const [exportMenuVisible, setExportMenuVisible] = useState(false)
   const [showCrossQuery, setShowCrossQuery] = useState(false)
   const [parameterCrossQuery, setParamCrossQuery] = useState('')
+  const [expandedRows, setExpandedRows] = useState(
+    new Array(props.beaconsList.length).fill(false)
+  )
+  const [currentPage, setCurrentPage] = useState(1)
+  const [rowsPerPage] = useState(10) // You can make this dynamic if needed
+
+  const [filteredData, setFilteredData] = useState(editable)
+
+  const indexOfLastRow = currentPage * rowsPerPage
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage
+  const currentRows = filteredData.slice(indexOfFirstRow, indexOfLastRow)
+
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage)
 
   const [note, setNote] = useState('')
   const [isOpenModal2, setIsOpenModal2] = useState(false)
 
   const [filterValues, setFilterValues] = useState({
+    Beacon: '',
     IndividualId: '',
     ethnicity: '',
-    Beacon: '',
     interventionsOrProcedures: '',
     sex: '',
     diseases: '',
@@ -40,10 +53,31 @@ function TableResultsIndividuals (props) {
     setMenuVisible(prevState => !prevState)
   }
 
+  const getBeaconName = (beaconId, beaconsList) => {
+    if (beaconId === 'org.progenetix') {
+      beaconId = 'org.progenetix.beacon'
+    }
+    beaconsList.forEach(element => {
+      console.log(element.id)
+    })
+
+    const beacon = beaconsList.find(b => (b.response?.id ?? b.id) === beaconId)
+
+    if (beacon) {
+      if (beacon.response) {
+        return beacon.response.name
+      } else {
+        return beacon.name
+      }
+    } else {
+      return beaconId // Or any other default value you prefer when no beacon is found
+    }
+  }
+
   const [columnVisibility, setColumnVisibility] = useState({
+    Beacon: true,
     IndividualId: true,
     ethnicity: true,
-    Beacon: true,
     interventionsOrProcedures: true,
     sex: true,
     diseases: true,
@@ -51,6 +85,44 @@ function TableResultsIndividuals (props) {
     phenotypicFeatures: true
     // Add more columns as needed
   })
+
+  const handleNextPage = () => {
+    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages))
+  }
+
+  const handlePreviousPage = () => {
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1))
+  }
+
+  const handlePageClick = pageNumber => {
+    setCurrentPage(pageNumber)
+  }
+
+  const getPages = () => {
+    const pages = []
+    const maxDisplayedPages = 5
+    const totalVisiblePages = maxDisplayedPages + 4 // Total number of buttons (first, last, current range, and ellipses)
+
+    if (totalPages <= totalVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i)
+      }
+    } else {
+      const startRange = Math.max(2, currentPage - 2)
+      const endRange = Math.min(totalPages - 1, currentPage + 2)
+
+      pages.push(1)
+      if (startRange > 2) pages.push('...')
+      for (let i = startRange; i <= endRange; i++) {
+        pages.push(i)
+      }
+      if (endRange < totalPages - 1) pages.push('...')
+      pages.push(totalPages)
+    }
+
+    return pages
+  }
+
   const showAllColumns = () => {
     const columns = document.querySelectorAll('th')
     const rows = document.querySelectorAll('td')
@@ -79,7 +151,6 @@ function TableResultsIndividuals (props) {
     })
   }
 
-  const [filteredData, setFilteredData] = useState(editable)
   const toggleColumnVisibility = columnName => {
     const columns = document.querySelectorAll('th[data-column-name]')
     const rows = document.querySelectorAll(
@@ -119,88 +190,95 @@ function TableResultsIndividuals (props) {
 
   const exportToCSV = () => {
     // Ensure props.results is not null or undefined
-    if (!props.results) return;
-  
+    if (!props.results) return
+
     // Get all keys from the first row of props.results
-    const header = Object.keys(props.results[0]);
-  
+    const header = Object.keys(props.results[0])
+
     // Convert each row to CSV format
     const csv = [
       header.join(','), // Header row
       ...props.results.map(row =>
-        header.map(fieldName => {
-          const value = row[fieldName];
-          // Check if the value is an object
-          if (typeof value === 'object') {
-            // Stringify the object
-            return JSON.stringify(value);
-          } else {
-            // Otherwise, return the value as is
-            return value;
-          }
-        }).join(',')
+        header
+          .map(fieldName => {
+            const value = row[fieldName]
+            // Check if the value is an object
+            if (typeof value === 'object') {
+              // Stringify the object
+              return JSON.stringify(value)
+            } else {
+              // Otherwise, return the value as is
+              return value
+            }
+          })
+          .join(',')
       )
-    ].join('\n');
-  
+    ].join('\n')
+
     // Create a blob object from the CSV content
-    const blob = new Blob([csv], { type: 'text/csv' });
-  
+    const blob = new Blob([csv], { type: 'text/csv' })
+
     // Create a URL for the blob object
-    const url = window.URL.createObjectURL(blob);
-  
+    const url = window.URL.createObjectURL(blob)
+
     // Create a temporary <a> element to trigger the download
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'exported_data.csv');
-  
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', 'exported_data.csv')
+
     // Programmatically click the link to start the download
-    document.body.appendChild(link);
-    link.click();
-  
+    document.body.appendChild(link)
+    link.click()
+
     // Clean up by revoking the URL and removing the temporary <a> element
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(link);
-  };
-  
+    window.URL.revokeObjectURL(url)
+    document.body.removeChild(link)
+  }
 
   const exportToJSON = () => {
     // Ensure props.results is not null or undefined
-    if (!props.results) return;
-  
+    if (!props.results) return
+
     // Convert the results to JSON
-    const jsonString = JSON.stringify(props.results, null, 2);
-  
+    const jsonString = JSON.stringify(props.results, null, 2)
+
     // Create a blob object from the JSON content
-    const blob = new Blob([jsonString], { type: 'application/json' });
-  
+    const blob = new Blob([jsonString], { type: 'application/json' })
+
     // Create a URL for the blob object
-    const url = URL.createObjectURL(blob);
-  
+    const url = URL.createObjectURL(blob)
+
     // Create a temporary <a> element to trigger the download
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'exported_data.json');
-  
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', 'exported_data.json')
+
     // Programmatically click the link to start the download
-    document.body.appendChild(link);
-    link.click();
-  
+    document.body.appendChild(link)
+    link.click()
+
     // Clean up by revoking the URL and removing the temporary <a> element
-    URL.revokeObjectURL(url);
-    document.body.removeChild(link);
-  };
-  
-
-
-  const showNote = e => {
-    setNote(e)
-    setIsOpenModal2(true)
+    URL.revokeObjectURL(url)
+    document.body.removeChild(link)
   }
 
   const handleShowCrossQuery = e => {
     setShowCrossQuery(true)
-    console.log(e.target.innerText)
+
     setParamCrossQuery(e.target.innerText)
+  }
+
+  const toggleRow = index => {
+    setExpandedRows(prevState => {
+      const currentIndex = prevState.indexOf(index)
+      if (currentIndex === -1) {
+        return [...prevState, index]
+      } else {
+        const updatedRows = [...prevState]
+        updatedRows.splice(currentIndex, 1)
+        return updatedRows
+      }
+    })
   }
 
   useEffect(() => {
@@ -219,7 +297,7 @@ function TableResultsIndividuals (props) {
     })
 
     resultsSelectedFinal.forEach((element, index) => {
-      if (element[1] !== undefined) {
+      if (element[1] !== undefined && element[1]._id) {
         let eth_id = ''
         let eth_label = ''
         let stringEth = ''
@@ -433,49 +511,171 @@ function TableResultsIndividuals (props) {
   return (
     <div className='containerBeaconResults'>
       {showDatsets === true &&
-        props.beaconsList.map(result => {
+        props.beaconsList.map((result, beaconIndex) => {
           return (
             <>
-              {props.show !== 'full' &&
-                props.resultsPerDataset.map((element, index) => {
-                  return (
-                    <>
-                      {element[1][index] === true &&
-                        props.show === 'boolean' && (
-                          <h6 className='foundResult'>YES</h6>
-                        )}
-                      {element[1][index] === false &&
-                        props.show === 'boolean' && (
-                          <h5 className='NotFoundResult'>No, sorry</h5>
-                        )}
-                      {props.show === 'count' &&
-                        element[2][index] !== 0 &&
-                        element[2][index] !== 1 && (
-                          <h6 className='foundResult'>
-                            {element[2][index]} RESULTS
-                          </h6>
-                        )}
-                      {props.show === 'count' && element[2][index] === 0 && (
-                        <h5 className='NotFoundResult'>
-                          {element[2][index]} RESULTS
-                        </h5>
-                      )}
-                      {props.show === 'count' && element[2][index] === 1 && (
-                        <h6 className='foundResult'>
-                          {element[2][index]} RESULT
-                        </h6>
-                      )}
-                    </>
-                  )
-                })}
+              {beaconIndex === 0 && (
+                <div className='containerTableNoFull'>
+                  <table className='tableGranularity' key={beaconIndex}>
+                    <thead className='theadGranularity'>
+                      <tr id='trGranuHeader'>
+                        <th className='thGranularityTitleBeacon'>Beacon</th>
+                        <th className='thGranularityTitle'>Dataset</th>
+                        <th className='thGranularityTitle'>Result</th>
+                      </tr>
+                    </thead>
+                    <tbody className='tbodyGranu'>
+                      {props.results.length > 0 &&
+                        props.resultsPerDataset.map((dataset, index2) => {
+                          const totalCount = dataset[3]
+                            ? dataset[3].reduce((acc, count) => acc + count, 0)
+                            : 0
+                          const hasTrueElement = dataset[2]
+                            ? dataset[2].some(booleanElement => booleanElement)
+                            : false
+                          const beaconName = getBeaconName(
+                            dataset[0],
+                            props.beaconsList
+                          )
+                          return (
+                            <React.Fragment key={index2}>
+                              <tr
+                                className='trGranuBeacon'
+                                onClick={() => toggleRow(index2)}
+                              >
+                                <td className='tdGranuBeacon'>
+                                  {beaconName}
+                                  {expandedRows.includes(index2) ? (
+                                    <ion-icon name='chevron-down-outline'></ion-icon>
+                                  ) : (
+                                    <ion-icon name='chevron-up-outline'></ion-icon>
+                                  )}
+                                </td>
+                                <td className='tdGranuBeacon'></td>
+                                <td className='tdGranuBeacon'>
+                                  {props.show === 'boolean'
+                                    ? hasTrueElement
+                                      ? 'YES'
+                                      : 'No, sorry'
+                                    : totalCount}
+                                </td>
+                              </tr>
+                              {expandedRows.includes(index2) && (
+                                <React.Fragment key={`expanded-${index2}`}>
+                                  {props.show === 'boolean' &&
+                                    dataset[2].map(
+                                      (booleanElement, booleanIndex) => (
+                                        <tr
+                                          className='trGranu'
+                                          key={`boolean-${booleanIndex}`}
+                                        >
+                                          <td className='tdGranu'></td>
+                                          <td
+                                            className={`tdGranu ${
+                                              booleanElement
+                                                ? 'tdFoundDataset'
+                                                : 'tdNotFoundDataset'
+                                            }`}
+                                          >
+                                            {dataset[1][booleanIndex]}
+                                          </td>
+                                          <td
+                                            className={`tdGranu ${
+                                              booleanElement
+                                                ? 'tdFound'
+                                                : 'tdNotFound'
+                                            }`}
+                                          >
+                                            {booleanElement
+                                              ? 'YES'
+                                              : 'No, sorry'}
+                                          </td>
+                                        </tr>
+                                      )
+                                    )}
+                                  {props.show === 'count' &&
+                                    dataset[3].map(
+                                      (countElement, countIndex) => (
+                                        <tr
+                                          className='trGranu'
+                                          key={`count-${countIndex}`}
+                                        >
+                                          <td className='tdGranu'></td>
+                                          <td
+                                            className={`tdGranu ${
+                                              countElement !== undefined &&
+                                              countElement !== null &&
+                                              countElement !== 0
+                                                ? 'tdFoundDataset'
+                                                : 'tdNotFoundDataset'
+                                            }`}
+                                          >
+                                            {dataset[1][countIndex]}
+                                          </td>
+                                          <td
+                                            className={`tdGranu ${
+                                              countElement !== undefined &&
+                                              countElement !== null &&
+                                              countElement !== 0
+                                                ? 'tdFound'
+                                                : 'tdNotFound'
+                                            }`}
+                                          >
+                                            {countElement}
+                                          </td>
+                                        </tr>
+                                      )
+                                    )}
+                                </React.Fragment>
+                              )}
+                            </React.Fragment>
+                          )
+                        })}
+                      {props.results.length === 0 &&
+                        props.beaconsList.map((beacon, index2) => {
+                          const totalCount = 0
+                          const hasTrueElement = false
+
+                          return (
+                            <React.Fragment key={index2}>
+                              <tr
+                                className='trGranuBeacon'
+                                onClick={() => toggleRow(index2)}
+                              >
+                                {beacon.response && (
+                                  <td className='tdGranuBeacon tdNotFoundDataset'>
+                                    {beacon.response.name}
+                                  </td>
+                                )}
+                                {!beacon.response && (
+                                  <td className='tdGranuBeacon tdNotFoundDataset'>
+                                    {beacon.name}
+                                  </td>
+                                )}
+                                <td className='tdGranuBeacon'></td>
+                                <td className='tdGranuBeacon tdNotFoundDataset'>
+                                  {props.show === 'boolean'
+                                    ? hasTrueElement
+                                      ? 'YES'
+                                      : 'No, sorry'
+                                    : totalCount}
+                                </td>
+                              </tr>
+                            </React.Fragment>
+                          )
+                        })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </>
           )
         })}
 
       {!showCrossQuery &&
         showDatsets === false &&
-        showResults === true &&
-        trigger2 === true && (
+        props.results.length > 0 &&
+        showResults === true && (
           <div className='table-container'>
             <div className='menu-icon-container'>
               <div className='export-menu'>
@@ -524,6 +724,21 @@ function TableResultsIndividuals (props) {
                   <tr>
                     <th
                       className={`sticky-header ${
+                        columnVisibility.Beacon ? 'visible' : 'hidden'
+                      }`}
+                    >
+                      <span>Beacon</span>
+                      <button onClick={() => toggleColumnVisibility('Beacon')}>
+                        {columnVisibility.Beacon ? <FaEye /> : <FaEyeSlash />}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter Beacon'
+                        onChange={e => handleFilterChange(e, 'Beacon')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
                         columnVisibility.IndividualId ? 'visible' : 'hidden'
                       }`}
                     >
@@ -564,21 +779,7 @@ function TableResultsIndividuals (props) {
                         onChange={e => handleFilterChange(e, 'ethnicity')}
                       />
                     </th>
-                    <th
-                      className={`sticky-header ${
-                        columnVisibility.Beacon ? 'visible' : 'hidden'
-                      }`}
-                    >
-                      <span>Beacon</span>
-                      <button onClick={() => toggleColumnVisibility('Beacon')}>
-                        {columnVisibility.Beacon ? <FaEye /> : <FaEyeSlash />}
-                      </button>
-                      <input
-                        type='text'
-                        placeholder='Filter Beacon'
-                        onChange={e => handleFilterChange(e, 'Beacon')}
-                      />
-                    </th>
+
                     <th
                       className={`sticky-header ${
                         columnVisibility.interventionsOrProcedures
@@ -694,15 +895,33 @@ function TableResultsIndividuals (props) {
             </div>
             <div className='body-container'>
               <table className='tableResults'>
-                <tbody>
-                  {filteredData.map((row, index) => (
+                <tbody className='tbodyResults'>
+                  {currentRows.map((row, index) => (
                     <tr key={index}>
                       <td
                         className={
-                          columnVisibility.IndividualId ? 'visible' : 'hidden'
+                          columnVisibility.Beacon ? 'visible' : 'hidden'
                         }
                       >
-                        {row.IndividualId}
+                        {row.Beacon}
+                      </td>
+                      <td
+                        className={
+                          columnVisibility.IndividualId
+                            ? 'visible-id'
+                            : 'hidden'
+                        }
+                      >
+                        <img
+                          src='../arrows-cross.png'
+                          className='crossQsymbol'
+                        ></img>
+                        <button
+                          onClick={handleShowCrossQuery}
+                          className='crossQButtonTable'
+                        >
+                          {row.IndividualId}
+                        </button>
                       </td>
                       <td
                         className={
@@ -711,13 +930,7 @@ function TableResultsIndividuals (props) {
                       >
                         {row.ethnicity}
                       </td>
-                      <td
-                        className={
-                          columnVisibility.Beacon ? 'visible' : 'hidden'
-                        }
-                      >
-                        {row.Beacon}
-                      </td>
+
                       <td
                         className={
                           columnVisibility.interventionsOrProcedures
@@ -755,8 +968,6 @@ function TableResultsIndividuals (props) {
                       >
                         {row.phenotypicFeatures}
                       </td>
-
-                      {/* Render other row cells here */}
                     </tr>
                   ))}
                 </tbody>
@@ -764,6 +975,42 @@ function TableResultsIndividuals (props) {
             </div>
           </div>
         )}
+
+      {props.show === 'full' && props.results.length > 0 && !showCrossQuery && (
+        <div className='pagination-controls'>
+          <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+            Previous
+          </button>
+          {getPages().map((page, index) =>
+            typeof page === 'number' ? (
+              <button
+                key={index}
+                onClick={() => handlePageClick(page)}
+                className={currentPage === page ? 'active' : ''}
+              >
+                {page}
+              </button>
+            ) : (
+              <span key={index} className='ellipsis'>
+                {page}
+              </span>
+            )
+          )}
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      )}
+
+      {props.show === 'full' &&
+        props.results.length === 0 &&
+        !showCrossQuery && (
+          <h5 className='noResultsFullResponse'>No results, sorry.</h5>
+        )}
+
       {showCrossQuery && (
         <CrossQueries
           parameter={parameterCrossQuery}

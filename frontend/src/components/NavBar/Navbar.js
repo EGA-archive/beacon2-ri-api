@@ -7,6 +7,9 @@ import OutsideClickHandler from 'react-outside-click-handler'
 import './Navbar.css'
 import { useNavigate } from 'react-router-dom'
 import LoggedIn from '../SignIn/LoggedIn'
+import axios from 'axios'
+
+import configData from '../../config.json'
 
 function Navbar () {
   const [selected, setIsSelected] = useState('')
@@ -22,6 +25,7 @@ function Navbar () {
     setUserNameToShare
   } = useContext(AuthContext)
 
+  const [isNetwork, setIsNetwork] = useState(false)
   const auth = useAuth()
   const navigate = useNavigate()
 
@@ -46,6 +50,21 @@ function Navbar () {
     }
   }, [userNameToShare])
 
+  useEffect(() => {
+    const apiCall = async () => {
+      try {
+        let res2 = await axios.get(configData.API_URL + '/info')
+
+        if (res2.data.meta.isAggregated) {
+          setIsNetwork(true)
+        }
+      } catch (error) {
+       
+      }
+    }
+
+    apiCall()
+  }, [])
 
   const handleHelpModal1 = () => {
     setIsOpenModal1(true)
@@ -112,6 +131,7 @@ function Navbar () {
         >
           Cohorts
         </NavLink> */}
+
         <div class='animation nav2'></div>
       </nav>
       <nav className='nav3'>
@@ -124,12 +144,20 @@ function Navbar () {
           </NavLink>
         )}
 
-        {!isLoggedIn && (
+        {!isLoggedIn && !isNetwork && (
           <NavLink
             to='/beaconInfo'
             className={({ isActive }) => (isActive ? 'Members2' : 'Members')}
           >
             Beacon Info
+          </NavLink>
+        )}
+        {!isLoggedIn && isNetwork && (
+          <NavLink
+            to='/beaconInfo'
+            className={({ isActive }) => (isActive ? 'Members2' : 'Members')}
+          >
+            Network members
           </NavLink>
         )}
 
@@ -151,13 +179,23 @@ function Navbar () {
           </NavLink>
         )}
 
-        {isLoggedIn && (
+        {isLoggedIn && !isNetwork && (
           <NavLink
             exact
             to='/beaconInfo'
             className={({ isActive }) => (isActive ? 'Members4' : 'Members3')}
           >
             Beacon Info
+          </NavLink>
+        )}
+
+        {isLoggedIn && isNetwork && (
+          <NavLink
+            exact
+            to='/beaconInfo'
+            className={({ isActive }) => (isActive ? 'Members4' : 'Members3')}
+          >
+            Network Members
           </NavLink>
         )}
 
@@ -209,30 +247,6 @@ function Navbar () {
                     ></img>
                   </div>
                   <div className='menuNav'>
-                    <NavLink
-                      to='/beaconInfo'
-                      onClick={handleMenu}
-                      className={({ isActive }) =>
-                        isActive ? 'Members2' : 'Members'
-                      }
-                    >
-                      {' '}
-                      <h1>Beacon Info</h1>
-                    </NavLink>
-
-                    {!isLoggedIn && (
-                      <NavLink
-                        exact
-                        to='/sign-in-options'
-                        onClick={handleMenu}
-                        className={({ isActive }) =>
-                          isActive ? 'Sign-in5' : 'Sign-in6'
-                        }
-                      >
-                        <h1>Log in</h1>
-                      </NavLink>
-                    )}
-
                     {
                       <NavLink
                         exact
@@ -243,6 +257,43 @@ function Navbar () {
                         <ion-icon name='home-outline'></ion-icon>
                       </NavLink>
                     }
+                    {!isNetwork && (
+                      <NavLink
+                        to='/beaconInfo'
+                        onClick={handleMenu}
+                        className={({ isActive }) =>
+                          isActive ? 'Members2' : 'Members'
+                        }
+                      >
+                        {' '}
+                        <h1 className='h1Menu'>Beacon Info</h1>
+                      </NavLink>
+                    )}
+                    {isNetwork && (
+                      <NavLink
+                        to='/beaconInfo'
+                        onClick={handleMenu}
+                        className={({ isActive }) =>
+                          isActive ? 'Members2' : 'Members'
+                        }
+                      >
+                        {' '}
+                        <h1 className='h1Menu'>Network members</h1>
+                      </NavLink>
+                    )}
+
+                    {!isLoggedIn && (
+                      <NavLink
+                        exact
+                        to='/sign-in-options'
+                        onClick={handleMenu}
+                        className={({ isActive }) =>
+                          isActive ? 'Sign-in5' : 'Sign-in6'
+                        }
+                      >
+                        <h1 className='h1Menu'>Log in</h1>
+                      </NavLink>
+                    )}
 
                     {isLoggedIn && (
                       <>
@@ -259,7 +310,7 @@ function Navbar () {
                             src='/../logout.png'
                             alt='ls-login-image2'
                           />
-                          <h1>Log out</h1>
+                          <h1 className='h1Menu'>Log out</h1>
                         </NavLink>
                         <h5 className='userNameOpenMenu'>{userNameToShare}</h5>
                       </>
@@ -327,28 +378,6 @@ function Navbar () {
                     >
                       <h1>Cohorts</h1>
                     </NavLink> */}
-                    <NavLink
-                      to='/beaconInfo'
-                      onClick={handleMenu}
-                      className={({ isActive }) =>
-                        isActive ? 'Members2' : 'Members'
-                      }
-                    >
-                      {' '}
-                      <h1>Beacon Info</h1>
-                    </NavLink>
-                    {!isLoggedIn && (
-                      <NavLink
-                        exact
-                        to='/sign-in-options'
-                        onClick={handleMenu}
-                        className={({ isActive }) =>
-                          isActive ? 'Sign-in5' : 'Sign-in6'
-                        }
-                      >
-                        <h1>Log in</h1>
-                      </NavLink>
-                    )}
                     (
                     <NavLink
                       exact
@@ -359,6 +388,42 @@ function Navbar () {
                       <ion-icon name='home-outline'></ion-icon>
                     </NavLink>
                     )
+                    {!isNetwork && (
+                      <NavLink
+                        to='/beaconInfo'
+                        onClick={handleMenu}
+                        className={({ isActive }) =>
+                          isActive ? 'Members2' : 'Members'
+                        }
+                      >
+                        {' '}
+                        <h1 className='h1Menu'>Beacon Info</h1>
+                      </NavLink>
+                    )}
+                    {isNetwork && (
+                      <NavLink
+                        to='/beaconInfo'
+                        onClick={handleMenu}
+                        className={({ isActive }) =>
+                          isActive ? 'Members2' : 'Members'
+                        }
+                      >
+                        {' '}
+                        <h1 className='h1Menu'>Network members</h1>
+                      </NavLink>
+                    )}
+                    {!isLoggedIn && (
+                      <NavLink
+                        exact
+                        to='/sign-in-options'
+                        onClick={handleMenu}
+                        className={({ isActive }) =>
+                          isActive ? 'Sign-in5' : 'Sign-in6'
+                        }
+                      >
+                        <h1 className='h1Menu'>Log in</h1>
+                      </NavLink>
+                    )}
                     {isLoggedIn && (
                       <>
                         <NavLink
@@ -374,7 +439,7 @@ function Navbar () {
                             src='/../logout.png'
                             alt='ls-login-image2'
                           />
-                          <h1>Log out</h1>
+                          <h1 className='h1Menu'>Log out</h1>
                         </NavLink>
 
                         <h5 className='userNameSmallScreen'>

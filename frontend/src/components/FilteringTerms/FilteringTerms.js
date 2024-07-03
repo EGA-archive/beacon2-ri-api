@@ -24,6 +24,23 @@ function FilteringTerms (props) {
     list: props.filteringTerms !== undefined ? props.filteringTerms : 'error'
   })
 
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10 // Adjust the number of items per page
+  const indexOfLastItem = currentPage * itemsPerPage
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage
+  const currentItems = state.list.slice(indexOfFirstItem, indexOfLastItem)
+
+  // Handle pagination controls
+  const handlePreviousPage = () => {
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1))
+  }
+
+  const handleNextPage = () => {
+    setCurrentPage(prevPage => prevPage + 1)
+  }
+
+  const totalPages = Math.ceil(state.list.length / itemsPerPage)
+
   const [trigger, setTrigger] = useState(false)
 
   const [hide, setHide] = useState(true)
@@ -72,12 +89,12 @@ function FilteringTerms (props) {
 
   const [valueChosen, setValueChosen] = useState([])
 
-  const handdleInclude = e => {
+  const handleInclude = e => {
     if (ID !== '' && valueFree !== '' && operator !== '') {
-      if (props.query !== null) {
+      if (props.query !== null && props.query !== '') {
         props.setQuery(props.query + ',' + `${ID}${operator}${valueFree}`)
       }
-      if (props.query === null) {
+      if (props.query === null || props.query === '') {
         props.setQuery(`${ID}${operator}${valueFree}`)
       }
     }
@@ -92,7 +109,6 @@ function FilteringTerms (props) {
   const [ID, setId] = useState('')
 
   useEffect(() => {
-    console.log(props.filteringTerms)
     if (state.list === 'error') {
       setError(true)
     } else {
@@ -100,29 +116,25 @@ function FilteringTerms (props) {
     }
 
     state.list.forEach((element, index) => {
-      console.log(element.scopes.length)
-
       if (element.scopes.length > 1) {
-        console.log(element.scopes)
-
-        element.scopes.forEach(element2 => {
-          let arrayNew = {}
-          arrayNew = { ...element }
-          console.log(element2)
-          arrayNew['scopes'] = [element2]
-          console.log(arrayNew)
-
+        element.scopes.forEach(scope => {
+          let arrayNew = { ...element }
+          arrayNew['scopes'] = [scope]
           state.list.push(arrayNew)
         })
+
+        // Mark the original element for deletion
+        element.toBeDeleted = true
       }
     })
+
+    // Remove the original elements with multiple scopes
+    state.list = state.list.filter(element => !element.toBeDeleted)
 
     setstate({
       query: '',
       list: props.filteringTerms !== false ? state.list : 'error'
     })
-
-    console.log(state.list)
 
     if (state.list !== 'error') {
       const sampleTags = state.list.map(t => ({
@@ -208,8 +220,6 @@ function FilteringTerms (props) {
         if (post.scopes !== undefined) {
           var returnedPosts = []
           post.scopes.forEach(element => {
-            console.log(element.toLowerCase())
-            console.log(e.target.value.toLowerCase())
             if (element.toLowerCase().includes(e.target.value.toLowerCase())) {
               returnedPosts.push(post)
             }
@@ -226,7 +236,6 @@ function FilteringTerms (props) {
   }
 
   const handleCheck = e => {
-    console.log(e.target)
     let infoValue = e.target.value.split(',')
 
     if (infoValue[2].toLowerCase() !== 'alphanumeric') {
@@ -335,53 +344,20 @@ function FilteringTerms (props) {
         removeTag={remove}
       />
 
-      {!error && (
-        <div className='tableWrapper'>
-          <table id='table'>
-            <thead className='thead1'>
-              <tr className='search-tr1'>
-                <th
-                  className='search-box sorting'
-                  tabIndex='0'
-                  aria-controls='DataTables_Table_0'
-                  rowSpan='1'
-                  colSpan='2'
-                  aria-sort='ascending'
-                  aria-label=': activate to sort column descending'
-                >
-                  <form className='inputTerm'>
-                    <input
-                      className='searchTermInput1'
-                      type='search'
-                      value={state.query}
-                      onChange={handleChange}
-                      placeholder='Search term'
-                    />
-                  </form>
-                </th>
-              </tr>
-              <tr className='search-tr2'>
-                <th
-                  className='search-box sorting'
-                  tabIndex='0'
-                  aria-controls='DataTables_Table_0'
-                  rowSpan='1'
-                  colSpan='2'
-                  aria-sort='ascending'
-                  aria-label=': activate to sort column descending'
-                >
-                  <form className='inputLabel'>
-                    <input
-                      className='searchTermInput'
-                      type='search'
-                      onChange={handleChange2}
-                      placeholder='Search label'
-                    />
-                  </form>
-                </th>
-              </tr>
-              {hide === false && (
-                <tr className='search-tr'>
+      <div>
+        {!error && (
+          <div className='tableWrapper'>
+            <table id='table'>
+              <thead className='thead2'>
+                <tr>
+                  <th className='th4'>term</th>
+                  <th className='th5'>label</th>
+                  {hide === false && <th className='th6'>type</th>}
+                  <th className='th7'>scopes</th>
+                </tr>
+              </thead>
+              <thead className='thead1'>
+                <tr className='search-tr1'>
                   <th
                     className='search-box sorting'
                     tabIndex='0'
@@ -391,19 +367,18 @@ function FilteringTerms (props) {
                     aria-sort='ascending'
                     aria-label=': activate to sort column descending'
                   >
-                    <form>
+                    <form className='inputTerm'>
                       <input
-                        className='searchTermInput'
+                        className='searchTermInput1'
                         type='search'
-                        onChange={handleChange3}
-                        placeholder='Search by type'
+                        value={state.query}
+                        onChange={handleChange}
+                        placeholder='Search term'
                       />
                     </form>
                   </th>
                 </tr>
-              )}
-              {
-                <tr className='search-tr'>
+                <tr className='search-tr2'>
                   <th
                     className='search-box sorting'
                     tabIndex='0'
@@ -413,268 +388,321 @@ function FilteringTerms (props) {
                     aria-sort='ascending'
                     aria-label=': activate to sort column descending'
                   >
-                    <form>
+                    <form className='inputLabel'>
                       <input
                         className='searchTermInput'
                         type='search'
-                        onChange={handleChange4}
-                        placeholder='Search by scope'
+                        onChange={handleChange2}
+                        placeholder='Search label'
                       />
                     </form>
                   </th>
                 </tr>
-              }
-            </thead>
-            <thead className='thead2'>
-              <tr>
-                <th className='th4'>term</th>
-                <th className='th5'>label</th>
-                {hide === false && <th className='th6'>type</th>}
-                <th className='th7'>scopes</th>
-              </tr>
-            </thead>
-            {props.filteringTerms !== undefined &&
-              state.list !== 'error' &&
-              state.list.map((term, index) => {
-                return (
-                  <>
-                    <tbody>
-                      {index % 2 === 0 && (
-                        <tr className='terms1'>
-                          {term.type.toLowerCase() !== 'alphanumeric' && (
-                            <td className='th2'>
-                              {' '}
-                              <input
-                                className='select-checkbox'
-                                onClick={handleCheck}
-                                type='checkbox'
-                                id={term.id}
-                                name={term.id}
-                                value={[
-                                  term.id,
-                                  term.label,
-                                  term.type,
-                                  [term.scopes],
-                                  index
-                                ]}
-                              />
-                              {term.id}
-                            </td>
-                          )}
-                          {term.type.toLowerCase() === 'alphanumeric' && (
-                            <td className='th2'>
-                              {' '}
-                              <input
-                                className='select-checkbox'
-                                onClick={handleCheck2}
-                                type='checkbox'
-                                id={term.id}
-                                name={term.id}
-                                value={term.id}
-                              />
-                              {term.id}
-                            </td>
-                          )}
-                          {term.label !== '' ? (
-                            <td className='th1'>{term.label}</td>
-                          ) : (
-                            <td className='th1'>-</td>
-                          )}
+                {hide === false && (
+                  <tr className='search-tr'>
+                    <th
+                      className='search-box sorting'
+                      tabIndex='0'
+                      aria-controls='DataTables_Table_0'
+                      rowSpan='1'
+                      colSpan='2'
+                      aria-sort='ascending'
+                      aria-label=': activate to sort column descending'
+                    >
+                      <form>
+                        <input
+                          className='searchTermInput'
+                          type='search'
+                          onChange={handleChange3}
+                          placeholder='Search by type'
+                        />
+                      </form>
+                    </th>
+                  </tr>
+                )}
+                {
+                  <tr className='search-tr'>
+                    <th
+                      className='search-box sorting'
+                      tabIndex='0'
+                      aria-controls='DataTables_Table_0'
+                      rowSpan='1'
+                      colSpan='2'
+                      aria-sort='ascending'
+                      aria-label=': activate to sort column descending'
+                    >
+                      <form>
+                        <input
+                          className='searchTermInput'
+                          type='search'
+                          onChange={handleChange4}
+                          placeholder='Search by scope'
+                        />
+                      </form>
+                    </th>
+                  </tr>
+                }
+              </thead>
 
-                          {hide === false && (
-                            <td className='th3'>{term.type}</td>
-                          )}
-
-                          <td className='th4'>
-                            {Array.isArray(term.scopes) &&
-                              term.scopes.map((term2, index) => {
-                                return index < term.scopes.length - 1
-                                  ? term2 + '' + ','
-                                  : term2 + ''
-                              })}
-                          </td>
-                        </tr>
-                      )}
-                      {index % 2 == !0 && (
-                        <tr className='terms2'>
-                          {term.type.toLowerCase() !== 'alphanumeric' && (
-                            <td className='th2'>
-                              {' '}
-                              <input
-                                className='select-checkbox'
-                                onClick={handleCheck}
-                                type='checkbox'
-                                id={term.id}
-                                name={term.id}
-                                value={[
-                                  term.id,
-                                  term.label,
-                                  term.type,
-                                  [term.scopes],
-                                  index
-                                ]}
-                              />
-                              {term.id}
-                            </td>
-                          )}
-                          {term.type.toLowerCase() === 'alphanumeric' && (
-                            <td className='th2'>
-                              {' '}
-                              <input
-                                className='select-checkbox'
-                                onClick={handleCheck2}
-                                type='checkbox'
-                                id={term.id}
-                                name={term.id}
-                                value={term.id}
-                              />
-                              {term.id}
-                            </td>
-                          )}
-                          {term.label !== '' ? (
-                            <td className='th1'>{term.label}</td>
-                          ) : (
-                            <td className='th1'>-</td>
-                          )}
-
-                          {hide === false && (
-                            <td className='th3'>{term.type}</td>
-                          )}
-
-                          <td className='th4'>
-                            {Array.isArray(term.scopes) &&
-                              term.scopes.map((term2, index) => {
-                                return index < term.scopes.length - 1
-                                  ? term2 + '' + ','
-                                  : term2 + ''
-                              })}
-                          </td>
-                        </tr>
-                      )}
-
-                      {index % 2 == !0 &&
-                        term.type.toLowerCase() === 'alphanumeric' &&
-                        valueChosen.includes(term.id) && (
-                          <tr className='terms2'>
-                            <div className='alphanumContainer2'>
-                              <div className='alphaIdModule'>
-                                <div className='listTerms'>
-                                  <label>
-                                    <h2>ID</h2>
-                                  </label>
-
-                                  <input
-                                    className='IdForm'
-                                    type='text'
-                                    value={term.id}
-                                    autoComplete='on'
-                                    placeholder={'write and filter by ID'}
-                                    onChange={handleIdChanges}
-                                    aria-label='ID'
-                                  />
-
-                                  <div id='operator'>
-                                    <select
-                                      className='selectedOperator'
-                                      onChange={handleOperatorchange}
-                                      name='selectedOperator'
-                                    >
-                                      <option value=''> </option>
-                                      <option value='='>= </option>
-                                      <option value='<'>&lt;</option>
-                                      <option value='>'>&gt;</option>
-                                      <option value='!'>!</option>
-                                      <option value='%'>%</option>
-                                    </select>
-                                  </div>
-
-                                  <label id='value'>
-                                    <h2>Value</h2>
-                                  </label>
-                                  <input
-                                    className='ValueForm'
-                                    type='text'
-                                    autoComplete='on'
-                                    placeholder={'free text/ value'}
-                                    onChange={handleValueChanges}
-                                    aria-label='Value'
-                                  />
-                                </div>
-                              </div>
-                              <button
-                                className='buttonAlphanum'
-                                onClick={handdleInclude}
-                              >
-                                <ion-icon name='add-circle'></ion-icon>
-                              </button>
-                            </div>
-                          </tr>
-                        )}
-                      {index % 2 === 0 &&
-                        term.type.toLowerCase() === 'alphanumeric' &&
-                        valueChosen.includes(term.id) && (
+              {props.filteringTerms !== undefined &&
+                state.list !== 'error' &&
+                currentItems.map((term, index) => {
+                  return (
+                    <>
+                      <tbody key={index}>
+                        {index % 2 === 0 && (
                           <tr className='terms1'>
-                            <div className='alphanumContainer2'>
-                              <div className='alphaIdModule'>
-                                <div className='listTerms'>
-                                  <label>
-                                    <h2>ID</h2>
-                                  </label>
+                            {term.type.toLowerCase() !== 'alphanumeric' && (
+                              <td className='th2'>
+                                {' '}
+                                <input
+                                  className='select-checkbox'
+                                  onClick={handleCheck}
+                                  type='checkbox'
+                                  id={term.id}
+                                  name={term.id}
+                                  value={[
+                                    term.id,
+                                    term.label,
+                                    term.type,
+                                    [term.scopes],
+                                    index
+                                  ]}
+                                />
+                                {term.id}
+                              </td>
+                            )}
+                            {term.type.toLowerCase() === 'alphanumeric' && (
+                              <td className='th2'>
+                                {' '}
+                                <input
+                                  className='select-checkbox'
+                                  onClick={handleCheck2}
+                                  type='checkbox'
+                                  id={term.id}
+                                  name={term.id}
+                                  value={term.id}
+                                />
+                                {term.id}
+                              </td>
+                            )}
+                            {term.label !== '' ? (
+                              <td className='th1'>{term.label}</td>
+                            ) : (
+                              <td className='th1'>-</td>
+                            )}
 
-                                  <input
-                                    className='IdForm'
-                                    type='text'
-                                    value={term.id}
-                                    autoComplete='on'
-                                    placeholder={'write and filter by ID'}
-                                    onChange={handleIdChanges}
-                                    aria-label='ID'
-                                  />
+                            {hide === false && (
+                              <td className='th3'>{term.type}</td>
+                            )}
 
-                                  <div id='operator'>
-                                    <select
-                                      className='selectedOperator'
-                                      onChange={handleOperatorchange}
-                                      name='selectedOperator'
-                                    >
-                                      <option value=''> </option>
-                                      <option value='='>= </option>
-                                      <option value='<'>&lt;</option>
-                                      <option value='>'>&gt;</option>
-                                      <option value='!'>!</option>
-                                      <option value='%'>%</option>
-                                    </select>
-                                  </div>
-
-                                  <label id='value'>
-                                    <h2>Value</h2>
-                                  </label>
-                                  <input
-                                    className='ValueForm'
-                                    type='text'
-                                    autoComplete='on'
-                                    placeholder={'free text/ value'}
-                                    onChange={handleValueChanges}
-                                    aria-label='Value'
-                                  />
-                                </div>
-                              </div>
-                              <button
-                                className='buttonAlphanum'
-                                onClick={handdleInclude}
-                              >
-                                Include
-                              </button>
-                            </div>
+                            <td className='th4'>
+                              {Array.isArray(term.scopes) &&
+                                term.scopes.map((term2, index) => {
+                                  return index < term.scopes.length - 1
+                                    ? term2 + '' + ','
+                                    : term2 + ''
+                                })}
+                            </td>
                           </tr>
                         )}
-                    </tbody>
-                  </>
-                )
-              })}
-          </table>
-        </div>
-      )}
+                        {index % 2 !== 0 && (
+                          <tr className='terms2'>
+                            {term.type.toLowerCase() !== 'alphanumeric' && (
+                              <td className='th2'>
+                                {' '}
+                                <input
+                                  className='select-checkbox'
+                                  onClick={handleCheck}
+                                  type='checkbox'
+                                  id={term.id}
+                                  name={term.id}
+                                  value={[
+                                    term.id,
+                                    term.label,
+                                    term.type,
+                                    [term.scopes],
+                                    index
+                                  ]}
+                                />
+                                {term.id}
+                              </td>
+                            )}
+                            {term.type.toLowerCase() === 'alphanumeric' && (
+                              <td className='th2'>
+                                {' '}
+                                <input
+                                  className='select-checkbox'
+                                  onClick={handleCheck2}
+                                  type='checkbox'
+                                  id={term.id}
+                                  name={term.id}
+                                  value={term.id}
+                                />
+                                {term.id}
+                              </td>
+                            )}
+                            {term.label !== '' ? (
+                              <td className='th1'>{term.label}</td>
+                            ) : (
+                              <td className='th1'>-</td>
+                            )}
+
+                            {hide === false && (
+                              <td className='th3'>{term.type}</td>
+                            )}
+
+                            <td className='th4'>
+                              {Array.isArray(term.scopes) &&
+                                term.scopes.map((term2, index) => {
+                                  return index < term.scopes.length - 1
+                                    ? term2 + '' + ','
+                                    : term2 + ''
+                                })}
+                            </td>
+                          </tr>
+                        )}
+
+                        {index % 2 !== 0 &&
+                          term.type.toLowerCase() === 'alphanumeric' &&
+                          valueChosen.includes(term.id) && (
+                            <tr className='terms2'>
+                              <div className='alphanumContainer2'>
+                                <div className='alphaIdModule'>
+                                  <div className='listTerms'>
+                                    <label>
+                                      <h2>ID</h2>
+                                    </label>
+
+                                    <input
+                                      className='IdForm'
+                                      type='text'
+                                      value={term.id}
+                                      autoComplete='on'
+                                      placeholder={'write and filter by ID'}
+                                      onChange={handleIdChanges}
+                                      aria-label='ID'
+                                    />
+
+                                    <div id='operator'>
+                                      <select
+                                        className='selectedOperator'
+                                        onChange={handleOperatorchange}
+                                        name='selectedOperator'
+                                      >
+                                        <option value=''> </option>
+                                        <option value='='>= </option>
+                                        <option value='<'>&lt;</option>
+                                        <option value='>'>&gt;</option>
+                                        <option value='!'>!</option>
+                                        <option value='%'>%</option>
+                                      </select>
+                                    </div>
+
+                                    <label id='value'>
+                                      <h2>Value</h2>
+                                    </label>
+                                    <input
+                                      className='ValueForm'
+                                      type='text'
+                                      autoComplete='on'
+                                      placeholder={'free text/ value'}
+                                      onChange={handleValueChanges}
+                                      aria-label='Value'
+                                    />
+                                  </div>
+                                </div>
+                                <button
+                                  className='buttonAlphanum'
+                                  onClick={handleInclude}
+                                >
+                                  <ion-icon name='add-circle'></ion-icon>
+                                </button>
+                              </div>
+                            </tr>
+                          )}
+                        {index % 2 === 0 &&
+                          term.type.toLowerCase() === 'alphanumeric' &&
+                          valueChosen.includes(term.id) && (
+                            <tr className='terms1'>
+                              <div className='alphanumContainer2'>
+                                <div className='alphaIdModule'>
+                                  <div className='listTerms'>
+                                    <label>
+                                      <h2>ID</h2>
+                                    </label>
+
+                                    <input
+                                      className='IdForm'
+                                      type='text'
+                                      value={term.id}
+                                      autoComplete='on'
+                                      placeholder={'write and filter by ID'}
+                                      onChange={handleIdChanges}
+                                      aria-label='ID'
+                                    />
+
+                                    <div id='operator'>
+                                      <select
+                                        className='selectedOperator'
+                                        onChange={handleOperatorchange}
+                                        name='selectedOperator'
+                                      >
+                                        <option value=''> </option>
+                                        <option value='='>= </option>
+                                        <option value='<'>&lt;</option>
+                                        <option value='>'>&gt;</option>
+                                        <option value='!'>!</option>
+                                        <option value='%'>%</option>
+                                      </select>
+                                    </div>
+
+                                    <label id='value'>
+                                      <h2>Value</h2>
+                                    </label>
+                                    <input
+                                      className='ValueForm'
+                                      type='text'
+                                      autoComplete='on'
+                                      placeholder={'free text/ value'}
+                                      onChange={handleValueChanges}
+                                      aria-label='Value'
+                                    />
+                                  </div>
+                                </div>
+                                <button
+                                  className='buttonAlphanum'
+                                  onClick={handleInclude}
+                                >
+                                  Include
+                                </button>
+                              </div>
+                            </tr>
+                          )}
+                      </tbody>
+                    </>
+                  )
+                })}
+            </table>
+
+            <div className='pagination'>
+              <button className='buttonPaginationFilters' onClick={handlePreviousPage} disabled={currentPage === 1}>
+                Previous
+              </button>
+              <span>
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                className='buttonPaginationFiltersNext'
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
