@@ -3,36 +3,9 @@ version: '3.1'
 networks:
   beacon-priv:
   idp-priv:
-  pub:
-  my-app-network:
-    external: true
+  mongonetwork:
 
 services:
-
-  ###########################################
-  # beacon-ri-tools
-  ###########################################
-
-  beacon-ri-tools:
-    image: ghcr.io/ega-archive/beacon2-ri-tools-v2:main
-    hostname: beacon-ri-tools
-    container_name: ri-tools
-    networks:
-      - beacon-priv 
-    tty: true
-
-  ###########################################
-  # training-ui
-  ###########################################
-
-  #training-ui:
-    #image: beacon2ri/training_ui:v0.1
-    #hostname: beacon_training_ui    
-    #ports:
-    #  - 9000:8080
-    #networks:
-    #  - beacon-priv
-
   ###########################################
   # MongoDB Database
   ###########################################
@@ -50,8 +23,7 @@ services:
     volumes:
       - ./mongo-init/:/docker-entrypoint-initdb.d/:ro
     networks:
-      - beacon-priv
-      - my-app-network
+      - mongonetwork
 
   mongo-express:
     image: mongo-express
@@ -63,7 +35,7 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
     networks:
-      - beacon-priv
+      - mongonetwork
 
   ###########################################
   # Beacon
@@ -83,14 +55,10 @@ services:
       - ../beacon/request/datasets.yml:/beacon/beacon/request/datasets.yml
       - ../beacon/request/cohorts.yml:/beacon/beacon/request/cohorts.yml
       - ../beacon/request/response_type.yml:/beacon/beacon/request/response_type.yml
-      - ../beacon/db/ontologies:/beacon/beacon/db/ontologies
     ports:
       - "5050:5050"
     networks:
       - beacon-priv
-      - pub
-      - idp-priv
-      - my-app-network
     working_dir: '/beacon'
     entrypoint: ['python','-m','beacon']
     # entrypoint: ['/bin/sleep','100000000']
@@ -111,9 +79,6 @@ services:
       - 8010:8000
     networks:
       - beacon-priv
-      - pub
-      - idp-priv
-      - my-app-network
     #entrypoint: ['/bin/sleep','100000000']
     working_dir: '/beacon'
     entrypoint: ['python','-m', 'permissions']
@@ -154,9 +119,7 @@ services:
       - "8080:8080"
       - "9991:8443"
     networks:
-      - pub
       - idp-priv 
-      - my-app-network
     depends_on:
       - idp-db
 
@@ -170,7 +133,6 @@ services:
       - POSTGRES_PASSWORD=secret
     networks:
       - idp-priv 
-      - my-app-network
   
   frontend:
     build:

@@ -29,8 +29,16 @@ docker network create my-app-network
 
 #### Up the containers
 
+If you are using a build with all the services in the same cluster, you can use:
+
 ```bash
 docker-compose up -d --build
+```
+
+If you are willing to deploy every service in a different environment from the other services, you can use:
+
+```bash
+docker-compose -f docker-compose.remote.yml up -d --build
 ```
 
 With `mongo-express` we can see the contents of the database at [http://localhost:8081](http://localhost:8081).
@@ -88,7 +96,11 @@ docker exec beacon python beacon/db/extract_filtering_terms.py
 
 #### Get descendant and semantic similarity terms
 
-**If you have the ontologies loaded and the filtering terms extracted**, you can automatically get their descendant and semantic similarity terms running the following script:
+**If you have the ontologies loaded and the filtering terms extracted**, you can automatically get their descendant and semantic similarity terms by following the next two steps:
+
+1. Add your .obo files inside [ontologies](../beacon/db/ontologies) naming them as the ontology prefix in lowercase (e.g. ncit.obo) and rebuild the beacon container with:
+
+2. Run the following script:
 
 ```bash
 docker exec beacon python beacon/db/get_descendants.py

@@ -1,0 +1,6 @@
+CLIENT_ID=beacon
+CLIENT_SECRET='your_client_Secret'
+USER_INFO='http://host.docker.internal:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
+INTROSPECTION='http://host.docker.internal:8080/auth/realms/Beacon/protocol/openid-connect/token/introspect'
+ISSUER='http://localhost:8080/auth/realms/Beacon'
+JWKS_URL='http://host.docker.internal:8080/auth/realms/Beacon/protocol/openid-connect/certs'

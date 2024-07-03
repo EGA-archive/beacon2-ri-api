@@ -140,3 +140,5 @@ deploy/cancer_dataset
 
 .env
 permissions/idp_providers/*.env
+
+beacon/db/ontologies/*

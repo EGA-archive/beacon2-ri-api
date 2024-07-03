@@ -24,7 +24,8 @@ VARIANTS_PROPERTY_MAP = {
     "geneId": "molecularAttributes.geneIds",
     "genomicAlleleShortForm": "identifiers.genomicHGVSId",
     "aminoacidChange": "molecularAttributes.aminoacidChanges",
-    "clinicalRelevance": "caseLevelData.clinicalInterpretations.clinicalRelevance"
+    "clinicalRelevance": "caseLevelData.clinicalInterpretations.clinicalRelevance",
+    "mateName": "identifiers.genomicHGVSId"
 }
 
 def include_resultset_responses(query: Dict[str, List[dict]], qparams: RequestParams):
@@ -89,6 +90,8 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
         for reqparam in qparams.query.request_parameters:
             subquery={}
             subquery["$and"] = []
+            subqueryor={}
+            subqueryor["$or"] = []
             for k, v in reqparam.items():
                 if k == "start":
                     if isinstance(v, str):
@@ -120,6 +123,14 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                         ), collection))
                     except KeyError:
                         raise web.HTTPNotFound    
+                elif k == "mateName" or k == 'referenceName':
+                    try:
+                        subqueryor["$or"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
+                            id=VARIANTS_PROPERTY_MAP[k],
+                            value='max'+v
+                        ), collection))
+                    except KeyError:
+                        raise web.HTTPNotFound    
                 elif k != 'filters':
                     try:
                         subquery["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
@@ -141,8 +152,18 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                         v_dict['id']=id
                         qparams.query.filters.append(v_dict)        
                     return query, True
-            query["$or"].append(subquery)
+        try:
+            LOG.debug(subqueryor)
+            if subqueryor["$or"] != []:
+                subquery["$and"].append(subqueryor)
+        except Exception:
+            pass
+        query["$or"].append(subquery)
     else:
+        subquery={}
+        subquery["$and"] = []
+        subqueryor={}
+        subqueryor["$or"] = []
         for k, v in qparams.query.request_parameters.items():
             if k == "start":
                 if isinstance(v, str):
@@ -174,6 +195,14 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                     ), collection))
                 except KeyError:
                     raise web.HTTPNotFound    
+            elif k == "mateName" or k == 'referenceName':
+                try:
+                    subqueryor["$or"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
+                        id=VARIANTS_PROPERTY_MAP[k],
+                        value=v
+                    ), collection))
+                except KeyError:
+                    raise web.HTTPNotFound
             elif k != 'filters':
                 try:
                     query["$and"].append(apply_alphanumeric_filter({}, AlphanumericFilter(
@@ -195,6 +224,14 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                     v_dict['id']=id
                     qparams.query.filters.append(v_dict)        
                 return query, True
+        try:
+            LOG.debug(subqueryor)
+            if subqueryor["$or"] != []:
+                subquery["$and"].append(subqueryor)
+        except Exception:
+            pass
+        if subquery["$and"] != []:
+            query["$and"].append(subquery)
 
 
     return query, False

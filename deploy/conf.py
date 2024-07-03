@@ -80,7 +80,7 @@ beacon_handovers ={
 #
 # Database connection
 #
-database_host = 'mongo'
+database_host = 'mongo' #'host.docker.internal'
 database_port = 27017
 database_user = 'root'
 database_password = 'example'
@@ -127,3 +127,5 @@ autocomplete_ellipsis = '...'
 ontologies_folder = "ontologies"
 
 alphanumeric_terms = ['libraryStrategy', 'molecularAttributes.geneIds', 'diseases.ageOfOnset.iso8601duration']
+
+ontology_files={"NCIT": "http://purl.obolibrary.org/obo/NCIT.obo"}

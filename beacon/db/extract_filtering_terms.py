@@ -371,7 +371,7 @@ def get_properties_of_document(document, prefix="") -> List[str]:
         exit(0)
     return properties
 
-def merge_terms():
+def merge_ontology_terms():
     filtering_terms = client.beacon.filtering_terms.find({"type": "ontology"})
     array_of_ids=[]
     repeated_ids=[]
@@ -407,12 +407,76 @@ def merge_terms():
         client.beacon.filtering_terms.insert_many(new_terms)
         
     
+def merge_alphanumeric_terms():
+    filtering_terms = client.beacon.filtering_terms.find({"type": "alphanumeric"})
+    array_of_ids=[]
+    repeated_ids=[]
+    new_terms=[]
+    for filtering_term in filtering_terms:
+        new_id=filtering_term["id"]
+        if new_id not in array_of_ids:
+            array_of_ids.append(new_id)
+        else:
+            repeated_ids.append(new_id)
+    #print("repeated_ids are {}".format(repeated_ids))
+    for repeated_id in repeated_ids:
+        repeated_terms = client.beacon.filtering_terms.find({"id": repeated_id, "type": "alphanumeric"})
+        array_of_scopes=[]
+        for repeated_term in repeated_terms:
+            #print(repeated_term)
+            id=repeated_term["id"]
+            if repeated_term['scopes'] != []:
+                if repeated_term['scopes'][0] not in array_of_scopes:
+                    array_of_scopes.append(repeated_term['scopes'][0])
+        if array_of_scopes != []:
+            new_terms.append({
+                'type': 'alphanumeric',
+                'id': id,
+                # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
+                #'count': get_ontology_term_count(collection_name, onto),
+                'scopes': array_of_scopes        
+                        })
+        client.beacon.filtering_terms.delete_many({"id": repeated_id})
+    if new_terms != []:
+        client.beacon.filtering_terms.insert_many(new_terms)
     
-    
-
+def merge_custom_terms():
+    filtering_terms = client.beacon.filtering_terms.find({"type": "custom"})
+    array_of_ids=[]
+    repeated_ids=[]
+    new_terms=[]
+    for filtering_term in filtering_terms:
+        new_id=filtering_term["id"]
+        if new_id not in array_of_ids:
+            array_of_ids.append(new_id)
+        else:
+            repeated_ids.append(new_id)
+    #print("repeated_ids are {}".format(repeated_ids))
+    for repeated_id in repeated_ids:
+        repeated_terms = client.beacon.filtering_terms.find({"id": repeated_id, "type": "custom"})
+        array_of_scopes=[]
+        for repeated_term in repeated_terms:
+            #print(repeated_term)
+            id=repeated_term["id"]
+            if repeated_term['scopes'] != []:
+                if repeated_term['scopes'][0] not in array_of_scopes:
+                    array_of_scopes.append(repeated_term['scopes'][0])
+        if array_of_scopes != []:
+            new_terms.append({
+                'type': 'custom',
+                'id': id,
+                # TODO: Use conf.py -> beaconGranularity to not disclouse counts in the filtering terms
+                #'count': get_ontology_term_count(collection_name, onto),
+                'scopes': array_of_scopes        
+                        })
+        client.beacon.filtering_terms.delete_many({"id": repeated_id})
+    if new_terms != []:
+        client.beacon.filtering_terms.insert_many(new_terms)
 
 
 
 
 insert_all_ontology_terms_used()
-merge_terms()
+merge_ontology_terms()
+merge_alphanumeric_terms()
+merge_custom_terms()

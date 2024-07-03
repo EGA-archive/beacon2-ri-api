@@ -99,8 +99,8 @@ def get_descendants_and_similarities():
             array_of_ontologies.append(ft_doc["id"])
     for ontology in array_of_ontologies:
         ontology_list = ontology.split(':')
-        load_ontology(ontology_list[0])    
-        url = "/beacon/beacon/db/ontologies/{}.obo".format(ontology_list[0])
+        #load_ontology(ontology_list[0])    
+        url = "/beacon/beacon/db/ontologies/{}.obo".format(ontology_list[0].lower())
         list_of_cousins = []
         list_of_brothers = []
         list_of_uncles = []
@@ -159,11 +159,11 @@ def get_descendants_and_similarities():
             similarity_low=[]
 
         dict={}
-        dict[ontology]={}
-        dict[ontology]['descendants']=descendants
-        dict[ontology]['similarity_high']=similarity_high
-        dict[ontology]['similarity_medium']=similarity_medium
-        dict[ontology]['similarity_low']=similarity_low
+        dict['id']=ontology
+        dict['descendants']=descendants
+        dict['similarity_high']=similarity_high
+        dict['similarity_medium']=similarity_medium
+        dict['similarity_low']=similarity_low
         
         client.beacon.similarities.insert_one(dict)
         print("succesfully retrieved descendants from {}".format(ontology))
