@@ -28,8 +28,11 @@ def validate_access_token(access_token, idp_issuer, jwks_url, algorithm, aud):
         return False
 
     try:
+        LOG.error('hola')
         jwks_client = jwt.PyJWKClient(jwks_url, cache_jwk_set=True, lifespan=360)
+        LOG.error('adeu')
         signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+        LOG.error('bye')
         data = jwt.decode(
             access_token,
             signing_key.key,
