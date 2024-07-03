@@ -1,5 +1,5 @@
 {
-  "API_URL": "ega-beacon-demo.ega-archive.org/api",
+  "API_URL": "https://ega-beacon-demo.ega-archive.org/api",
   "REDIRECT_URL": "https://beacon-network-demo.ega-archive.org/",
   "KEYCLOAK_URL": "https://cancer-beacon-demo.ega-archive.org/"
 }
