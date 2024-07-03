@@ -9,7 +9,7 @@
               "value": "Colon adenocarcinoma",
               "ontology": "NCIT:C4349",
               "type": "ontology",
-              "schemaField": "diseases"
+              "schemaField": "diseases.diseaseCode"
             }
           ],
           [
@@ -18,7 +18,7 @@
               "value": "Mucinous Adenocarcinoma of the Colon and Rectum",
               "ontology": "NCIT:C7966",
               "type": "ontology",
-              "schemaField": "diseases"
+              "schemaField": "diseases.diseaseCode"
             }
           ],
           [
@@ -27,7 +27,7 @@
               "value": "Rectal Adenocarcinoma",
               "ontology": "NCIT:C9383",
               "type": "ontology",
-              "schemaField": "diseases"
+              "schemaField": "diseases.diseaseCode"
             }
           ]
         ]
@@ -236,13 +236,13 @@
               "subTitle": "Mutations in:",
               "subTitle2": "gene:",
               "label": "KRAS",
-              "value": "KRAS",
+              "value": "molecularAttributes.geneIds=KRAS",
               "schemaField": "geneId"
             },
             {
               "subTitle2": "aminoacid:",
               "label": "p.Gly12Cys",
-              "value": "p.Gly12Cys",
+              "value": "molecularAttributes.aminoacidChanges=p.Gly12Cys",
               "schemaField": "aminoacidChange"
             }
           ],
@@ -318,7 +318,7 @@
               "subTitle2": "gene:",
               "label": "TP53",
               "value": "molecularAttributes.geneIds=TP53",
-              "schemaField": "molecularAttributes.geneIds"
+              "schemaField": "geneId"
             }
           ],
           [
@@ -326,7 +326,7 @@
               "subTitle": "Mutations in:",
               "subTitle2": "gene:",
               "label": "KRAS",
-              "value": "KRAS",
+              "value": "molecularAttributes.geneIds=KRAS",
               "schemaField": "geneId"
             }
           ]

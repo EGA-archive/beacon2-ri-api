@@ -316,7 +316,10 @@ function VariantsResults (props) {
                 queryArray[index].push('!')
               } else {
                 queryArray[index] = term.split('%')
-                queryArray[index].push('%')
+
+                queryArray[index][1] = '%' + queryArray[index][1] + '%'
+          
+                queryArray[index].push('=')
               }
 
               let alphanumericFilter = {}
@@ -329,7 +332,7 @@ function VariantsResults (props) {
                     if (queryArray[index][0].toLowerCase() === 'individual') {
                       alphanumericFilter = {
                         id: element.id,
-                        scope: ['individual']
+                        scope: ['individuals']
                       }
                     } else if (
                       queryArray[index][0].toLowerCase() === 'genomicvariation'
@@ -465,7 +468,11 @@ function VariantsResults (props) {
           datasetList.push(res2.data.response.collections)
         }
 
-        if (updatedArrayFilterVar.length === 0) {
+        if (updatedArrayFilterVar.length === 0 && props.isNetwork === true) {
+          res.data.responses.forEach(element => {
+            beaconsList.push(element)
+          })
+        } else if (updatedArrayFilterVar.length === 0 && props.isNetwork === false){
           beaconsList.push(res.data.response)
         }
 
@@ -473,7 +480,6 @@ function VariantsResults (props) {
 
         if (props.query === null || props.query === '') {
           // show all individuals
-
           let jsonData1 = {}
 
           if (arrayRequestParameters.length > 0) {
@@ -528,9 +534,11 @@ function VariantsResults (props) {
               configData.API_URL + '/g_variants',
               jsonData1
             )
+        
           } else {
+        
             const headers = { Authorization: `Bearer ${token}` }
-            console.log('querying with token')
+       
             res = await axios.post(
               configData.API_URL + '/g_variants',
               jsonData1,
@@ -719,6 +727,7 @@ function VariantsResults (props) {
           }
           setTriggerSubmit(true)
         } else {
+         
           let jsonData2 = {}
           variablePause = false
 
@@ -856,14 +865,15 @@ function VariantsResults (props) {
               token = auth.userData.access_token
             }
             if (token === null) {
-              console.log('Querying without token')
+     
               res = await axios.post(
                 configData.API_URL + '/g_variants',
                 jsonData2
               )
+         
             } else {
               console.log('Querying WITH token')
-
+        
               const headers = { Authorization: `Bearer ${token}` }
 
               res = await axios.post(
@@ -926,7 +936,6 @@ function VariantsResults (props) {
                   if (element.id === undefined || element.id === '') {
                     let arrayResultsNoDatasets = [element.beaconId]
                     resultsNotPerDataset.push(arrayResultsNoDatasets)
-                    console.log(arrayResultsNoDatasets)
                   }
 
                   if (res.data.response.resultSets[index].results) {

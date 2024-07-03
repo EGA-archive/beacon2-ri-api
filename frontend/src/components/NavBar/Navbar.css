@@ -1,3 +1,6 @@
+.h1Menu{
+  color: white !important;
+}
 @media (min-width: 1410px) {
   /* … */
   .nav4 {
@@ -36,7 +39,9 @@
     justify-content: center;
     font-size: 11px;
     width: 120px;
-    margin-top: 19px;
+    margin-top: 2px !important;
+    margin-right: 0px !important;
+    margin-left: 0px !important;
     align-content: center;
     align-items: center;
   }
@@ -511,7 +516,6 @@
     /* margin-bottom: 5px; */
     padding-right: 10px;
     padding-left: 10px;
-    color: white !important;
     text-decoration: none !important;
     font-weight: 500;
   }
@@ -858,17 +862,18 @@
     justify-content: center;
   }
 
-  .Sign-in5 {
-    width: 124px;
-    height: 25px;
-    margin-top: 2px;
-    /* margin-left: 2px; */
-    border-radius: 4px;
-    display: flex;
-    background-color: #7a9f9f;
-    align-items: center;
-    justify-content: center;
-  }
+      .Sign-in5 {
+        margin-bottom: 10px;
+        width: 123px;
+        height: 21px;
+        margin-top: 2px;
+        /* margin-left: 2px; */
+        border-radius: 4px;
+        display: flex;
+        background-color: #7a9f9f;
+        align-items: center;
+        justify-content: center;
+    }
 
   .Runs2 {
     width: 157px;
@@ -983,7 +988,7 @@
   }
   .menuNav2 {
     background-color: #235c94;
-    height: 119px;
+    height: fit-content;
     width: 126px;
     margin-top: 22px;
     border-radius: 9px;

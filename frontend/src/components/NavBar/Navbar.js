@@ -266,7 +266,7 @@ function Navbar () {
                         }
                       >
                         {' '}
-                        <h1>Beacon Info</h1>
+                        <h1 className='h1Menu'>Beacon Info</h1>
                       </NavLink>
                     )}
                     {isNetwork && (
@@ -278,7 +278,7 @@ function Navbar () {
                         }
                       >
                         {' '}
-                        <h1>Network members</h1>
+                        <h1 className='h1Menu'>Network members</h1>
                       </NavLink>
                     )}
 
@@ -291,7 +291,7 @@ function Navbar () {
                           isActive ? 'Sign-in5' : 'Sign-in6'
                         }
                       >
-                        <h1>Log in</h1>
+                        <h1 className='h1Menu'>Log in</h1>
                       </NavLink>
                     )}
 
@@ -310,7 +310,7 @@ function Navbar () {
                             src='/../logout.png'
                             alt='ls-login-image2'
                           />
-                          <h1>Log out</h1>
+                          <h1 className='h1Menu'>Log out</h1>
                         </NavLink>
                         <h5 className='userNameOpenMenu'>{userNameToShare}</h5>
                       </>
@@ -397,7 +397,7 @@ function Navbar () {
                         }
                       >
                         {' '}
-                        <h1>Beacon Info</h1>
+                        <h1 className='h1Menu'>Beacon Info</h1>
                       </NavLink>
                     )}
                     {isNetwork && (
@@ -409,7 +409,7 @@ function Navbar () {
                         }
                       >
                         {' '}
-                        <h1>Network members</h1>
+                        <h1 className='h1Menu'>Network members</h1>
                       </NavLink>
                     )}
                     {!isLoggedIn && (
@@ -421,7 +421,7 @@ function Navbar () {
                           isActive ? 'Sign-in5' : 'Sign-in6'
                         }
                       >
-                        <h1>Log in</h1>
+                        <h1 className='h1Menu'>Log in</h1>
                       </NavLink>
                     )}
                     {isLoggedIn && (
@@ -439,7 +439,7 @@ function Navbar () {
                             src='/../logout.png'
                             alt='ls-login-image2'
                           />
-                          <h1>Log out</h1>
+                          <h1 className='h1Menu'>Log out</h1>
                         </NavLink>
 
                         <h5 className='userNameSmallScreen'>

@@ -1,0 +1,239 @@
+{
+  "filters": [
+    {
+      "title": "Demographics",
+      "options": [
+        [
+          {
+            "label": "Female",
+            "value": "Female",
+            "ontology": "NCIT:C46113",
+            "type": "ontology",
+            "schemaField": "sex"
+          }
+        ],
+        [
+          {
+            "label": "Male",
+            "value": "Male",
+            "ontology": "NCIT:C46112",
+            "type": "ontology",
+            "schemaField": "sex"
+          }
+        ],
+        [
+          {
+            "label": "Age",
+            "value": "Age",
+            "ontology": "",
+            "type": "alphanumeric",
+            "schemaField": "diseases.ageOfOnset.iso8601duration"
+          }
+        ]
+      ]
+    },
+    {
+      "title": "Intervention",
+      "options": [
+        [
+          {
+            "label": "Hospitalization",
+            "value": "Hospitalization",
+            "ontology": "NCIT:C25179",
+            "type": "ontology",
+            "schemaField": "interventionsOrProcedures"
+          }
+        ],
+        [
+          {
+            "label": "Intensive Care Unit Stay",
+            "value": "Intensive Care Unit Stay",
+            "ontology": "NCIT:C171454",
+            "type": "ontology",
+            "schemaField": "interventionsOrProcedures"
+          }
+        ],
+        [
+          {
+            "label": "Intubation (procedure)",
+            "value": "Intubation (procedure)",
+            "ontology": "SNOMED:52765003",
+            "type": "ontology",
+            "schemaField": "interventionsOrProcedures"
+          }
+        ],
+        [
+          {
+            "label": "Oxygen administration by nasal cannula",
+            "value": "Oxygen administration by nasal cannula",
+            "ontology": "SNOMED:371907003",
+            "type": "ontology",
+            "schemaField": "interventionsOrProcedures"
+          }
+        ]
+      ]
+    },
+  
+    {
+      "title": "Disease",
+      "options": [
+        [
+          {
+            "label": "COVID-19",
+            "value": "COVID-19",
+            "ontology": "MONDO:0100096",
+            "type": "ontology",
+            "schemaField": "diseases.diseaseCode"
+          }
+        ],
+        [
+          {
+            "label": "Immunocompromised",
+            "value": "Immunocompromised",
+            "ontology": "NCIT:C14139",
+            "type": "ontology",
+            "schemaField": "diseases.diseaseCode"
+          }
+        ],
+        [
+          {
+            "label": "Asthma",
+            "value": "Asthma",
+            "ontology": "NCIT:C28397",
+            "type": "ontology",
+            "schemaField": "diseases.diseaseCode"
+          }
+        ],
+        [
+          {
+            "label": "Chronic Obstructive Pulmonary Disease",
+            "value": "Chronic Obstructive Pulmonary Disease",
+            "ontology": "NCIT:C3199",
+            "type": "ontology",
+            "schemaField": "diseases.diseaseCode"
+          }
+        ],
+        [
+          {
+            "label": "Chronic Kidney Disease",
+            "value": "Chronic Kidney Disease",
+            "ontology": "NCIT:C80078",
+            "type": "ontology",
+            "schemaField": "diseases.diseaseCode"
+          }
+        ],
+        [
+          {
+            "label": "Hypertension",
+            "value": "Hypertension",
+            "ontology": "NCIT:C3117",
+            "type": "ontology",
+            "schemaField": "diseases.diseaseCode"
+          }
+        ],
+        [
+          {
+            "label": "Organ Transplantation",
+            "value": "Organ Transplantation",
+            "ontology": "NCIT:C15289",
+            "type": "ontology",
+            "schemaField": "diseases.diseaseCode"
+          }
+        ],
+        [
+          {
+            "label": "Congestive Heart Failure",
+            "value": "Congestive Heart Failure",
+            "ontology": "NCIT:C3080",
+            "type": "ontology",
+            "schemaField": "diseases.diseaseCode"
+          }
+        ],
+        [
+          {
+            "label": "Myocardial Infarction",
+            "value": "Myocardial Infarction",
+            "ontology": "NCIT:C27996",
+            "type": "ontology",
+            "schemaField": "diseases.diseaseCode"
+          }
+        ],
+        [
+          {
+            "label": "Stroke",
+            "value": "Stroke",
+            "ontology": "NCIT:C3390",
+            "type": "ontology",
+            "schemaField": "diseases.diseaseCode"
+          }
+        ],
+        [
+          {
+            "label": "Deep Vein Thrombosis",
+            "value": "Deep Vein Thrombosis",
+            "ontology": "NCIT:C49343",
+            "type": "ontology",
+            "schemaField": "diseases.diseaseCode"
+          }
+        ],
+        [
+          {
+            "label": "Reinfarction During Hospitalization",
+            "value": "Reinfarction During Hospitalization",
+            "ontology": "NCIT:C80480",
+            "type": "ontology",
+            "schemaField": "diseases.diseaseCode"
+          }
+        ]
+      ]
+    },
+      {
+      "title": "Variant",
+      "type": "input",
+      "options": [
+        [
+          {
+            "subTitle": "Mutations in:",
+            "subTitle2": "gene:",
+            "label": "ACE2",
+            "value": "ACE2",
+            "schemaField": "geneId"
+          }
+        ],
+        [
+          {
+            "subTitle": "Mutations in:",
+            "subTitle2": "alternateBases:",
+            "label": "T",
+            "value": "T",
+            "schemaField": "alternateBases"
+          },
+          {
+            "subTitle2": "referenceBases:",
+            "label": "C",
+            "value": "C",
+            "schemaField": "referenceBases"
+          },
+          {
+            "subTitle2": "start:",
+            "label": "110173330",
+            "value": "110173330",
+            "schemaField": "start"
+          },
+          {
+            "subTitle2": "end:",
+            "label": "110173331",
+            "value": "110173331",
+            "schemaField": "end"
+          },
+          {
+            "subTitle2": "type:",
+            "label": "SNP",
+            "value": "SNP",
+            "schemaField": "variantType"
+          }
+        ]
+      ]
+    }
+  ]
+}

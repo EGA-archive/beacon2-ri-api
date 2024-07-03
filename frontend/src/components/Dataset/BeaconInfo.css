@@ -69,7 +69,6 @@ p a:hover {
 .tittle2 h1 {
   font-size: 14px;
   font-weight: normal;
-  margin: 14px;
   color: #5d5454;
 }
 
@@ -97,7 +96,7 @@ p a:hover {
   margin-bottom: -3px;
 }
 .tittle {
-  width: 40vw;
+  width: 36vw;
   background: #c8d4e6;
   border-radius: 2px;
   /* height: 80px; */
@@ -120,7 +119,6 @@ p a:hover {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-bottom: 7px;
 }
 
 .descriptionBeacon a {
@@ -166,7 +164,7 @@ p a:hover {
 }
 
 .datasetCard {
-  width: 40vw;
+  width: 36.7vw;
   margin: 30px;
 
   /* border: 2px solid #3b9ad5; */
@@ -212,12 +210,23 @@ p a:hover {
 }
 
 .datasetCard p {
-  font-size: 12px;
   font-weight: normal;
   color: rgb(61 60 60);
   line-height: 20px;
   margin-top: -5px;
+  width: 35vw;
+  text-align: justify;
+  height: 92px;
+  overflow-y: scroll;
+  font-size: 13px;
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none; 
 }
+
+.datasetCard p::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
+}
+
 .datasetCardResults p {
   font-size: 12px;
   font-weight: normal;
@@ -229,7 +238,6 @@ p a:hover {
 .tittle2 h1 {
   font-size: 14px;
   font-weight: normal;
-  margin: 14px;
   color: #5d5454;
 }
 
@@ -269,13 +277,15 @@ p a:hover {
   margin-bottom: -3px;
 }
 .tittle {
-  width: 38vw;
+  width: 36vw;
   background: #c8d4e6;
   border-radius: 2px;
-  /* height: 80px; */
+  height: fit-content;
   display: flex;
   padding: 2px;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .tittleResults {
@@ -290,6 +300,12 @@ p a:hover {
   flex-direction: column;
   align-items: center;
   overflow-y: scroll;
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none; 
+}
+
+.tittleResults::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
 }
 
 .seeResultsContainer {
@@ -321,6 +337,8 @@ p a:hover {
   color: rgba(12, 16, 64, 0.606);
   font-size: 12px;
   font-weight: 600;
+  margin-bottom: 8px;
+  margin-top: 2px;
 }
 
 .tittleResults h2 {
@@ -346,6 +364,7 @@ p a:hover {
   background: #c8d4e6;
   flex-wrap: wrap;
   align-items: center;
+  margin-top: 8px;
 }
 
 .tittle4 {
@@ -368,8 +387,21 @@ p a:hover {
 }
 
 h5 {
-  margin-top: 0px !important;
   margin-bottom: 0px !important;
+}
+
+h5 {
+  color: rgb(209, 66, 66);
+  font-weight: bold;
+  width: -moz-fit-content;
+  width: fit-content;
+  /* width: 150%; */
+  margin-top: 26px;
+  margin-left: 40vw;
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+  font-size: 14px;
 }
 
 .resultsRecord {
@@ -446,7 +478,7 @@ h5 {
   }
   .tittle {
     height: 82px;
-    width: 44vw;
+    width: 40vw;
     background: #c8d4e6;
     border-radius: 2px;
     /* height: 80px; */
@@ -493,7 +525,6 @@ h5 {
   .tittle2 h1 {
     font-size: 11px;
     font-weight: normal;
-    margin: 14px;
     color: #5d5454;
   }
 }
@@ -540,14 +571,16 @@ h5 {
     margin-top: 2px;
   }
   .datasetCard p {
-    font-size: 11px;
     font-weight: normal;
     color: rgb(61 60 60);
-    line-height: 18px;
+    line-height: 20px;
     margin-top: -5px;
-    font-size: 11px !important;
+    width: 52vw;
+    text-align: justify;
+    height: 150px;
+    overflow-y: scroll;
+    font-size: 13px;
   }
-
   .datasetCard {
     width: 58vw;
     margin: 30px;
@@ -612,7 +645,6 @@ h5 {
     font-weight: bold;
     /* margin: 14px; */
     color: #5d5454;
-    margin: 7px;
   }
 }
 

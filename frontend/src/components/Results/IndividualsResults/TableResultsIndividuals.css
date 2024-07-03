@@ -6,15 +6,21 @@
 .table-container {
   overflow-x: auto;
   width: 100%;
+  min-width: 900px;
   height: fit-content;
   position: relative;
-  min-width: 1000px;
   overflow-y: scroll;
   overflow-x: scroll;
   display: flex;
   /* min-width: 950px; */
   flex-direction: column;
   scrollbar-color: rgb(188 208 223 / 50%) rgba(0, 0, 0, 0);
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none;
+}
+
+.table-container::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
 }
 
 .tdGranuBeacon ion-icon {
@@ -170,7 +176,11 @@ thead {
   position: sticky;
   top: 0;
   z-index: 2;
-  width: 100%;
+  /* width: 100vw; */
+
+  /* align-items: center; */
+  /* justify-content: center; */
+  /* align-content: center; */
 }
 
 .body-container {
@@ -200,6 +210,13 @@ thead {
   flex-direction: column;
   justify-content: space-evenly;
   font-family: sans-serif;
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none;
+}
+
+.sticky-header,
+.visible::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
 }
 
 .tdGranuBeacon {
@@ -207,7 +224,7 @@ thead {
   font-size: 14px;
   font-family: sans-serif;
   /* padding: 8px; */
-  text-align: center;
+
   display: flex;
   align-items: center;
   width: 328px;
@@ -228,6 +245,12 @@ thead {
   justify-content: center;
   font-family: sans-serif;
   align-items: center;
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none;
+}
+
+.visible-id::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
 }
 
 .tbodyResults {
@@ -321,11 +344,12 @@ tr {
   width: 328px;
   font-family: sans-serif;
   /* padding: 8px; */
-  text-align: center;
+  /* text-align: center; */
   display: flex;
-  align-items: center;
+  word-break: break-all;
+  /* align-items: center; */
   align-content: center;
-  justify-content: flex-start;
+  /* justify-content: flex-start; */
 }
 
 .tdGranuNoResults,
@@ -610,11 +634,23 @@ h1 {
   margin-top: 24px;
   align-items: center;
   overflow: scroll;
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none;
+}
+
+.containerBeaconResults::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
 }
 
 .containerBeaconResultsVariants {
   overflow-y: scroll;
   height: 100vh;
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none;
+}
+
+.containerBeaconResultsVariants::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
 }
 
 .containerResultsVariants {
@@ -652,6 +688,8 @@ h1 {
     margin-top: 24px;
     align-items: center;
     overflow: scroll;
+    -ms-overflow-style: none; /* for Internet Explorer, Edge */
+    scrollbar-width: none;
   }
 
   .containerResultsVariants {
@@ -667,7 +705,13 @@ h1 {
     overflow-y: scroll;
     height: 100vh;
     width: 70vw;
+    -ms-overflow-style: none; /* for Internet Explorer, Edge */
+    scrollbar-width: none;
   }
+  .containerBeaconResultsVariants::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari, and Opera */
+  }
+
   .tittleResults {
     width: 46vw;
     background: white;
@@ -725,6 +769,69 @@ h1 {
     margin-bottom: 2px;
   }
 }
+@media (max-width: 1000px) {
+  .tableResults {
+    /* width: 96%; */
+    overflow-x: scroll;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-left: 14px;
+    -ms-overflow-style: none; /* for Internet Explorer, Edge */
+    scrollbar-width: none;
+  }
+
+  .tableResults::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari, and Opera */
+  }
+
+  .containerTableResults {
+    width: 100vw;
+    display: flex;
+    align-content: start;
+    justify-content: start;
+    align-items: start;
+  }
+
+  .containerBeaconResults {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* margin-right: 26px; */
+    width: 100vw;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    margin-left: 10px;
+    padding-bottom: 50px;
+    margin-right: 10px;
+    margin-top: 24px;
+    align-items: flex-start;
+    overflow: scroll;
+    -ms-overflow-style: none; /* for Internet Explorer, Edge */
+    scrollbar-width: none;
+  }
+  .containerBeaconResults::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari, and Opera */
+  }
+
+  .containerTableNoFull {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+  }
+  tr {
+    width: 100%;
+  }
+  .tbodyGranu tr {
+    width: 70vw;
+  }
+  .tbodyGranu {
+    width: 70vw;
+  }
+  .theadGranularity tr {
+    width: 70vw;
+  }
+}
 
 @media (max-width: 800px) {
   .tdGranuBeacon {
@@ -732,6 +839,15 @@ h1 {
   }
   .tdGranu {
     font-size: 12px;
+  }
+  .tbodyGranu tr {
+    width: 80vw;
+  }
+  .tbodyGranu {
+    width: 80vw;
+  }
+  .theadGranularity tr {
+    width: 80vw;
   }
 }
 
@@ -745,5 +861,14 @@ h1 {
     padding: 2px;
     flex-direction: column;
     align-items: center;
+  }
+  .tbodyGranu tr {
+    width: 90vw;
+  }
+  .tbodyGranu {
+    width: 90vw;
+  }
+  .theadGranularity tr {
+    width: 90vw;
   }
 }

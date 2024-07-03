@@ -147,118 +147,122 @@ function BeaconInfo (props) {
         <div className='resultsRecord'>
           {resp.map(result => {
             return (
-              <div className='datasetCard'>
-                <div className='tittle'>
-                  <div className='tittle2'>
-                    {result.response.organization.logoUrl !== '' &&
-                      result.response.name !== 'NAGENpediatrics Beacon' && (
-                        <img
-                          className='logoBeacon'
-                          src={result.response.organization.logoUrl}
-                          alt={result.meta.beaconId}
-                        />
-                      )}
-                    {result.response.name === 'NAGENpediatrics Beacon' && (
-                      <img
-                        className='logoBeaconNasertic'
-                        src={result.response.organization.logoUrl}
-                        alt={result.meta.beaconId}
+              <>
+                {result.response && (
+                  <div className='datasetCard'>
+                    <div className='tittle'>
+                      <div className='tittle2'>
+                        {result.response.organization.logoUrl !== '' &&
+                          result.response.name !== 'NAGENpediatrics Beacon' && (
+                            <img
+                              className='logoBeacon'
+                              src={result.response.organization.logoUrl}
+                              alt={result.meta.beaconId}
+                            />
+                          )}
+                        {result.response.name === 'NAGENpediatrics Beacon' && (
+                          <img
+                            className='logoBeaconNasertic'
+                            src={result.response.organization.logoUrl}
+                            alt={result.meta.beaconId}
+                          />
+                        )}
+                        <h1>{result.response.name}</h1>
+                      </div>
+                      <h2>{result.response.organization.name}</h2>
+                    </div>
+                    <hr className='line'></hr>
+                    {!result.response.description.includes('<a href') && (
+                      <p>{result.response.description}</p>
+                    )}
+                    {result.response.description.includes('<a href') && (
+                      <p
+                        dangerouslySetInnerHTML={{
+                          __html: result.response.description
+                        }}
                       />
                     )}
-                    <h1>{result.response.name}</h1>
+                    <div className='linksBeacons'>
+                      {result.meta.beaconId ===
+                        'org.ega-archive.ga4gh-approval-beacon-test' && (
+                        <a
+                          href='https://beacon-apis-demo.ega-archive.org/api'
+                          target='_blank'
+                          rel='noreferrer'
+                        >
+                          Beacon API
+                        </a>
+                      )}
+                      {result.meta.beaconId === 'es.elixir.bsc.beacon' && (
+                        <a
+                          href='https://beacons.bsc.es/beacon/v2.0.0/'
+                          target='_blank'
+                          rel='noreferrer'
+                        >
+                          Beacon API
+                        </a>
+                      )}
+                      {result.meta.beaconId === 'org.progenetix' && (
+                        <a
+                          href='https://beaconplus.progenetix.org/'
+                          target='_blank'
+                          rel='noreferrer'
+                        >
+                          Beacon API
+                        </a>
+                      )}
+                      {result.meta.beaconId !== 'es.elixir.bsc.beacon' &&
+                        result.meta.beaconId !== 'org.progenetix' &&
+                        result.meta.beaconId !==
+                          'org.ega-archive.ga4gh-approval-beacon-test' && (
+                          <a
+                            href={result.response.alternativeUrl}
+                            target='_blank'
+                            rel='noreferrer'
+                          >
+                            Beacon API
+                          </a>
+                        )}
+                      {result.meta.beaconId === 'es.elixir.bsc.beacon' && (
+                        <a
+                          href='https://www.bsc.es/'
+                          target='_blank'
+                          rel='noreferrer'
+                        >
+                          Visit us
+                        </a>
+                      )}
+                      {result.meta.beaconId !== 'es.elixir.bsc.beacon' && (
+                        <a
+                          href={result.response.organization.welcomeUrl}
+                          target='_blank'
+                          rel='noreferrer'
+                        >
+                          Visit us
+                        </a>
+                      )}
+                      {result.meta.beaconId !== 'es.elixir.bsc.beacon' && (
+                        <a
+                          href={result.response.organization.contactUrl}
+                          target='_blank'
+                          rel='noreferrer'
+                        >
+                          Contact us
+                        </a>
+                      )}
+                      {result.meta.beaconId === 'es.elixir.bsc.beacon' && (
+                        <a
+                          href='mailto:info@bsc.es'
+                          target='_blank'
+                          rel='noreferrer'
+                        >
+                          Contact us
+                        </a>
+                      )}
+                    </div>
                   </div>
-                  <h2>{result.response.organization.name}</h2>
-                </div>
-                <hr className='line'></hr>
-                {!result.response.description.includes('<a href') && (
-                  <p>{result.response.description}</p>
                 )}
-                {result.response.description.includes('<a href') && (
-                  <p
-                    dangerouslySetInnerHTML={{
-                      __html: result.response.description
-                    }}
-                  />
-                )}
-                <div className='linksBeacons'>
-                  {result.meta.beaconId ===
-                    'org.ega-archive.ga4gh-approval-beacon-test' && (
-                    <a
-                      href='https://beacon-apis-demo.ega-archive.org/api'
-                      target='_blank'
-                      rel='noreferrer'
-                    >
-                      Beacon API
-                    </a>
-                  )}
-                  {result.meta.beaconId === 'es.elixir.bsc.beacon' && (
-                    <a
-                      href='https://beacons.bsc.es/beacon/v2.0.0/'
-                      target='_blank'
-                      rel='noreferrer'
-                    >
-                      Beacon API
-                    </a>
-                  )}
-                  {result.meta.beaconId === 'org.progenetix' && (
-                    <a
-                      href='https://beaconplus.progenetix.org/'
-                      target='_blank'
-                      rel='noreferrer'
-                    >
-                      Beacon API
-                    </a>
-                  )}
-                  {result.meta.beaconId !== 'es.elixir.bsc.beacon' &&
-                    result.meta.beaconId !== 'org.progenetix' &&
-                    result.meta.beaconId !==
-                      'org.ega-archive.ga4gh-approval-beacon-test' && (
-                      <a
-                        href={result.response.alternativeUrl}
-                        target='_blank'
-                        rel='noreferrer'
-                      >
-                        Beacon API
-                      </a>
-                    )}
-                  {result.meta.beaconId === 'es.elixir.bsc.beacon' && (
-                    <a
-                      href='https://www.bsc.es/'
-                      target='_blank'
-                      rel='noreferrer'
-                    >
-                      Visit us
-                    </a>
-                  )}
-                  {result.meta.beaconId !== 'es.elixir.bsc.beacon' && (
-                    <a
-                      href={result.response.organization.welcomeUrl}
-                      target='_blank'
-                      rel='noreferrer'
-                    >
-                      Visit us
-                    </a>
-                  )}
-                  {result.meta.beaconId !== 'es.elixir.bsc.beacon' && (
-                    <a
-                      href={result.response.organization.contactUrl}
-                      target='_blank'
-                      rel='noreferrer'
-                    >
-                      Contact us
-                    </a>
-                  )}
-                  {result.meta.beaconId === 'es.elixir.bsc.beacon' && (
-                    <a
-                      href='mailto:info@bsc.es'
-                      target='_blank'
-                      rel='noreferrer'
-                    >
-                      Contact us
-                    </a>
-                  )}
-                </div>
-              </div>
+              </>
             )
           })}
         </div>

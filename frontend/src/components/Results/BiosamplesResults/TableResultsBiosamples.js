@@ -20,7 +20,7 @@ function TableResultsBiosamples (props) {
   const [showCrossQuery, setShowCrossQuery] = useState(false)
   const [parameterCrossQuery, setParamCrossQuery] = useState('')
   const [expandedRows, setExpandedRows] = useState(
-    Array.from({ length: props.beaconsList.length }, (_, index) => index)
+    new Array(props.beaconsList.length).fill(false)
   )
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage] = useState(10) // You can make this dynamic if needed
@@ -37,9 +37,9 @@ function TableResultsBiosamples (props) {
   const [isOpenModal2, setIsOpenModal2] = useState(false)
 
   const [filterValues, setFilterValues] = useState({
+    Beacon: '',
     BiosampleId: '',
     individualId: '',
-    Beacon: '',
     biosampleStatus: '',
     sampleOriginDetail: '',
     collectionDate: '',
@@ -64,10 +64,29 @@ function TableResultsBiosamples (props) {
     setMenuVisible(prevState => !prevState)
   }
 
+  const getBeaconName = (beaconId, beaconsList) => {
+    if (beaconId === 'org.progenetix') {
+      beaconId = 'org.progenetix.beacon'
+    }
+ 
+
+    const beacon = beaconsList.find(b => (b.response?.id ?? b.id) === beaconId)
+
+    if (beacon) {
+      if (beacon.response) {
+        return beacon.response.name
+      } else {
+        return beacon.name
+      }
+    } else {
+      return beaconId // Or any other default value you prefer when no beacon is found
+    }
+  }
+
   const [columnVisibility, setColumnVisibility] = useState({
+    Beacon: true,
     BiosampleId: true,
     individualId: true,
-    Beacon: true,
     biosampleStatus: true,
     sampleOriginDetail: false,
     collectionDate: true,
@@ -85,6 +104,7 @@ function TableResultsBiosamples (props) {
     sampleStorage: true
     // Add more columns as needed
   })
+
   const handleNextPage = () => {
     setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages))
   }
@@ -260,6 +280,7 @@ function TableResultsBiosamples (props) {
     URL.revokeObjectURL(url)
     document.body.removeChild(link)
   }
+
   const showNote = e => {
     setNote(e)
     setIsOpenModal2(true)
@@ -267,9 +288,10 @@ function TableResultsBiosamples (props) {
 
   const handleShowCrossQuery = e => {
     setShowCrossQuery(true)
- 
+
     setParamCrossQuery(e.target.innerText)
   }
+
   const toggleRow = index => {
     setExpandedRows(prevState => {
       const currentIndex = prevState.indexOf(index)
@@ -284,7 +306,6 @@ function TableResultsBiosamples (props) {
   }
 
   useEffect(() => {
-  
     if (props.show === 'full') {
       setResultsSelectedFinal(resultsSelected)
       setShowResults(true)
@@ -791,9 +812,9 @@ function TableResultsBiosamples (props) {
 
         editable.push({
           id: index,
+          Beacon: element[0],
           BiosampleId: element[1].id,
           individualId: element[1].individualId,
-          Beacon: element[0],
           biosampleStatus: stringBiosampleStatus,
           sampleOriginType: stringSampleOriginType,
           //  sampleOriginDetail: stringSampleOriginDetail,
@@ -811,7 +832,6 @@ function TableResultsBiosamples (props) {
           //  sampleProcessing: sampleProcessingJson,
           sampleStorage: stringSampleStorage
         })
-        
 
         if (index === resultsSelectedFinal.length - 1) {
           setTrigger2(true)
@@ -829,133 +849,162 @@ function TableResultsBiosamples (props) {
       {showDatsets === true &&
         props.beaconsList.map((result, beaconIndex) => {
           return (
-            <table className='tableGranularity' key={beaconIndex}>
-              <thead className='theadGranularity'>
-                <tr id='trGranuHeader'>
-                  <th className='thGranularityTitleBeacon'>Beacon</th>
-                  <th className='thGranularityTitle'>Dataset</th>
-                  <th className='thGranularityTitle'>Result</th>
-                </tr>
-              </thead>
-              <tbody className='tbodyGranu'>
-                {props.results.length > 0 &&
-                  props.resultsPerDataset.map((dataset, index2) => {
-                    const totalCount = dataset[3]
-                      ? dataset[3].reduce((acc, count) => acc + count, 0)
-                      : 0
-                    const allTrue = dataset[2]
-                      ? dataset[2].every(booleanElement => booleanElement)
-                      : 'No, sorry'
+            <>
+              {beaconIndex === 0 && (
+                <div className='containerTableNoFull'>
+                  <table className='tableGranularity' key={beaconIndex}>
+                    <thead className='theadGranularity'>
+                      <tr id='trGranuHeader'>
+                        <th className='thGranularityTitleBeacon'>Beacon</th>
+                        <th className='thGranularityTitle'>Dataset</th>
+                        <th className='thGranularityTitle'>Result</th>
+                      </tr>
+                    </thead>
+                    <tbody className='tbodyGranu'>
+                      {props.results.length > 0 &&
+                        props.resultsPerDataset.map((dataset, index2) => {
+                          const totalCount = dataset[3]
+                            ? dataset[3].reduce((acc, count) => acc + count, 0)
+                            : 0
+                          const hasTrueElement = dataset[2]
+                            ? dataset[2].some(booleanElement => booleanElement)
+                            : false
+                          const beaconName = getBeaconName(
+                            dataset[0],
+                            props.beaconsList
+                          )
+                          return (
+                            <React.Fragment key={index2}>
+                              <tr
+                                className='trGranuBeacon'
+                                onClick={() => toggleRow(index2)}
+                              >
+                                <td className='tdGranuBeacon'>
+                                  {beaconName}
+                                  {expandedRows.includes(index2) ? (
+                                    <ion-icon name='chevron-down-outline'></ion-icon>
+                                  ) : (
+                                    <ion-icon name='chevron-up-outline'></ion-icon>
+                                  )}
+                                </td>
+                                <td className='tdGranuBeacon'></td>
+                                <td className='tdGranuBeacon'>
+                                  {props.show === 'boolean'
+                                    ? hasTrueElement
+                                      ? 'YES'
+                                      : 'No, sorry'
+                                    : totalCount}
+                                </td>
+                              </tr>
+                              {expandedRows.includes(index2) && (
+                                <React.Fragment key={`expanded-${index2}`}>
+                                  {props.show === 'boolean' &&
+                                    dataset[2].map(
+                                      (booleanElement, booleanIndex) => (
+                                        <tr
+                                          className='trGranu'
+                                          key={`boolean-${booleanIndex}`}
+                                        >
+                                          <td className='tdGranu'></td>
+                                          <td
+                                            className={`tdGranu ${
+                                              booleanElement
+                                                ? 'tdFoundDataset'
+                                                : 'tdNotFoundDataset'
+                                            }`}
+                                          >
+                                            {dataset[1][booleanIndex]}
+                                          </td>
+                                          <td
+                                            className={`tdGranu ${
+                                              booleanElement
+                                                ? 'tdFound'
+                                                : 'tdNotFound'
+                                            }`}
+                                          >
+                                            {booleanElement
+                                              ? 'YES'
+                                              : 'No, sorry'}
+                                          </td>
+                                        </tr>
+                                      )
+                                    )}
+                                  {props.show === 'count' &&
+                                    dataset[3].map(
+                                      (countElement, countIndex) => (
+                                        <tr
+                                          className='trGranu'
+                                          key={`count-${countIndex}`}
+                                        >
+                                          <td className='tdGranu'></td>
+                                          <td
+                                            className={`tdGranu ${
+                                              countElement !== undefined &&
+                                              countElement !== null &&
+                                              countElement !== 0
+                                                ? 'tdFoundDataset'
+                                                : 'tdNotFoundDataset'
+                                            }`}
+                                          >
+                                            {dataset[1][countIndex]}
+                                          </td>
+                                          <td
+                                            className={`tdGranu ${
+                                              countElement !== undefined &&
+                                              countElement !== null &&
+                                              countElement !== 0
+                                                ? 'tdFound'
+                                                : 'tdNotFound'
+                                            }`}
+                                          >
+                                            {countElement}
+                                          </td>
+                                        </tr>
+                                      )
+                                    )}
+                                </React.Fragment>
+                              )}
+                            </React.Fragment>
+                          )
+                        })}
+                      {props.results.length === 0 &&
+                        props.beaconsList.map((beacon, index2) => {
+                          const totalCount = 0
+                          const hasTrueElement = false
 
-                    return (
-                      <React.Fragment key={index2}>
-                        <tr
-                          className='trGranuBeacon'
-                          onClick={() => toggleRow(index2)}
-                        >
-                          <td className='tdGranuBeacon'>
-                            {dataset[0]}
-                            {expandedRows.includes(index2) ? (
-                              <ion-icon name='chevron-down-outline'></ion-icon>
-                            ) : (
-                              <ion-icon name='chevron-up-outline'></ion-icon>
-                            )}
-                          </td>
-                          <td className='tdGranuBeacon'></td>
-                          <td className='tdGranuBeacon'>
-                            {props.show === 'boolean'
-                              ? allTrue
-                                ? 'YES'
-                                : 'No, sorry'
-                              : totalCount}
-                          </td>
-                        </tr>
-                        {expandedRows.includes(index2) && (
-                          <React.Fragment key={`expanded-${index2}`}>
-                            {props.show === 'boolean' &&
-                              dataset[2].map((booleanElement, booleanIndex) => (
-                                <tr
-                                  className='trGranu'
-                                  key={`boolean-${booleanIndex}`}
-                                >
-                                  <td className='tdGranu'></td>
-                                  <td
-                                    className={`tdGranu ${
-                                      booleanElement
-                                        ? 'tdFoundDataset'
-                                        : 'tdNotFoundDataset'
-                                    }`}
-                                  >
-                                    {dataset[1][booleanIndex]}
+                          return (
+                            <React.Fragment key={index2}>
+                              <tr
+                                className='trGranuBeacon'
+                                onClick={() => toggleRow(index2)}
+                              >
+                                {beacon.response && (
+                                  <td className='tdGranuBeacon tdNotFoundDataset'>
+                                    {beacon.response.name}
                                   </td>
-                                  <td
-                                    className={`tdGranu ${
-                                      booleanElement ? 'tdFound' : 'tdNotFound'
-                                    }`}
-                                  >
-                                    {booleanElement ? 'YES' : 'No, sorry'}
+                                )}
+                                {!beacon.response && (
+                                  <td className='tdGranuBeacon tdNotFoundDataset'>
+                                    {beacon.name}
                                   </td>
-                                </tr>
-                              ))}
-                            {props.show === 'count' &&
-                              dataset[3].map((countElement, countIndex) => (
-                                <tr
-                                  className='trGranu'
-                                  key={`count-${countIndex}`}
-                                >
-                                  <td className='tdGranu'></td>
-                                  <td
-                                    className={`tdGranu ${
-                                      countElement !== undefined &&
-                                      countElement !== null &&
-                                      countElement !== 0
-                                        ? 'tdFoundDataset'
-                                        : 'tdNotFoundDataset'
-                                    }`}
-                                  >
-                                    {dataset[1][countIndex]}
-                                  </td>
-                                  <td
-                                    className={`tdGranu ${
-                                      countElement !== undefined &&
-                                      countElement !== null &&
-                                      countElement !== 0
-                                        ? 'tdFound'
-                                        : 'tdNotFound'
-                                    }`}
-                                  >
-                                    {countElement}
-                                  </td>
-                                </tr>
-                              ))}
-                          </React.Fragment>
-                        )}
-                      </React.Fragment>
-                    )
-                  })}
-                {props.results.length === 0 && (
-                  <React.Fragment key={beaconIndex}>
-                    <tr
-                      className='trGranuBeacon'
-                      onClick={() => toggleRow(beaconIndex)}
-                    >
-                      <td className='tdGranuBeaconNoResults'>{result.id}</td>
-                      <td className='tdGranuNoResults'></td>
-                      {props.show === 'boolean' && (
-                        <td
-                          className={`tdGranuNoResults ${'tdNotFoundDataset'}`}
-                        >
-                          No, sorry
-                        </td>
-                      )}
-                      {props.show === 'count' && (
-                        <td className={`tdGranu ${'tdNotFound'}`}>0 results</td>
-                      )}
-                    </tr>
-                  </React.Fragment>
-                )}
-              </tbody>
-            </table>
+                                )}
+                                <td className='tdGranuBeacon'></td>
+                                <td className='tdGranuBeacon tdNotFoundDataset'>
+                                  {props.show === 'boolean'
+                                    ? hasTrueElement
+                                      ? 'YES'
+                                      : 'No, sorry'
+                                    : totalCount}
+                                </td>
+                              </tr>
+                            </React.Fragment>
+                          )
+                        })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </>
           )
         })}
 
@@ -1011,6 +1060,21 @@ function TableResultsBiosamples (props) {
                   <tr>
                     <th
                       className={`sticky-header ${
+                        columnVisibility.Beacon ? 'visible' : 'hidden'
+                      }`}
+                    >
+                      <span>Beacon</span>
+                      <button onClick={() => toggleColumnVisibility('Beacon')}>
+                        {columnVisibility.Beacon ? <FaEye /> : <FaEyeSlash />}
+                      </button>
+                      <input
+                        type='text'
+                        placeholder='Filter Beacon'
+                        onChange={e => handleFilterChange(e, 'Beacon')}
+                      />
+                    </th>
+                    <th
+                      className={`sticky-header ${
                         columnVisibility.BiosampleId ? 'visible' : 'hidden'
                       }`}
                     >
@@ -1051,21 +1115,7 @@ function TableResultsBiosamples (props) {
                         onChange={e => handleFilterChange(e, 'individualId')}
                       />
                     </th>
-                    <th
-                      className={`sticky-header ${
-                        columnVisibility.Beacon ? 'visible' : 'hidden'
-                      }`}
-                    >
-                      <span>Beacon</span>
-                      <button onClick={() => toggleColumnVisibility('Beacon')}>
-                        {columnVisibility.Beacon ? <FaEye /> : <FaEyeSlash />}
-                      </button>
-                      <input
-                        type='text'
-                        placeholder='Filter Beacon'
-                        onChange={e => handleFilterChange(e, 'Beacon')}
-                      />
-                    </th>
+
                     <th
                       className={`sticky-header ${
                         columnVisibility.biosampleStatus ? 'visible' : 'hidden'
@@ -1475,6 +1525,13 @@ function TableResultsBiosamples (props) {
                     <tr key={index}>
                       <td
                         className={
+                          columnVisibility.Beacon ? 'visible' : 'hidden'
+                        }
+                      >
+                        {row.Beacon}
+                      </td>
+                      <td
+                        className={
                           columnVisibility.BiosampleId ? 'visible-id' : 'hidden'
                         }
                       >
@@ -1491,18 +1548,12 @@ function TableResultsBiosamples (props) {
                       </td>
                       <td
                         className={
-                          columnVisibility.IndividualId ? 'visible' : 'hidden'
+                          columnVisibility.individualId ? 'visible' : 'hidden'
                         }
                       >
                         {row.individualId}
                       </td>
-                      <td
-                        className={
-                          columnVisibility.Beacon ? 'visible' : 'hidden'
-                        }
-                      >
-                        {row.Beacon}
-                      </td>
+
                       <td
                         className={
                           columnVisibility.biosampleStatus

@@ -60,6 +60,13 @@ html {
   margin-top: 8px;
 }
 
+.buttonsDiv {
+  height: 93px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
 .containerExtraSections2 {
   display: flex;
   flex-direction: column;
@@ -84,10 +91,10 @@ html {
 }
 
 .version {
-  margin-right: 37px;
+  margin-right: 28px;
   margin-top: -18px;
   color: #3176b1 !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
 }
 
 .logosVersionContainer {
@@ -100,12 +107,42 @@ html {
 }
 
 .searchButton {
-  padding-right: 4px;
-  padding-left: 0px;
   cursor: pointer;
   margin-left: 12px;
   border: none;
+  border-radius: 100px;
+  background: #3176b1;
+  padding: 10px, 24px, 10px, 16px;
+  color: white;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  display: flex;
+  font-weight: 500;
+  width: 99px;
+  height: 40px;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.clearButton {
+  cursor: pointer;
+  margin-left: 12px;
+  border: none;
+  border-radius: 100px;
   background: white;
+  padding: 10px, 24px, 10px, 16px;
+  color: #3176b1;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  display: flex;
+  font-weight: 500;
+  width: 99px;
+  height: 40px;
+  justify-content: space-evenly;
+  align-items: center;
+  border: 1px solid #3176b1;
 }
 
 .scopeDiv {
@@ -396,12 +433,12 @@ p a {
 }
 
 .searchIcon {
-  width: 31px;
-  margin-top: -1px;
+  width: 13px;
+  margin-right: -2px;
 }
-.searchIcon:hover {
-  width: 33px;
-  margin-top: -3px;
+.clearIcon {
+  width: 15px;
+  margin-right: -2px;
 }
 
 .forwardIcon {
@@ -697,7 +734,8 @@ p a {
 .container2 {
   width: 100vw;
   display: flex;
-  margin-bottom: 40px;
+  margin-bottom: 18px;
+  margin-top: 10px;
 }
 
 .NavlinkVerifier {
@@ -775,8 +813,8 @@ p a {
   transition: 0.2s ease-in-out;
 }
 
-.eosc4cancer {
-  height: 86px;
+.ega-logo {
+  height: 46px;
   margin-top: 30px;
   margin-bottom: 5px;
   margin-right: 35px;
@@ -788,7 +826,7 @@ p a {
 
 .eosc4cancer,
 .by-covid-logo,
-.eosc4cancer:hover {
+.ega-logo:hover {
   -webkit-filter: grayscale(0%);
   filter: grayscale(0%);
 }
@@ -839,13 +877,35 @@ p a {
 }
 
 .laCaixaLogo {
-  height: 33px;
-  margin-top: 42px;
+  height: 35px;
+  margin-top: 34px;
   margin-right: 30px;
-  -webkit-filter: grayscale(20%);
-  filter: grayscale(100%);
-  -webkit-transition: 0.2s ease-in-out;
+  filter: grayscale(40%);
   transition: 0.2s ease-in-out;
+}
+.horizonEuropeLogo {
+  height: 30px;
+  margin-right: 10px;
+  filter: grayscale(40%);
+  transition: 0.2s ease-in-out;
+}
+
+.elixirLogo {
+  margin-bottom: -13px;
+  height: 58px;
+  margin-right: 10px;
+  filter: grayscale(40%);
+  transition: 0.2s ease-in-out;
+}
+
+.elixirLogo:hover {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
+}
+
+.horizonEuropeLogo:hover {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
 }
 
 .laCaixaLogo:hover {
@@ -1416,6 +1476,12 @@ h5 {
     text-underline-offset: 1px;
   }
 
+  .buttonsDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+
   .crossQueriesTittle {
     margin-bottom: 12px;
     font-size: 12px;
@@ -1471,7 +1537,7 @@ h5 {
     -webkit-transition: 0.2s ease-in-out;
     transition: 0.2s ease-in-out;
   }
-  .eosc4cancer {
+  .ega-logo {
     height: 36px;
     margin-top: 20px;
     margin-right: 30px;
@@ -1512,8 +1578,8 @@ h5 {
   }
 
   .laCaixaLogo {
-    height: 31px;
-    margin-top: 31px;
+    height: 33px;
+    margin-top: 33px;
     margin-right: 30px;
     -webkit-filter: grayscale(100%);
     filter: grayscale(100%);
@@ -1531,10 +1597,6 @@ h5 {
     font-size: 11.5px;
     padding: 3px;
     box-shadow: rgb(234 221 221 / 16%) 0px 1px 4px;
-  }
-
-  .container2 {
-    margin-bottom: 0px;
   }
 
   .exampleQuery {
@@ -1692,28 +1754,6 @@ h5 {
       'Helvetica Neue', sans-serif;
     text-transform: uppercase;
   }
-  .searchIcon {
-    width: 26px;
-    margin-top: -1px;
-    margin-left: -8px;
-  }
-  .searchIcon:hover {
-    width: 27px;
-    margin-top: -1px;
-    margin-left: -8px;
-  }
-
-  .elixirLogo {
-    height: 70px;
-    margin-top: 18px;
-    margin-bottom: 37px;
-    margin-right: 21px;
-  }
-
-  .searchButton {
-    height: 30px;
-    cursor: pointer;
-  }
 
   .examplesQueriesList {
     display: flex;
@@ -1756,6 +1796,40 @@ h5 {
     text-underline-offset: 1px;
   }
 
+  .IdForm{
+    font-size: 12px;
+  }
+  .selectedOperator {
+    background: white;
+    border: 1px solid rgb(143 147 196 / 61%);
+    /* border: 1px solid rgba(12, 16, 64, 0.606); */
+    font-size: 12px;
+    border-radius: 4px;
+    width: 33px;
+    height: 27px;
+    /* margin-right: 20px; */
+    box-shadow: 1px 2px 2px #cecece;
+  }
+  .ValueForm{
+    font-size: 12px;
+  }
+  #operator {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    /* margin-top: -40px; */
+    width: 46px;
+  }
+
+  .buttonsDiv {
+    margin-top: 7px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 151px;
+  }
   .crossQueriesTittle {
     margin-bottom: 12px;
     font-size: 12px;
@@ -1812,8 +1886,8 @@ h5 {
     transition: 0.2s ease-in-out;
   }
 
-  .eosc4cancer {
-    height: 68px;
+  .ega-logo {
+    height: 36px;
     margin-top: 20px;
     margin-right: 30px;
     -webkit-filter: grayscale(20%);
@@ -1871,10 +1945,6 @@ h5 {
     font-size: 11.5px;
     padding: 3px;
     box-shadow: rgb(234 221 221 / 16%) 0px 1px 4px;
-  }
-
-  .container2 {
-    margin-bottom: 0px;
   }
 
   .exampleQuery {
@@ -2048,28 +2118,6 @@ h5 {
       'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
       'Helvetica Neue', sans-serif;
     text-transform: uppercase;
-  }
-  .searchIcon {
-    width: 26px;
-    margin-top: -1px;
-    margin-left: -8px;
-  }
-  .searchIcon:hover {
-    width: 27px;
-    margin-top: -1px;
-    margin-left: -8px;
-  }
-
-  .elixirLogo {
-    height: 70px;
-    margin-top: 18px;
-    margin-bottom: 37px;
-    margin-right: 21px;
-  }
-
-  .searchButton {
-    height: 30px;
-    cursor: pointer;
   }
 
   .examplesQueriesList {

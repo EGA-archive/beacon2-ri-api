@@ -1,10 +1,9 @@
 .containerSelection {
   display: flex;
   width: 100vw;
-  align-items: center;
+  /* align-items: center; */
   justify-content: center;
   margin-bottom: 40px;
-  margin-top: -60px;
 }
 
 .buttonShowExamples {
@@ -28,7 +27,8 @@
   margin-bottom: 4px;
   /* display: flex; */
   align-items: flex-start;
-  /* margin-left: 4px; */
+  margin-left: 5px;
+  margin-right: 5px;
   display: flex;
   flex-direction: column;
 }
@@ -42,6 +42,7 @@
   /* margin-top: -53px; */
   /* margin-bottom: 10px; */
   margin-top: 24px;
+  align-items: center;
 }
 
 .buttonAllFilters:hover {
@@ -61,7 +62,12 @@
 
 .formInput {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  margin-top: 0px;
+}
+
+.layout-container {
+  width: 82vw;
 }
 
 .moduleAddedVariant h4 {
@@ -77,8 +83,14 @@
   width: 90%;
 }
 
+.searchButton:hover {
+  background-color: #023452;
+}
+.clearButton:hover {
+  background-color: rgb(231 244 255);
+}
+
 p {
-  font-size: 15px !important;
   color: #2a6169;
 }
 
@@ -101,6 +113,7 @@ p {
   display: flex;
   flex-direction: column;
   min-width: 112px;
+  position: relative;
 }
 
 .tabs {
@@ -117,6 +130,8 @@ p {
     Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   color: #3176b1;
   font-weight: 600;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 .tab.active {
@@ -124,11 +139,16 @@ p {
   border-top: 1px solid #3176b1;
   border-left: 1px solid #3176b1;
   border-right: 1px solid #3176b1;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 .tab-content {
-  padding: 10px;
+  padding: 3px;
   border: 1px solid #3176b1;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
 .label-ontology-div label {
@@ -136,19 +156,20 @@ p {
 }
 .inputSearch {
   width: 36vw;
-  height: -moz-fit-content;
-  height: fit-content;
+  resize: none;
+  padding-top: 6px;
+  height: 85px;
   padding-top: -10px;
   padding-left: 10px;
   font-size: 16px;
-  border-radius: 3px;
+  border-radius: 5px;
   border: 1px solid #3176b1;
   text-overflow: clip;
-  line-height: 3.1;
   max-width: 50vw;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
+  line-height: 1.4;
 }
 
 .filterTermsContainer {
@@ -208,7 +229,6 @@ p {
   align-content: space-between;
   /* justify-content: space-around; */
   align-items: flex-end;
-  margin-top: 30px;
 }
 
 .moduleAddedVariant2 h2 {
@@ -298,8 +318,6 @@ ul div {
   margin-bottom: 4px;
   display: flex;
   align-items: flex-start;
-  margin-left: 4px;
-  margin-right: 4px;
 }
 
 .label-ontology-div2 input {
@@ -309,6 +327,10 @@ ul div {
   padding: 2px;
   font-size: 12px;
   border-radius: 4px;
+}
+
+.label-ontology-div2 {
+  position: relative;
 }
 
 .subTitle {
@@ -330,8 +352,7 @@ label {
     sans-serif;
 }
 .divFilter {
-  margin-right: 10px;
-  margin-left: 10px;
+  margin-right: 20px;
   margin-bottom: 4px;
   width: -moz-fit-content;
   width: fit-content;
@@ -339,11 +360,12 @@ label {
 }
 
 .resetButton {
-  background-color: rgb(249, 249, 249);
-  border: 1px solid rgb(169, 169, 216);
+  background-color: #ddf2f7;
+  border: 1.9px solid rgb(37 66 200);
   border-radius: 2px;
-  margin-bottom: 3px;
   cursor: pointer;
+  height: 28px;
+  margin-left: 5px;
 }
 
 .resetButton:hover {
@@ -361,9 +383,6 @@ label {
   max-width: 181px;
   width: fit-content;
 }
-.onHover {
-  display: none;
-}
 
 h14 {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -373,24 +392,28 @@ h14 {
   color: #64646a;
   margin-left: 10px;
   margin-right: 10px;
+  margin-top: 4.2px;
 }
 
-.label:hover + .onHover {
-  display: block;
-  color: #fff;
+.onHover {
+  display: none;
+  position: absolute; /* Position it absolutely */
+  top: 0px; /* Adjust as needed */
+  left: 50px; /* Adjust as needed */
   z-index: 4;
+  color: #fff;
   font-weight: 500;
-  margin-top: -20px;
   background: #6e9ef0;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-right: 4px;
-  padding-left: 4px;
-  display: flex;
+  padding: 4px;
   border-radius: 2px;
   font-size: 11.5px;
   align-content: center;
   justify-content: center;
+}
+
+/* Display the hover element when the label is hovered */
+.label:hover + .onHover {
+  display: flex;
 }
 .deleteIcon ion-icon {
   color: black;
@@ -471,8 +494,8 @@ h14 {
 
 .formula {
   width: 20px;
-  margin-right: 12.5px;
-  margin-left: 7px;
+  margin-right: 8.5px;
+  margin-left: 6px;
 }
 
 .dictionary {
@@ -568,26 +591,15 @@ h14 {
     /* margin-left: -10px; */
     /* padding-top: 30px; */
     /* padding-left: 26px; */
- 
   }
 }
 @media (max-width: 1200px) {
   .inputSearch {
     width: 28vw;
-    height: fit-content;
-    padding: 10px;
-    font-size: 14 px;
+
     border: 1px solid #3176b1;
-    border-radius: 3px;
     text-overflow: clip;
     max-width: 38vw;
-  }
-  .containerSelection {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 40px;
-    margin-top: -60px;
   }
 }
 @media (max-width: 900) {
@@ -605,46 +617,70 @@ h14 {
 @media (max-width: 950px) {
   .inputSearch {
     width: 28vw;
-    height: fit-content;
-    padding: 10px;
     font-size: 14 px;
     border: 1px solid #3176b1;
     text-overflow: clip;
     max-width: 40vw;
-    border-radius: 3px;
+    height: 139px;
+    font-size: 14px;
   }
-  .containerSelection {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 40px;
-    margin-top: -60px;
-  }
-
   .selectModule1 {
-    width: 150px !important;
+    font-size: 14px;
   }
-}
+  .selectModule2 {
+    font-size: 14px;
+  }
+  .buttonText {
+    display: none !important;
+  }
+  .searchButton {
+    cursor: pointer;
+    margin-left: 12px;
+    border: none;
+    border-radius: 100px;
+    background: #3176b1;
+    padding: 10px, 24px, 10px, 16px;
+    color: white;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+      Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+      sans-serif;
+    font-size: 14px;
+    display: flex;
+    font-weight: 500;
+    width: 99px;
+    height: 40px;
+    width: 40px;
+    justify-content: space-evenly;
+    align-items: center;
+  }
 
-@media (max-width: 950px) {
-  .inputSearch {
-    width: 28vw;
-    height: fit-content;
-    padding: 10px;
-    font-size: 14 px;
+  .clearButton {
+    cursor: pointer;
+    margin-left: 12px;
+    border: none;
+    border-radius: 100px;
+    background: white;
+    padding: 10px, 24px, 10px, 16px;
+    color: #3176b1;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+      Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+      sans-serif;
+    font-size: 14px;
+    display: flex;
+    font-weight: 500;
+    width: 40px;
+    height: 40px;
+    justify-content: space-evenly;
+    align-items: center;
     border: 1px solid #3176b1;
-    text-overflow: clip;
-    max-width: 80vw;
-    border-radius: 3px;
   }
   .containerSelection {
+    flex-wrap: wrap;
     display: flex;
-    align-items: center;
+    width: 100vw;
+    /* align-items: center; */
     justify-content: center;
     margin-bottom: 40px;
-    margin-top: 20px;
-    width: 100vw;
-    flex-wrap: wrap;
   }
 
   ul {
@@ -683,7 +719,100 @@ h14 {
   }
 }
 
+@media (max-width: 750px) {
+  .inputSearch {
+    width: 63vw;
+
+    font-size: 13px;
+    border: 1px solid #3176b1;
+    text-overflow: clip;
+    max-width: 80vw;
+    margin-top: 10px;
+    margin-left: 26px;
+  }
+  .filterTermsContainer {
+    display: flex;
+    width: 84vw;
+    justify-content: space-evenly;
+    /* margin-bottom: 18px; */
+    flex-wrap: wrap;
+    height: -moz-fit-content;
+    height: fit-content;
+    border: none;
+    /* margin-left: -10px; */
+    padding-top: 30px;
+    padding-left: 0px;
+    /* border-radius: 8px; */
+  }
+  .containerSelection {
+    margin-top: 12px;
+  }
+  ul {
+    padding-left: 0;
+
+    display: flex;
+    list-style: none;
+    max-height: none;
+
+    flex-direction: column;
+
+    justify-content: center;
+  }
+}
+
 @media (max-width: 500px) {
+  .searchButton {
+    cursor: pointer;
+    margin-left: 12px;
+    border: none;
+    border-radius: 100px;
+    background: #3176b1;
+    padding: 10px, 24px, 10px, 16px;
+    color: white;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+      Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+      sans-serif;
+    font-size: 14px;
+    display: flex;
+    font-weight: 500;
+    width: 99px;
+    height: 36px;
+    width: 36px;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+  .clearButton {
+    cursor: pointer;
+    margin-left: 12px;
+    border: none;
+    border-radius: 100px;
+    background: white;
+    padding: 10px, 24px, 10px, 16px;
+    color: #3176b1;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+      Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+      sans-serif;
+    font-size: 14px;
+    display: flex;
+    font-weight: 500;
+    width: 36px;
+    height: 36px;
+    justify-content: space-evenly;
+    align-items: center;
+    border: 1px solid #3176b1;
+  }
+
+  .buttonAllFilters h4 {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+      Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+      sans-serif;
+    font-size: 12px;
+    color: #3176b1;
+    margin-left: 3px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    font-weight: 600;
+  }
   ul {
     padding-left: 0;
 
@@ -697,6 +826,9 @@ h14 {
   }
   .scopeSelection h10 {
     font-size: 12px;
+  }
+  .formInput {
+    margin-top: 12px;
   }
   .scopeSelection {
     position: absolute;
@@ -721,6 +853,20 @@ h14 {
   }
   select {
     height: 21px;
+  }
+
+  .inputSearch {
+    margin-left: 0px;
+  }
+
+  .resetButton {
+    background-color: #ddf2f7;
+    border: 1.9px solid rgb(37 66 200);
+    border-radius: 2px;
+    cursor: pointer;
+    height: 25px;
+    margin-left: 5px;
+    font-size: 12px;
   }
 }
 

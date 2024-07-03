@@ -135,18 +135,7 @@ h5:hover {
     margin-left: 10px;
     margin-right: 10px;
   }
-  .inputSearch {
-    width: 70vw;
-    height: -moz-fit-content;
-    height: fit-content;
-    padding: 10px;
-    font-size: 14 px;
-    border: 1px solid #3176b1;
-    text-overflow: clip;
-    max-width: 80vw;
-    font-size: 13px;
-    border-radius: 3px;
-  }
+
   .crossQueriesForm {
     padding: 34px;
     display: flex;

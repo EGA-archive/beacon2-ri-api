@@ -7,7 +7,7 @@
   width: 50%;
   background-color: #74b1d4;
   padding: 25px 40px;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .pageSwitcher {

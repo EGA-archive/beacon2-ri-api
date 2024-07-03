@@ -80,10 +80,12 @@ function IndividualsResults (props) {
 
   const handleChangeScope = (event, idx) => {
     const value = event.target.value
+ 
     setSelectedScopes(prevState => ({
       ...prevState,
       [idx]: value
     }))
+
   }
 
   const submitScopeChosen = () => {
@@ -128,115 +130,6 @@ function IndividualsResults (props) {
       }
 
       var arrayRequestParameters = []
-      // var requestParametersSequence = {}
-
-      // var requestParametersRange = {}
-
-      // var requestParametersGene = {}
-
-      // if (props.seqModuleArray.length > 0) {
-      //   props.seqModuleArray.forEach(element => {
-      //     if (element.assemblyId !== '') {
-      //       requestParametersSequence['assemblyId'] = element.assemblyId
-      //     }
-      //     if (element.referenceName !== '') {
-      //       requestParametersSequence['referenceName'] = element.referenceName
-      //     }
-      //     if (element.start !== '') {
-      //       requestParametersSequence['start'] = element.start
-      //     }
-      //     if (element.referenceBases !== '') {
-      //       requestParametersSequence['referenceBases'] = element.referenceBases
-      //     }
-      //     if (element.alternateBases !== '') {
-      //       requestParametersSequence['alternateBases'] = element.alternateBases
-      //     }
-      //     if (element.clinicalRelevance !== '') {
-      //       requestParametersSequence['clinicalRelevance'] =
-      //         element.clinicalRelevance
-      //     }
-
-      //     arrayRequestParameters.push(requestParametersSequence)
-      //     requestParametersSequence = {}
-      //   })
-      // }
-
-      // if (props.rangeModuleArray.length > 0) {
-      //   console.log(props.rangeModuleArray)
-      //   props.rangeModuleArray.forEach(element => {
-      //     if (element.assemblyId !== '') {
-      //       requestParametersRange['assemblyId'] = element.assemblyId
-      //     }
-      //     if (element.referenceName !== '') {
-      //       requestParametersRange['referenceName'] = element.referenceName
-      //     }
-      //     if (element.start !== '') {
-      //       requestParametersRange['start'] = element.start
-      //     }
-      //     if (element.end !== '') {
-      //       requestParametersRange['end'] = element.end
-      //     }
-      //     if (element.variantType !== '') {
-      //       requestParametersRange['variantType'] = element.variantType
-      //     }
-      //     if (element.alternateBases !== '') {
-      //       requestParametersRange['alternateBases'] = element.alternateBases
-      //     }
-
-      //     if (element.referenceBases !== '') {
-      //       requestParametersRange['referenceBases'] = element.referenceBases
-      //     }
-
-      //     if (element.aminoacid !== '') {
-      //       requestParametersRange['aminoacidChange'] = element.aminoacid
-      //     }
-      //     if (element.variantMinLength !== '') {
-      //       requestParametersRange['variantMinLength'] =
-      //         element.variantMinLength
-      //     }
-      //     if (element.variantMaxLength !== '') {
-      //       requestParametersRange['variantMaxLength'] =
-      //         element.variantMaxLength
-      //     }
-      //     if (element.clinicalRelevance !== '') {
-      //       requestParametersSequence['clinicalRelevance'] =
-      //         element.clinicalRelevance
-      //     }
-      //     arrayRequestParameters.push(requestParametersRange)
-      //     requestParametersRange = {}
-      //   })
-      // }
-
-      // if (props.geneModuleArray.length > 0) {
-      //   props.geneModuleArray.forEach(element => {
-      //     console.log(element)
-      //     if (element.geneID !== '') {
-      //       requestParametersGene['geneId'] = element.geneID
-      //     }
-      //     if (element.assemblyId !== '') {
-      //       requestParametersGene['assemblyId'] = element.assemblyId
-      //     }
-      //     if (element.variantType !== '') {
-      //       requestParametersGene['variantType'] = element.variantType
-      //     }
-      //     if (element.variantMinLength !== '') {
-      //       requestParametersGene['variantMinLength'] = element.variantMinLength
-      //     }
-      //     if (element.variantMaxLength !== '') {
-      //       requestParametersGene['variantMaxLength'] = element.variantMaxLength
-      //     }
-      //     if (element.aminoacid !== '') {
-      //       requestParametersGene['aminoacidChange'] = element.aminoacid
-      //     }
-      //     if (element.clinicalRelevance !== '') {
-      //       requestParametersSequence['clinicalRelevance'] =
-      //         element.clinicalRelevance
-      //     }
-      //     arrayRequestParameters.push(requestParametersGene)
-      //     requestParametersGene = {}
-      //   })
-      // }
-
       var requestParameters = {}
 
       if (props.query !== null) {
@@ -266,24 +159,41 @@ function IndividualsResults (props) {
               arrayRequestParameters.push(requestParameters)
             }
           } else if (props.query.includes(':') && props.query.includes('>')) {
-            let reqParameters = props.query.split(':')
+            // Split the query by '&' to separate different parts
+            let parts = props.query.split('&')
 
-            let position = []
-            if (props.query.includes('-')) {
-              position = reqParameters[0].split('-')
-            } else {
-              position = reqParameters[0]
-            }
+            // Initialize an empty object for request parameters
+            let requestParameters = {}
 
-            let bases = reqParameters[2].split('>')
+            // Iterate over each part of the split query
+            parts.forEach(part => {
+              if (part.includes(':') && part.includes('>')) {
+                let reqParameters = part.split(':')
+                let position = []
 
-            requestParameters['start'] = position[0]
-            if (position[1]) {
-              requestParameters['end'] = position[1]
-            }
-            requestParameters['variantType'] = reqParameters[1]
-            requestParameters['alternateBases'] = bases[1]
-            requestParameters['referenceBases'] = bases[0]
+                if (part.includes('-')) {
+                  position = reqParameters[0].split('-')
+                } else {
+                  position = [reqParameters[0]]
+                }
+
+                let bases = reqParameters[2].split('>')
+
+                requestParameters['start'] = position[0]
+                if (position[1]) {
+                  requestParameters['end'] = position[1]
+                }
+                requestParameters['variantType'] = reqParameters[1]
+                requestParameters['alternateBases'] = bases[1]
+                requestParameters['referenceBases'] = bases[0]
+              } else if (part.includes(':')) {
+                // Split part by ':' to get key-value pairs for additional parameters
+                let additionalParam = part.split(':')
+                requestParameters[additionalParam[0]] = additionalParam[1]
+              }
+            })
+
+            // Add the processed requestParameters object to the array
             arrayRequestParameters.push(requestParameters)
           } else {
             queryStringTerm.push(props.query.trim())
@@ -316,12 +226,19 @@ function IndividualsResults (props) {
                 queryArray[index].push('!')
               } else {
                 queryArray[index] = term.split('%')
-                queryArray[index].push('%')
+
+                queryArray[index][1] = '%' + queryArray[index][1] + '%'
+             
+                queryArray[index].push('=')
               }
 
               let alphanumericFilter = {}
               props.filteringTerms.forEach(element => {
-                if (element.label) {
+                if (
+                  element.label &&
+                  element.id !== 'NCIT:C46113' &&
+                  element.id !== 'NCIT:C46112'
+                ) {
                   if (
                     queryArray[index][1].toLowerCase() ===
                     element.label.toLowerCase()
@@ -358,6 +275,7 @@ function IndividualsResults (props) {
                         scope: ['run']
                       }
                     } else {
+                 
                       alphanumericFilter = {
                         id: element.id,
                         scope: element.scopes
@@ -465,7 +383,14 @@ function IndividualsResults (props) {
           datasetList.push(res2.data.response.collections)
         }
 
-        if (updatedArrayFilterVar.length === 0) {
+        if (updatedArrayFilterVar.length === 0 && props.isNetwork === true) {
+          res.data.responses.forEach(element => {
+            beaconsList.push(element)
+          })
+        } else if (
+          updatedArrayFilterVar.length === 0 &&
+          props.isNetwork === false
+        ) {
           beaconsList.push(res.data.response)
         }
 
@@ -473,7 +398,6 @@ function IndividualsResults (props) {
 
         if (props.query === null || props.query === '') {
           // show all individuals
-
           let jsonData1 = {}
 
           if (arrayRequestParameters.length > 0) {
@@ -528,6 +452,7 @@ function IndividualsResults (props) {
               configData.API_URL + '/individuals',
               jsonData1
             )
+           
           } else {
             const headers = { Authorization: `Bearer ${token}` }
             console.log('querying with token')
@@ -723,15 +648,17 @@ function IndividualsResults (props) {
           variablePause = false
 
           if (updatedArrayFilterVar.length > 0) {
+     
             updatedArrayFilterVar.forEach((element, index) => {
               if (Array.isArray(element.scope) && !selectedScopes[index]) {
                 setPause(true)
                 variablePause = true
 
-                let newOptionsScope = [...optionsScope]
+                let newOptionsScope = []
 
                 element.scope.forEach(elementScope => {
                   newOptionsScope[index] = newOptionsScope[index] || []
+
                   newOptionsScope[index].push(elementScope)
                 })
 
@@ -740,7 +667,7 @@ function IndividualsResults (props) {
                 let newOntologyMultipleScope = [...ontologyMultipleScope]
                 props.filteringTerms.forEach(element2 => {
                   if (element2.label && element2.id === element.id) {
-                    newOntologyMultipleScope.push(element2.label)
+                    newOntologyMultipleScope[index] = element2.label
                   }
                 })
                 setOntologyMultipleScope(newOntologyMultipleScope)
@@ -756,6 +683,7 @@ function IndividualsResults (props) {
           } else {
             let newOptionsScope = [...optionsScope]
             arrayFilter.forEach((element, index) => {
+           
               if (
                 Array.isArray(element.scope) &&
                 element.scope.length > 1 &&
@@ -763,23 +691,26 @@ function IndividualsResults (props) {
               ) {
                 setPause(true)
                 variablePause = true
-
+          
                 element.scope.forEach(elementScope => {
                   newOptionsScope[index] = newOptionsScope[index] || []
                   newOptionsScope[index].push(elementScope)
                 })
                 setOptionsScope(newOptionsScope)
-
-                let newOntologyMultipleScope = [...ontologyMultipleScope]
+                let newOntologyMultipleScope = []
+                if (index !== 0) {
+               
+                  newOntologyMultipleScope = [...ontologyMultipleScope]
+                }
 
                 props.filteringTerms.forEach(element2 => {
                   if (element2.label && element2.id === element.id) {
                     newOntologyMultipleScope[index] =
                       newOntologyMultipleScope[index] || []
-                    newOntologyMultipleScope[index].push(element2.label)
+                    newOntologyMultipleScope[index] = element2.label
                   }
                 })
-
+                
                 setOntologyMultipleScope(newOntologyMultipleScope)
               } else if (
                 Array.isArray(element.scope) &&
@@ -787,8 +718,10 @@ function IndividualsResults (props) {
                 selectedScopes[index]
               ) {
                 element.scope = selectedScopes[index]
+          
               } else {
                 element.scope = element.scope[0]
+             
               }
             })
           }
@@ -856,11 +789,13 @@ function IndividualsResults (props) {
               token = auth.userData.access_token
             }
             if (token === null) {
+              
               console.log('Querying without token')
               res = await axios.post(
                 configData.API_URL + '/individuals',
                 jsonData2
               )
+
             } else {
               console.log('Querying WITH token')
 
@@ -871,6 +806,7 @@ function IndividualsResults (props) {
                 jsonData2,
                 { headers: headers }
               )
+           
             }
 
             setTimeOut(true)
@@ -1023,6 +959,7 @@ function IndividualsResults (props) {
       handleTypeResults3()
     }
   }, [])
+
   return (
     <div>
       {timeOut === false && (
