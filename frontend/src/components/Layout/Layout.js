@@ -141,10 +141,9 @@ function Layout (props) {
   }
   const handleInclude = e => {
     if (ID !== '' && valueFree !== '' && operator !== '') {
- 
       if (query !== null && query !== '') {
         setQuery(query + ',' + `${ID}${operator}${valueFree}`)
-      } 
+      }
       if (query === null || query == '') {
         setQuery(`${ID}${operator}${valueFree}`)
       }
@@ -153,111 +152,111 @@ function Layout (props) {
 
   const handleOption = (e, array, optionIndex, tab) => {
     const updatedInputValues =
-      tab === 'tab1' ? { ...inputValuesTab1 } : { ...inputValuesTab2 };
+      tab === 'tab1' ? { ...inputValuesTab1 } : { ...inputValuesTab2 }
     const updatedCheckedOptions =
-      tab === 'tab1' ? { ...checkedOptionsTab1 } : { ...checkedOptionsTab2 };
-    const filterIndex = e.target.getAttribute('data-filter-index');
-    const elementLabel = e.target.getAttribute('data-element-label'); // Get the element label from the checkbox
-    const optionId = `option-${filterIndex}-${optionIndex}-${elementLabel}`; // Construct the correct key
-  
-    updatedCheckedOptions[optionId] = e.target.checked; // Update the checked state
-  
+      tab === 'tab1' ? { ...checkedOptionsTab1 } : { ...checkedOptionsTab2 }
+    const filterIndex = e.target.getAttribute('data-filter-index')
+    const elementLabel = e.target.getAttribute('data-element-label') // Get the element label from the checkbox
+    const optionId = `option-${filterIndex}-${optionIndex}-${elementLabel}` // Construct the correct key
+
+    updatedCheckedOptions[optionId] = e.target.checked // Update the checked state
+
     if (tab === 'tab1') {
-      setCheckedOptionsTab1(updatedCheckedOptions);
+      setCheckedOptionsTab1(updatedCheckedOptions)
     } else {
-      setCheckedOptionsTab2(updatedCheckedOptions);
+      setCheckedOptionsTab2(updatedCheckedOptions)
     }
-  
-    let start, end, variantType, referenceBases, alternateBases,assemblyId;
-    const title = [];
-    const value = [];
-  
+
+    let start, end, variantType, referenceBases, alternateBases, assemblyId
+    const title = []
+    const value = []
+
     array.forEach(element => {
-      title.push(element.schemaField);
+      title.push(element.schemaField)
       const inputValue =
         updatedInputValues[
           `${optionIndex}-${element.label}-${element.schemaField}`
-        ];
-      value.push(inputValue || element.value);
-  
+        ]
+      value.push(inputValue || element.value)
+
       switch (element.schemaField) {
         case 'start':
-          start = inputValue || element.value;
-          break;
+          start = inputValue || element.value
+          break
         case 'end':
-          end = inputValue || element.value;
-          break;
+          end = inputValue || element.value
+          break
         case 'variantType':
-          variantType = inputValue || element.value;
-          break;
+          variantType = inputValue || element.value
+          break
         case 'referenceBases':
-          referenceBases = inputValue || element.value;
-          break;
+          referenceBases = inputValue || element.value
+          break
         case 'alternateBases':
-          alternateBases = inputValue || element.value;
-          break;
+          alternateBases = inputValue || element.value
+          break
         case 'assemblyId':
-          assemblyId = inputValue || element.value;
+          assemblyId = inputValue || element.value
+          break
         default:
-          break;
+          break
       }
-    });
-  
-const specialQuery =
-  start && end && variantType && referenceBases && alternateBases
-    ? `${start}-${end}:${variantType}:${referenceBases}>${alternateBases}${assemblyId ? `&assemblyId:${assemblyId}` : ''}`
-    : null;
-  
+    })
+
+    const specialQuery =
+      start && end && variantType && referenceBases && alternateBases
+        ? `${start}-${end}:${variantType}:${referenceBases}>${alternateBases}${
+            assemblyId ? `&assemblyId:${assemblyId}` : ''
+          }`
+        : null
+
     const arrayQuery = title
       .map((titleQuery, indexQuery) =>
         titleQuery === 'geneId' || titleQuery === 'aminoacidChange'
           ? `${titleQuery}:${value[indexQuery]}`
           : `${titleQuery}=${value[indexQuery]}`
       )
-      .join('&');
-  
-    const addQuery = specialQuery || arrayQuery;
-  
+      .join('&')
+
+    const addQuery = specialQuery || arrayQuery
+
     if (e.target.checked) {
       setQuery(prevQuery => {
-        if (!prevQuery) return addQuery;
-        return `${prevQuery},${addQuery}`;
-      });
+        if (!prevQuery) return addQuery
+        return `${prevQuery},${addQuery}`
+      })
     } else {
       setQuery(prevQuery => {
         const updatedQueries = prevQuery.split(',').filter(query => {
           if (specialQuery) {
-            // Remove only the exact specialQuery
-            return query !== specialQuery;
+            return query !== specialQuery
           } else {
-            // Remove only the exact arrayQuery components
             return !title.some((titleQuery, indexQuery) => {
-              const valueQuery = `${titleQuery}=${value[indexQuery]}`;
-              const colonQuery = `${titleQuery}:${value[indexQuery]}`;
+              const valueQuery = `${titleQuery}=${value[indexQuery]}`
+              const colonQuery = `${titleQuery}:${value[indexQuery]}`
               const mixQuery = `${titleQuery}:${value[indexQuery]}&${titleQuery}:${value[indexQuery]}`
-              return query === valueQuery || query === colonQuery|| query === mixQuery
-            });
+              const combinedQuery = `${titleQuery}:${value[indexQuery]}&${
+                title[indexQuery + 1]
+              }:${value[indexQuery + 1]}`
+              return (
+                query === valueQuery ||
+                query === colonQuery ||
+                query === mixQuery ||
+                query === combinedQuery
+              )
+            })
           }
-        });
-        return updatedQueries.join(',');
-      });
-      const queriesToRemove = title.map((titleQuery, indexQuery) => {
-        if (titleQuery === 'geneId' || titleQuery === 'aminoacidChange') {
-          return `${titleQuery}:${value[indexQuery]}`;
-        } else {
-          return `${titleQuery}=${value[indexQuery]}`;
-        }
-      });
-      
+        })
+        return updatedQueries.join(',')
+      })
     }
-  
+
     if (tab === 'tab1') {
-      setInputValuesTab1(updatedInputValues);
+      setInputValuesTab1(updatedInputValues)
     } else {
-      setInputValuesTab2(updatedInputValues);
+      setInputValuesTab2(updatedInputValues)
     }
-  };
-  
+  }
 
   const handleOptionAlphanum = (schemaField, value) => {
     setShowAlphanum(true)
@@ -287,7 +286,7 @@ const specialQuery =
     setQuery('')
     setShowAlphanum(false)
     // Clear the state for input values and checked options
- 
+
     setCheckedOptionsTab1({})
     setCheckedOptionsTab2({})
 
@@ -460,7 +459,7 @@ const specialQuery =
         <div className='container2'>
           <div className='logosVersionContainer'>
             <div className='logos'>
-            <a
+              <a
                 href='https://ega-archive.org/'
                 className='logoInstitution'
                 target='_blank'
@@ -520,9 +519,13 @@ const specialQuery =
                   src='./magnifier.png'
                   alt='searchIcon'
                 ></img>
-              <span className='buttonText'>Search</span>
+                <span className='buttonText'>Search</span>
               </button>
-              <button className='clearButton' onClick={handleReset} type='button'>
+              <button
+                className='clearButton'
+                onClick={handleReset}
+                type='button'
+              >
                 <img
                   className='clearIcon'
                   src='./eraser.png'
