@@ -30,6 +30,9 @@ org_description = ('The GDI and Federated EGA (FEGA) Spanish node is co-managed 
                    'is a service for permanent archiving and sharing '
                    'of all types of personally identifiable genetic '
                    'and phenotypic data resulting from biomedical research projects.')
+org_adress = ('C/ Dr. Aiguader, 88'
+              'PRBB Building'
+              '08003 Barcelona, Spain')
 org_welcome_url = ''
 org_contact_url = 'mailto:beacon.ega@crg.eu'
 org_logo_url = 'https://raw.githubusercontent.com/EGA-archive/beacon2-ri-api/beacon-spain/deploy/EGA_submarcas_Spain.png'
