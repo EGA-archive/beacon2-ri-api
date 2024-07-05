@@ -6,6 +6,7 @@ from beacon.db.utils import query_id, query_ids, get_count, get_documents, join_
 from beacon.request.model import AlphanumericFilter, Operator, RequestParams
 from beacon.db import client
 import yaml
+import time
 from aiohttp import web
 
 
@@ -238,6 +239,7 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
 
 
 def get_variants(entry_id: Optional[str], qparams: RequestParams, dataset: str):
+    LOG.debug(time.time())
     collection = 'g_variants'
     mongo_collection = client.beacon.genomicVariations
     parameters_as_filters=False
@@ -267,7 +269,8 @@ def get_variants(entry_id: Optional[str], qparams: RequestParams, dataset: str):
         datasets_dict = yaml.safe_load(datasets_file)
     #LOG.debug(query)
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    LOG.debug(time.time())
+    return schema, count, dataset_count, docs, dataset
 
 
 def get_variant_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: str):

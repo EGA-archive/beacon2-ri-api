@@ -8,6 +8,7 @@ from beacon.db.schemas import DefaultSchemas
 from beacon.db.utils import query_id, get_count, get_documents
 from beacon.request.model import RequestParams
 from beacon.db.g_variants import apply_request_parameters
+import time
 import yaml
 from aiohttp import web
 
@@ -18,6 +19,7 @@ def include_resultset_responses(query: Dict[str, List[dict]], qparams: RequestPa
     return query
 
 def get_individuals(entry_id: Optional[str], qparams: RequestParams, dataset: str):
+    LOG.debug(time.time())
     collection = 'individuals'
     mongo_collection = client.beacon.individuals
     parameters_as_filters=False
@@ -45,7 +47,7 @@ def get_individuals(entry_id: Optional[str], qparams: RequestParams, dataset: st
         limit = 100
     idq="id"
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    return schema, count, dataset_count, docs, dataset
 
 
 def get_individual_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: str):
