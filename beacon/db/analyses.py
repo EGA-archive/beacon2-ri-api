@@ -45,7 +45,7 @@ def get_analyses(entry_id: Optional[str], qparams: RequestParams, dataset: str):
         limit = 100
     idq="biosampleId"
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    return schema, count, dataset_count, docs, dataset
 
 def get_analysis_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'analyses'
@@ -63,7 +63,7 @@ def get_analysis_with_id(entry_id: Optional[str], qparams: RequestParams, datase
     if limit > 100 or limit == 0:
         limit = 100
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    return schema, count, dataset_count, docs, dataset
 
 def get_variants_of_analysis(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'analyses'
@@ -86,7 +86,7 @@ def get_variants_of_analysis(entry_id: Optional[str], qparams: RequestParams, da
         limit = 100
     idq="caseLevelData.biosampleId"
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    return schema, count, dataset_count, docs, dataset
 
 def get_filtering_terms_of_analyse(entry_id: Optional[str], qparams: RequestParams):
     query = {'scopes': 'analysis'}

@@ -8,6 +8,7 @@ from .. import conf
 import yaml
 import jwt
 import requests
+import concurrent.futures
 from concurrent.futures import ThreadPoolExecutor
 from beacon.request import ontologies
 from beacon.request.model import Granularity, RequestParams
@@ -59,8 +60,6 @@ def collection_handler(db_fn, request=None):
                     [r for r in records] if records else []
                 )
                 LOG.debug(entity_schema)
-                LOG.debug(response_converted)
-                LOG.debug(type(response_converted))
                 response = build_beacon_collection_response(
                     response_converted, count, qparams, lambda x, y: x, entity_schema
                 )
@@ -221,11 +220,12 @@ def generic_handler(db_fn, request=None):
                 #LOG.debug(response_datasets)
                 new_count=0
                 loop = asyncio.get_running_loop()
-                for dataset in response_datasets:
-                    with ThreadPoolExecutor() as pool:
-                        entity_schema, count, dataset_count, records = await loop.run_in_executor(pool, db_fn, entry_id, qparams, dataset)
-                    #LOG.debug(dataset)
-                    
+                with ThreadPoolExecutor() as pool:
+                    done, pending = await asyncio.wait(fs=[loop.run_in_executor(pool, db_fn, entry_id, qparams, dataset) for dataset in response_datasets],
+                    return_when=asyncio.ALL_COMPLETED
+                    )
+                for task in done:
+                    entity_schema, count, dataset_count, records, dataset = task.result()
                     if dataset_count != -1:
                         new_count+=dataset_count
                         datasets_docs[dataset]=records
