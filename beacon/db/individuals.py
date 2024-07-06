@@ -67,7 +67,7 @@ def get_individual_with_id(entry_id: Optional[str], qparams: RequestParams, data
     if limit > 100 or limit == 0:
         limit = 100
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    return schema, count, dataset_count, docs, dataset
 
 
 def get_variants_of_individual(entry_id: Optional[str], qparams: RequestParams, dataset: str):
@@ -91,7 +91,7 @@ def get_variants_of_individual(entry_id: Optional[str], qparams: RequestParams, 
         limit = 100
     idq="caseLevelData.biosampleId"
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    return schema, count, dataset_count, docs, dataset
 
 
 def get_biosamples_of_individual(entry_id: Optional[str], qparams: RequestParams, dataset: str):
@@ -111,7 +111,7 @@ def get_biosamples_of_individual(entry_id: Optional[str], qparams: RequestParams
         limit = 100
     idq="id"
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    return schema, count, dataset_count, docs, dataset
 
 
 def get_filtering_terms_of_individual(entry_id: Optional[str], qparams: RequestParams):
@@ -146,7 +146,7 @@ def get_runs_of_individual(entry_id: Optional[str], qparams: RequestParams, data
         limit = 100
     idq="biosampleId"
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    return schema, count, dataset_count, docs, dataset
 
 def get_analyses_of_individual(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'individuals'
@@ -165,4 +165,4 @@ def get_analyses_of_individual(entry_id: Optional[str], qparams: RequestParams, 
         limit = 100
     idq="biosampleId"
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    return schema, count, dataset_count, docs, dataset

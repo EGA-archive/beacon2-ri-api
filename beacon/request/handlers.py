@@ -219,25 +219,16 @@ def generic_handler(db_fn, request=None):
             #LOG.debug(response_datasets)
             new_count=0
             loop = asyncio.get_running_loop()
-            futures=[]
             with ThreadPoolExecutor() as pool:
-                for dataset in response_datasets:
-                    #entity_schema, count, dataset_count, records = await loop.run_in_executor(pool, db_fn, entry_id, qparams, dataset)
-                    future_to_url = {pool.submit(db_fn, entry_id, qparams, dataset)}
-                    futures.append(future_to_url)
-                for fut in futures:
-                    for future in concurrent.futures.as_completed(fut):
-                        url = future
-                        try:
-                            entity_schema, count, dataset_count, records, dataset = future.result()
-                        except Exception as exc:
-                            LOG.debug('%r generated an exception: %s' % (url, exc))
-                #LOG.debug(dataset)
-                
-                        if dataset_count != -1:
-                            new_count+=dataset_count
-                            datasets_docs[dataset]=records
-                            datasets_count[dataset]=dataset_count
+                done, pending = await asyncio.wait(fs=[loop.run_in_executor(pool, db_fn, entry_id, qparams, dataset) for dataset in response_datasets],
+                return_when=asyncio.ALL_COMPLETED
+                )
+            for task in done:
+                entity_schema, count, dataset_count, records, dataset = task.result()
+                if dataset_count != -1:
+                    new_count+=dataset_count
+                    datasets_docs[dataset]=records
+                    datasets_count[dataset]=dataset_count
             
             if include != 'NONE':
                 count=new_count
