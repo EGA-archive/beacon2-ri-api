@@ -1,0 +1,311 @@
+{
+    "filters": [
+      {
+        "title": "Diseases",
+        "options": [
+          [
+            {
+              "label": "Colon adenocarcinoma",
+              "value": "Colon adenocarcinoma",
+              "ontology": "NCIT:C4349",
+              "type": "ontology",
+              "schemaField": "diseases.diseaseCode"
+            }
+          ],
+          [
+            {
+              "label": "Mucinous Adenocarcinoma of the Colon and Rectum",
+              "value": "Mucinous Adenocarcinoma of the Colon and Rectum",
+              "ontology": "NCIT:C7966",
+              "type": "ontology",
+              "schemaField": "diseases.diseaseCode"
+            }
+          ],
+          [
+            {
+              "label": "Rectal Adenocarcinoma",
+              "value": "Rectal Adenocarcinoma",
+              "ontology": "NCIT:C9383",
+              "type": "ontology",
+              "schemaField": "diseases.diseaseCode"
+            }
+          ]
+        ]
+      },
+      {
+        "title": "Demographics",
+        "options": [
+          [
+            {
+              "label": "Female",
+              "value": "Female",
+              "ontology": "NCIT:C16576",
+              "type": "ontology",
+              "schemaField": "sex"
+            }
+          ],
+          [
+            {
+              "label": "Male",
+              "value": "Male",
+              "ontology": "NCIT:C20197",
+              "type": "ontology",
+              "schemaField": "sex"
+            }
+          ],
+          [
+            {
+              "label": "Age",
+              "value": "Age",
+              "ontology": "",
+              "type": "alphanumeric",
+              "schemaField": "diseases.ageOfOnset.iso8601duration"
+            }
+          ]
+        ]
+      },
+      {
+        "title": "Treatment",
+        "options": [
+          [
+            {
+              "label": "Radiation Therapy",
+              "value": "Radiation Therapy",
+              "ontology": "NCIT:C15313",
+              "type": "ontology",
+              "schemaField": "treatment"
+            }
+          ],
+          [
+            {
+              "label": "Chemotherapy",
+              "value": "Chemotherapy",
+              "ontology": "NCIT:C15632",
+              "type": "ontology",
+              "schemaField": "treatment"
+            }
+          ],
+          [
+            {
+              "label": "Fluorouracil",
+              "value": "Fluorouracil",
+              "ontology": "NCIT:C505",
+              "type": "ontology",
+              "schemaField": "treatment"
+            }
+          ],
+          [
+            {
+              "label": "Oxaliplatin",
+              "value": "Oxaliplatin",
+              "ontology": "NCIT:C1181",
+              "type": "ontology",
+              "schemaField": "treatment"
+            }
+          ],
+          [
+            {
+              "label": "Zoledronic Acid",
+              "value": "Zoledronic Acid",
+              "ontology": "NCIT:C1699",
+              "type": "ontology",
+              "schemaField": "treatment"
+            }
+          ],
+          [
+            {
+              "label": "Irinotecan",
+              "value": "Irinotecan",
+              "ontology": "NCIT:C62040",
+              "type": "ontology",
+              "schemaField": "treatment"
+            }
+          ]
+        ]
+      },
+      {
+        "title": "Histopathology",
+        "options": [
+          [
+            {
+              "label": "Ascending colon",
+              "value": "Ascending colon",
+              "ontology": "ICD10:C18.2",
+              "type": "ontology",
+              "schemaField": "histopathology"
+            }
+          ],
+          [
+            {
+              "label": "Descending colon",
+              "value": "Descending colon",
+              "ontology": "ICD10:C18.6",
+              "type": "ontology",
+              "schemaField": "histopathology"
+            }
+          ],
+          [
+            {
+              "label": "Transverse colon",
+              "value": "Transverse colon",
+              "ontology": "ICD10:C18.4",
+              "type": "ontology",
+              "schemaField": "histopathology"
+            }
+          ],
+          [
+            {
+              "label": "Hepatic flexure",
+              "value": "Hepatic flexure",
+              "ontology": "ICD10:C18.3",
+              "type": "ontology",
+              "schemaField": "histopathology"
+            }
+          ],
+          [
+            {
+              "label": "Splenic flexure",
+              "value": "Splenic flexure",
+              "ontology": "ICD10:C18.5",
+              "type": "ontology",
+              "schemaField": "histopathology"
+            }
+          ],
+          [
+            {
+              "label": "Sigmoid colon",
+              "value": "Sigmoid colon",
+              "ontology": "ICD10:C18.7",
+              "type": "ontology",
+              "schemaField": "histopathology"
+            }
+          ],
+          [
+            {
+              "label": "Caecum",
+              "value": "Caecum",
+              "ontology": "ICD10:C18.0",
+              "type": "ontology",
+              "schemaField": "histopathology"
+            }
+          ],
+          [
+            {
+              "label": "Stage I",
+              "value": "Stage I",
+              "ontology": "NCIT:C27966",
+              "type": "ontology",
+              "schemaField": "histopathology"
+            }
+          ],
+          [
+            {
+              "label": "Stage II",
+              "value": "Stage II",
+              "ontology": "NCIT:C28054",
+              "type": "ontology",
+              "schemaField": "histopathology"
+            }
+          ],
+          [
+            {
+              "label": "Stage III",
+              "value": "Stage III",
+              "ontology": "NCIT:C27970",
+              "type": "ontology",
+              "schemaField": "histopathology"
+            }
+          ],
+          [
+            {
+              "label": "Stage IV",
+              "value": "Stage IV",
+              "ontology": "NCIT:C27971",
+              "type": "ontology",
+              "schemaField": "histopathology"
+            }
+          ]
+        ]
+      },
+      {
+        "title": "Variant",
+        "type": "input",
+        "options": [
+          [
+            {
+              "subTitle": "Mutations in:",
+              "subTitle2": "gene:",
+              "label": "KRAS",
+              "value": "molecularAttributes.geneIds=KRAS",
+              "schemaField": "geneId"
+            },
+            {
+              "subTitle2": "aminoacid:",
+              "label": "p.Gly12Cys",
+              "value": "molecularAttributes.aminoacidChanges=p.Gly12Cys",
+              "schemaField": "aminoacidChange"
+            }
+          ],
+          [
+            {
+              "subTitle": "Mutations in:",
+              "subTitle2": "alternateBases:",
+              "label": "T",
+              "value": "T",
+              "schemaField": "alternateBases"
+            },
+            {
+              "subTitle2": "referenceBases:",
+              "label": "G",
+              "value": "G",
+              "schemaField": "referenceBases"
+            },
+            {
+              "subTitle2": "start:",
+              "label": "25356892",
+              "value": "25356892",
+              "schemaField": "start"
+            },
+            {
+              "subTitle2": "end:",
+              "label": "25356893",
+              "value": "25356893",
+              "schemaField": "end"
+            },
+            {
+              "subTitle2": "type:",
+              "label": "SNP",
+              "value": "SNP",
+              "schemaField": "variantType"
+            },
+            {
+              "subTitle2": "assemblyId:",
+              "label": "GRCh38",
+              "value": "GRCh38",
+              "schemaField": "assemblyId"
+            }
+
+          ],
+          [
+            {
+              "subTitle": "Mutations in:",
+              "subTitle2": "gene:",
+              "label": "TP53",
+              "value": "molecularAttributes.geneIds=TP53",
+              "schemaField": "geneId"
+            }
+          ],
+          [
+            {
+              "subTitle": "Mutations in:",
+              "subTitle2": "gene:",
+              "label": "KRAS",
+              "value": "molecularAttributes.geneIds=KRAS",
+              "schemaField": "geneId"
+            }
+          ]
+        ]
+      }
+    ]
+  }
+  

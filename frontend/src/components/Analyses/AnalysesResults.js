@@ -150,9 +150,9 @@ function AnalysesResults (props) {
           } else {
             let filter = { id: props.query }
             let labelToOntology = 0
-            console.log('holi')
+         
             let queryTermLowerCase = props.query.toLowerCase()
-            console.log(props.filteringTerms)
+       
             props.filteringTerms.data.response.filteringTerms.forEach(
               element => {
                 if (element.label) {
@@ -286,7 +286,7 @@ function AnalysesResults (props) {
           } else {
             token = auth.userData.access_token
           }
-          console.log(jsonData2)
+         
           if (token === null) {
             console.log('Querying without token')
             res = await axios.post(configData.API_URL + '/analyses', jsonData2)

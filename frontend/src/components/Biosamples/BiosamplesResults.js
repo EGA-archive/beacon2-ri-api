@@ -22,8 +22,10 @@ function BiosamplesResults (props) {
   const [numberResults, setNumberResults] = useState(0)
   const [boolean, setBoolean] = useState(false)
   const [arrayFilter, setArrayFilter] = useState([])
+  const [updatedArrayFilterVar, setUpdatedArrayFilterVar] = useState([])
   const [queryArray, setQueryArray] = useState([])
   const [beaconsList, setBeaconsList] = useState([])
+  const [datasetList, setDatasetList] = useState([])
 
   const [limit, setLimit] = useState(0)
   const [skip, setSkip] = useState(0)
@@ -40,18 +42,13 @@ function BiosamplesResults (props) {
   const [isActive3, setIsActive3] = useState(false)
 
   const [pause, setPause] = useState(false)
-  const [ontologyMultipleScope, setOntologyMultipleScope] = useState([])
-  const [triggerQueryScope, setTriggerQScope] = useState(false)
 
   const [optionsScope, setOptionsScope] = useState([])
-  const [chosenScope, setChosenScope] = useState('')
-  const [ontologyChosenScope, setOntologyScope] = useState([])
+  const [selectedScopes, setSelectedScopes] = useState({})
+  const [ontologyMultipleScope, setOntologyMultipleScope] = useState([])
+  const [triggerQueryScope, setTriggerQScope] = useState(false)
+  const [triggerSubmit, setTriggerSubmit] = useState(false)
 
-  const [triggerSubmit, settriggerSubmit] = useState(false)
-  const handleChangeScope = event => {
-    console.log(event.target.value)
-    setChosenScope(event.target.value)
-  }
   let queryStringTerm = []
 
   const handleTypeResults1 = () => {
@@ -81,12 +78,30 @@ function BiosamplesResults (props) {
     setIsActive2(false)
   }
 
-  const submitScopeChosen = e => {
-    console.log(chosenScope)
-    arrayFilter.length = 0
-    beaconsList.length = 0
-    console.log(arrayFilter)
+  const handleChangeScope = (event, idx) => {
+    const value = event.target.value
+    setSelectedScopes(prevState => ({
+      ...prevState,
+      [idx]: value
+    }))
+  }
+
+  const submitScopeChosen = () => {
+    // Implement the logic to update element.scope based on selectedScopes
+    let updatedArrayFilter = [...arrayFilter]
+    updatedArrayFilter.forEach((element, index) => {
+      if (selectedScopes[index]) {
+        element.scope = [selectedScopes[index]]
+      }
+    })
+
+    setArrayFilter(updatedArrayFilter)
+
+    setUpdatedArrayFilterVar(updatedArrayFilter)
+    setPause(false)
     setTriggerQScope(!triggerQueryScope)
+    setOptionsScope([])
+    setOntologyMultipleScope([])
   }
 
   const auth = useAuth()
@@ -236,23 +251,23 @@ function BiosamplesResults (props) {
             let reqParameters = []
             if (props.query.includes('&')) {
               arrayParameters = props.query.split('&')
-              console.log(arrayParameters)
+
               arrayParameters.forEach(element => {
                 reqParameters.length = 0
                 reqParameters = element.split(':')
-                console.log(reqParameters)
+
                 requestParameters[reqParameters[0]] = reqParameters[1]
               })
               arrayRequestParameters.push(requestParameters)
             } else {
               let reqParameters = props.query.split(':')
-              console.log(reqParameters)
+
               requestParameters[reqParameters[0]] = reqParameters[1]
               arrayRequestParameters.push(requestParameters)
             }
           } else if (props.query.includes(':') && props.query.includes('>')) {
             let reqParameters = props.query.split(':')
-            console.log(reqParameters)
+
             let position = []
             if (props.query.includes('-')) {
               position = reqParameters[0].split('-')
@@ -260,9 +275,8 @@ function BiosamplesResults (props) {
               position = reqParameters[0]
             }
 
-            console.log(position)
             let bases = reqParameters[2].split('>')
-            console.log(bases)
+
             requestParameters['start'] = position[0]
             if (position[1]) {
               requestParameters['end'] = position[1]
@@ -276,221 +290,216 @@ function BiosamplesResults (props) {
           }
         }
 
-        console.log(queryStringTerm)
         let filter = {}
+        if (updatedArrayFilterVar.length === 0) {
+          queryStringTerm.forEach((term, index) => {
+            requestParameters = {}
+            if (
+              (term.includes('=') ||
+                term.includes('>') ||
+                term.includes('<') ||
+                term.includes('!') ||
+                term.includes('%')) &&
+              !term.includes(':')
+            ) {
+              if (term.includes('=')) {
+                queryArray[index] = term.split('=')
+                queryArray[index].push('=')
+              } else if (term.includes('>')) {
+                queryArray[index] = term.split('>')
+                queryArray[index].push('>')
+              } else if (term.includes('<')) {
+                queryArray[index] = term.split('<')
+                queryArray[index].push('<')
+              } else if (term.includes('!')) {
+                queryArray[index] = term.split('!')
+                queryArray[index].push('!')
+              } else {
+                queryArray[index] = term.split('%')
 
-        queryStringTerm.forEach((term, index) => {
-          console.log(term)
-          requestParameters = {}
-          if (
-            (term.includes('=') ||
-              term.includes('>') ||
-              term.includes('<') ||
-              term.includes('!') ||
-              term.includes('%')) &&
-            !term.includes(':')
-          ) {
-            if (term.includes('=')) {
-              queryArray[index] = term.split('=')
-              queryArray[index].push('=')
-              console.log(queryArray)
-            } else if (term.includes('>')) {
-              queryArray[index] = term.split('>')
-              queryArray[index].push('>')
-            } else if (term.includes('<')) {
-              queryArray[index] = term.split('<')
-              queryArray[index].push('<')
-            } else if (term.includes('!')) {
-              queryArray[index] = term.split('!')
-              queryArray[index].push('!')
+                queryArray[index][1] = '%' + queryArray[index][1] + '%'
+               
+                queryArray[index].push('=')
+              }
+
+              let alphanumericFilter = {}
+              props.filteringTerms.forEach(element => {
+                if (element.label) {
+                  if (
+                    queryArray[index][1].toLowerCase() ===
+                    element.label.toLowerCase()
+                  ) {
+                    if (queryArray[index][0].toLowerCase() === 'individual') {
+                      alphanumericFilter = {
+                        id: element.id,
+                        scope: ['individuals']
+                      }
+                    } else if (
+                      queryArray[index][0].toLowerCase() === 'genomicvariation'
+                    ) {
+                      alphanumericFilter = {
+                        id: element.id,
+                        scope: ['genomicVariation']
+                      }
+                    } else if (
+                      queryArray[index][0].toLowerCase() === 'biosample'
+                    ) {
+                      alphanumericFilter = {
+                        id: element.id,
+                        scope: ['biosample']
+                      }
+                    } else if (
+                      queryArray[index][0].toLowerCase() === 'cohort'
+                    ) {
+                      alphanumericFilter = {
+                        id: element.id,
+                        scope: ['cohort']
+                      }
+                    } else if (queryArray[index][0].toLowerCase() === 'run') {
+                      alphanumericFilter = {
+                        id: element.id,
+                        scope: ['run']
+                      }
+                    } else {
+                      alphanumericFilter = {
+                        id: element.id,
+                        scope: element.scopes
+                      }
+                    }
+                  }
+                }
+              })
+
+              if (Object.keys(alphanumericFilter).length === 0) {
+                props.filteringTerms.forEach(element => {
+                  if (
+                    queryArray[index][0].toLowerCase() ===
+                    element.id.toLowerCase()
+                  ) {
+                    queryArray[index][3] = element.scopes
+                  }
+                })
+
+                if (queryArray[index][3] === undefined) {
+                  queryArray[index][3] = [collection]
+                }
+
+                alphanumericFilter = {
+                  id: queryArray[index][0],
+                  operator: queryArray[index][2],
+                  value: queryArray[index][1],
+                  scope: queryArray[index][3]
+                }
+              }
+
+              arrayFilter.push(alphanumericFilter)
+            } else if (term.includes(':') && !term.includes('>')) {
+              let arrayParameters = []
+              let reqParameters = []
+              if (term.includes('&')) {
+                arrayParameters = term.split('&')
+
+                arrayParameters.forEach(element => {
+                  reqParameters.length = 0
+                  reqParameters = element.split(':')
+
+                  requestParameters[reqParameters[0]] = reqParameters[1]
+                })
+                arrayRequestParameters.push(requestParameters)
+              } else {
+                let reqParameters = term.split(':')
+
+                requestParameters[reqParameters[0]] = reqParameters[1]
+                arrayRequestParameters.push(requestParameters)
+              }
+            } else if (term.includes(':') && term.includes('>')) {
+              let reqParameters = term.split(':')
+
+              let position = []
+              if (term.includes('-')) {
+                position = reqParameters[0].split('-')
+              } else {
+                position = reqParameters[0]
+              }
+
+              let bases = reqParameters[2].split('>')
+
+              requestParameters['start'] = position[0]
+              if (position[1]) {
+                requestParameters['end'] = position[1]
+              }
+              requestParameters['variantType'] = reqParameters[1]
+              requestParameters['alternateBases'] = bases[1]
+              requestParameters['referenceBases'] = bases[0]
+              arrayRequestParameters.push(requestParameters)
             } else {
-              queryArray[index] = term.split('%')
-              queryArray[index].push('%')
-            }
-            console.log(queryArray[index][1].toLowerCase())
-            let alphanumericFilter = {}
-            props.filteringTerms.forEach(element => {
-              if (element.label) {
-                if (
-                  queryArray[index][1].toLowerCase() ===
-                  element.label.toLowerCase()
-                ) {
-                  if (queryArray[index][0].toLowerCase() === 'individual') {
-                    alphanumericFilter = {
-                      id: element.id,
-                      scope: ['individual']
-                    }
-                  } else if (
-                    queryArray[index][0].toLowerCase() === 'genomicvariation'
+              props.filteringTerms.forEach(element => {
+                if (element.label) {
+                  if (
+                    term.toLowerCase() === element.label.toLowerCase() ||
+                    term.toLowerCase() === element.id.toLowerCase()
                   ) {
-                    alphanumericFilter = {
+                    filter = {
                       id: element.id,
-                      scope: ['genomicVariation']
+                      scope: element.scopes
                     }
-                  } else if (
-                    queryArray[index][0].toLowerCase() === 'biosample'
-                  ) {
-                    alphanumericFilter = {
-                      id: element.id,
-                      scope: ['biosample']
-                    }
-                  } else if (queryArray[index][0].toLowerCase() === 'cohort') {
-                    alphanumericFilter = {
-                      id: element.id,
-                      scope: ['cohort']
-                    }
-                  } else if (queryArray[index][0].toLowerCase() === 'run') {
-                    alphanumericFilter = {
-                      id: element.id,
-                      scope: ['run']
-                    }
-                  } else {
-                    alphanumericFilter = {
+                  }
+                } else {
+                  if (element.id.toLowerCase() === term.toLowerCase()) {
+                    filter = {
                       id: element.id,
                       scope: element.scopes
                     }
                   }
                 }
-              }
-            })
-
-            if (Object.keys(alphanumericFilter).length === 0) {
-              console.log(queryArray[index][0])
-              props.filteringTerms.forEach(element => {
-                if (
-                  queryArray[index][0].toLowerCase() ===
-                  element.id.toLowerCase()
-                ) {
-                  queryArray[index][3] = element.scopes
-                }
               })
 
-              if (queryArray[index][3] === undefined) {
-                queryArray[index][3] = [collection]
-              }
-              console.log(queryArray)
-              alphanumericFilter = {
-                id: queryArray[index][0],
-                operator: queryArray[index][2],
-                value: queryArray[index][1],
-                scope: queryArray[index][3]
-              }
-              console.log(alphanumericFilter)
+              arrayFilter.push(filter)
             }
-
-            arrayFilter.push(alphanumericFilter)
-          } else if (term.includes(':') && !term.includes('>')) {
-            let arrayParameters = []
-            let reqParameters = []
-            if (term.includes('&')) {
-              arrayParameters = term.split('&')
-              console.log(arrayParameters)
-              arrayParameters.forEach(element => {
-                reqParameters.length = 0
-                reqParameters = element.split(':')
-                console.log(reqParameters)
-                requestParameters[reqParameters[0]] = reqParameters[1]
-              })
-              arrayRequestParameters.push(requestParameters)
-            } else {
-              let reqParameters = term.split(':')
-              console.log(reqParameters)
-              requestParameters[reqParameters[0]] = reqParameters[1]
-              arrayRequestParameters.push(requestParameters)
-            }
-          } else if (term.includes(':') && term.includes('>')) {
-            let reqParameters = term.split(':')
-            console.log(reqParameters)
-            let position = []
-            if (term.includes('-')) {
-              position = reqParameters[0].split('-')
-            } else {
-              position = reqParameters[0]
-            }
-
-            let bases = reqParameters[2].split('>')
-            console.log(bases)
-            requestParameters['start'] = position[0]
-            if (position[1]) {
-              requestParameters['end'] = position[1]
-            }
-            requestParameters['variantType'] = reqParameters[1]
-            requestParameters['alternateBases'] = bases[1]
-            requestParameters['referenceBases'] = bases[0]
-            arrayRequestParameters.push(requestParameters)
-          } else {
-            props.filteringTerms.forEach(element => {
-              if (element.label) {
-                if (
-                  term.toLowerCase() === element.label.toLowerCase() ||
-                  term.toLowerCase() === element.id.toLowerCase()
-                ) {
-                  filter = {
-                    id: element.id,
-                    scope: element.scopes
-                  }
-                }
-              } else {
-                if (element.id.toLowerCase() === term.toLowerCase()) {
-                  filter = {
-                    id: element.id,
-                    scope: element.scopes
-                  }
-                }
-              }
-            })
-
-            arrayFilter.push(filter)
-          }
-        })
+          })
+        }
       }
-
-      console.log(arrayFilter)
 
       try {
         let res = await axios.get(configData.API_URL + '/info')
-        beaconsList.push(res.data.response)
+        let res2 = await axios.get(configData.API_URL + '/datasets')
 
-        console.log(ontologyMultipleScope)
-        if (props.query === null) {
+        if (res2) {
+          datasetList.push(res2.data.response.collections)
+        }
+
+        if (updatedArrayFilterVar.length === 0 && props.isNetwork === true) {
+          res.data.responses.forEach(element => {
+            beaconsList.push(element)
+          })
+        } else if (updatedArrayFilterVar.length === 0 && props.isNetwork === false){
+          beaconsList.push(res.data.response)
+        }
+
+        let variablePause = false
+
+        if (props.query === null || props.query === '') {
           // show all individuals
-
-          var jsonData1 = {}
+          let jsonData1 = {}
 
           if (arrayRequestParameters.length > 0) {
-            if (arrayRequestParameters.length === 1) {
-              jsonData1 = {
-                meta: {
-                  apiVersion: '2.0'
+            jsonData1 = {
+              meta: {
+                apiVersion: '2.0'
+              },
+              query: {
+                requestParameters:
+                  arrayRequestParameters.length === 1
+                    ? arrayRequestParameters[0]
+                    : arrayRequestParameters,
+                filters: arrayFilter,
+                includeResultsetResponses: `${props.resultSets}`,
+                pagination: {
+                  skip: skip,
+                  limit: limit
                 },
-                query: {
-                  requestParameters: arrayRequestParameters[0],
-                  filters: arrayFilter,
-                  includeResultsetResponses: `${props.resultSets}`,
-                  pagination: {
-                    skip: skip,
-                    limit: limit
-                  },
-                  testMode: false,
-                  requestedGranularity: 'record'
-                }
-              }
-            } else {
-              jsonData1 = {
-                meta: {
-                  apiVersion: '2.0'
-                },
-                query: {
-                  requestParameters: arrayRequestParameters,
-                  filters: arrayFilter,
-                  includeResultsetResponses: `${props.resultSets}`,
-                  pagination: {
-                    skip: skip,
-                    limit: limit
-                  },
-                  testMode: false,
-                  requestedGranularity: 'record'
-                }
+                testMode: false,
+                requestedGranularity: 'record'
               }
             }
           } else {
@@ -512,7 +521,7 @@ function BiosamplesResults (props) {
           }
 
           jsonData1 = JSON.stringify(jsonData1)
-          console.log(jsonData1)
+
           let token = null
           if (auth.userData === null) {
             token = getStoredToken()
@@ -525,11 +534,11 @@ function BiosamplesResults (props) {
               configData.API_URL + '/biosamples',
               jsonData1
             )
-            console.log(jsonData1)
-            console.log(res)
+          
           } else {
+        
             const headers = { Authorization: `Bearer ${token}` }
-
+            console.log('querying with token')
             res = await axios.post(
               configData.API_URL + '/biosamples',
               jsonData1,
@@ -539,81 +548,261 @@ function BiosamplesResults (props) {
           setTimeOut(true)
 
           if (
-            (res.data.responseSummary.numTotalResults < 1 ||
-              res.data.responseSummary.numTotalResults === undefined) &&
+            (res.data.responseSummary.numTotalResults === 0 ||
+              res.data.responseSummary.exists === false ||
+              !res.data.responseSummary) &&
             props.resultSets !== 'MISS'
           ) {
             setNumberResults(0)
             setBoolean(false)
           } else {
-            res.data.response.resultSets.forEach((element, index) => {
-              if (element.id && element.id !== '') {
-                if (resultsPerDataset.length > 0) {
-                  resultsPerDataset.forEach(element2 => {
-                    element2[0].push(element.id)
-                    element2[1].push(element.exists)
-                    element2[2].push(element.resultsCount)
-                    element2[3].push(element.resultsHandover)
-                  })
-                } else {
-                  let arrayResultsPerDataset = [
-                    //element.beaconId,
-                    [element.id],
-                    [element.exists],
-                    [element.resultsCount],
-                    [element.resultsHandover]
-                  ]
-                  resultsPerDataset.push(arrayResultsPerDataset)
-                }
-              }
-
-              if (element.id === undefined || element.id === '') {
-                let arrayResultsNoDatasets = [element.beaconId]
-                resultsNotPerDataset.push(arrayResultsNoDatasets)
-              }
-
-              if (res.data.response.resultSets[index].results) {
-                res.data.response.resultSets[index].results.forEach(
-                  (element2, index2) => {
-                    let arrayResult = [
-                      res.data.meta.beaconId,
-                      res.data.response.resultSets[index].results[index2]
+            if (props.isNetwork) {
+              res.data.response.resultSets.forEach((element, index) => {
+                if (element.id && element.id !== '') {
+                  if (resultsPerDataset.length > 0) {
+                    resultsPerDataset.forEach(element2 => {
+                      if (element2[0] === element.beaconId) {
+                        element2[1].push(element.id)
+                        element2[2].push(element.exists)
+                        element2[3].push(element.resultsCount)
+                      } else {
+                        let arrayResultsPerDataset = [
+                          element.beaconId,
+                          [element.id],
+                          [element.exists],
+                          [element.resultsCount]
+                        ]
+                        let found = false
+                        resultsPerDataset.forEach(element => {
+                          if (element[0] === arrayResultsPerDataset[0]) {
+                            found = true
+                          }
+                        })
+                        if (found === false) {
+                          resultsPerDataset.push(arrayResultsPerDataset)
+                        }
+                      }
+                    })
+                  } else {
+                    let arrayResultsPerDataset = [
+                      element.beaconId,
+                      [element.id],
+                      [element.exists],
+                      [element.resultsCount]
                     ]
-                    results.push(arrayResult)
+                    resultsPerDataset.push(arrayResultsPerDataset)
                   }
-                )
+                }
+
+                if (element.id === undefined || element.id === '') {
+                  let arrayResultsNoDatasets = [element.beaconId]
+                  resultsNotPerDataset.push(arrayResultsNoDatasets)
+                }
+
+                if (res.data.response.resultSets[index].results) {
+                  res.data.response.resultSets[index].results.forEach(
+                    (element2, index2) => {
+                      let arrayResult = [
+                        res.data.response.resultSets[index].beaconId,
+                        res.data.response.resultSets[index].results[index2]
+                      ]
+                      results.push(arrayResult)
+                    }
+                  )
+                }
+              })
+            } else {
+              if (props.isNetwork) {
+                res.data.response.resultSets.forEach((element, index) => {
+                  if (element.id && element.id !== '') {
+                    if (resultsPerDataset.length > 0) {
+                      resultsPerDataset.forEach(element2 => {
+                        if (element2[0] === element.beaconId) {
+                          element2[1].push(element.id)
+                          element2[2].push(element.exists)
+                          element2[3].push(element.resultsCount)
+                        } else {
+                          let arrayResultsPerDataset = [
+                            element.beaconId,
+                            [element.id],
+                            [element.exists],
+                            [element.resultsCount]
+                          ]
+                          let found = false
+                          resultsPerDataset.forEach(element => {
+                            if (element[0] === arrayResultsPerDataset[0]) {
+                              found = true
+                            }
+                          })
+                          if (found === false) {
+                            resultsPerDataset.push(arrayResultsPerDataset)
+                          }
+                        }
+                      })
+                    } else {
+                      let arrayResultsPerDataset = [
+                        element.beaconId,
+                        [element.id],
+                        [element.exists],
+                        [element.resultsCount]
+                      ]
+                      resultsPerDataset.push(arrayResultsPerDataset)
+                    }
+                  }
+
+                  if (element.id === undefined || element.id === '') {
+                    let arrayResultsNoDatasets = [element.beaconId]
+                    resultsNotPerDataset.push(arrayResultsNoDatasets)
+                  }
+
+                  if (res.data.response.resultSets[index].results) {
+                    res.data.response.resultSets[index].results.forEach(
+                      (element2, index2) => {
+                        let arrayResult = [
+                          res.data.response.resultSets[index].beaconId,
+                          res.data.response.resultSets[index].results[index2]
+                        ]
+                        results.push(arrayResult)
+                      }
+                    )
+                  }
+                })
+              } else {
+                res.data.response.resultSets.forEach((element, index) => {
+                  if (element.id && element.id !== '') {
+                    if (resultsPerDataset.length > 0) {
+                      resultsPerDataset.forEach(element2 => {
+                        if (element2[0] === res.data.meta.beaconId) {
+                          element2[1].push(element.id)
+                          element2[2].push(element.exists)
+                          element2[3].push(element.resultsCount)
+                        } else {
+                          let arrayResultsPerDataset = [
+                            res.data.meta.beaconId,
+                            [element.id],
+                            [element.exists],
+                            [element.resultsCount]
+                          ]
+                          let found = false
+                          resultsPerDataset.forEach(element => {
+                            if (element[0] === arrayResultsPerDataset[0]) {
+                              found = true
+                            }
+                          })
+                          if (found === false) {
+                            resultsPerDataset.push(arrayResultsPerDataset)
+                          }
+                        }
+                      })
+                    } else {
+                      let arrayResultsPerDataset = [
+                        res.data.meta.beaconId,
+                        [element.id],
+                        [element.exists],
+                        [element.resultsCount]
+                      ]
+                      resultsPerDataset.push(arrayResultsPerDataset)
+                    }
+                  }
+
+                  if (element.id === undefined || element.id === '') {
+                    let arrayResultsNoDatasets = [res.data.meta.beaconId]
+                    resultsNotPerDataset.push(arrayResultsNoDatasets)
+                  }
+
+                  if (res.data.response.resultSets[index].results) {
+                    res.data.response.resultSets[index].results.forEach(
+                      (element2, index2) => {
+                        let arrayResult = [
+                          res.data.meta.beaconId,
+                          res.data.response.resultSets[index].results[index2]
+                        ]
+                        results.push(arrayResult)
+                      }
+                    )
+                  }
+                })
+              }
+            }
+          }
+          setTriggerSubmit(true)
+        } else {
+         
+          let jsonData2 = {}
+          variablePause = false
+
+          if (updatedArrayFilterVar.length > 0) {
+            updatedArrayFilterVar.forEach((element, index) => {
+              if (Array.isArray(element.scope) && !selectedScopes[index]) {
+                setPause(true)
+                variablePause = true
+
+                let newOptionsScope = [...optionsScope]
+
+                element.scope.forEach(elementScope => {
+                  newOptionsScope[index] = newOptionsScope[index] || []
+                  newOptionsScope[index].push(elementScope)
+                })
+
+                setOptionsScope(newOptionsScope)
+
+                let newOntologyMultipleScope = [...ontologyMultipleScope]
+                props.filteringTerms.forEach(element2 => {
+                  if (element2.label && element2.id === element.id) {
+                    newOntologyMultipleScope.push(element2.label)
+                  }
+                })
+                setOntologyMultipleScope(newOntologyMultipleScope)
+              } else if (
+                Array.isArray(element.scope) &&
+                selectedScopes[index]
+              ) {
+                element.scope = selectedScopes[index]
+              } else {
+                element.scope = element.scope
+              }
+            })
+          } else {
+            let newOptionsScope = [...optionsScope]
+            arrayFilter.forEach((element, index) => {
+              if (
+                Array.isArray(element.scope) &&
+                element.scope.length > 1 &&
+                !selectedScopes[index]
+              ) {
+                setPause(true)
+                variablePause = true
+
+                element.scope.forEach(elementScope => {
+                  newOptionsScope[index] = newOptionsScope[index] || []
+                  newOptionsScope[index].push(elementScope)
+                })
+                setOptionsScope(newOptionsScope)
+
+                let newOntologyMultipleScope = [...ontologyMultipleScope]
+
+                props.filteringTerms.forEach(element2 => {
+                  if (element2.label && element2.id === element.id) {
+                    newOntologyMultipleScope[index] =
+                      newOntologyMultipleScope[index] || []
+                    newOntologyMultipleScope[index].push(element2.label)
+                  }
+                })
+
+                setOntologyMultipleScope(newOntologyMultipleScope)
+              } else if (
+                Array.isArray(element.scope) &&
+                element.scope.length > 1 &&
+                selectedScopes[index]
+              ) {
+                element.scope = selectedScopes[index]
+              } else {
+                element.scope = element.scope[0]
               }
             })
           }
-          settriggerSubmit(true)
-        } else {
-          var jsonData2 = {}
-          let variablePause = false
-          arrayFilter.forEach(element => {
-            if (element.scope.length > 1 && chosenScope === '') {
-              setPause(true)
-              variablePause = true
-              element.scope.forEach(element => {
-                optionsScope.push(element)
-              })
-              console.log(element)
 
-              props.filteringTerms.forEach(element2 => {
-                if (element2.label) {
-                  if (element2.id === element.id) {
-                    console.log(element2.label)
-                    ontologyMultipleScope.push(element2.label)
-                  }
-                }
-              })
-            } else if (element.scope.length > 1 && chosenScope !== '') {
-              element.scope = chosenScope
-            } else {
-              element.scope = element.scope[0]
-            }
-          })
-
-          if (variablePause === false) {
+          if (!variablePause) {
             if (arrayRequestParameters.length > 0) {
               if (arrayRequestParameters.length === 1) {
                 jsonData2 = {
@@ -676,93 +865,162 @@ function BiosamplesResults (props) {
               token = auth.userData.access_token
             }
             if (token === null) {
-              console.log(jsonData2)
+          
               console.log('Querying without token')
               res = await axios.post(
                 configData.API_URL + '/biosamples',
                 jsonData2
               )
-              console.log(res)
+            
             } else {
               console.log('Querying WITH token')
+        
               const headers = { Authorization: `Bearer ${token}` }
-              console.log(jsonData2)
+
               res = await axios.post(
                 configData.API_URL + '/biosamples',
                 jsonData2,
                 { headers: headers }
               )
-              console.log(res)
+          
             }
 
             setTimeOut(true)
             setPause(false)
             if (
-              (res.data.responseSummary.numTotalResults < 1 ||
-                res.data.responseSummary.numTotalResults === undefined) &&
+              (res.data.responseSummary.exists === false ||
+                res.data.responseSummary.numTotalResults === 0 ||
+                !res.data.responseSummary) &&
               props.resultSets !== 'MISS'
             ) {
               setError('No results')
               setNumberResults(0)
               setBoolean(false)
             } else {
-              res.data.response.resultSets.forEach((element, index) => {
-                if (element.id && element.id !== '') {
-                  if (resultsPerDataset.length > 0) {
-                    resultsPerDataset.forEach(element2 => {
-                      element2[0].push(element.id)
-                      element2[1].push(element.exists)
-                      element2[2].push(element.resultsCount)
-                      element2[3].push(element.resultsHandover)
-                    })
-                  } else {
-                    let arrayResultsPerDataset = [
-                      //element.beaconId,
-                      [element.id],
-                      [element.exists],
-                      [element.resultsCount],
-                      [element.resultsHandover]
-                    ]
-                    let found = false
-                    resultsPerDataset.forEach(element => {
-                      if (element[0] === arrayResultsPerDataset[0]) {
-                        found = true
-                      }
-                    })
-                    if (found === false) {
+              if (props.isNetwork) {
+                res.data.response.resultSets.forEach((element, index) => {
+                  if (element.id && element.id !== '') {
+                    if (resultsPerDataset.length > 0) {
+                      resultsPerDataset.forEach(element2 => {
+                        if (element2[0] === element.beaconId) {
+                          element2[1].push(element.id)
+                          element2[2].push(element.exists)
+                          element2[3].push(element.resultsCount)
+                        } else {
+                          let arrayResultsPerDataset = [
+                            element.beaconId,
+                            [element.id],
+                            [element.exists],
+                            [element.resultsCount]
+                          ]
+                          let found = false
+                          resultsPerDataset.forEach(element => {
+                            if (element[0] === arrayResultsPerDataset[0]) {
+                              found = true
+                            }
+                          })
+                          if (found === false) {
+                            resultsPerDataset.push(arrayResultsPerDataset)
+                          }
+                        }
+                      })
+                    } else {
+                      let arrayResultsPerDataset = [
+                        element.beaconId,
+                        [element.id],
+                        [element.exists],
+                        [element.resultsCount]
+                      ]
                       resultsPerDataset.push(arrayResultsPerDataset)
                     }
                   }
-                }
 
-                if (element.id === undefined || element.id === '') {
-                  let arrayResultsNoDatasets = [element.beaconId]
-                  resultsNotPerDataset.push(arrayResultsNoDatasets)
-                }
+                  if (element.id === undefined || element.id === '') {
+                    let arrayResultsNoDatasets = [element.beaconId]
+                    resultsNotPerDataset.push(arrayResultsNoDatasets)
+                  }
 
-                if (res.data.response.resultSets[index].results) {
-                  res.data.response.resultSets[index].results.forEach(
-                    (element2, index2) => {
-                      let arrayResult = [
+                  if (res.data.response.resultSets[index].results) {
+                    res.data.response.resultSets[index].results.forEach(
+                      (element2, index2) => {
+                        let arrayResult = [
+                          res.data.response.resultSets[index].beaconId,
+                          res.data.response.resultSets[index].results[index2]
+                        ]
+                        results.push(arrayResult)
+                      }
+                    )
+                  }
+                })
+              } else {
+                res.data.response.resultSets.forEach((element, index) => {
+                  if (element.id && element.id !== '') {
+                    if (resultsPerDataset.length > 0) {
+                      resultsPerDataset.forEach(element2 => {
+                        if (element2[0] === res.data.meta.beaconId) {
+                          element2[1].push(element.id)
+                          element2[2].push(element.exists)
+                          element2[3].push(element.resultsCount)
+                        } else {
+                          let arrayResultsPerDataset = [
+                            res.data.meta.beaconId,
+                            [element.id],
+                            [element.exists],
+                            [element.resultsCount]
+                          ]
+                          let found = false
+                          resultsPerDataset.forEach(element => {
+                            if (element[0] === arrayResultsPerDataset[0]) {
+                              found = true
+                            }
+                          })
+                          if (found === false) {
+                            resultsPerDataset.push(arrayResultsPerDataset)
+                          }
+                        }
+                      })
+                    } else {
+                      let arrayResultsPerDataset = [
                         res.data.meta.beaconId,
-                        res.data.response.resultSets[index].results[index2]
+                        [element.id],
+                        [element.exists],
+                        [element.resultsCount]
                       ]
-                      results.push(arrayResult)
+                      resultsPerDataset.push(arrayResultsPerDataset)
                     }
-                  )
-                }
-              })
+                  }
+
+                  if (element.id === undefined || element.id === '') {
+                    let arrayResultsNoDatasets = [res.data.meta.beaconId]
+                    resultsNotPerDataset.push(arrayResultsNoDatasets)
+                  }
+
+                  if (res.data.response.resultSets[index].results) {
+                    res.data.response.resultSets[index].results.forEach(
+                      (element2, index2) => {
+                        let arrayResult = [
+                          res.data.meta.beaconId,
+                          res.data.response.resultSets[index].results[index2]
+                        ]
+                        results.push(arrayResult)
+                      }
+                    )
+                  }
+                })
+              }
             }
 
-            settriggerSubmit(true)
+            setTriggerSubmit(true)
+            updatedArrayFilterVar.length = 0
+            setUpdatedArrayFilterVar([])
           } else {
             setTimeOut(true)
           }
         }
       } catch (error) {
-        console.log(error)
-        setError('No, sorry')
+        setError(error.message)
         setTimeOut(true)
+        setTriggerSubmit(true)
       }
     }
     apiCall()
@@ -790,38 +1048,30 @@ function BiosamplesResults (props) {
           </div>
         </div>
       )}
-
       {pause && (
         <div className='scopeDiv'>
-          {ontologyMultipleScope.map(element => {
-            return (
-              <div className='scopeSelection'>
-                <h10>Please choose a scope for {element} :</h10>
-
-                <select id='miSelect' onChange={handleChangeScope}>
-                  <option value={''}>{''}</option>
-                  {optionsScope.map((element, index) => {
-                    return <option value={element}>{element}</option>
-                  })}
-                </select>
-                <button onClick={submitScopeChosen} className='doneButton'>
-                  <ion-icon name='checkmark-circle-outline'></ion-icon>
-                </button>
-              </div>
-            )
-          })}
+          {ontologyMultipleScope.map((element, idx) => (
+            <div className='scopeSelection' key={idx}>
+              <h10>Please choose a scope for {element}:</h10>
+              <select id='miSelect' onChange={e => handleChangeScope(e, idx)}>
+                <option value={''}>{''}</option>
+                {(optionsScope[idx] || []).map((scopeOption, index) => (
+                  <option value={scopeOption} key={index}>
+                    {scopeOption}
+                  </option>
+                ))}
+              </select>
+              <button
+                onClick={() => submitScopeChosen(idx)}
+                className='doneButton'
+              >
+                <ion-icon name='checkmark-circle-outline'></ion-icon>
+              </button>
+            </div>
+          ))}
         </div>
       )}
 
-      {timeOut && error !== '' && props.granularity === 'boolean' && (
-        <h6 className='NotfoundResult'>&nbsp; No, sorry </h6>
-      )}
-      {timeOut && error !== '' && props.granularity === 'count' && (
-        <h6 className='NotfoundResult'>&nbsp; None, sorry </h6>
-      )}
-      {timeOut && error !== '' && props.granularity === 'record' && (
-        <h6 className='NotfoundResult'>&nbsp; No results, sorry </h6>
-      )}
       {triggerSubmit && (
         <div>
           <div>
@@ -868,38 +1118,44 @@ function BiosamplesResults (props) {
               </div>
             )} */}
 
-            {show3 && logInRequired === false && !error && (
+            {show3 && logInRequired === false && (
               <div className='containerTableResults'>
                 <TableResultsBiosamples
+                  error={error}
                   show={'full'}
                   results={results}
                   resultsPerDataset={resultsPerDataset}
                   beaconsList={beaconsList}
+                  datasetList={datasetList}
                   resultSets={props.resultSets}
                 ></TableResultsBiosamples>
               </div>
             )}
 
-            {show2 && !error && (
+            {show2 && (
               <div className='containerTableResults'>
                 <TableResultsBiosamples
+                  error={error}
                   show={'count'}
                   resultsPerDataset={resultsPerDataset}
                   resultsNotPerDataset={resultsNotPerDataset}
                   results={results}
                   beaconsList={beaconsList}
+                  datasetList={datasetList}
                   resultSets={props.resultSets}
                 ></TableResultsBiosamples>
               </div>
             )}
-            {show1 && !error && (
+            {show1 && (
               <div className='containerTableResults'>
                 <TableResultsBiosamples
+                  error={error}
                   show={'boolean'}
                   resultsPerDataset={resultsPerDataset}
                   resultsNotPerDataset={resultsNotPerDataset}
                   results={results}
                   beaconsList={beaconsList}
+                  datasetList={datasetList}
                   resultSets={props.resultSets}
                 ></TableResultsBiosamples>
               </div>
