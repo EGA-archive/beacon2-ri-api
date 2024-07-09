@@ -41,7 +41,7 @@ def get_runs(entry_id: Optional[str], qparams: RequestParams, dataset: str):
         limit = 100
     idq="biosampleId"
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    return schema, count, dataset_count, docs, dataset
 
 def get_run_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'runs'
@@ -59,7 +59,7 @@ def get_run_with_id(entry_id: Optional[str], qparams: RequestParams, dataset: st
         limit = 100
     idq="biosampleId"
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    return schema, count, dataset_count, docs, dataset
 
 
 
@@ -83,7 +83,7 @@ def get_variants_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
         limit = 100
     idq="caseLevelData.biosampleId"
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    return schema, count, dataset_count, docs, dataset
 
 def get_analyses_of_run(entry_id: Optional[str], qparams: RequestParams, dataset: str):
     collection = 'runs'
@@ -102,7 +102,7 @@ def get_analyses_of_run(entry_id: Optional[str], qparams: RequestParams, dataset
         limit = 100
     idq="biosampleId"
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    return schema, count, dataset_count, docs, dataset
 
 def get_filtering_terms_of_run(entry_id: Optional[str], qparams: RequestParams):
     query = {'scopes': 'run'}
