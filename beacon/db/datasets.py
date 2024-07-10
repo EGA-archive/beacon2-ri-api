@@ -96,7 +96,7 @@ def get_variants_of_biosample(entry_id: Optional[str], qparams: RequestParams, d
         limit = 100
     idq="caseLevelData.biosampleId"
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    return schema, count, dataset_count, docs, dataset
 
 
 def get_variants_of_dataset(entry_id: Optional[str], qparams: RequestParams, dataset: str):
@@ -143,7 +143,7 @@ def get_variants_of_dataset(entry_id: Optional[str], qparams: RequestParams, dat
         limit = 100
     
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    return schema, count, dataset_count, docs, dataset
 
 
 def get_biosamples_of_dataset(entry_id: Optional[str], qparams: RequestParams, dataset: str):
@@ -169,7 +169,7 @@ def get_biosamples_of_dataset(entry_id: Optional[str], qparams: RequestParams, d
         limit = 100
     idq="id"
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    return schema, count, dataset_count, docs, dataset
 
 
 def get_individuals_of_dataset(entry_id: Optional[str], qparams: RequestParams, dataset: str):
@@ -194,7 +194,7 @@ def get_individuals_of_dataset(entry_id: Optional[str], qparams: RequestParams, 
         limit = 100
     idq="id"
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    return schema, count, dataset_count, docs, dataset
 
 
 def filter_public_datasets(requested_datasets_ids):
@@ -239,7 +239,7 @@ def get_runs_of_dataset(entry_id: Optional[str], qparams: RequestParams, dataset
         limit = 100
     idq="biosampleId"
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    return schema, count, dataset_count, docs, dataset
 
 
 def get_analyses_of_dataset(entry_id: Optional[str], qparams: RequestParams, dataset: str):
