@@ -262,7 +262,7 @@ def get_analyses_of_dataset(entry_id: Optional[str], qparams: RequestParams, dat
     if limit > 100 or limit == 0:
         limit = 100
     count, dataset_count, docs = get_docs_by_response_type(include, query, datasets_dict, dataset, limit, skip, mongo_collection, idq)
-    return schema, count, dataset_count, docs
+    return schema, count, dataset_count, docs, dataset
 
 def beacon_handovers():
     query = {}
