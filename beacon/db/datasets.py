@@ -131,7 +131,7 @@ def get_variants_of_dataset(entry_id: Optional[str], qparams: RequestParams, dat
                         i=1
     else:
         schema = DefaultSchemas.GENOMICVARIATIONS
-        return schema, 0, -1, None
+        return schema, 0, -1, None, dataset
     query = apply_filters(query_count, qparams.query.filters, collection, {})
     schema = DefaultSchemas.GENOMICVARIATIONS
     with open("/beacon/beacon/request/datasets.yml", 'r') as datasets_file:
