@@ -7,7 +7,7 @@
   width: 50%;
   background-color: #74b1d4;
   padding: 25px 40px;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .pageSwitcher {
@@ -207,6 +207,10 @@ body {
   top: -172px;
   right: 0;
   border-radius: 32px;
+}
+h6 {
+  margin-left: 5px;
+  font-size: 12px !important;
 }
 
 .screen__background__shape3 {
@@ -454,11 +458,7 @@ body {
   margin-left: -19px;
 }
 
-h6 {
-  margin-left: 5px;
-  font-size: 12px !important;
-  width: 82vw !important;
-}
+
   .screen__background__shape5 {
     /* height: 551px; */
     /* width: 469px; */

@@ -10,8 +10,6 @@ Please first create a .env file inside the frontend folder so that you can modif
 REACT_APP_CLIENT_ID="ID of your LS Login"
 REACT_APP_CLIENT_SECRET="password of your LS Login"
 REACT_APP_KEYCLOAK_CLIENT_SECRET="password of your Keycloak login"
-REACT_APP_KEYCLOAK_CLIENT_ID='ID of your Keycloak login'
-REACT_APP_KEYCLOAK_CLIENT_REALM='REALM of your Keycloak login'
 ```
 
 You will need to have created your Life Science and Keycloak environments before.
