@@ -33,6 +33,25 @@ def build_meta(qparams: RequestParams, entity_schema: Optional[DefaultSchemas], 
         }
     return meta
 
+def build_info_meta(qparams: RequestParams, entity_schema: Optional[DefaultSchemas], returned_granularity: Granularity):
+    """"Builds the `meta` part of the response
+
+    We assume that receivedRequest is the evaluated request (qparams) sent by the user.
+    """
+    try:
+        meta = {
+            'beaconId': conf.beacon_id,
+            'apiVersion': conf.api_version,
+            'returnedSchemas': [entity_schema.value] if entity_schema is not None else []
+        }
+    except Exception:
+        meta = {
+            'beaconId': conf.beacon_id,
+            'apiVersion': conf.api_version,
+            'returnedSchemas': [entity_schema.value] if entity_schema is not None else []
+        }
+    return meta
+
 def build_response_summary(exists, num_total_results):
     LOG.debug(num_total_results)
     if num_total_results is None:
@@ -234,7 +253,7 @@ def build_beacon_info_response(data, qparams, func_response_type, authorized_dat
         authorized_datasets = []
 
     beacon_response = {
-        'meta': build_meta(qparams, None, Granularity.RECORD),
+        'meta': build_info_meta(qparams, None, Granularity.RECORD),
         'response': {
             'id': conf.beacon_id,
             'name': conf.beacon_name,
