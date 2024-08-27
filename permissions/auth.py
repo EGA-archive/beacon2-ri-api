@@ -73,7 +73,7 @@ async def get_user_info(access_token):
     user_info=''
     idp_issuer=None
     for env_filename in glob.glob("/beacon/permissions/idp_providers/*.env"):
-        load_dotenv(env_filename)
+        load_dotenv(env_filename, override=True)
         IDP_ISSUER = os.getenv('ISSUER')
         LOG.error(IDP_ISSUER)
         if issuer == IDP_ISSUER:
