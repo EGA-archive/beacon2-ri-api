@@ -104,7 +104,7 @@ function AuthProviderWrapper (props) {
 
         const response = await fetch(
           configData.KEYCLOAK_URL +
-            '/auth/realms/Beacon/protocol/openid-connect/token',
+            '/auth/realms/' + process.env.REACT_APP_KEYCLOAK_CLIENT_REALM + '/protocol/openid-connect/token',
           {
             method: 'POST',
             headers: {

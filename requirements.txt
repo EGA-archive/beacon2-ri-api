@@ -17,7 +17,7 @@ dataclasses-json~=0.5.6
 StrEnum~=0.4.7 # Only until Python 3.11 is released (we can use the built-in StrEnum)
 owlready2~=0.36
 tqdm~=4.62.3
-pydantic~=1.9.0
+pydantic~=2.6.2
 pyhumps
 progressbar~=2.5
 #requests

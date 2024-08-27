@@ -1,12 +1,18 @@
 import logging
 from typing_extensions import Self
-from pydantic import BaseModel
+from pydantic import (
+    BaseModel,
+    ValidationError,
+    field_validator,
+    Field,
+    PrivateAttr)
 from strenum import StrEnum
 from typing import List, Optional, Union
 from beacon import conf
 from humps.main import camelize
 from aiohttp.web_request import Request
 from aiohttp import web
+import html
 
 LOG = logging.getLogger(__name__)
 
@@ -87,21 +93,134 @@ class RequestParams(CamelModel):
     meta: RequestMeta = RequestMeta()
     query: RequestQuery = RequestQuery()
 
+class SequenceQuery(BaseModel):
+    referenceName: Union[str,int]
+    start: int
+    alternateBases:str
+    referenceBases: str
+    clinicalRelevance: Optional[str] =None
+    mateName: Optional[str] =None
+    assemblyId: Optional[str] =None
+
+class RangeQuery(BaseModel):
+    referenceName: Union[str,int]
+    start: int
+    end: int
+    variantType: Optional[str] =None
+    alternateBases: Optional[str] =None
+    aminoacidChange: Optional[str] =None
+    variantMinLength: Optional[int] =None
+    variantMaxLength: Optional[int] =None
+    clinicalRelevance: Optional[str] =None
+    mateName: Optional[str] =None
+    assemblyId: Optional[str] =None
+
+class GeneIdQuery(BaseModel):
+    geneId: str
+    variantType: Optional[str] =None
+    alternateBases: Optional[str] =None
+    aminoacidChange: Optional[str] =None
+    variantMinLength: Optional[int] =None
+    variantMaxLength: Optional[int] =None
+    assemblyId: Optional[str] =None
+
+class BracketQuery(BaseModel):
+    referenceName: Union[str,int]
+    start: list
+    end: list
+    variantType: Optional[str] =None
+    clinicalRelevance: Optional[str] =None
+    mateName: Optional[str] =None
+    assemblyId: Optional[str] =None
+    @field_validator('start')
+    @classmethod
+    def start_must_be_array_of_integers(cls, v: list) -> list:
+        for num in v:
+            if isinstance(num, int):
+                pass
+            else:
+                raise ValueError
+    @field_validator('end')
+    @classmethod
+    def end_must_be_array_of_integers(cls, v: list) -> list:
+        for num in v:
+            if isinstance(num, int):
+                pass
+            else:
+                raise ValueError
+
+class GenomicAlleleQuery(BaseModel):
+    genomicAlleleShortForm: str
+    assemblyId: Optional[str] =None
+
+class AminoacidChangeQuery(BaseModel):
+    aminoacidChange: str
+    geneId: str
+    assemblyId: Optional[str] =None
+
+class RequestParams(CamelModel):
+    meta: RequestMeta = RequestMeta()
+    query: RequestQuery = RequestQuery()
+
     def from_request(self, request: Request) -> Self:
-        if request.method != "POST" or not request.has_body or not request.can_read_body:
+        request_params={}
+        if request.method != "POST" or not request.has_body or not request.can_read_body:            
             for k, v in request.query.items():
                 if k == "requestedSchema":
-                    self.meta.requested_schemas = [v]
+                    self.meta.requested_schemas = [html.escape(v)] # comprovar si és la sanitització recomanada
                 elif k == "skip":
-                    self.query.pagination.skip = int(v)
+                    self.query.pagination.skip = int(html.escape(v))
                 elif k == "limit":
-                    self.query.pagination.limit = int(v)
+                    self.query.pagination.limit = int(html.escape(v))
                 elif k == "includeResultsetResponses":
-                    self.query.include_resultset_responses = IncludeResultsetResponses(v)
-                elif k == 'filters' or k in ["start", "end", "assemblyId", "referenceName", "referenceBases", "alternateBases", "variantType","variantMinLength","variantMaxLength","geneId","genomicAlleleShortForm","aminoacidChange","clinicalRelevance", "mateName"]:
-                    self.query.request_parameters[k] = v
+                    self.query.include_resultset_responses = IncludeResultsetResponses(html.escape(v))
+                elif k == 'filters':
+                    self.query.request_parameters[k] = html.escape(v)
+                elif k in ["start", "end", "assemblyId", "referenceName", "referenceBases", "alternateBases", "variantType","variantMinLength","variantMaxLength","geneId","genomicAlleleShortForm","aminoacidChange","clinicalRelevance", "mateName"]:
+                    try:
+                        if ',' in v:
+                            v_splitted = v.split(',')
+                            request_params[k]=[int(v) for v in v_splitted]
+                        else:
+                            request_params[k]=int(v)
+                    except Exception as e:
+                        request_params[k]=v
+                    self.query.request_parameters[k] = html.escape(v)
                 else:
                     raise web.HTTPBadRequest(text='request parameter introduced is not allowed')
+        if request_params != {}:
+            LOG.debug(request_params)
+            try:
+                RangeQuery(**request_params)
+                return self
+            except Exception as e:
+                pass
+            try:
+                SequenceQuery(**request_params)
+                return self
+            except Exception as e:
+                pass
+            try:
+                BracketQuery(**request_params)
+                return self
+            except Exception as e:
+                pass
+            try:
+                GeneIdQuery(**request_params)
+                return self
+            except Exception as e:
+                pass
+            try:
+                AminoacidChangeQuery(**request_params)
+                return self
+            except Exception as e:
+                pass
+            try:
+                GenomicAlleleQuery(**request_params)
+                return self
+            except Exception as e:
+                pass
+            raise web.HTTPBadRequest(text='set of parameters not allowed')
         return self
 
     def summary(self):
