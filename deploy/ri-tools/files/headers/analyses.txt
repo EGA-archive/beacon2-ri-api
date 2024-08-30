@@ -1,0 +1,10 @@
+aligner
+analysisDate
+biosampleId
+id
+individualId
+info
+pipelineName
+pipelineRef
+runId
+variantCaller
