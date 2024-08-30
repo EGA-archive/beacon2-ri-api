@@ -14,12 +14,17 @@ services:
   ###########################################
 
   beacon-ri-tools:
-    image: ghcr.io/ega-archive/beacon2-ri-tools-v2:main
+    image: ghcr.io/ega-archive/beacon2-ri-tools-v2:latest
     hostname: beacon-ri-tools
     container_name: ri-tools
     networks:
       - beacon-priv 
     tty: true
+    volumes:
+      - ./ri-tools/output_docs:/usr/src/app/output_docs
+      - ./ri-tools/conf:/usr/src/app/conf
+      - ./ri-tools/files/vcf/files_to_read:/usr/src/app/files/vcf/files_to_read
+      - ./ri-tools/csv:/usr/src/app/csv
 
   ###########################################
   # training-ui
