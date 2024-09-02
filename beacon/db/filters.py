@@ -691,6 +691,8 @@ def apply_ontology_filter(query: dict, filter: OntologyFilter, collection: str, 
 def format_value(value: Union[str, List[int]]) -> Union[List[int], str, int, float]:
     if isinstance(value, list):
         return value
+    elif isinstance(value, int):
+        return value
     
     elif value.isnumeric():
         if float(value).is_integer():
