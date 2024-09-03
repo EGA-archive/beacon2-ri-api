@@ -95,7 +95,7 @@ class RequestParams(CamelModel):
 
 class SequenceQuery(BaseModel):
     referenceName: Union[str,int]
-    start: Union[int, str]
+    start: Union[int, list, str]
     alternateBases:str
     referenceBases: str
     clinicalRelevance: Optional[str] =None
@@ -193,7 +193,6 @@ class RequestParams(CamelModel):
                 RangeQuery(**request_params)
                 return self
             except Exception as e:
-                LOG.debug('holaaaaaa')
                 pass
             try:
                 SequenceQuery(**request_params)

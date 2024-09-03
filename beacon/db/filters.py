@@ -731,7 +731,6 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
     #LOG.debug(filter.id)
     if collection == 'g_variants' and scope != 'individual' and scope != 'run':
         if filter.id == "identifiers.genomicHGVSId":
-            LOG.debug('hoaaaa')
             list_chromosomes = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22']
             dict_regex={}
             if filter.value == 'GRCh38':
