@@ -59,7 +59,7 @@ class OntologyFilter(CamelModel):
 
 class AlphanumericFilter(CamelModel):
     id: str
-    value: Union[str, List[int]]
+    value: Union[str, int, List[int]]
     scope: Optional[str] = None
     operator: Operator = Operator.EQUAL
 
@@ -95,7 +95,7 @@ class RequestParams(CamelModel):
 
 class SequenceQuery(BaseModel):
     referenceName: Union[str,int]
-    start: int
+    start: Union[int, list, str]
     alternateBases:str
     referenceBases: str
     clinicalRelevance: Optional[str] =None
@@ -104,8 +104,8 @@ class SequenceQuery(BaseModel):
 
 class RangeQuery(BaseModel):
     referenceName: Union[str,int]
-    start: int
-    end: int
+    start: Union[int, str, list]
+    end: Union[int, str, list]
     variantType: Optional[str] =None
     alternateBases: Optional[str] =None
     aminoacidChange: Optional[str] =None
@@ -163,33 +163,32 @@ class RequestParams(CamelModel):
     query: RequestQuery = RequestQuery()
 
     def from_request(self, request: Request) -> Self:
-        request_params={}
-        if request.method != "POST" or not request.has_body or not request.can_read_body:            
-            for k, v in request.query.items():
-                if k == "requestedSchema":
-                    self.meta.requested_schemas = [html.escape(v)] # comprovar si és la sanitització recomanada
-                elif k == "skip":
-                    self.query.pagination.skip = int(html.escape(v))
-                elif k == "limit":
-                    self.query.pagination.limit = int(html.escape(v))
-                elif k == "includeResultsetResponses":
-                    self.query.include_resultset_responses = IncludeResultsetResponses(html.escape(v))
-                elif k == 'filters':
-                    self.query.request_parameters[k] = html.escape(v)
-                elif k in ["start", "end", "assemblyId", "referenceName", "referenceBases", "alternateBases", "variantType","variantMinLength","variantMaxLength","geneId","genomicAlleleShortForm","aminoacidChange","clinicalRelevance", "mateName"]:
-                    try:
-                        if ',' in v:
-                            v_splitted = v.split(',')
-                            request_params[k]=[int(v) for v in v_splitted]
-                        else:
-                            request_params[k]=int(v)
-                    except Exception as e:
-                        request_params[k]=v
-                    self.query.request_parameters[k] = html.escape(v)
-                else:
-                    raise web.HTTPBadRequest(text='request parameter introduced is not allowed')
-        if request_params != {}:
-            LOG.debug(request_params)
+        request_params={}         
+        for k, v in request.query.items():
+            if k == "requestedSchema":
+                self.meta.requested_schemas = [html.escape(v)] # comprovar si és la sanitització recomanada
+            elif k == "skip":
+                self.query.pagination.skip = int(html.escape(v))
+            elif k == "limit":
+                self.query.pagination.limit = int(html.escape(v))
+            elif k == "includeResultsetResponses":
+                self.query.include_resultset_responses = IncludeResultsetResponses(html.escape(v))
+            elif k == 'filters':
+                self.query.request_parameters[k] = html.escape(v)
+            elif k in ["start", "end", "assemblyId", "referenceName", "referenceBases", "alternateBases", "variantType","variantMinLength","variantMaxLength","geneId","genomicAlleleShortForm","aminoacidChange","clinicalRelevance", "mateName"]:
+                try:
+                    if ',' in v:
+                        v_splitted = v.split(',')
+                        request_params[k]=[int(v) for v in v_splitted]
+                    else:
+                        request_params[k]=int(v)
+                except Exception as e:
+                    request_params[k]=v
+                self.query.request_parameters[k] = html.escape(v)
+            else:
+                raise web.HTTPBadRequest(text='request parameter introduced is not allowed')
+        if request_params != {} or self.query.request_parameters != {}:
+            request_params = self.query.request_parameters
             try:
                 RangeQuery(**request_params)
                 return self
