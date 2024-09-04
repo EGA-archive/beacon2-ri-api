@@ -16,7 +16,6 @@ import glob
 
 from aiohttp import ClientSession, BasicAuth, FormData
 from aiohttp import web
-from beacon import conf
 import os
 from dotenv import load_dotenv
 
