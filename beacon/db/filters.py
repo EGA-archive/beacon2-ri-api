@@ -19,13 +19,11 @@ CURIE_REGEX = r'^([a-zA-Z0-9]*):\/?[a-zA-Z0-9./]*$'
 
 def cross_query(query: dict, scope: str, collection: str, request_parameters: dict):
     if scope == 'genomicVariation' and collection == 'g_variants' or scope == collection[0:-1]:
-        LOG.debug(query)
-        LOG.debug(request_parameters)
         subquery={}
         subquery["$or"]=[]
         if request_parameters != {}:
             biosample_ids = client.beacon.genomicVariations.find(request_parameters, {"caseLevelData.biosampleId": 1, "_id": 0})
-            final_id='id'
+            final_id='caseLevelData.biosampleId'
             original_id="biosampleId"
             def_list=[]
             for iditem in biosample_ids:
@@ -36,30 +34,16 @@ def cross_query(query: dict, scope: str, collection: str, request_parameters: di
                                 new_id={}
                                 new_id[final_id] = id_item[original_id]
                                 try:
-                                    #LOG.debug(new_id)
                                     subquery['$or'].append(new_id)
-                                except Exception:
+                                except Exception:# pragma: no cover
                                     def_list.append(new_id)
-            
-            LOG.debug(subquery)
-            mongo_collection=client.beacon.biosamples
-            original_id="individualId"
-            join_ids2=list(join_query(mongo_collection, subquery, original_id))
-            def_list=[]
-            final_id="id"
-            for id_item in join_ids2:
-                new_id={}
-                new_id[final_id] = id_item.pop(original_id)
-                def_list.append(new_id)
-            subquery={}
-            subquery['$or']=def_list
+                                    subquery={}
+                                    subquery['$or']=def_list
             try:
-                LOG.debug(query)
                 query["$and"] = []
                 query["$and"].append(subquery)
             except Exception:
-                LOG.debug(query)
-        LOG.debug(query)
+                pass
     else:
         def_list=[]                
         if scope == 'individual' and collection == 'g_variants':
