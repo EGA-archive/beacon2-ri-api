@@ -102,6 +102,7 @@ async def get_user_info(access_token):
     LOG.error(user_info)
     user = None
 
+    '''
     async with ClientSession() as session:
         async with session.post(idp_introspection,
                                 auth=BasicAuth(idp_client_id, password=idp_client_secret),
@@ -117,6 +118,7 @@ async def get_user_info(access_token):
                 LOG.error('Invalid token')
                 user = 'public'
                 return user, list_visa_datasets
+    '''
 
     async with ClientSession(trust_env=True) as session:
         headers = { 'Accept': 'application/json', 'Authorization': 'Bearer ' + access_token }
@@ -125,6 +127,7 @@ async def get_user_info(access_token):
             LOG.error('Response %s', resp)
             if resp.status == 200:
                 user = await resp.json()
+                LOG.error(user)
                 try:
                     visa_datasets = user['ga4gh_passport_v1']
                     if visa_datasets is not None:
@@ -165,6 +168,7 @@ def bearer_required(func):
         # We make a round-trip to the userinfo. We might not have a JWT token.
         try:
             user, list_visa_datasets = await get_user_info(access_token)
+            LOG.error(user)
         except Exception:
             user = 'public'
         LOG.info('The user is: %r', user)
@@ -174,7 +178,7 @@ def bearer_required(func):
             username = 'public'
         else:
             username = user.get('preferred_username')
-        LOG.debug('username: %s', username)
+        LOG.error('username: %s', username)
 
         return await func(request, username, list_visa_datasets)
     return decorated
