@@ -1,5 +1,11 @@
 # Beacon v2.x
 
+### Follow the new Beacon v2 Reference Implementation Production ready product!! (now available)
+
+The Beacon v2 Reference Implementation can be found as an improved and production ready product in [Beacon v2 RI Prod](https://github.com/EGA-archive/beacon-production-prototype)
+
+
+### This repo
 <!-- [![Testsuite](https://github.com/EGA-archive/beacon-2.x/workflows/Testsuite/badge.svg)](https://github.com/EGA-archive/beacon-2.x/actions) -->
 
 This repository is an implementation of the [Beacon v2.0 Model](https://github.com/ga4gh-beacon/beacon-v2-Models) and contains:
