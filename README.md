@@ -1,8 +1,8 @@
 # Beacon v2.x
 
-### Follow the new Beacon v2 Reference Implementation Production ready product!! (now available)
+### Follow the new Beacon v2 Production ready product!! (now available)
 
-The Beacon v2 Reference Implementation can be found as an improved and production ready product in [Beacon v2 RI Prod](https://github.com/EGA-archive/beacon-production-prototype)
+The Beacon v2 Reference Implementation is just a test instance for a use case of beacon. You can use it if you like, but a new beacon product can be found as an improved and production ready product in [Beacon v2 Production Ready](https://github.com/EGA-archive/beacon-production-prototype)
 
 
 ### This repo
