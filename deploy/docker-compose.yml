@@ -44,6 +44,9 @@ services:
 
   db:
     image: mongo:5
+    mem_limit: 7500m
+    mem_reservation: 2000M
+    command: --wiredTigerCacheSizeGB 4
     hostname: mongo
     container_name: rimongo
     ports:
