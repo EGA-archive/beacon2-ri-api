@@ -36,7 +36,9 @@ services:
 
   dbspanish:
     image: mongo:5
-    command: mongod --port 27021
+    mem_limit: 7500m
+    mem_reservation: 2000M
+    command: mongod --port 27021 --wiredTigerCacheSizeGB 4
     hostname: mongo
     container_name: spanishmongo
     ports:
