@@ -729,7 +729,7 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
                 elif filter.value == 'Y':
                     dict_regex['$regex']='^NC_0000'+'24'
                 else:
-                    dict_regex['$regex']='^NC_0000'+filter.value
+                    dict_regex['$regex']='^NC_0000'+filter.value+'.'+'10:g'+'|'+'^NC_0000'+filter.value+'.'+'11:g'+'|'+'^NC_0000'+filter.value+'.'+'9:g'
             elif '>' in filter.value:
                 dict_regex=filter.value
             elif '.' in filter.value:
