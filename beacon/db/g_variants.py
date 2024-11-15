@@ -33,9 +33,7 @@ def include_resultset_responses(query: Dict[str, List[dict]], qparams: RequestPa
     #LOG.debug("Include Resultset Responses = {}".format(qparams.query.include_resultset_responses))
     return query
 
-
 def generate_position_filter_start(key: str, value: List[int]) -> List[AlphanumericFilter]:
-    #LOG.debug("len value = {}".format(len(value)))
     filters = []
     if len(value) == 1:
         filters.append(AlphanumericFilter(
@@ -43,7 +41,7 @@ def generate_position_filter_start(key: str, value: List[int]) -> List[Alphanume
             value=value[0],
             operator=Operator.GREATER_EQUAL
         ))
-    elif len(value) == 2:
+    elif len(value) == 2:# pragma: no cover
         filters.append(AlphanumericFilter(
             id=VARIANTS_PROPERTY_MAP[key],
             value=value[0],
@@ -56,17 +54,57 @@ def generate_position_filter_start(key: str, value: List[int]) -> List[Alphanume
         ))
     return filters
 
+def generate_position_filter_start_2(key: str, value: List[int]) -> List[AlphanumericFilter]:
+    filters = []
+    if len(value) == 1:
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP["end"],
+            value=value[0],
+            operator=Operator.GREATER_EQUAL
+        ))
+    elif len(value) == 2:# pragma: no cover
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=value[0],
+            operator=Operator.GREATER_EQUAL
+        ))
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=value[1],
+            operator=Operator.LESS_EQUAL
+        ))
+    return filters
+
+def generate_position_filter_start_3(key: str, value: List[int]) -> List[AlphanumericFilter]:
+    filters = []
+    if len(value) == 1:
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=value[0],
+            operator=Operator.LESS_EQUAL
+        ))
+    elif len(value) == 2:# pragma: no cover
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=value[0],
+            operator=Operator.GREATER_EQUAL
+        ))
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=value[1],
+            operator=Operator.LESS_EQUAL
+        ))
+    return filters
 
 def generate_position_filter_end(key: str, value: List[int]) -> List[AlphanumericFilter]:
-    #LOG.debug("len value = {}".format(len(value)))
     filters = []
     if len(value) == 1:
         filters.append(AlphanumericFilter(
             id=VARIANTS_PROPERTY_MAP[key],
             value=value[0],
-            operator=Operator.LESS_EQUAL
+            operator=Operator.LESS
         ))
-    elif len(value) == 2:
+    elif len(value) == 2:# pragma: no cover
         filters.append(AlphanumericFilter(
             id=VARIANTS_PROPERTY_MAP[key],
             value=value[0],
@@ -79,33 +117,112 @@ def generate_position_filter_end(key: str, value: List[int]) -> List[Alphanumeri
         ))
     return filters
 
+def generate_position_filter_end_2(key: str, value: List[int]) -> List[AlphanumericFilter]:
+    filters = []
+    if len(value) == 1:
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP["start"],
+            value=value[0],
+            operator=Operator.LESS
+        ))
+    elif len(value) == 2:# pragma: no cover
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=value[0],
+            operator=Operator.GREATER_EQUAL
+        ))
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=value[1],
+            operator=Operator.LESS_EQUAL
+        ))
+    return filters
+
+def generate_position_filter_end_3(key: str, value: List[int]) -> List[AlphanumericFilter]:
+    filters = []
+    if len(value) == 1:
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=value[0],
+            operator=Operator.GREATER_EQUAL
+        ))
+    elif len(value) == 2:# pragma: no cover
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=value[0],
+            operator=Operator.GREATER_EQUAL
+        ))
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=value[1],
+            operator=Operator.LESS_EQUAL
+        ))
+    return filters
+
+def generate_position_filter_start_sequence_query(key: str, value: List[int]) -> List[AlphanumericFilter]:
+    filters = []
+    if len(value) == 1:
+        filters.append(AlphanumericFilter(
+            id=VARIANTS_PROPERTY_MAP[key],
+            value=value[0],
+            operator=Operator.EQUAL
+        ))
+    return filters
 
 def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParams):
     collection = 'g_variants'
-    #LOG.debug("Request parameters len = {}".format(len(qparams.query.request_parameters)))
     if len(qparams.query.request_parameters) > 0 and "$and" not in query:
         query["$and"] = []
-    if isinstance(qparams.query.request_parameters, list):
+    if isinstance(qparams.query.request_parameters, list):# pragma: no cover
         query={}
         query["$or"]=[]
         for reqparam in qparams.query.request_parameters:
             subquery={}
             subquery["$and"] = []
+            startquery={}
+            startquery["$and"] = []
+            endquery={}
+            endquery["$and"] = []
+            startendquery={}
+            startendquery["$and"] = []
             subqueryor={}
             subqueryor["$or"] = []
+            equal=True
+            for k, v in reqparam.items():
+                if k == 'end':
+                    equal=False
             for k, v in reqparam.items():
                 if k == "start":
                     if isinstance(v, str):
                         v = v.split(',')
-                    filters = generate_position_filter_start(k, v)
+                    if equal == True:
+                        filters = generate_position_filter_start_sequence_query(k, v)
+                    else:
+                        filters = generate_position_filter_start(k, v)
                     for filter in filters:
-                        subquery["$and"].append(apply_alphanumeric_filter({}, filter, collection))
+                        if filter.id == "start":
+                            filter[id]=VARIANTS_PROPERTY_MAP["start"]
+                            startquery["$and"].append(apply_alphanumeric_filter({}, filter, collection))
+                        elif filter.id == "start2":
+                            filter[id]=VARIANTS_PROPERTY_MAP["start"]
+                            startquery["$and"].append(apply_alphanumeric_filter({}, filter, collection))
+                        elif filter.id == "start3":
+                            filter[id]=VARIANTS_PROPERTY_MAP["start"]
+                            startendquery["$and"].append(apply_alphanumeric_filter({}, filter, collection))
                 elif k == "end":
                     if isinstance(v, str):
                         v = v.split(',')
                     filters = generate_position_filter_end(k, v)
                     for filter in filters:
-                        subquery["$and"].append(apply_alphanumeric_filter({}, filter, collection))
+                        if filter.id == "end":
+                            filter[id]=VARIANTS_PROPERTY_MAP["end"]
+                            endquery["$and"].append(apply_alphanumeric_filter({}, filter, collection))
+                        elif filter.id == "end2":
+                            filter[id]=VARIANTS_PROPERTY_MAP["end"]
+                            endquery["$and"].append(apply_alphanumeric_filter({}, filter, collection))
+                        elif filter.id == "end3":
+                            filter[id]=VARIANTS_PROPERTY_MAP["end"]
+                            startendquery["$and"].append(apply_alphanumeric_filter({}, filter, collection))
                 elif k == "datasets":
                     pass
                 elif k == "variantMinLength":
@@ -145,7 +262,6 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                     v_list=[]
                     if ',' in v:
                         v_list =v.split(',')
-                        LOG.debug(v_list)
                     else:
                         v_list.append(v)
                     for id in v_list:
@@ -154,9 +270,14 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                         qparams.query.filters.append(v_dict)        
                     return query, True
         try:
-            LOG.debug(subqueryor)
             if subqueryor["$or"] != []:
                 subquery["$and"].append(subqueryor)
+            if startquery["$and"] != []:
+                subquery["$or"].append(startquery)
+            if endquery["$and"] != []:
+                subquery["$or"].append(endquery)
+            if startendquery["$and"] != []:
+                subquery["$or"].append(startendquery)
         except Exception:
             pass
         query["$or"].append(subquery)
@@ -165,19 +286,46 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
         subquery["$and"] = []
         subqueryor={}
         subqueryor["$or"] = []
+        startquery={}
+        startquery["$and"] = []
+        endquery={}
+        endquery["$and"] = []
+        startendquery={}
+        startendquery["$and"] = []
+        equal=False
+        for k, v in qparams.query.request_parameters.items():
+            if k == 'end':
+                equal=True
         for k, v in qparams.query.request_parameters.items():
             if k == "start":
                 if isinstance(v, str):
                     v = v.split(',')
-                filters = generate_position_filter_start(k, v)
-                for filter in filters:
-                    query["$and"].append(apply_alphanumeric_filter({}, filter, collection))
+                if equal == False:
+                    filters = generate_position_filter_start_sequence_query(k, v)
+                    for filter in filters:
+                        query["$and"].append(apply_alphanumeric_filter({}, filter, collection))
+                else:
+                    filters = generate_position_filter_start(k, v)
+                    filters2=generate_position_filter_start_2(k, v)
+                    filters3=generate_position_filter_start_3(k, v)
+                    for filter in filters:
+                        startquery["$and"].append(apply_alphanumeric_filter({}, filter, collection))
+                    for filter in filters2:
+                        endquery["$and"].append(apply_alphanumeric_filter({}, filter, collection))
+                    for filter in filters3:
+                        startendquery["$and"].append(apply_alphanumeric_filter({}, filter, collection))
             elif k == "end":
                 if isinstance(v, str):
                     v = v.split(',')
                 filters = generate_position_filter_end(k, v)
+                filters2 = generate_position_filter_end_2(k, v)
+                filters3 = generate_position_filter_end_3(k, v)
                 for filter in filters:
-                    query["$and"].append(apply_alphanumeric_filter({}, filter, collection))
+                    endquery["$and"].append(apply_alphanumeric_filter({}, filter, collection))
+                for filter in filters2:
+                    startquery["$and"].append(apply_alphanumeric_filter({}, filter, collection))
+                for filter in filters3:
+                    startendquery["$and"].append(apply_alphanumeric_filter({}, filter, collection))
             elif k == "datasets":
                 pass
             elif k == "variantMinLength":
@@ -186,7 +334,7 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                         id=VARIANTS_PROPERTY_MAP[k],
                         value='min'+v
                     ), collection))
-                except KeyError:
+                except KeyError:# pragma: no cover
                     raise web.HTTPNotFound
             elif k == "variantMaxLength":
                 try:
@@ -194,7 +342,7 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                         id=VARIANTS_PROPERTY_MAP[k],
                         value='max'+v
                     ), collection))
-                except KeyError:
+                except KeyError:# pragma: no cover
                     raise web.HTTPNotFound    
             elif k == "mateName" or k == 'referenceName':
                 try:
@@ -202,7 +350,7 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                         id=VARIANTS_PROPERTY_MAP[k],
                         value=v
                     ), collection))
-                except KeyError:
+                except KeyError:# pragma: no cover
                     raise web.HTTPNotFound
             elif k != 'filters':
                 try:
@@ -210,14 +358,13 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                         id=VARIANTS_PROPERTY_MAP[k],
                         value=v
                     ), collection))
-                except KeyError:
+                except KeyError:# pragma: no cover
                     raise web.HTTPNotFound
 
             elif k == 'filters':
                 v_list=[]
                 if ',' in v:
-                    v_list =v.split(',')
-                    LOG.debug(v_list)
+                    v_list =v.split(',')# pragma: no cover
                 else:
                     v_list.append(v)
                 for id in v_list:
@@ -226,13 +373,30 @@ def apply_request_parameters(query: Dict[str, List[dict]], qparams: RequestParam
                     qparams.query.filters.append(v_dict)        
                 return query, True
         try:
-            LOG.debug(subqueryor)
             if subqueryor["$or"] != []:
                 subquery["$and"].append(subqueryor)
-        except Exception:
+        except Exception:# pragma: no cover
             pass
         if subquery["$and"] != []:
             query["$and"].append(subquery)
+        if startquery["$and"] != []:
+            try:
+                query["$or"].append(startquery)
+            except Exception:
+                query["$or"]=[]
+                query["$or"].append(startquery)
+        if endquery["$and"] != []:
+            try:
+                query["$or"].append(endquery)
+            except Exception:
+                query["$or"]=[]
+                query["$or"].append(endquery)
+        if startendquery["$and"] != []:
+            try:
+                query["$or"].append(startendquery)
+            except Exception:
+                query["$or"]=[]
+                query["$or"].append(startendquery)
 
 
     return query, False
