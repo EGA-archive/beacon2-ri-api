@@ -149,7 +149,8 @@ You can use POST to make the previous query. With a `request.json` file like thi
     "referenceBases": "A" ,
 "start": [ 16050074 ],
             "end": [ 16050568 ],
-	    "variantType": "SNP"
+	    "variantType": "SNP",
+        "assemblyId": "GRCh38"
         },
         "filters": [],
         "includeResultsetResponses": "HIT",
@@ -180,7 +181,8 @@ curl \
     "referenceBases": "A" ,
 "start": [ 16050074 ],
             "end": [ 16050568 ],
-	    "variantType": "SNP"
+	    "variantType": "SNP",
+        "assemblyId": "GRCh38"
         },
         "filters": [],
         "includeResultsetResponses": "HIT",
