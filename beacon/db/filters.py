@@ -715,7 +715,7 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
     #LOG.debug(filter.id)
     if collection == 'g_variants' and scope != 'individual' and scope != 'run':
         if filter.id == "identifiers.genomicHGVSId":
-            list_chromosomes = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22']
+            list_chromosomes = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','X','Y']
             dict_regex={}
             if filter.value == 'GRCh38':
                 dict_regex['$regex']="11:"
@@ -724,7 +724,12 @@ def apply_alphanumeric_filter(query: dict, filter: AlphanumericFilter, collectio
             elif filter.value == 'NCBI36':
                 dict_regex['$regex']="9:"
             elif filter.value in list_chromosomes:
-                dict_regex['$regex']='^NC_0000'+filter.value
+                if filter.value == 'X':
+                    dict_regex['$regex']='^NC_0000'+'23'
+                elif filter.value == 'Y':
+                    dict_regex['$regex']='^NC_0000'+'24'
+                else:
+                    dict_regex['$regex']='^NC_0000'+filter.value+'.'+'10:g'+'|'+'^NC_0000'+filter.value+'.'+'11:g'+'|'+'^NC_0000'+filter.value+'.'+'9:g'
             elif '>' in filter.value:
                 dict_regex=filter.value
             elif '.' in filter.value:
