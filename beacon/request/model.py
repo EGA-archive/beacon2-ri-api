@@ -5,7 +5,8 @@ from pydantic import (
     ValidationError,
     field_validator,
     Field,
-    PrivateAttr)
+    PrivateAttr,
+    model_validator)
 from strenum import StrEnum
 from typing import List, Optional, Union
 from beacon import conf
@@ -95,17 +96,30 @@ class RequestParams(CamelModel):
 
 class SequenceQuery(BaseModel):
     referenceName: Union[str,int]
-    start: Union[int, list, str]
+    start: int
     alternateBases:str
     referenceBases: str
     clinicalRelevance: Optional[str] =None
     mateName: Optional[str] =None
     assemblyId: Optional[str] =None
+    @model_validator(mode='after')
+    @classmethod
+    def referenceName_must_have_assemblyId_if_not_HGVSId(cls, values):
+        if values.referenceName in ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','X','Y','MT',1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]:
+            try:
+                if values.assemblyId == None:
+                    raise ValueError
+                else:
+                    pass
+            except Exception as e:
+                raise ValueError
+        else:
+            raise ValueError
 
 class RangeQuery(BaseModel):
     referenceName: Union[str,int]
-    start: Union[int, str, list]
-    end: Union[int, str, list]
+    start: int
+    end: int
     variantType: Optional[str] =None
     alternateBases: Optional[str] =None
     aminoacidChange: Optional[str] =None
@@ -114,6 +128,22 @@ class RangeQuery(BaseModel):
     clinicalRelevance: Optional[str] =None
     mateName: Optional[str] =None
     assemblyId: Optional[str] =None
+    @model_validator(mode='after')
+    @classmethod
+    def referenceName_must_have_assemblyId_if_not_HGVSId_2(cls, values):
+        if values.referenceName in ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','X','Y','MT',1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]:
+            try:
+                if values.assemblyId == None:
+                    raise ValueError
+                else:
+                    pass
+            except Exception as e:
+                raise ValueError
+        else:
+            raise ValueError
+
+class DatasetsRequested(BaseModel):
+    datasets: list
 
 class GeneIdQuery(BaseModel):
     geneId: str
@@ -122,7 +152,6 @@ class GeneIdQuery(BaseModel):
     aminoacidChange: Optional[str] =None
     variantMinLength: Optional[int] =None
     variantMaxLength: Optional[int] =None
-    assemblyId: Optional[str] =None
 
 class BracketQuery(BaseModel):
     referenceName: Union[str,int]
@@ -135,7 +164,7 @@ class BracketQuery(BaseModel):
     @field_validator('start')
     @classmethod
     def start_must_be_array_of_integers(cls, v: list) -> list:
-        for num in v:
+        for num in v:# pragma: no cover
             if isinstance(num, int):
                 pass
             else:
@@ -143,20 +172,31 @@ class BracketQuery(BaseModel):
     @field_validator('end')
     @classmethod
     def end_must_be_array_of_integers(cls, v: list) -> list:
-        for num in v:
+        for num in v:# pragma: no cover
             if isinstance(num, int):
                 pass
             else:
                 raise ValueError
+    @model_validator(mode='after')
+    @classmethod
+    def referenceName_must_have_assemblyId_if_not_HGVSId_3(cls, values):
+        if values.referenceName in ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','X','Y','MT',1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]:
+            try:
+                if values.assemblyId == None:
+                    raise ValueError
+                else:
+                    pass
+            except Exception as e:
+                raise ValueError
+        else:
+            raise ValueError
 
 class GenomicAlleleQuery(BaseModel):
     genomicAlleleShortForm: str
-    assemblyId: Optional[str] =None
 
 class AminoacidChangeQuery(BaseModel):
     aminoacidChange: str
     geneId: str
-    assemblyId: Optional[str] =None
 
 class RequestParams(CamelModel):
     meta: RequestMeta = RequestMeta()
